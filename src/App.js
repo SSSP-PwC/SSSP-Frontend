@@ -6,6 +6,7 @@ import HomePage from "./Pages/HomePage"
 import GlobalStyle from './globalStyles';
 import Footer from './Components/Footer/Footer';
 import { SignUpForm } from './Components/Auth/SignUpForm';
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 export default function App() {
   return (
