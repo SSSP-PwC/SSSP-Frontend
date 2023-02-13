@@ -13,8 +13,8 @@ import {
   NavItem,
 } from "./NavbarStyles";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import Building from "/Users/marcasodonnell/Desktop/SC-Platform Frontend/src/icons8-city-buildings-50.png"
 import {loggedInData}from "../../Data/NavbarData";
+import { Heading } from "../../globalStyles";
 const Navbar = () => {
   const [show, setShow] = useState(false);
 
@@ -45,7 +45,8 @@ const Navbar = () => {
     <IconContext.Provider value={{ color: "#fff" }}>
       <Nav>    
         <NavbarContainer>
-          <Link to ="/">          <NavIcon src={Building}></NavIcon>
+          <Link to ="/">          
+          <Heading style={{margin: '10px'}}>SSSP</Heading>
 </Link>
           <MobileIcon onClick={handleClick}>
             {show ? <FaTimes /> : <CgMenuRight />}
