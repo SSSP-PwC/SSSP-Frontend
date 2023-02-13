@@ -46,7 +46,7 @@ const Navbar = () => {
       <Nav>    
         <NavbarContainer>
           <Link to ="/">          
-          <Heading style={{margin: '10px'}}>SSSP</Heading>
+          <Heading style={{margin: "10px"}}>SSSP</Heading>
 </Link>
           <MobileIcon onClick={handleClick}>
             {show ? <FaTimes /> : <CgMenuRight />}
