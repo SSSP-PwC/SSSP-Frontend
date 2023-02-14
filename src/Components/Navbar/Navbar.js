@@ -45,7 +45,7 @@ const Navbar = () => {
     <IconContext.Provider value={{ color: "#fff" }}>
       <Nav>    
         <NavbarContainer>
-          <Link to ="/">          
+          <Link to ="/" style={{textDecoration: "none"}}>          
           <Heading style={{margin: "10px"}}>SSSP</Heading>
 </Link>
           <MobileIcon onClick={handleClick}>

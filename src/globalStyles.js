@@ -21,12 +21,12 @@ padding: 0 30px;
 }
 `;
 export const MainHeading = styled.h1`
-font-size: clamp(2.3rem, 6vw, 4.5rem);
+font-size: clamp(1.3rem, 6vw, 3.0rem);
 margin-bottom: 2rem;
 color: ${({ inverse }) => (inverse ? '$403ae3' : 'black')};
 width: 100%;
-letter-spacing: 4px;
-text-align: center;
+text-align: left;
+margin-top: 2rem;
 `;
 
 export const Heading = styled.h2`
@@ -103,7 +103,7 @@ min-height: ${({ minHeight }) => (minHeight ? minHeight : 'auto')};
 
 export const Button = styled.button`
 border-radius: 4px;
-background: none;
+background: #00823B;
 white-space: nowrap;
 padding: 10px 20px;
 font-size: 16px;
@@ -133,7 +133,7 @@ height: 500%;
 }
 
 &:hover {
-  background: hsl(181, 100%, 44%);
+  background: #006435  ;
   transition: 0.8s all linear;
 }
 `;
