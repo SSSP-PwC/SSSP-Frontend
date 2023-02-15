@@ -16,13 +16,12 @@ export const loggedOutData = [
 
 export const loggedInData = [
 	{
-		to: '/login',
-		text: '',
-		id: 'About',
+		to: '/register-company',
+		text: 'Register Company',
 	},
 	
 	{
-		to: '/login',
-		text: 'Sign In',
+		to: '/register-citizen',
+		text: 'Register Citizen',
 	}
 ];

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Form, Alert } from "react-bootstrap";
-import { Button, MainHeading } from "../../../globalStyles";
+import { Button, MainHeading } from "../../../../globalStyles";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
-export const EnterCitizenEmail = () => {
+export const ChangeAddressLine2 = () => {
   const {
     register,
     handleSubmit,
@@ -16,16 +16,16 @@ export const EnterCitizenEmail = () => {
   const [show, setShow] = useState(false);
   const [variantType, setVariantType] = useState("");
   const [userResponse, setUserResponse] = useState("");
-  var company_name = sessionStorage.getItem("company-name");
-  console.log(company_name);
+
   const submitForm = (data) => {
     //Replace with API callout to Companies House
-    if (data.email != undefined) {
-      console.log(data);
+    if (data.CitizenAddressLine2 !== undefined ) {
       setUserResponse(data.message);
+
+      sessionStorage.setItem("citizen-address-line-2", data["CitizenAddressLine2"]);
+
       setShow(true);
-      sessionStorage.setItem("citizen-email", data["email"]);
-      navigate("/register-citizen-password");
+      navigate("/register-citizen-summary");
     } else {
     }
   };
@@ -46,53 +46,68 @@ export const EnterCitizenEmail = () => {
             >
               <p>{userResponse}</p>
             </Alert>
+
+            <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
+              Enter your company name
+            </MainHeading>
+            <p style={{ color: "#0B0C0C" }}>
+              We will use this information to cross-reference against companies
+              house database
+            </p>
           </>
         ) : (
           <div></div>
         )}
         <div style={{ display: "inline-block" }}>
-          <div>
+          <form style={{ display: "inline-block" }}>
             <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
-              Enter your email address
+              Enter address line 2
             </MainHeading>
             <p style={{ color: "#505a5f" }}>
-              Profile Creation: Section 3 of 5
+              Profile Creation: Edit details
             </p>
             <p style={{ color: "#505a5f" }}>
               Please complete this section with your own details.
             </p>
-
             <Form.Group>
-              <Form.Label>Email</Form.Label>
+              <Form.Label>Address Line 2</Form.Label>
               <Form.Control
-                type="email"
-                placeholder="Enter your email address"
+                type="text"
+                placeholder={sessionStorage.getItem("citizen-address-line2")}
                 style={{ borderColor: "black", maxWidth: "500px" }}
-                {...register("email", { required: true, maxLength: 80 })}
+                {...register("CitizenAddressLine2", {
+                  required: true,
+                  maxLength: 80,
+                })}
               />
 
-              {errors.email && (
+              {errors.CitizenAddressLine2 && (
                 <p style={{ color: "red" }}>
-                  <small>Email is required</small>
+                  <small>Address Line 2 is required</small>
                 </p>
               )}
 
-              {errors.email?.type === "maxLength" && (
+              {errors.CitizenAddressLine2?.type === "maxLength" && (
                 <p style={{ color: "red" }}>
                   <small>Max characters should be 80</small>
                 </p>
               )}
             </Form.Group>
             <br></br>
-            <Form.Group>
-              <Button
-                style={{ marginBottom: "15px" }}
-                onClick={handleSubmit(submitForm)}
-              >
-                Continue
-              </Button>
-            </Form.Group>
-          </div>
+          </form>
+
+          <br></br>
+          <Form.Group>
+            <Button
+              style={{ marginBottom: "15px" }}
+              onClick={handleSubmit(submitForm)}
+            >
+              Continue
+            </Button>
+          </Form.Group>
+          <br></br>
+
+          <div></div>
         </div>
       </div>
     </div>

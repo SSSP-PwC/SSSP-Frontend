@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import { Form, Alert } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import { Button, MainHeading } from "../../../globalStyles";
+import { Button, MainHeading } from "../../../../globalStyles";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { Divider } from "@mui/material";
 
-export const EnterCitizenName = () => {
+export const ChangeLastName = () => {
   const {
     register,
     handleSubmit,
@@ -22,18 +20,16 @@ export const EnterCitizenName = () => {
 
   const submitForm = (data) => {
     //Replace with API callout to Companies House
-    if (data.FirstName != undefined && data.LastName != undefined) {
+    if (data.LastName != undefined) {
       setUserResponse(data.message);
       setShow(true);
-      sessionStorage.setItem("citizen-first-name", data["FirstName"]);
       sessionStorage.setItem("citizen-last-name", data["LastName"]);
-      navigate("/register-citizen-address");
+      navigate("/register-citizen-summary");
     } else {
       alert("Company Name not defined");
     }
   };
 
-  
   return (
     <div className="container">
       <div
@@ -57,42 +53,20 @@ export const EnterCitizenName = () => {
         )}
         <div style={{ display: "inline-block" }}>
           <div>
-         
             <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
-              Applicant name
-            </MainHeading> 
-            <p style={{ color: "#505a5f" }}>
-              Profile Creation: Section 1 of 5
-            </p>
+              Enter last name
+            </MainHeading>
+            <p style={{ color: "#505a5f" }}>Profile Creation: Edit details</p>
             <p style={{ color: "#505a5f" }}>
               Please complete this section with your own details.
             </p>
             <Form.Group>
-              <Form.Label>First Name</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter your first name"
-                style={{ borderColor: "black", maxWidth: "500px" }}
-                {...register("FirstName", { required: true, maxLength: 80 })}
-              />
-              {errors.FirstName && (
-                <p style={{ color: "red" }}>
-                  <small>First Name is required</small>
-                </p>
-              )}
-
-              {errors.FirstName?.type === "maxLength" && (
-                <p style={{ color: "red" }}>
-                  <small>Max characters should be 80</small>
-                </p>
-              )}
-            </Form.Group>
-            <br></br>
-            <Form.Group>
               <Form.Label>Last Name</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter your last name"
+                placeholder={
+                  "You entered: " + sessionStorage.getItem("citizen-postcode")
+                }
                 style={{ borderColor: "black", maxWidth: "500px" }}
                 {...register("LastName", { required: true, maxLength: 80 })}
               />
@@ -115,7 +89,7 @@ export const EnterCitizenName = () => {
                 style={{ marginBottom: "15px" }}
                 onClick={handleSubmit(submitForm)}
               >
-                Continue
+                Go to Summary
               </Button>
             </Form.Group>
             <br></br>

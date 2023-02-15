@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import { Form, Alert } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import { Button, Heading } from "../../../globalStyles";
-import { MainHeading } from "../../../globalStyles";
+import { Button, MainHeading } from "../../../../globalStyles";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
-export const EnterCitizenAddress = () => {
+export const ChangeAddressLine1 = () => {
   const {
     register,
     handleSubmit,
@@ -29,7 +27,7 @@ export const EnterCitizenAddress = () => {
       sessionStorage.setItem("town-city", data["CompanyTownCity"]);
       sessionStorage.setItem("postcode", data["CompanyPostcode"]);
       setShow(true);
-      navigate("/register-citizen-email");
+      navigate("/register-citizen-summary");
     } else {
     }
   };
@@ -65,10 +63,10 @@ export const EnterCitizenAddress = () => {
         <div style={{ display: "inline-block" }}>
           <form style={{ display: "inline-block" }}>
             <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
-              Enter your address
+              Enter address line 1
             </MainHeading>
             <p style={{ color: "#505a5f" }}>
-              Profile Creation: Section 2 of 5
+              Profile Creation: Edit details
             </p>
             <p style={{ color: "#505a5f" }}>
               Please complete this section with your own details.
@@ -94,71 +92,6 @@ export const EnterCitizenAddress = () => {
               {errors.CompanyAddressLine1?.type === "maxLength" && (
                 <p style={{ color: "red" }}>
                   <small>Max characters should be 80</small>
-                </p>
-              )}
-            </Form.Group>
-            <br></br>
-
-            <Form.Group>
-              <Form.Label>Address Line 2</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter address line 2"
-                style={{ borderColor: "black", maxWidth: "500px" }}
-                {...register("CompanyAddressLine2", {
-                  required: false,
-                  maxLength: 80,
-                })}
-              />
-              {errors.CompanyAddressLine2?.type === "maxLength" && (
-                <p style={{ color: "red" }}>
-                  <small>Max characters should be 80</small>
-                </p>
-              )}
-            </Form.Group>
-            <br></br>
-            <Form.Group>
-              <Form.Label>Town/City</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter town/city"
-                style={{ borderColor: "black", maxWidth: "500px" }}
-                {...register("CompanyTownCity", {
-                  required: true,
-                  maxLength: 80,
-                })}
-              />
-                   {errors.CompanyTownCity && (
-                <p style={{ color: "red" }}>
-                  <small>Town/City is required</small>
-                </p>
-              )}
-              {errors.CompanyTownCity?.type === "maxLength" && (
-                <p style={{ color: "red" }}>
-                  <small>Max characters should be 80</small>
-                </p>
-              )}
-            </Form.Group>
-            <br></br>
-            <Form.Group>
-              <Form.Label>Postcode</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter postcode"
-                style={{ borderColor: "black", maxWidth: "500px" }}
-                {...register("CompanyPostcode", {
-                  required: true,
-                  maxLength: 8,
-                })}
-              />
-                       {errors.CompanyPostcode && (
-                <p style={{ color: "red" }}>
-                  <small>Postcode is required</small>
-                </p>
-              )}
-              {errors.CompanyPostcode?.type === "maxLength" && (
-                <p style={{ color: "red" }}>
-                  <small>Max characters should be 8</small>
                 </p>
               )}
             </Form.Group>

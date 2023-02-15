@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Form, Alert } from "react-bootstrap";
-import { Button, MainHeading } from "../../../globalStyles";
+import { Button, MainHeading } from "../../../../globalStyles";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
-export const EnterCompanyRegistrationNumber = () => {
+export const ChangeTownCity = () => {
   const {
     register,
     handleSubmit,
@@ -16,16 +16,15 @@ export const EnterCompanyRegistrationNumber = () => {
   const [show, setShow] = useState(false);
   const [variantType, setVariantType] = useState("");
   const [userResponse, setUserResponse] = useState("");
-  var company_name = sessionStorage.getItem("company-name");
-  console.log(company_name);
+
   const submitForm = (data) => {
     //Replace with API callout to Companies House
-    if (data.CompanyRegistrationNumber != undefined) {
+    if (data.CitizenTownCity !== undefined) {
       console.log(data);
       setUserResponse(data.message);
+      sessionStorage.setItem("citizen-town-city", data["CitizenTownCity"]);
       setShow(true);
-      sessionStorage.setItem("company-registration-number", data["CompanyRegistrationNumber"]);
-      navigate("/register-company-associated-contact");
+      navigate("/register-citizen-summary");
     } else {
     }
   };
@@ -46,57 +45,64 @@ export const EnterCompanyRegistrationNumber = () => {
             >
               <p>{userResponse}</p>
             </Alert>
+
+            <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
+              Enter your company name
+            </MainHeading>
+            <p style={{ color: "#0B0C0C" }}>
+              We will use this information to cross-reference against companies
+              house database
+            </p>
           </>
         ) : (
           <div></div>
         )}
         <div style={{ display: "inline-block" }}>
-          <div>
+          <form style={{ display: "inline-block" }}>
             <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
-              Enter your company registration number
+              Enter town/city
             </MainHeading>
+            <p style={{ color: "#505a5f" }}>Profile Creation: Edit details</p>
             <p style={{ color: "#505a5f" }}>
-                Profile Creation: Section 3 of 4
-              </p>
-            <p style={{ color: "#0B0C0C" }}>
-              We will use this information to cross-reference against companies
-              house database
+              Please complete this section with your own details.
             </p>
-
             <Form.Group>
-              <Form.Label>Company registration number</Form.Label>
+              <Form.Label>Town/City</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter company registration number"
+                placeholder={sessionStorage.getItem("citizen-town-city")}
                 style={{ borderColor: "black", maxWidth: "500px" }}
-                {...register("CompanyRegistrationNumber", {
+                {...register("CitizenTownCity", {
                   required: true,
-                  maxLength: 120,
+                  maxLength: 80,
                 })}
               />
-
-              {errors.CompanyRegistrationNumber && (
+              {errors.CitizenTownCity && (
                 <p style={{ color: "red" }}>
-                  <small>Company Registration Number is required</small>
+                  <small>Town/City is required</small>
                 </p>
               )}
-
-              {errors.CompanyRegistrationNumber?.type === "maxLength" && (
+              {errors.CitizenTownCity?.type === "maxLength" && (
                 <p style={{ color: "red" }}>
-                  <small>Max characters should be 120</small>
+                  <small>Max characters should be 80</small>
                 </p>
               )}
             </Form.Group>
             <br></br>
-            <Form.Group>
-              <Button
-                style={{ marginBottom: "15px" }}
-                onClick={handleSubmit(submitForm)}
-              >
-                Continue
-              </Button>
-            </Form.Group>
-          </div>
+          </form>
+
+          <br></br>
+          <Form.Group>
+            <Button
+              style={{ marginBottom: "15px" }}
+              onClick={handleSubmit(submitForm)}
+            >
+              Continue
+            </Button>
+          </Form.Group>
+          <br></br>
+
+          <div></div>
         </div>
       </div>
     </div>

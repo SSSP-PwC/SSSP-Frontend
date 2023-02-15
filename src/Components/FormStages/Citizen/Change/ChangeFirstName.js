@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { Form, Alert } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import { Button, MainHeading } from "../../../globalStyles";
+import { Button, MainHeading } from "../../../../globalStyles";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { Divider } from "@mui/material";
+
 
 export const ChangeFirstName = () => {
   const {
@@ -70,8 +69,8 @@ export const ChangeFirstName = () => {
               <Form.Label>First Name</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter your first name"
-                style={{ borderColor: "black", maxWidth: "500px" }}
+                placeholder={sessionStorage.getItem("citizen-first-name")
+                  }                style={{ borderColor: "black", maxWidth: "500px" }}
                 {...register("FirstName", { required: true, maxLength: 80 })}
               />
               {errors.FirstName && (

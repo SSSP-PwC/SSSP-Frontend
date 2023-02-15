@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { Divider } from "@mui/material";
 
-export const CitizenRegistrationSummary = () => {
+export const CompanyRegistrationSummary = () => {
   const {
     register,
     handleSubmit,
@@ -19,28 +19,21 @@ export const CitizenRegistrationSummary = () => {
   const [show, setShow] = useState(false);
   const [variantType, setVariantType] = useState("");
   const [userResponse, setUserResponse] = useState("");
-  var first_name = sessionStorage.getItem("citizen-first-name");
-  var last_name = sessionStorage.getItem("citizen-last-name");
-  var address_line_1 = sessionStorage.getItem("citizen-address-line-1");
-  var address_line_2 = sessionStorage.getItem("citizen-address-line-2");
-  var town_city = sessionStorage.getItem("citizen-town-city");
-  var postcode = sessionStorage.getItem("citizen-postcode");
-  var email = sessionStorage.getItem("citizen-email");
+  var company_name = sessionStorage.getItem("company-name")
+  var company_address_1 = sessionStorage.getItem("company-address-line-1")
+  var company_address_2 = sessionStorage.getItem("company-address-line-2")
+  var company_town_city = sessionStorage.getItem("company-town-city")
+  var company_postcode = sessionStorage.getItem("company-postcode")
+  var company_registration_number = sessionStorage.getItem("company-registration-number")
 
-  var company_registration_flow = sessionStorage.getItem(
-    "company-registration-flow-flag"
-  );
+
+
+
   const submitForm = (data) => {
     //Replace with API callout to Companies House
-    if (company_registration_flow === "true") {
-      setShow(true);
-      navigate("/register-company-summary");
-    } else {
-      sessionStorage.clear();
-      console.log(data);
-      setUserResponse(data.message);
-      navigate("/");
-    }
+    navigate("/");
+   sessionStorage.clear();
+    
   };
   return (
     <div className="container">
@@ -64,38 +57,26 @@ export const CitizenRegistrationSummary = () => {
           <div></div>
         )}
         <div style={{ display: "inline-block" }}>
-          {address_line_2.length === 0 ? (
+          {company_address_2.length === 0 ? (
             <form style={{ display: "inline-block" }}>
               <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
-                Citizen Registration Form
+                Company Registration Form
               </MainHeading>
               <Divider></Divider>
               <br></br>
               <p style={{ color: "#505a5f" }}>
-                Profile Creation: Section 5 of 5
+                Profile Creation: Section 4 of 4
               </p>
               <h6 style={{ color: "#0B0C0C", fontWeight: "bold" }}>
                 Summary table
               </h6>
               <Form.Group>
                 <Form.Label style={{ fontWeight: "bold", margin: "10px" }}>
-                  First name:
+                  Company name:
                 </Form.Label>
                 <small>
-                  {first_name}
+                  {company_name}
                   <Link style={{ float: "right" }}>Change</Link>
-                </small>
-                <Divider></Divider>
-              </Form.Group>
-              <Form.Group>
-                <Form.Label style={{ fontWeight: "bold", margin: "10px" }}>
-                  Last name:
-                </Form.Label>
-                <small>
-                  {last_name}
-                  <Link to="/change-last-name" style={{ float: "right" }}>
-                    Change
-                  </Link>
                 </small>
                 <Divider></Divider>
               </Form.Group>
@@ -104,8 +85,8 @@ export const CitizenRegistrationSummary = () => {
                   Address line 1:
                 </Form.Label>
                 <small>
-                  {address_line_1}
-                  <Link to="/change-address-line-1" style={{ float: "right" }}>
+                  {company_address_1}
+                  <Link to="/change-last-name" style={{ float: "right" }}>
                     Change
                   </Link>
                 </small>
@@ -116,8 +97,11 @@ export const CitizenRegistrationSummary = () => {
                   Town/City:
                 </Form.Label>
                 <small>
-                  {town_city}
-                  <Link to="/change-town-city" style={{ float: "right" }}>
+                  {company_town_city}
+                  <Link
+                    to="/change-town-city"
+                    style={{ float: "right" }}
+                  >
                     Change
                   </Link>
                 </small>
@@ -128,8 +112,11 @@ export const CitizenRegistrationSummary = () => {
                   Postcode:
                 </Form.Label>
                 <small>
-                  {postcode}
-                  <Link to="/change-postcode" style={{ float: "right" }}>
+                  {company_postcode}
+                  <Link
+                    to="/change-postcode"
+                    style={{ float: "right" }}
+                  >
                     Change
                   </Link>
                 </small>
@@ -137,11 +124,11 @@ export const CitizenRegistrationSummary = () => {
               </Form.Group>
               <Form.Group>
                 <Form.Label style={{ fontWeight: "bold", margin: "10px" }}>
-                  Email Address:
+                  Company registration number:
                 </Form.Label>
                 <small>
-                  {email}
-                  <Link to="/change-email-address" style={{ float: "right" }}>
+                  {company_registration_number}
+                  <Link to="/change-last-name" style={{ float: "right" }}>
                     Change
                   </Link>
                 </small>
@@ -162,33 +149,21 @@ export const CitizenRegistrationSummary = () => {
           ) : (
             <form style={{ display: "inline-block" }}>
               <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
-                Citizen Registration Form
+                Company Registration Form
               </MainHeading>
               <p style={{ color: "#505a5f" }}>
-                Profile Creation: Section 5 of 5
+                Profile Creation: Section 4 of 4
               </p>
               <h6 style={{ color: "#0B0C0C", fontWeight: "bold" }}>
                 Summary table
               </h6>
               <Form.Group>
                 <Form.Label style={{ fontWeight: "bold", margin: "10px" }}>
-                  First name:
+                  Company name:
                 </Form.Label>
                 <small>
-                  {first_name}
+                  {company_name}
                   <Link to="/change-first-name" style={{ float: "right" }}>
-                    Change
-                  </Link>
-                </small>
-                <Divider></Divider>
-              </Form.Group>
-              <Form.Group>
-                <Form.Label style={{ fontWeight: "bold", margin: "10px" }}>
-                  Last name:
-                </Form.Label>
-                <small>
-                  {last_name}
-                  <Link to="/change-last-name" style={{ float: "right" }}>
                     Change
                   </Link>
                 </small>
@@ -199,8 +174,8 @@ export const CitizenRegistrationSummary = () => {
                   Address line 1:
                 </Form.Label>
                 <small>
-                  {address_line_1}
-                  <Link to="/change-address-line-1" style={{ float: "right" }}>
+                  {company_address_1}
+                  <Link to="/change-last-name" style={{ float: "right" }}>
                     Change
                   </Link>
                 </small>
@@ -211,8 +186,11 @@ export const CitizenRegistrationSummary = () => {
                   Address line 2:
                 </Form.Label>
                 <small>
-                  {address_line_2}
-                  <Link to="/change-address-line-2" style={{ float: "right" }}>
+                  {company_address_2}
+                  <Link
+                    to="/change-address-line-1"
+                    style={{ float: "right" }}
+                  >
                     Change
                   </Link>
                 </small>
@@ -223,8 +201,11 @@ export const CitizenRegistrationSummary = () => {
                   Town/City:
                 </Form.Label>
                 <small>
-                  {town_city}
-                  <Link to="/change-town-city" style={{ float: "right" }}>
+                  {company_town_city}
+                  <Link
+                    to="/change-town-city"
+                    style={{ float: "right" }}
+                  >
                     Change
                   </Link>
                 </small>
@@ -235,26 +216,16 @@ export const CitizenRegistrationSummary = () => {
                   Postcode:
                 </Form.Label>
                 <small>
-                  {postcode}
-                  <Link to="/change-postcode" style={{ float: "right" }}>
+                  {company_postcode}
+                  <Link
+                    to="/change-postcode"
+                    style={{ float: "right" }}
+                  >
                     Change
                   </Link>
                 </small>
                 <Divider></Divider>
               </Form.Group>
-              <Form.Group>
-                <Form.Label style={{ fontWeight: "bold", margin: "10px" }}>
-                  Email Address:
-                </Form.Label>
-                <small>
-                  {email}
-                  <Link to="/change-email-address" style={{ float: "right" }}>
-                    Change
-                  </Link>
-                </small>
-                <Divider></Divider>
-              </Form.Group>
-
               <br></br>
               <Form.Group>
                 <Button

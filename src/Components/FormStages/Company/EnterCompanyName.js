@@ -27,14 +27,12 @@ export const EnterCompanyName = () => {
       setUserResponse(data.message);
       setShow(true);
       sessionStorage.setItem("company-name", data["CompanyName"]);
-      navigate("/company-address");
+      navigate("/register-company-address");
     } else {
       alert("Company Name not defined");
     }
   };
-  const resetSessionStorage = () => {
-    sessionStorage.removeItem("company-name")
-  }
+
   return (
     <div className="container">
       <div
@@ -56,12 +54,14 @@ export const EnterCompanyName = () => {
         ) : (
           <div></div>
         )}
-        {company_name === null ? (
           <div style={{ display: "inline-block" }}>
             <div>
               <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
                 Enter your company name
               </MainHeading>
+              <p style={{ color: "#505a5f" }}>
+                Profile Creation: Section 1 of 4
+              </p>
               <p style={{ color: "#0B0C0C" }}>
                 We will use this information to cross-reference against
                 companies house database
@@ -99,42 +99,10 @@ export const EnterCompanyName = () => {
             </Form.Group>
             <br></br>
 
-            <div></div>
           </div>
-        ) : (
-          <div style={{ display: "inline-block" }}>
-            <div>
-              <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
-                Check your answer before continuing
-              </MainHeading>
-            </div>
-            <Form.Group>
-              <Form.Label style={{ fontWeight: "bold", margin: "10px" }}>
-                Company name 
-              </Form.Label>
-              <small>
-                {company_name}
-                <Link style={{ margin: "20px" }} onClick={resetSessionStorage}>
-                  Change
-                </Link>
-              </small>
-              <Divider></Divider>
-            </Form.Group>
-            <br></br>
-            <Form.Group>
-              <Button
-                style={{ marginBottom: "15px" }}
-                onClick={handleSubmit(submitForm)}
-              >
-                Continue
-              </Button>
-            </Form.Group>
-            <br></br>
+        
 
-            <div></div>
           </div>
-        )}
-      </div>
     </div>
   );
 };

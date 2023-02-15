@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import { Form, Alert } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { Button, Heading } from "../../../globalStyles";
-import { MainHeading } from "../../../globalStyles";
+import { Button, MainHeading } from "../../../../globalStyles";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
-export const EnterCompanyAddress = () => {
+export const EnterCitizenAddress = () => {
   const {
     register,
     handleSubmit,
@@ -21,25 +20,14 @@ export const EnterCompanyAddress = () => {
 
   const submitForm = (data) => {
     //Replace with API callout to Companies House
-    if (
-      data.CompanyAddressLine1 !== undefined &&
-      data.CompanyTownCity !== undefined &&
-      data.CompanyPostcode !== undefined
-    ) {
-      console.log(data);
+    if (data.CitizenAddressLine1 !== undefined && data.CitizenTownCity !== undefined && data.CitizenPostcode !== undefined) {
       setUserResponse(data.message);
-      sessionStorage.setItem(
-        "company-address-line-1",
-        data["CompanyAddressLine1"]
-      );
-      sessionStorage.setItem(
-        "company-address-line-2",
-        data["CompanyAddressLine2"]
-      );
-      sessionStorage.setItem("company-town-city", data["CompanyTownCity"]);
-      sessionStorage.setItem("company-postcode", data["CompanyPostcode"]);
+      sessionStorage.setItem("citizen-address-line-1", data["CitizenAddressLine1"]);
+      sessionStorage.setItem("citizen-address-line-2", data["CitizenAddressLine2"]);
+      sessionStorage.setItem("citizen-town-city", data["CitizenTownCity"]);
+      sessionStorage.setItem("citizen-postcode", data["CitizenPostcode"]);
       setShow(true);
-      navigate("/register-company-registration-number");
+      navigate("/register-citizen-email");
     } else {
     }
   };
@@ -64,14 +52,10 @@ export const EnterCompanyAddress = () => {
             <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
               Enter your company name
             </MainHeading>
-            <p style={{ color: "#505a5f" }}>
-                Profile Creation: Section 2 of 4
-              </p>
             <p style={{ color: "#0B0C0C" }}>
               We will use this information to cross-reference against companies
               house database
             </p>
-            
           </>
         ) : (
           <div></div>
@@ -79,30 +63,33 @@ export const EnterCompanyAddress = () => {
         <div style={{ display: "inline-block" }}>
           <form style={{ display: "inline-block" }}>
             <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
-              Enter your company address
+              Enter your address
             </MainHeading>
             <p style={{ color: "#505a5f" }}>
-                Profile Creation: Section 2 of 4
-              </p>
+              Profile Creation: Section 2 of 5
+            </p>
+            <p style={{ color: "#505a5f" }}>
+              Please complete this section with your own details.
+            </p>
             <Form.Group>
               <Form.Label>Address Line 1</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Enter address line 1"
                 style={{ borderColor: "black", maxWidth: "500px" }}
-                {...register("CompanyAddressLine1", {
+                {...register("CitizenAddressLine1", {
                   required: true,
                   maxLength: 80,
                 })}
               />
 
-              {errors.CompanyAddressLine1 && (
+              {errors.CitizenAddressLine1 && (
                 <p style={{ color: "red" }}>
                   <small>Address Line 1 is required</small>
                 </p>
               )}
 
-              {errors.CompanyAddressLine1?.type === "maxLength" && (
+              {errors.CitizenAddressLine1?.type === "maxLength" && (
                 <p style={{ color: "red" }}>
                   <small>Max characters should be 80</small>
                 </p>
@@ -116,12 +103,12 @@ export const EnterCompanyAddress = () => {
                 type="text"
                 placeholder="Enter address line 2"
                 style={{ borderColor: "black", maxWidth: "500px" }}
-                {...register("CompanyAddressLine2", {
+                {...register("CitizenAddressLine2", {
                   required: false,
                   maxLength: 80,
                 })}
               />
-              {errors.CompanyAddressLine2?.type === "maxLength" && (
+              {errors.CitizenAddressLine2?.type === "maxLength" && (
                 <p style={{ color: "red" }}>
                   <small>Max characters should be 80</small>
                 </p>
@@ -134,17 +121,17 @@ export const EnterCompanyAddress = () => {
                 type="text"
                 placeholder="Enter town/city"
                 style={{ borderColor: "black", maxWidth: "500px" }}
-                {...register("CompanyTownCity", {
+                {...register("CitizenTownCity", {
                   required: true,
                   maxLength: 80,
                 })}
               />
-              {errors.CompanyTownCity && (
+                   {errors.CitizenTownCity && (
                 <p style={{ color: "red" }}>
                   <small>Town/City is required</small>
                 </p>
               )}
-              {errors.CompanyTownCity?.type === "maxLength" && (
+              {errors.CitizenTownCity?.type === "maxLength" && (
                 <p style={{ color: "red" }}>
                   <small>Max characters should be 80</small>
                 </p>
@@ -157,17 +144,17 @@ export const EnterCompanyAddress = () => {
                 type="text"
                 placeholder="Enter postcode"
                 style={{ borderColor: "black", maxWidth: "500px" }}
-                {...register("CompanyPostcode", {
+                {...register("CitizenPostcode", {
                   required: true,
                   maxLength: 8,
                 })}
               />
-              {errors.CompanyPostcode && (
+                       {errors.CitizenPostcode && (
                 <p style={{ color: "red" }}>
                   <small>Postcode is required</small>
                 </p>
               )}
-              {errors.CompanyPostcode?.type === "maxLength" && (
+              {errors.CitizenPostcode?.type === "maxLength" && (
                 <p style={{ color: "red" }}>
                   <small>Max characters should be 8</small>
                 </p>
