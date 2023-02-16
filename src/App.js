@@ -6,8 +6,6 @@ import GlobalStyle from "./globalStyles";
 import Footer from "./Components/Footer/Footer";
 
 import "bootstrap/dist/css/bootstrap.min.css";
-import { EnterCompanyName } from "./Components/FormStages/Company/EnterCompanyName";
-import { EnterCompanyAddress } from "./Components/FormStages/Company/EnterCompanyAddress";
 import { EnterCompanyRegistrationNumber } from "./Components/FormStages/Company/EnterCompanyRegistrationNumber";
 import { AssociateContact } from "./Components/FormStages/Company/AssociateContact";
 import { LinkAccount } from "./Components/FormStages/Company/LinkAccount";
@@ -26,17 +24,17 @@ import { ChangePostcode } from "./Components/FormStages/Citizen/Change/ChangePos
 import { ChangeEmail } from "./Components/FormStages/Citizen/Change/ChangeEmail";
 import { CompanyRegistrationLandingPage } from "./Components/FormStages/Company/CompanyRegistrationLandingPage";
 import { CompanyRegistrationSummary } from "./Components/FormStages/Company/CompanyRegistrationSummary";
+import { EnterCompanyDetails } from "./Components/FormStages/Company/EnterCompanyDetails";
 export default function App() {
   return (
-    <div className="">
+    <div>
       <Router>
         <GlobalStyle />
-        <Navbar />
+              <Navbar />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/register-citizen" element={<CitizenRegistrationLandingPage />} />
-          <Route path="/register-company-name" element={<EnterCompanyName />} />
-          <Route path="/register-company-address" element={<EnterCompanyAddress />} />
+          <Route path="/register-company" element={<EnterCompanyDetails />} />
           <Route
             path="/register-company-registration-number"
             element={<EnterCompanyRegistrationNumber />}

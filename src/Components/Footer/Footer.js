@@ -19,7 +19,7 @@ import { FooterContainer } from "./FooterStyles";
 
 function Footer() {
   return (
-    <FooterContainer padding="4rem 0 2rem 0">
+    <FooterContainer>
       <FooterWrapper>
         <FooterGrid justify="space-between">
           <FooterColumn>

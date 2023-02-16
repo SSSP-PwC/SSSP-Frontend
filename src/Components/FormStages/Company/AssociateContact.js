@@ -47,10 +47,10 @@ export const AssociateContact = () => {
         <div style={{ display: "inline-block" }}>
           <div>
             <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
-              Attach Contact Details
+              Contact Person Details
             </MainHeading>
             <p style={{ color: "#0B0C0C" }}>
-              You must associate contact details with the company record.
+              Is this contact person already registered as a citizen?
             </p>
             <Button
               style={{ marginBottom: "15px" }}
