@@ -26,22 +26,55 @@ export const CitizenRegistrationSummary = () => {
   var town_city = sessionStorage.getItem("citizen-town-city");
   var postcode = sessionStorage.getItem("citizen-postcode");
   var email = sessionStorage.getItem("citizen-email");
+  var password = sessionStorage.getItem("Password")
 
   var company_registration_flow = sessionStorage.getItem(
     "company-registration-flow-flag"
   );
-  const submitForm = (data) => {
-    //Replace with API callout to Companies House
-    if (company_registration_flow === "true") {
-      setShow(true);
-      navigate("/register-company-summary");
-    } else {
-      sessionStorage.clear();
-      console.log(data);
-      setUserResponse(data.message);
-      navigate("/");
+  const submitForm = async (data) => {
+
+    const url = "http://127.0.0.1:5000/auth/signup";
+    const d = { 
+      first_name: first_name, 
+      last_name: last_name, 
+      email: email, 
+      password: password, 
+      address: { 
+        address_line_1: address_line_1, 
+        address_line_2: address_line_2, 
+        town_city: town_city, 
+        postcode: postcode }};
+        
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(d),
+    };
+    try {
+      const response = await fetch(url, options);
+      const result = await response.json();
+      if (result['message'] === "User created successfully") {
+        setUserResponse('Account created successfully')
+        setVariantType('success')
+        setShow(true)
+        navigate("/")
+      }
+      else if (result['message'] === "User already exists") {
+        setUserResponse('Email address already exists. Please try again with a different email address')
+        setVariantType('danger')
+        setShow(true)
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
+
+
+
+
+
   return (
     <div className="container">
       <div
@@ -271,4 +304,4 @@ export const CitizenRegistrationSummary = () => {
       </div>
     </div>
   );
-};
+}

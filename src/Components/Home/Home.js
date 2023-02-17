@@ -8,10 +8,10 @@ import {
   ButtonWrapper,
   HomeButton,
 } from "./HomeStyles";
-
-//<MainHeading>Welcome to our smart societies software platform, where innovation and security come together to create a seamless experience for you. Our platform is designed to provide a smart wallet, where you can store and manage your digital credentials securely and efficiently. With our smart credentials, you'll have a one-stop solution for all your verification needs, whether it's for education, employment, or other personal and professional purposes. Our goal is to make your life easier by eliminating the need for multiple login accounts and passwords, and streamlining your digital identity into a secure, easily accessible platform. Join us on our journey to a smarter, more connected world.</MainHeading>
+import Cookies from 'js-cookie';
 
 const Home = () => {
+  Cookies.set('auth_token', '12345', { expires: 0.01, path: '/' });
 
   return (
     <HomeSection>

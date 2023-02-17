@@ -29,7 +29,7 @@ export const LinkAccount = () => {
     <div className="container">
       <div
         className="form"
-        style={{ marginTop: "70px", display: "inline-block" }}
+        style={{ marginTop: "20px", display: "inline-block" }}
       >
         {show ? (
           <>
@@ -49,28 +49,53 @@ export const LinkAccount = () => {
         <div style={{ display: "inline-block" }}>
           <div>
             <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
-              Enter your Citizen ID
+              Link an existing citizen account to {sessionStorage.getItem("company-name")} account
             </MainHeading>
 
             <Form.Group>
-              <Form.Label>Citizen ID</Form.Label>
+              <Form.Label>Email Address</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter Citizen ID"
+                placeholder="Enter email address"
                 style={{ borderColor: "black", maxWidth: "500px" }}
-                {...register("CitizenID", {
+                {...register("EmailAddress", {
                   required: true,
                   maxLength: 120,
                 })}
               />
 
-              {errors.CitizenID && (
+              {errors.EmailAddress && (
                 <p style={{ color: "red" }}>
-                  <small>Citizen ID is required</small>
+                  <small>Email Address is required</small>
                 </p>
               )}
 
               {errors.CitizenID?.type === "maxLength" && (
+                <p style={{ color: "red" }}>
+                  <small>Max characters should be 120</small>
+                </p>
+              )}
+            </Form.Group>
+            <br></br>
+            <Form.Group>
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Enter password"
+                style={{ borderColor: "black", maxWidth: "500px" }}
+                {...register("Password", {
+                  required: true,
+                  maxLength: 120,
+                })}
+              />
+
+              {errors.Password && (
+                <p style={{ color: "red" }}>
+                  <small>Password is required</small>
+                </p>
+              )}
+
+              {errors.Password?.type === "maxLength" && (
                 <p style={{ color: "red" }}>
                   <small>Max characters should be 120</small>
                 </p>

@@ -1,69 +1,53 @@
-import React, { useState } from "react";
-import { FaTimes } from "react-icons/fa";
-import { CgMenuRight } from "react-icons/cg";
-import { IconContext } from "react-icons";
-import {
-  Nav,
-  NavbarContainer,
-  NavLogo,
-  NavIcon,
-  MobileIcon,
-  NavMenu,
-  NavLinks,
-  NavItem,
-} from "./NavbarStyles";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import {loggedInData}from "../../Data/NavbarData";
-import { Heading } from "../../globalStyles";
-const Navbar = () => {
-  const [show, setShow] = useState(false);
+import Container from 'react-bootstrap/Container';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
+import NavDropdown from 'react-bootstrap/NavDropdown';
 
-  let history = useNavigate();
-  let location = useLocation();
 
-  const handleClick = () => {
-    setShow(!show);
-  };
+function NavbarComponent() {
 
-  const scrollTo = (id) => {
-    const element = document.getElementById(id);
-
-    element.scrollIntoView({
-      behavior: "smooth",
-    });
-  };
-
-  const closeMobileMenu = (to, id) => {
-    if (id && location.pathname === "/") {
-      scrollTo(id);
-    }
-
-    history(to);
-    setShow(false);
-  };
   return (
-    <IconContext.Provider value={{ color: "#fff" }}>
-      <Nav>    
-        <NavbarContainer>
-          <Link to ="/" style={{textDecoration: "none"}}>          
-          <Heading style={{margin: "10px"}}>SSSP</Heading>
-</Link>
-          <MobileIcon onClick={handleClick}>
-            {show ? <FaTimes /> : <CgMenuRight />}
-          </MobileIcon>
-            <NavMenu show={show}>
-              {loggedInData.map((el, index) => (
-                <NavItem key={index}>
-                  <NavLinks onClick={() => closeMobileMenu(el.to, el.id)}>
-                    {el.text}
-                  </NavLinks>
-                </NavItem>
-              ))}
-            </NavMenu>
-        </NavbarContainer>
-      </Nav>
-    </IconContext.Provider>
-  );
-};
+    <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+      <Container>
+        <Navbar.Brand href="/">
+          <img
+            src="./city.png"
+            width="30"
+            height="30"
+            className="d-inline-block align-top"
+            alt="SSSP Logo"
+          />
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+        <Navbar.Collapse id="responsive-navbar-nav">
+          <Nav className="me-auto">
 
-export default Navbar;
+          </Nav>
+          <Nav>
+            <NavDropdown title="Register" id="collasible-nav-dropdown">
+              <NavDropdown.Item href="/register-citizen">Citizen</NavDropdown.Item>
+              <NavDropdown.Item href="/register-company-landing">
+                Company
+              </NavDropdown.Item>
+
+              <NavDropdown.Item href="/register-organisation">Organisation</NavDropdown.Item>
+            </NavDropdown>
+            <NavDropdown title="Sign In" id="collasible-nav-dropdown">
+              <NavDropdown.Item href="/sign-in-citizen">Citizen</NavDropdown.Item>
+              <NavDropdown.Item href="/sign-in-company">
+                Company
+              </NavDropdown.Item>
+              <NavDropdown.Item href="/sign-in-organisation">
+                Organisation
+              </NavDropdown.Item>
+            </NavDropdown>
+
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
+  );
+}
+
+
+export default NavbarComponent;

@@ -23,13 +23,13 @@ export const EnterCitizenPassword = () => {
       data.password === data.confirmPassword) {
       console.log(data);
       setUserResponse(data.message);
-
+      sessionStorage.setItem("Password", data.password)
       setShow(true);
       navigate("/register-citizen-summary");
     } else {
-        setUserResponse("Passwords do not match")
-        setShow(true)
-        setVariantType("danger")
+      setUserResponse("Passwords do not match")
+      setShow(true)
+      setVariantType("danger")
     }
   };
   return (
@@ -39,7 +39,7 @@ export const EnterCitizenPassword = () => {
         style={{ marginTop: "70px", display: "inline-block" }}
       >
         {show ? (
-          <div style={{marginTop: "50px"}}>
+          <div style={{ marginTop: "50px" }}>
             <Alert
               variant={variantType}
               onClose={() => {
@@ -58,11 +58,11 @@ export const EnterCitizenPassword = () => {
             Create a Password
           </MainHeading>
           <p style={{ color: "#505a5f" }}>
-              Profile Creation: Section 4 of 5
-            </p>
-            <p style={{ color: "#505a5f" }}>
-              Please complete this section with your own details.
-            </p>
+            Profile Creation: Section 4 of 5
+          </p>
+          <p style={{ color: "#505a5f" }}>
+            Please complete this section with your own details.
+          </p>
           <Form.Group>
             <Form.Label>Password</Form.Label>
             <Form.Control
@@ -105,11 +105,11 @@ export const EnterCitizenPassword = () => {
           </Form.Group>
           <br></br>
           <Button
-                style={{ marginBottom: "15px" }}
-                onClick={handleSubmit(submitForm)}
-              >
-                Continue
-              </Button>
+            style={{ marginBottom: "15px" }}
+            onClick={handleSubmit(submitForm)}
+          >
+            Continue
+          </Button>
         </div>
       </div>
     </div>

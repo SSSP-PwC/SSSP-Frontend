@@ -65,7 +65,9 @@ export const EnterCompanyDetails = () => {
           setDetailsReturned(true);
           setLoading(false);
         } else {
-          alert("Company Name does not match registered name " + registered_company_name);
+          setShow(true);
+          setVariantType("danger");
+          setUserResponse("We're sorry, the company name or registration number you entered does not match any record from companies house. Please double-check the information and try again.")
           setLoading(false);
 
         }
@@ -84,10 +86,10 @@ export const EnterCompanyDetails = () => {
       )}
       <div
         className="form"
-        style={{ marginTop: "70px", display: "inline-block" }}
+        style={{ marginTop: "20px", display: "inline-block" }}
       >
         {show && (
-          <>
+          <div style={{marginTop: "30px"}}>
             <Alert
               variant={variantType}
               onClose={() => {
@@ -97,7 +99,7 @@ export const EnterCompanyDetails = () => {
             >
               <p>{userResponse}</p>
             </Alert>
-          </>
+          </div>
         )}
 
 
@@ -115,11 +117,11 @@ export const EnterCompanyDetails = () => {
                 companies house database.
               </p>
               <p style={{ color: "#0B0C0C", fontSize: "12px" }}>
-                The registered company name must match what is stored by companies house.
+                Both fields must be an exact match to what is stored by companies house.
               </p>
             </div>
             <Form.Group>
-              <Form.Label>Registered company name</Form.Label>
+              <Form.Label>Company name</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Enter company name"
@@ -129,7 +131,7 @@ export const EnterCompanyDetails = () => {
 
               {errors.CompanyName && (
                 <p style={{ color: "red" }}>
-                  <small>Registered Company Name is required</small>
+                  <small>Company Name is required</small>
                 </p>
               )}
 
@@ -141,10 +143,10 @@ export const EnterCompanyDetails = () => {
             </Form.Group>
             <br></br>
             <Form.Group>
-              <Form.Label>Company registration number</Form.Label>
+              <Form.Label>Registration number</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter company registration number"
+                placeholder="Enter registration number"
                 style={{ borderColor: "black", maxWidth: "500px" }}
                 {...register("CompanyRegistrationNumber", {
                   required: true,
@@ -154,7 +156,7 @@ export const EnterCompanyDetails = () => {
 
               {errors.CompanyRegistrationNumber && (
                 <p style={{ color: "red" }}>
-                  <small>Company Registration Number is required</small>
+                  <small>Registration Number is required</small>
                 </p>
               )}
 
@@ -185,8 +187,11 @@ export const EnterCompanyDetails = () => {
           <div style={{ display: "inline-block" }}>
             <form style={{ display: "inline-block" }}>
               <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
-                Check details for {company_name} before continuing
+                This is the correspondance address we will use for {company_name}
               </MainHeading>
+              <p style={{ color: "#0B0C0C", fontSize: "12px" }}>
+                Check this address before continuing.
+              </p>
               <Form.Group>
                 <Form.Label style={{ fontWeight: "bold", margin: "10px" }}>
                   Address line 1:

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Alert } from "react-bootstrap";
-import { Button, MainHeading } from "../../../globalStyles";
+import { Alert, Form } from "react-bootstrap";
+import { MainHeading } from "../../../globalStyles";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+
 
 export const AssociateContact = () => {
   const {
@@ -27,7 +28,7 @@ export const AssociateContact = () => {
     <div className="container">
       <div
         className="form"
-        style={{ marginTop: "70px", display: "inline-block" }}
+        style={{ marginTop: "20px", display: "inline-block" }}
       >
         {show ? (
           <>
@@ -52,16 +53,36 @@ export const AssociateContact = () => {
             <p style={{ color: "#0B0C0C" }}>
               Is this contact person already registered as a citizen?
             </p>
-            <Button
-              style={{ marginBottom: "15px" }}
-              onClick={linkExistingAccount}
-            >
-              Link existing account
-            </Button>
-            <br></br>
-            <Button style={{ marginBottom: "15px" }} onClick={registerAccount}>
-              Create new citizen profile
-            </Button>
+            <Form.Group>
+              <Form.Label style={{ fontSize: "32px" }}>
+                <input
+                  type="radio"
+                  onClick={linkExistingAccount}
+                  style={{
+                    height: "30px",
+                    width: "30px",
+                    verticalAlign: "middle",
+                    accentColor: "black",
+                  }}
+                />{" "}
+                Yes
+              </Form.Label>
+            </Form.Group>
+            <Form.Group>
+              <Form.Label style={{ fontSize: "32px" }}>
+                  <input
+                    type="radio"
+                    onClick={registerAccount}
+                    style={{
+                      height: "30px",
+                      width: "30px",
+                      verticalAlign: "middle",
+                      accentColor: "black",
+                    }}
+                  />{" "}
+                  No
+              </Form.Label>
+            </Form.Group>
             <br></br>
           </div>
         </div>
