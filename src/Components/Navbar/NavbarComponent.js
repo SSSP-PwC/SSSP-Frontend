@@ -75,7 +75,7 @@ const LoggedOutNavbar = () => {
   )
 }
 
-function NavbarComponent() {
+export const NavbarComponent = () => {
   const [loggedIn] = useAuth();
 
   return (
@@ -89,6 +89,3 @@ function NavbarComponent() {
     </div>
   );
 }
-
-
-export default NavbarComponent;
