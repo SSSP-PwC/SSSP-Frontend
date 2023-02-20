@@ -26,7 +26,7 @@ export const CitizenSignIn = () => {
         },
         body:JSON.stringify(data)
     }
-    fetch("http://localhost:5000/auth/login", requestOptions)
+    fetch("https://authentication-and-signup-service.ie3csgqmphchg.eu-west-1.cs.amazonlightsail.com/auth/login", requestOptions)
     .then(res=>res.json())
     .then(data=>{
         console.log(data)
