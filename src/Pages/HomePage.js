@@ -5,7 +5,7 @@ import { Content } from '../components/content/Content';
 import HomeComponent from '../components/home/Home';
 
 
-const HomePage = () => {
+export const HomePage = () => {
     return (
         <>
             <Content {...info} />
@@ -17,4 +17,3 @@ const HomePage = () => {
     );
 };
 
-export default HomePage;
