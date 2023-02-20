@@ -13,7 +13,7 @@ import {
 } from "./FooterStyles";
 import { FaFacebook, FaInstagram, FaYoutube, FaTwitter } from "react-icons/fa";
 
-import { footerData, footerSocialData } from "../../data/FooterData";
+import { footerData, footerSocialData } from "../../Data/FooterData";
 import { Row } from "../../globalStyles";
 import { FooterContainer } from "./FooterStyles";
 

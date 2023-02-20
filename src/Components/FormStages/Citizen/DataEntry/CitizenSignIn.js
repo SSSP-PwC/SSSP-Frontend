@@ -3,7 +3,7 @@ import { Form, Alert } from "react-bootstrap";
 import { Button, MainHeading } from "../../../../globalStyles";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { login } from "../../../auth/auth";
+import { login } from "../../../Auth/auth";
 
 export const CitizenSignIn = () => {
   const {

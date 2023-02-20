@@ -9,7 +9,7 @@ import {
 	AboutName,
 	AboutTextWrapper,
 } from './AboutStyles';
-import { aboutData } from '../../data/AboutData';
+import { aboutData } from '../../Data/AboutData';
 
 const About = () => {
 	const initial = {

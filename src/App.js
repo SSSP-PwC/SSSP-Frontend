@@ -1,32 +1,32 @@
 import "./App.css";
-import {NavbarComponent} from "./components/navbar/NavbarComponent";
+import {NavbarComponent} from "./Components/Navbar/NavbarComponent";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import {HomePage} from "./components/pages/HomePage"
+import {HomePage} from "./Pages/HomePage"
 import GlobalStyle from "./globalStyles";
-import Footer from "./components/footer/Footer";
+import Footer from "./Components/Footer/Footer";
 
 import "bootstrap/dist/css/bootstrap.min.css";
-import { EnterCompanyRegistrationNumber } from "./components/formStages/company/EnterCompanyRegistrationNumber";
-import { AssociateContact } from "./components/formStages/company/AssociateContact";
-import { LinkAccount } from "./components/formStages/company/LinkAccount";
-import { CitizenRegistrationLandingPage } from "./components/formStages/citizen/CitizenRegistrationLandingPage";
-import { EnterCitizenName } from "./components/formStages/citizen/dataEntry/EnterCitizenName";
-import { EnterCitizenAddress } from "./components/formStages/citizen/dataEntry/EnterCitizenAddress";
-import { EnterCitizenEmail } from "./components/formStages/citizen/dataEntry/EnterCitizenEmail";
-import { EnterCitizenPassword } from "./components/formStages/citizen/dataEntry/EnterCitizenPassword";
-import { CitizenRegistrationSummary } from "./components/formStages/citizen/CitizenRegistrationSummary";
-import { ChangeFirstName } from "./components/formStages/citizen/change/ChangeFirstName";
-import { ChangeLastName } from "./components/formStages/citizen/change/ChangeLastName";
-import { ChangeAddressLine1 } from "./components/formStages/citizen/change/ChangeAddressLine1";
-import { ChangeAddressLine2 } from "./components/formStages/citizen/change/ChangeAddressLine2";
-import { ChangeTownCity } from "./components/formStages/citizen/change/ChangeTownCity";
-import { ChangePostcode } from "./components/formStages/citizen/change/ChangePostcode";
-import { ChangeEmail } from "./components/formStages/citizen/change/ChangeEmail";
-import { CompanyRegistrationLandingPage } from "./components/formStages/company/CompanyRegistrationLandingPage";
-import { CompanyRegistrationSummary } from "./components/formStages/company/CompanyRegistrationSummary";
-import { EnterCompanyDetails } from "./components/formStages/company/EnterCompanyDetails";
-import { CitizenSignIn } from "./components/formStages/citizen/dataEntry/CitizenSignIn";
-import { useAuth } from "./components/auth/auth";
+import { EnterCompanyRegistrationNumber } from "./Components/FormStages/Company/EnterCompanyRegistrationNumber";
+import { AssociateContact } from "./Components/FormStages/Company/AssociateContact";
+import { LinkAccount } from "./Components/FormStages/Company/LinkAccount";
+import { CitizenRegistrationLandingPage } from "./Components/FormStages/Citizen/CitizenRegistrationLandingPage";
+import { EnterCitizenName } from "./Components/FormStages/Citizen/DataEntry/EnterCitizenName";
+import { EnterCitizenAddress } from "./Components/FormStages/Citizen/DataEntry/EnterCitizenAddress";
+import { EnterCitizenEmail } from "./Components/FormStages/Citizen/DataEntry/EnterCitizenEmail";
+import { EnterCitizenPassword } from "./Components/FormStages/Citizen/DataEntry/EnterCitizenPassword";
+import { CitizenRegistrationSummary } from "./Components/FormStages/Citizen/CitizenRegistrationSummary";
+import { ChangeFirstName } from "./Components/FormStages/Citizen/Change/ChangeFirstName";
+import { ChangeLastName } from "./Components/FormStages/Citizen/Change/ChangeLastName";
+import { ChangeAddressLine1 } from "./Components/FormStages/Citizen/Change/ChangeAddressLine1";
+import { ChangeAddressLine2 } from "./Components/FormStages/Citizen/Change/ChangeAddressLine2";
+import { ChangeTownCity } from "./Components/FormStages/Citizen/Change/ChangeTownCity";
+import { ChangePostcode } from "./Components/FormStages/Citizen/Change/ChangePostcode";
+import { ChangeEmail } from "./Components/FormStages/Citizen/Change/ChangeEmail";
+import { CompanyRegistrationLandingPage } from "./Components/FormStages/Company/CompanyRegistrationLandingPage";
+import { CompanyRegistrationSummary } from "./Components/FormStages/Company/CompanyRegistrationSummary";
+import { EnterCompanyDetails } from "./Components/FormStages/Company/EnterCompanyDetails";
+import { CitizenSignIn } from "./Components/FormStages/Citizen/DataEntry/CitizenSignIn";
+import { useAuth } from "./Components/Auth/auth";
 
 export default function App() {
   const [loggedIn] = useAuth();
