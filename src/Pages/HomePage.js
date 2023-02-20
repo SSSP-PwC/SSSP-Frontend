@@ -1,8 +1,8 @@
 import React from 'react';
-import About from '../Components/About/About';
-import { info } from '../Data/HomeData';
-import { Content } from '../Components/Content/Content';
-import HomeComponent from '../Components/Home/Home';
+import About from '../components/about/About';
+import { info } from '../data/HomeData';
+import { Content } from '../components/content/Content';
+import HomeComponent from '../components/home/Home';
 
 
 const Home = () => {

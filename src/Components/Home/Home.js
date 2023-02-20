@@ -8,10 +8,8 @@ import {
   ButtonWrapper,
   HomeButton,
 } from "./HomeStyles";
-import Cookies from 'js-cookie';
 
 const Home = () => {
-  Cookies.set('auth_token', '12345', { expires: 0.01, path: '/' });
 
   return (
     <HomeSection>

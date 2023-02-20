@@ -2,10 +2,36 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
+import { useAuth, logout } from '../auth/auth';
 
 
-function NavbarComponent() {
 
+const LoggedInNavbar = () => {
+  return (
+    <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+      <Container>
+        <Navbar.Brand href="/">
+          <img
+            src="./city.png"
+            width="30"
+            height="30"
+            className="d-inline-block align-top"
+            alt="SSSP Logo"
+          />
+        </Navbar.Brand>
+
+        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+        <Navbar.Collapse id="responsive-navbar-nav">
+          <Nav className="me-auto" />
+          <Nav>
+            <Nav.Link href="/" onClick={logout}>Sign Out</Nav.Link>
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
+  )
+}
+const LoggedOutNavbar = () => {
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container>
@@ -46,6 +72,21 @@ function NavbarComponent() {
         </Navbar.Collapse>
       </Container>
     </Navbar>
+  )
+}
+
+function NavbarComponent() {
+  const [loggedIn] = useAuth();
+
+  return (
+    <div>
+      {loggedIn ? <LoggedInNavbar />
+        : <LoggedOutNavbar />}
+
+
+
+
+    </div>
   );
 }
 
