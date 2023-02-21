@@ -3,7 +3,7 @@ import Cookies from 'universal-cookie';
 
 const cookies = new Cookies();
 const now = new Date();
-const expires = new Date(now.getTime() + 2 * 24 * 60 * 60 * 1000);
+const expires = new Date(now.getTime()+ 1 * 3600 * 1000);
 const authProvider = createAuthProvider({
     accessTokenKey: 'access_token',
     

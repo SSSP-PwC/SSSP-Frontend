@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import {HomePage} from "./Pages/HomePage"
 import GlobalStyle from "./globalStyles";
 import Footer from "./Components/Footer/Footer";
-
+import CookieConsent from "react-cookie-consent";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { EnterCompanyRegistrationNumber } from "./Components/FormStages/Company/EnterCompanyRegistrationNumber";
 import { AssociateContact } from "./Components/FormStages/Company/AssociateContact";
@@ -27,6 +27,11 @@ import { CompanyRegistrationSummary } from "./Components/FormStages/Company/Comp
 import { EnterCompanyDetails } from "./Components/FormStages/Company/EnterCompanyDetails";
 import { CitizenSignIn } from "./Components/FormStages/Citizen/DataEntry/CitizenSignIn";
 import { useAuth } from "./Components/Auth/auth";
+import { EOIContactInfo } from "./Components/FormStages/Scheme/EOI-Contact-Info";
+import { EOIProductInfo } from "./Components/FormStages/Scheme/EOI-Product-Info";
+import { EOIDeclarations } from "./Components/FormStages/Scheme/EOI-Declarations";
+import { EOISummary } from "./Components/FormStages/Scheme/EOI-Summary";
+import { ListSchemes } from "./Components/FormStages/Scheme/List-Schemes";
 
 export default function App() {
   const [loggedIn] = useAuth();
@@ -35,6 +40,8 @@ export default function App() {
       <Router>
         <GlobalStyle />
         <NavbarComponent />
+        <CookieConsent>This website uses cookies to enhance the user experience.</CookieConsent>
+
         {loggedIn ?
           <Routes>
 
@@ -61,6 +68,12 @@ export default function App() {
             <Route path="/change-address-line-2" element={<ChangeAddressLine2 />} />
             <Route path="/change-town-city" element={<ChangeTownCity />} />
             <Route path="/change-postcode" element={<ChangePostcode />} />
+            <Route path="/EOI-Contact-Info" element={<EOIContactInfo />} />
+            <Route path="/EOI-Product-Info" element={<EOIProductInfo />} />
+            <Route path="/EOI-Declarations" element={<EOIDeclarations />} />
+            <Route path="/EOI-Summary" element={<EOISummary />} />
+            <Route path="/List-Schemes" element={<ListSchemes />} />
+
             <Route path="/change-email-address" element={<ChangeEmail />} />
           </Routes>
 
@@ -75,6 +88,13 @@ export default function App() {
             <Route path="/register-citizen-email" element={<EnterCitizenEmail />} />
             <Route path="/register-citizen-password" element={<EnterCitizenPassword />} />
             <Route path="/register-citizen-summary" element={<CitizenRegistrationSummary />} />
+            <Route path="/EOI-Contact-Info" element={<EOIContactInfo />} />
+            <Route path="/EOI-Product-Info" element={<EOIProductInfo />} />
+            <Route path="/EOI-Declarations" element={<EOIDeclarations />} />
+            <Route path="/EOI-Summary" element={<EOISummary />} />
+            <Route path="/List-Grants" element={<EOISummary />} />
+
+
           </Routes>}
         <Footer />
       </Router>

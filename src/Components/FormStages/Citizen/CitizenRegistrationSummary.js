@@ -33,7 +33,7 @@ export const CitizenRegistrationSummary = () => {
   );
   const submitForm = async (data) => {
 
-    const url = "http://127.0.0.1:5000/auth/signup";
+    const url = "http://127.0.0.1:2000/auth/signup";
     const d = { 
       first_name: first_name, 
       last_name: last_name, 

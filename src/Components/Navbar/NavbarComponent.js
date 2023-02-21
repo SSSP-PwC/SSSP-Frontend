@@ -47,8 +47,12 @@ const LoggedOutNavbar = () => {
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto">
+            <Nav.Link href="/" onClick={logout}>Home</Nav.Link>
+            <Nav.Link href="/List-Schemes">Schemes</Nav.Link>
+            <Nav.Link href="/" onClick={logout}>Help</Nav.Link>
 
           </Nav>
+
           <Nav>
             <NavDropdown title="Register" id="collasible-nav-dropdown">
               <NavDropdown.Item href="/register-citizen">Citizen</NavDropdown.Item>
@@ -69,6 +73,7 @@ const LoggedOutNavbar = () => {
             </NavDropdown>
 
           </Nav>
+
         </Navbar.Collapse>
       </Container>
     </Navbar>
@@ -80,8 +85,11 @@ export const NavbarComponent = () => {
 
   return (
     <div>
-      {loggedIn ? <LoggedInNavbar />
-        : <LoggedOutNavbar />}
+      {loggedIn ?
+        <LoggedInNavbar />
+        :
+
+        <LoggedOutNavbar />}
 
 
 
