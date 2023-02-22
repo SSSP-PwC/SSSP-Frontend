@@ -32,6 +32,7 @@ import { EOIProductInfo } from "./Components/FormStages/Scheme/EOI-Product-Info"
 import { EOIDeclarations } from "./Components/FormStages/Scheme/EOI-Declarations";
 import { EOISummary } from "./Components/FormStages/Scheme/EOI-Summary";
 import { ListSchemes } from "./Components/FormStages/Scheme/List-Schemes";
+import { GrantApplication } from "./Components/FormStages/Scheme/GrantApplication";
 
 export default function App() {
   const [loggedIn] = useAuth();
@@ -73,7 +74,7 @@ export default function App() {
             <Route path="/EOI-Declarations" element={<EOIDeclarations />} />
             <Route path="/EOI-Summary" element={<EOISummary />} />
             <Route path="/List-Schemes" element={<ListSchemes />} />
-
+            <Route path="/Grant-Application" element={<GrantApplication />} />
             <Route path="/change-email-address" element={<ChangeEmail />} />
           </Routes>
 
@@ -92,7 +93,8 @@ export default function App() {
             <Route path="/EOI-Product-Info" element={<EOIProductInfo />} />
             <Route path="/EOI-Declarations" element={<EOIDeclarations />} />
             <Route path="/EOI-Summary" element={<EOISummary />} />
-            <Route path="/List-Grants" element={<EOISummary />} />
+            <Route path="/List-Schemes" element={<ListSchemes />} />
+            <Route path="/Grant-Application" element={<GrantApplication />} />
 
 
           </Routes>}

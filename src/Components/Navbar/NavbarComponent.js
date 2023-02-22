@@ -49,6 +49,8 @@ const LoggedOutNavbar = () => {
           <Nav className="me-auto">
             <Nav.Link href="/" onClick={logout}>Home</Nav.Link>
             <Nav.Link href="/List-Schemes">Schemes</Nav.Link>
+            <Nav.Link href="/Grant-Application">Apply for a Grant</Nav.Link>
+
             <Nav.Link href="/" onClick={logout}>Help</Nav.Link>
 
           </Nav>
