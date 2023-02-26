@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Form, Alert } from "react-bootstrap";
 import { Button, MainHeading } from "../../../../globalStyles";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export const EnterCitizenEmail = () => {
   const {
@@ -12,20 +12,27 @@ export const EnterCitizenEmail = () => {
     formState: { errors },
   } = useForm();
   const navigate = useNavigate();
+  const { state } = useLocation();
 
   const [show, setShow] = useState(false);
   const [variantType, setVariantType] = useState("");
   const [userResponse, setUserResponse] = useState("");
-  var company_name = sessionStorage.getItem("company-name");
-  console.log(company_name);
   const submitForm = (data) => {
-    //Replace with API callout to Companies House
     if (data.email != undefined) {
       console.log(data);
       setUserResponse(data.message);
       setShow(true);
-      sessionStorage.setItem("citizen-email", data["email"]);
-      navigate("/register-citizen-password");
+      navigate("/register-citizen-password", {
+        state: {
+          first_name: state.first_name,
+          last_name: state.last_name,
+          address_line_1: state.address_line_1,
+          address_line_2: state.address_line_2,
+          town_city: state.town_city,
+          postcode: state.postcode,
+          email: data["email"],
+        },
+      });
     } else {
     }
   };
@@ -55,9 +62,7 @@ export const EnterCitizenEmail = () => {
             <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
               Enter your email address
             </MainHeading>
-            <p style={{ color: "#505a5f" }}>
-              Profile Creation: Section 3 of 5
-            </p>
+            <p style={{ color: "#505a5f" }}>Profile Creation: Section 3 of 5</p>
             <p style={{ color: "#505a5f" }}>
               Please complete this section with your own details.
             </p>

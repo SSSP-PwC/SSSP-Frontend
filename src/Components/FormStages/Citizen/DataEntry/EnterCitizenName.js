@@ -16,22 +16,22 @@ export const EnterCitizenName = () => {
   const [show, setShow] = useState(false);
   const [variantType, setVariantType] = useState("");
   const [userResponse, setUserResponse] = useState("");
-  var company_name = sessionStorage.getItem("company-name");
-
   const submitForm = (data) => {
-    //Replace with API callout to Companies House
     if (data.FirstName != undefined && data.LastName != undefined) {
       setUserResponse(data.message);
       setShow(true);
-      sessionStorage.setItem("citizen-first-name", data["FirstName"]);
-      sessionStorage.setItem("citizen-last-name", data["LastName"]);
-      navigate("/register-citizen-address");
+      navigate("/register-citizen-address", {
+        state: {
+          first_name: data["FirstName"],
+          last_name: data["LastName"]
+
+        },
+      });
     } else {
       alert("Company Name not defined");
     }
   };
 
-  
   return (
     <div className="container">
       <div
@@ -55,13 +55,10 @@ export const EnterCitizenName = () => {
         )}
         <div style={{ display: "inline-block" }}>
           <div>
-         
             <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
               Applicant name
-            </MainHeading> 
-            <p style={{ color: "#505a5f" }}>
-              Profile Creation: Section 1 of 5
-            </p>
+            </MainHeading>
+            <p style={{ color: "#505a5f" }}>Profile Creation: Section 1 of 5</p>
             <p style={{ color: "#505a5f" }}>
               Please complete this section with your own details.
             </p>

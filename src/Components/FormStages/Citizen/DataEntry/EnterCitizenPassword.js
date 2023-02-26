@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Form, Alert } from "react-bootstrap";
 import { Button, MainHeading } from "../../../../globalStyles";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export const EnterCitizenPassword = () => {
   const {
@@ -12,24 +12,34 @@ export const EnterCitizenPassword = () => {
     formState: { errors },
   } = useForm();
   const navigate = useNavigate();
+  const { state } = useLocation();
 
   const [show, setShow] = useState(false);
   const [variantType, setVariantType] = useState("");
   const [userResponse, setUserResponse] = useState("");
-
   const submitForm = (data) => {
-    //Replace with API callout to Companies House
-    if (
-      data.password === data.confirmPassword) {
+    if (data.password === data.confirmPassword) {
       console.log(data);
       setUserResponse(data.message);
-      sessionStorage.setItem("Password", data.password)
+      sessionStorage.setItem("Password", data.password);
       setShow(true);
-      navigate("/register-citizen-summary");
+      navigate("/register-citizen-summary", {
+        state:{
+          first_name: state.first_name,
+          last_name: state.last_name,
+          address_line_1: state.address_line_1,
+          address_line_2: state.address_line_2,
+          town_city: state.town_city,
+          postcode: state.postcode,
+          email: state.email,
+          password: data["password"]
+        }
+
+      });
     } else {
-      setUserResponse("Passwords do not match")
-      setShow(true)
-      setVariantType("danger")
+      setUserResponse("Passwords do not match");
+      setShow(true);
+      setVariantType("danger");
     }
   };
   return (
@@ -57,9 +67,7 @@ export const EnterCitizenPassword = () => {
           <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
             Create a Password
           </MainHeading>
-          <p style={{ color: "#505a5f" }}>
-            Profile Creation: Section 4 of 5
-          </p>
+          <p style={{ color: "#505a5f" }}>Profile Creation: Section 4 of 5</p>
           <p style={{ color: "#505a5f" }}>
             Please complete this section with your own details.
           </p>

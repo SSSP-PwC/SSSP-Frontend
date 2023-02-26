@@ -3,9 +3,8 @@ import { Form, Alert } from "react-bootstrap";
 import { Button, Heading } from "../../../globalStyles";
 import { MainHeading } from "../../../globalStyles";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Divider } from "@mui/material";
-import "react-phone-number-input/style.css";
 export const GrantApplication = () => {
   const {
     register,
@@ -18,17 +17,68 @@ export const GrantApplication = () => {
   const [show, setShow] = useState(false);
   const [variantType, setVariantType] = useState("");
   const [userResponse, setUserResponse] = useState("");
-
-  const [renderProducerVendorField, setProducerVendorField] = useState(false);
-  const [
-    renderProductSellingDescriptionField,
-    setProductSellingDescriptionField,
-  ] = useState(false);
+  const [radioButtonOne, setRadioButtonOne] = useState(false);
+  const [radioButtonTwo, setRadioButtonTwo] = useState(false);
+  const [radioButtonThree, setRadioButtonThree] = useState(false);
+  const [postalAddress, setPostalAddress] = useState("");
+  const [legalOwner, setLegalOwner] = useState("");
+  const [documentation, setDocumentation] = useState(undefined);
+  const [fundsExhaustedFlag, setFundsExhausted] = useState("");
   const [renderStageTwo, setRenderStageTwo] = useState(false);
+  const [renderStageThree, setRenderStageThree] = useState(false);
+
+  const handleRadioButtonOne = () => {
+    setRadioButtonOne(true);
+    setRadioButtonTwo(false);
+    setRadioButtonThree(false);
+  };
+  const handleRadioButtonTwo = () => {
+    setRadioButtonOne(false);
+    setRadioButtonTwo(true);
+    setRadioButtonThree(false);
+  };
+  const handleRadioButtonThree = () => {
+    setRadioButtonOne(false);
+    setRadioButtonTwo(false);
+    setRadioButtonThree(true);
+  };
 
   const handleStageOne = (data) => {
-    console.log(data);
+    setPostalAddress(data.postal_address);
+    setLegalOwner(data.legal_owner);
+    setDocumentation(data.supporting_documentation);
     setRenderStageTwo(true);
+  };
+  const handleStageTwo = () => {
+    if (radioButtonOne === true) {
+      setFundsExhausted("Yes");
+    } else if (radioButtonTwo === true) {
+      setFundsExhausted("No");
+    } else if (radioButtonThree === true) {
+      setFundsExhausted("Not applicable");
+    } else {
+      setFundsExhausted("Not specified");
+    }
+    setRenderStageThree(true);
+  };
+  const submit = async () => {
+    const url = "http://127.0.0.1:9000/api/application-form";
+    const data = {
+      building_postal_address: postalAddress,
+      legal_owner: legalOwner,
+      supporting_documentation: documentation,
+      funds_exhausted_flag: fundsExhaustedFlag,
+    };
+    console.log(data);
+
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    };
+    
   };
 
   return (
@@ -54,13 +104,13 @@ export const GrantApplication = () => {
         )}
         <div>
           <form style={{ display: "inline-block" }}>
-            <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
-              Application Form
-            </MainHeading>
-            <Divider style={{ background: "black" }}></Divider>
-            <br></br>
-            {renderStageTwo === false && (
+            {renderStageTwo === false && renderStageThree === false && (
               <div>
+                <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
+                  Application Form
+                </MainHeading>
+                <Divider style={{ background: "black" }}></Divider>
+                <br></br>
                 <p style={{ color: "#505a5f" }}>Section 1 of 3</p>
                 <MainHeading
                   style={{
@@ -88,7 +138,7 @@ export const GrantApplication = () => {
 
                   {errors.postal_address && (
                     <p style={{ color: "red" }}>
-                      <small>Email is required</small>
+                      <small>Building postal address is required</small>
                     </p>
                   )}
 
@@ -116,7 +166,7 @@ export const GrantApplication = () => {
 
                   {errors.legal_owner && (
                     <p style={{ color: "red" }}>
-                      <small>Email is required</small>
+                      <small>Legal building owner is required</small>
                     </p>
                   )}
 
@@ -171,8 +221,13 @@ export const GrantApplication = () => {
                 <br></br>
               </div>
             )}
-            {renderStageTwo === true && (
+            {renderStageTwo === true && renderStageThree === false && (
               <div>
+                <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
+                  Application Form
+                </MainHeading>
+                <Divider style={{ background: "black" }}></Divider>
+                <br></br>
                 <p style={{ color: "#505a5f" }}>Section 2 of 3</p>
                 <MainHeading
                   style={{
@@ -187,6 +242,11 @@ export const GrantApplication = () => {
                   <Form.Label style={{ fontSize: "20px" }}>
                     <input
                       type="radio"
+                      checked={radioButtonOne}
+                      {...register("radio_button_one", {
+                        required: false,
+                      })}
+                      onClick={handleRadioButtonOne}
                       style={{
                         height: "30px",
                         width: "30px",
@@ -197,10 +257,16 @@ export const GrantApplication = () => {
                     Yes
                   </Form.Label>
                 </Form.Group>
+
                 <Form.Group>
                   <Form.Label style={{ fontSize: "20px" }}>
                     <input
                       type="radio"
+                      checked={radioButtonTwo}
+                      {...register("radio_button_two", {
+                        required: false,
+                      })}
+                      onClick={handleRadioButtonTwo}
                       style={{
                         height: "30px",
                         width: "30px",
@@ -215,6 +281,11 @@ export const GrantApplication = () => {
                   <Form.Label style={{ fontSize: "20px" }}>
                     <input
                       type="radio"
+                      checked={radioButtonThree}
+                      {...register("radio_button_three", {
+                        required: false,
+                      })}
+                      onClick={handleRadioButtonThree}
                       style={{
                         height: "30px",
                         width: "30px",
@@ -233,15 +304,88 @@ export const GrantApplication = () => {
                       color: "black",
                       margin: "20px",
                     }}
-                    onClick={handleSubmit(handleStageOne)}
+                    onClick={handleSubmit(handleStageTwo)}
                   >
                     Save as Draft
                   </Button>
                   <Button
                     style={{ marginBottom: "15px" }}
-                    onClick={handleSubmit(handleStageOne)}
+                    onClick={handleSubmit(handleStageTwo)}
                   >
                     Continue
+                  </Button>
+                </Form.Group>
+                <br></br>
+              </div>
+            )}
+            {renderStageTwo === true && renderStageThree === true && (
+              <div style={{ display: "inline-block" }}>
+                <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
+                  Application Form Summary
+                </MainHeading>
+                <Divider></Divider>
+                <br></br>
+                <p style={{ color: "#505a5f" }}>
+                  Profile Creation: Section 5 of 5
+                </p>
+                <h6 style={{ color: "#0B0C0C", fontWeight: "bold" }}>
+                  Summary table
+                </h6>
+                <Form.Group>
+                  <Form.Label style={{ fontWeight: "bold", margin: "10px" }}>
+                    1. Building postal address:
+                  </Form.Label>
+                  <small>
+                    {postalAddress}
+                    <Link style={{ float: "right" }}>Change</Link>
+                  </small>
+                  <Divider></Divider>
+                </Form.Group>
+                <Form.Group>
+                  <Form.Label style={{ fontWeight: "bold", margin: "10px" }}>
+                    1. Building legal owner:
+                  </Form.Label>
+                  <small>
+                    {legalOwner}
+                    <Link style={{ float: "right" }}>Change</Link>
+                  </small>
+                  <Divider></Divider>
+                </Form.Group>
+                <Form.Group>
+                  <Form.Label style={{ fontWeight: "bold", margin: "10px" }}>
+                    2. Building Information, upload documentation:
+                  </Form.Label>
+                  <small>
+                    {documentation.name}
+                    <Link to="/change-last-name" style={{ float: "right" }}>
+                      Change
+                    </Link>
+                  </small>
+                  <Divider></Divider>
+                </Form.Group>
+                <Form.Group>
+                  <Form.Label style={{ fontWeight: "bold", margin: "10px" }}>
+                    3. Have other routes of funding been exhausted?
+                  </Form.Label>
+                  <small>
+                    {fundsExhaustedFlag}
+                    <Link
+                      to="/change-address-line-1"
+                      style={{ float: "right" }}
+                    >
+                      Change
+                    </Link>
+                  </small>
+                  <Divider></Divider>
+                </Form.Group>
+
+                <br></br>
+                <Form.Group>
+                  <Button
+                    style={{ marginBottom: "15px" }}
+                    onClick={handleSubmit(submit)}
+                  >
+                    Submit
                   </Button>
                 </Form.Group>
                 <br></br>

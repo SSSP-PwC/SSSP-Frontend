@@ -5,8 +5,8 @@ import { MainHeading } from "../../../globalStyles";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { Divider } from "@mui/material";
-import "react-phone-number-input/style.css"
-export const ListSchemes = () => {
+
+export const SchemeTitle = () => {
     const {
         register,
         handleSubmit,
@@ -19,23 +19,11 @@ export const ListSchemes = () => {
     const [variantType, setVariantType] = useState("");
     const [userResponse, setUserResponse] = useState("");
 
-    const [renderProducerVendorField, setProducerVendorField] = useState(false)
-    const [renderProductSellingDescriptionField, setProductSellingDescriptionField] = useState(false)
-
-
-    const handleProductType = (data) => {
-        sessionStorage.setItem("EOI-Product-Type", data.product_type)
-        setProducerVendorField(true)
+    const handleNextStage = (data) => {
+        navigate("/publish-scheme-details", {state: {
+            scheme_title: data.scheme_title
+        }})
     }
-    const handleProducerVendorStatus = (data) => {
-        sessionStorage.setItem("EOI-Producer-Vendor-Status", data.producer_vendor_status)
-        setProductSellingDescriptionField(true)
-    }
-    const handleDeclarations = (data) => {
-        sessionStorage.setItem("EOI-Producer-Info", data.product_info)
-        navigate("/EOI-Declarations");
-    }
-
 
     return (
         <div className="container">
@@ -64,7 +52,7 @@ export const ListSchemes = () => {
                     <div>
                         <form style={{ display: "inline-block" }}>
                             <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
-                                Schemes
+                                Publish Scheme
                             </MainHeading>
                             <Divider></Divider>
                             <br></br>
@@ -72,27 +60,27 @@ export const ListSchemes = () => {
                                 Section 1 of 5
                             </p>
                             <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold", fontSize: "20px" }}>
-                                Product Information
+                                Scheme Title
                             </MainHeading>
                             <p style={{ color: "#0B0C0C" }}>
-                                Please complete this section with your own details.
+                                Please complete this section with the title of the scheme.
                             </p>
                             <Form.Group>
-                                <Form.Label>Product Type</Form.Label>
+                                <Form.Label>Scheme Title</Form.Label>
                                 <Form.Control
                                     type="text"
-                                    placeholder="Enter your product type"
+                                    placeholder="Enter scheme title"
                                     style={{ borderColor: "black", maxWidth: "500px" }}
-                                    {...register("product_type", { required: true, maxLength: 80 })}
+                                    {...register("scheme_title", { required: true, maxLength: 80 })}
                                 />
 
-                                {errors.product_type && (
+                                {errors.scheme_title && (
                                     <p style={{ color: "red" }}>
-                                        <small>Email is required</small>
+                                        <small>Scheme title is required</small>
                                     </p>
                                 )}
 
-                                {errors.product_type?.type === "maxLength" && (
+                                {errors.scheme_title?.type === "maxLength" && (
                                     <p style={{ color: "red" }}>
                                         <small>Max characters should be 80</small>
                                     </p>
@@ -103,7 +91,7 @@ export const ListSchemes = () => {
                             <Form.Group>
                                 <Button
                                     style={{ marginBottom: "15px" }}
-                                    onClick={handleSubmit(handleProductType)}
+                                    onClick={handleSubmit(handleNextStage)}
                                 >
                                     Continue
                                 </Button>
@@ -112,7 +100,6 @@ export const ListSchemes = () => {
 
                         </form>
                     </div>
-                
             </div>
         </div>
     );

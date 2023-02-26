@@ -31,8 +31,17 @@ import { EOIContactInfo } from "./Components/FormStages/Scheme/EOI-Contact-Info"
 import { EOIProductInfo } from "./Components/FormStages/Scheme/EOI-Product-Info";
 import { EOIDeclarations } from "./Components/FormStages/Scheme/EOI-Declarations";
 import { EOISummary } from "./Components/FormStages/Scheme/EOI-Summary";
-import { ListSchemes } from "./Components/FormStages/Scheme/List-Schemes";
+import { ListSchemes } from "./Components/FormStages/Scheme/ListSchemes";
 import { GrantApplication } from "./Components/FormStages/Scheme/GrantApplication";
+import { RegisterSchemeLandingPage } from "./Components/FormStages/Scheme/RegisterSchemeLandingPage";
+import { SchemeTitle } from "./Components/FormStages/Scheme/Scheme-Title";
+import { SchemeDescription } from "./Components/FormStages/Scheme/Scheme-Description";
+import { SchemeDates } from "./Components/FormStages/Scheme/Scheme-Dates";
+import { SchemeObjectives } from "./Components/FormStages/Scheme/Scheme-Objectives";
+import { SchemeEligibilityCriteria } from "./Components/FormStages/Scheme/Scheme-Eligibility-Criteria";
+import { SchemeApplicationDetails } from "./Components/FormStages/Scheme/Scheme-Application-Details";
+import { SchemePublisherDetails } from "./Components/FormStages/Scheme/Scheme-Publisher-Details";
+import { SchemeSummary } from "./Components/FormStages/Scheme/Scheme-Summary";
 
 export default function App() {
   const [loggedIn] = useAuth();
@@ -41,7 +50,7 @@ export default function App() {
       <Router>
         <GlobalStyle />
         <NavbarComponent />
-        <CookieConsent>This website uses cookies to enhance the user experience.</CookieConsent>
+        <CookieConsent buttonStyle={{backgroundColor: "#00823B", color: "white"}}>This website uses cookies to enhance the user experience.</CookieConsent>
 
         {loggedIn ?
           <Routes>
@@ -76,6 +85,11 @@ export default function App() {
             <Route path="/List-Schemes" element={<ListSchemes />} />
             <Route path="/Grant-Application" element={<GrantApplication />} />
             <Route path="/change-email-address" element={<ChangeEmail />} />
+            <Route path="/publsih-scheme-landing" element={<RegisterSchemeLandingPage />} />
+            <Route path="/publish-scheme-title" element={<SchemeTitle />} />
+            <Route path="/publish-scheme-dates" element={<SchemeDates />} />
+            <Route path="/publish-scheme-objectives" element={<SchemeObjectives />} />
+
           </Routes>
 
           :
@@ -95,6 +109,15 @@ export default function App() {
             <Route path="/EOI-Summary" element={<EOISummary />} />
             <Route path="/List-Schemes" element={<ListSchemes />} />
             <Route path="/Grant-Application" element={<GrantApplication />} />
+            <Route path="/publish-scheme-landing" element={<RegisterSchemeLandingPage />} />
+            <Route path="/publish-scheme-title" element={<SchemeTitle />} />
+            <Route path="/publish-scheme-details" element={<SchemeDescription />} />
+            <Route path="/publish-scheme-dates" element={<SchemeDates />} />
+            <Route path="/publish-scheme-objectives" element={<SchemeObjectives />} />
+            <Route path="/publish-scheme-application-details" element={<SchemeApplicationDetails />} />
+            <Route path="/publish-scheme-eligibility-criteria" element={<SchemeEligibilityCriteria />} />
+            <Route path="/publish-scheme-publisher-details" element={<SchemePublisherDetails />} />
+            <Route path="/publish-scheme-summary" element={<SchemeSummary />} />
 
 
           </Routes>}

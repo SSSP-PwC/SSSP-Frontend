@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Form, Alert } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Button, MainHeading } from "../../../../globalStyles";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -17,17 +17,26 @@ export const EnterCitizenAddress = () => {
   const [show, setShow] = useState(false);
   const [variantType, setVariantType] = useState("");
   const [userResponse, setUserResponse] = useState("");
-
+  const { state } = useLocation();
   const submitForm = (data) => {
     //Replace with API callout to Companies House
-    if (data.CitizenAddressLine1 !== undefined && data.CitizenTownCity !== undefined && data.CitizenPostcode !== undefined) {
+    if (
+      data.CitizenAddressLine1 !== undefined &&
+      data.CitizenTownCity !== undefined &&
+      data.CitizenPostcode !== undefined
+    ) {
       setUserResponse(data.message);
-      sessionStorage.setItem("citizen-address-line-1", data["CitizenAddressLine1"]);
-      sessionStorage.setItem("citizen-address-line-2", data["CitizenAddressLine2"]);
-      sessionStorage.setItem("citizen-town-city", data["CitizenTownCity"]);
-      sessionStorage.setItem("citizen-postcode", data["CitizenPostcode"]);
       setShow(true);
-      navigate("/register-citizen-email");
+      navigate("/register-citizen-email", {
+        state: {
+          first_name: state.first_name,
+          last_name: state.last_name,
+          address_line_1: data["CitizenAddressLine1"],
+          address_line_2: data["CitizenAddressLine2"],
+          town_city: data["CitizenTownCity"],
+          postcode: data["CitizenPostcode"],
+        },
+      });
     } else {
     }
   };
@@ -65,9 +74,7 @@ export const EnterCitizenAddress = () => {
             <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
               Enter your address
             </MainHeading>
-            <p style={{ color: "#505a5f" }}>
-              Profile Creation: Section 2 of 5
-            </p>
+            <p style={{ color: "#505a5f" }}>Profile Creation: Section 2 of 5</p>
             <p style={{ color: "#505a5f" }}>
               Please complete this section with your own details.
             </p>
@@ -126,7 +133,7 @@ export const EnterCitizenAddress = () => {
                   maxLength: 80,
                 })}
               />
-                   {errors.CitizenTownCity && (
+              {errors.CitizenTownCity && (
                 <p style={{ color: "red" }}>
                   <small>Town/City is required</small>
                 </p>
@@ -149,7 +156,7 @@ export const EnterCitizenAddress = () => {
                   maxLength: 8,
                 })}
               />
-                       {errors.CitizenPostcode && (
+              {errors.CitizenPostcode && (
                 <p style={{ color: "red" }}>
                   <small>Postcode is required</small>
                 </p>

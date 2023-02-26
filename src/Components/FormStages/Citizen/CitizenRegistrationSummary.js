@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Form, Alert } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Button, Heading } from "../../../globalStyles";
 import { MainHeading } from "../../../globalStyles";
 import { useForm } from "react-hook-form";
@@ -15,25 +15,25 @@ export const CitizenRegistrationSummary = () => {
     formState: { errors },
   } = useForm();
   const navigate = useNavigate();
+  const { state } = useLocation();
+
+  
 
   const [show, setShow] = useState(false);
   const [variantType, setVariantType] = useState("");
   const [userResponse, setUserResponse] = useState("");
-  var first_name = sessionStorage.getItem("citizen-first-name");
-  var last_name = sessionStorage.getItem("citizen-last-name");
-  var address_line_1 = sessionStorage.getItem("citizen-address-line-1");
-  var address_line_2 = sessionStorage.getItem("citizen-address-line-2");
-  var town_city = sessionStorage.getItem("citizen-town-city");
-  var postcode = sessionStorage.getItem("citizen-postcode");
-  var email = sessionStorage.getItem("citizen-email");
-  var password = sessionStorage.getItem("Password")
+  var first_name = state.first_name;
+  var last_name = state.last_name;
+  var address_line_1 = state.address_line_1;
+  var address_line_2 = state.address_line_2;
+  var town_city = state.town_city;
+  var postcode = state.postcode;
+  var email = state.email;
+  var password = state.password
 
-  var company_registration_flow = sessionStorage.getItem(
-    "company-registration-flow-flag"
-  );
   const submitForm = async (data) => {
 
-    const url = "http://127.0.0.1:2000/auth/signup";
+    const url = "http://127.0.0.1:9000/api/signup";
     const d = { 
       first_name: first_name, 
       last_name: last_name, 
