@@ -3,10 +3,9 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useCollapse from "react-collapsed";
 import { Form } from "react-bootstrap";
-import { Button, MainHeading } from "../../../globalStyles";
 import { BarLoader } from "react-spinners";
 import { Panel, PhaseBanner } from "govuk-react";
-import banner from "../../../img/banner.jpg";
+
 export const SchemeDetails = ({ schemeId }) => {
   const [scheme, setScheme] = useState(null);
   const navigate = useNavigate();
