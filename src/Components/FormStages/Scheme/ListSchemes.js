@@ -7,28 +7,30 @@ import { Link, useNavigate } from "react-router-dom";
 import { Divider } from "@mui/material";
 import Table from "react-bootstrap/Table";
 import { SchemeDetails } from "./SchemeDetails";
-  import Breadcrumb from 'react-bootstrap/Breadcrumb';
+import Breadcrumb from "react-bootstrap/Breadcrumb";
+import { BarLoader } from "react-spinners";
 
 export const ListSchemes = () => {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [schemeId, setSchemeId] = useState(null);
+  const [loaded, setLoaded] = useState(false);
 
+  function ListSchemesBreadcrumb() {
+    return (
+      <Breadcrumb>
+        <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
 
-function ListSchemesBreadcrumb() {
-  return (
-    <Breadcrumb>
-      <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
-    
-      <Breadcrumb.Item active>Schemes</Breadcrumb.Item>
-    </Breadcrumb>
-  );
-}
+        <Breadcrumb.Item active>Schemes</Breadcrumb.Item>
+      </Breadcrumb>
+    );
+  }
   useEffect(() => {
-    fetch("http://127.0.0.1:4000/api/get-schemes")
+    fetch(
+      "https://20230226t215147-dot-sssp-378808.nw.r.appspot.com/api/get-schemes"
+    )
       .then((response) => response.json())
-      .then((data) => setData(data["schemes"]));
-    console.log(data["schemes"]);
+      .then((data) => setData(data["schemes"]), setLoaded(false));
   }, []);
 
   const handleRowClick = (row) => {
@@ -39,11 +41,15 @@ function ListSchemesBreadcrumb() {
   return (
     <div className="container">
       <br></br>
+      {loaded === false && <BarLoader loading={loaded} size={200} />}
+
       {schemeId ? (
-        <SchemeDetails schemeId={schemeId} />
+        <div>
+          <SchemeDetails schemeId={schemeId} />
+        </div>
       ) : (
         <div>
-          <ListSchemesBreadcrumb/>
+          <ListSchemesBreadcrumb />
           <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
             All Schemes
           </MainHeading>

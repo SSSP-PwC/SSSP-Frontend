@@ -9,30 +9,41 @@ import {MdOutlineLogin} from "react-icons/md";
 const LoggedInNavbar = () => {
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-      <Container>
-        <Navbar.Brand href="/">
-          <img
-            src="./city.png"
-            width="30"
-            height="30"
-            className="d-inline-block align-top"
-            alt="SSSP Logo"
-          />
-        </Navbar.Brand>
+    <Container>
+      <Navbar.Brand href="/">
+        <img
+          src="./city.png"
+          width="30"
+          height="30"
+          className="d-inline-block align-top"
+          alt="SSSP Logo"
+        />
+      </Navbar.Brand>
+      <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+      <Navbar.Collapse id="responsive-navbar-nav">
+        <Nav className="me-auto">
+          <Nav.Link href="/" onClick={logout}>
+            <span style={{ fontSize: "25px" }}><AiOutlineHome/></span> Home
+          </Nav.Link>
+          <Nav.Link href="/List-Schemes">
+            <span style={{ fontSize: "25px" }}><AiOutlineForm/></span>
+            Schemes
+          </Nav.Link>
+        </Nav>
 
-        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-        <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav className="me-auto" />
-          <Nav>
-            <Nav.Link href="/" onClick={logout}>
-              Sign Out
-            </Nav.Link>
-          </Nav>
-        </Navbar.Collapse>
-      </Container>
-    </Navbar>
+        <Nav>
+<Nav.Link href="/" onClick={logout}>
+  Sign Out
+</Nav.Link>
+</Nav>
+      </Navbar.Collapse>
+    </Container>
+  </Navbar>
   );
 };
+
+
+
 const LoggedOutNavbar = () => {
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">

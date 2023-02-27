@@ -51,7 +51,7 @@ export const EnterCompanyDetails = () => {
     var company_name = sessionStorage.getItem("company-name");
     var company_number = sessionStorage.getItem("company-registration-number")
     setLoading(true);
-    fetch(`https://proxy-service.ie3csgqmphchg.eu-west-1.cs.amazonlightsail.com/api/proxy?endpoint=company/${company_number}`)
+    fetch(`https://sssp-378808.nw.r.appspot.com/api/proxy?endpoint=company/${company_number}`)
       .then(response => response.json())
       .then(data => {
         var registered_company_name = data['company_name'];

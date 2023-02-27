@@ -33,7 +33,7 @@ export const CitizenRegistrationSummary = () => {
 
   const submitForm = async (data) => {
 
-    const url = "http://127.0.0.1:9000/api/signup";
+    const url = "https://20230226t215147-dot-sssp-378808.nw.r.appspot.com/api/signup";
     const d = { 
       first_name: first_name, 
       last_name: last_name, 

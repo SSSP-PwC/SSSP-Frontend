@@ -20,19 +20,8 @@ export const SchemeDetails = ({ schemeId }) => {
       .then((data) => setScheme(data), setLoaded(true));
   }, [schemeId]);
 
-  function renderApplicationForm() {
-    navigate("/Application-Form-Building-Information", {
-      state: {
-        scheme_id: schemeId,
-      },
-    });
-  }
-  function renderSelfEligibilityChecker() {
-    navigate("/Eligibility-Checker-Registered-Company", {
-      state: {
-        scheme_id: schemeId,
-      },
-    });
+  function refreshPage() {
+    window.location.reload();
   }
   function DetailsCollapsible() {
     const { getCollapseProps, getToggleProps, isExpanded } = useCollapse();
@@ -165,51 +154,17 @@ export const SchemeDetails = ({ schemeId }) => {
   }
   return (
     <div style={{ display: "inline-block" }}>
-      {scheme ? (
+      {loaded ? (
         <div>
-          <MainHeading style={{ fontWeight: "bold" }}>
-            {scheme.scheme_title}
-          </MainHeading>
-          <Divider style={{ background: "black" }}></Divider>
-          <br></br>
-          <p>{scheme.scheme_description}</p>
-          <p style={{ fontWeight: "bold" }}>
-            Opening Date:{" "}
-            <a style={{ fontWeight: "normal" }}>{scheme.scheme_start_date}</a>
-          </p>
-          <p style={{ fontWeight: "bold" }}>
-            Closing Date:{" "}
-            <a style={{ fontWeight: "normal" }}>{scheme.scheme_end_date}</a>
-          </p>
-          <Divider style={{ background: "black" }}></Divider>
-          <br></br>
-          <DetailsCollapsible />
-          <Divider style={{ background: "black" }}></Divider>
-          <br></br>
-          <ApplicationCollapsible />
-          <Divider style={{ background: "black" }}></Divider>
-          <br></br>
-          <EligibilityCriteriaCollapsible />
-          <Divider style={{ background: "black" }}></Divider>
-          <br></br>
-          <ObjectivesCollapsible />
-          <Divider style={{ background: "black" }}></Divider>
-          <br></br>
-          <Form.Group>
-            <Button
-              onClick={renderApplicationForm}
-              style={{ marginBottom: "15px" }}
-            >
-              Submit new application
-            </Button>{" "}
-            <Button
-              onClick={renderSelfEligibilityChecker}
-              style={{ marginBottom: "15px" }}
-            >
-              Self eligibility checker
-            </Button>
-          </Form.Group>{" "}
-          <br></br>
+       
+          <Panel
+            title="Application complete"
+            style={{ backgroundColor: "#00823B" }}
+          >
+            Your reference number
+            <br />
+            <strong>HD1939380</strong>
+          </Panel>
         </div>
       ) : (
         <div
