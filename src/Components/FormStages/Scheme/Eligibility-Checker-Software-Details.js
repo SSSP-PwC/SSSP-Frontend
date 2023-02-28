@@ -7,7 +7,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Divider } from "@mui/material";
 import { Button, ErrorSummary, Radio } from "govuk-react";
 
-export const EligibilityCheckerRegisteredCompany = () => {
+export const EligibilityCheckerSoftwareDetails = () => {
   const { state } = useLocation();
   console.log(state);
   const {
@@ -23,7 +23,7 @@ export const EligibilityCheckerRegisteredCompany = () => {
   const [userResponse, setUserResponse] = useState("");
   const [radioButton, setRadioButton] = useState("");
   const setNextPage = () => {
-    navigate("/Eligibility-Checker-Employee-Count", {
+    navigate("/Eligibility-Checker-Summary", {
       state: {
         registered_company: "Yes",
       },
@@ -38,11 +38,11 @@ export const EligibilityCheckerRegisteredCompany = () => {
       >
         {radioButton === "No" && (
           <ErrorSummary
-            description="Your business must be registered at Companies House or a Registered Society on the Financial Conduct Authority Mutuals Register."
+            description="The software can only be used for business purposes"
             errors={[
               {
                 targetName: "radio-button-answer",
-                text: "Company not registered error",
+                text: "Software is for company use only",
               },
               {
                 targetName: "description",
@@ -58,22 +58,15 @@ export const EligibilityCheckerRegisteredCompany = () => {
           </MainHeading>
           <Divider style={{ background: "black" }}></Divider>
           <br></br>
-          <p style={{ color: "#505a5f" }}>Section 1 of 5</p>
+          <p style={{ color: "#505a5f" }}>Section 5 of 6</p>
 
           <Form.Group>
             <Form.Label>
-              Is your business registered at Companies House or a Registered
-              Society <br></br>on the Financial Conduct Authority Mutuals
-              Register?
+              If you are not buying your selected software for the first time, is this a major software upgrade for your business?
             </Form.Label>
             <p style={{ color: "#505a5f" }}>
-              You can find your Companies House number on your certificate of
-              incorporation. You can also search the Companies House register
-              (opens in new tab).
-              <br></br>For example, SP450735
-              <br></br>Mutual Societies can find this number on the Financial
-              Conduct Authority Public Mutuals Register (opens in new tab){" "}
-              <br></br>https://mutuals.Financial Conduct Authority.org.uk
+            A purchase that represents a significant shift and change in operations is permitted and classed as a major upgrade. <br></br>For example, from desktop-based applications to cloud-based software as a service. <br></br>This includes major upgrades offered by your existing software supplier.
+
             </p>
 
             <>

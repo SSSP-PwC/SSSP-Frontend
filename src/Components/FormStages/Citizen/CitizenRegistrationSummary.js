@@ -17,8 +17,6 @@ export const CitizenRegistrationSummary = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
 
-  
-
   const [show, setShow] = useState(false);
   const [variantType, setVariantType] = useState("");
   const [userResponse, setUserResponse] = useState("");
@@ -29,22 +27,24 @@ export const CitizenRegistrationSummary = () => {
   var town_city = state.town_city;
   var postcode = state.postcode;
   var email = state.email;
-  var password = state.password
+  var password = state.password;
 
   const submitForm = async (data) => {
+    const url =
+      "https://20230228t113400-dot-sssp-378808.nw.r.appspot.com/api/signup";
+    const d = {
+      first_name: first_name,
+      last_name: last_name,
+      email: email,
+      password: password,
+      address: {
+        address_line_1: address_line_1,
+        address_line_2: address_line_2,
+        town_city: town_city,
+        postcode: postcode,
+      },
+    };
 
-    const url = "https://20230226t215147-dot-sssp-378808.nw.r.appspot.com/api/signup";
-    const d = { 
-      first_name: first_name, 
-      last_name: last_name, 
-      email: email, 
-      password: password, 
-      address: { 
-        address_line_1: address_line_1, 
-        address_line_2: address_line_2, 
-        town_city: town_city, 
-        postcode: postcode }};
-        
     const options = {
       method: "POST",
       headers: {
@@ -55,25 +55,22 @@ export const CitizenRegistrationSummary = () => {
     try {
       const response = await fetch(url, options);
       const result = await response.json();
-      if (result['message'] === "User created successfully") {
-        setUserResponse('Account created successfully')
-        setVariantType('success')
-        setShow(true)
-        navigate("/")
-      }
-      else if (result['message'] === "User already exists") {
-        setUserResponse('Email address already exists. Please try again with a different email address')
-        setVariantType('danger')
-        setShow(true)
+      if (result["message"] === "User created successfully") {
+        setUserResponse("Account created successfully");
+        setVariantType("success");
+        setShow(true);
+        navigate("/");
+      } else if (result["message"] === "User already exists") {
+        setUserResponse(
+          "Email address already exists. Please try again with a different email address"
+        );
+        setVariantType("danger");
+        setShow(true);
       }
     } catch (error) {
       console.error(error);
     }
   };
-
-
-
-
 
   return (
     <div className="container">
@@ -304,4 +301,4 @@ export const CitizenRegistrationSummary = () => {
       </div>
     </div>
   );
-}
+};

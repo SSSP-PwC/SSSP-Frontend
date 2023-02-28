@@ -2,26 +2,34 @@ import React, { useState } from "react";
 import { Alert, Form } from "react-bootstrap";
 import { MainHeading } from "../../../globalStyles";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-
-
+import { useLocation, useNavigate } from "react-router-dom";
+import { Radio } from "govuk-react";
+import Cookies from 'universal-cookie';
 export const AssociateContact = () => {
   const {
     formState: { errors },
   } = useForm();
   const navigate = useNavigate();
-
+  const { state } = useLocation();
+  const cookies = new Cookies();
+  console.log(cookies.get("REACT_TOKEN_AUTH_KEY"))
+  console.log(state);
   const [show, setShow] = useState(false);
   const [variantType, setVariantType] = useState("");
   const [userResponse, setUserResponse] = useState("");
+  const [radioButton, setRadioButton] = useState("");
 
-  const linkExistingAccount = () => {
-    sessionStorage.setItem("company-registration-flow-flag", "true");
-    navigate("/link-account");
+  const handleNextStage = () => {
+    if (radioButton === "Yes") {
+
+      navigate("/Application-Form-Summary-Table");
+    }
   };
-  const registerAccount = () => {
-    sessionStorage.setItem("company-registration-flow-flag", "true");
-    navigate("/register-citizen");
+  const selectedRadioButtonOne = () => {
+    setRadioButton("Yes");
+  };
+  const selectedRadioButtonTwo = () => {
+    setRadioButton("No");
   };
 
   return (
@@ -53,35 +61,18 @@ export const AssociateContact = () => {
             <p style={{ color: "#0B0C0C" }}>
               Is this contact person already registered as a citizen?
             </p>
+
             <Form.Group>
-              <Form.Label style={{ fontSize: "32px" }}>
-                <input
-                  type="radio"
-                  onClick={linkExistingAccount}
-                  style={{
-                    height: "30px",
-                    width: "30px",
-                    verticalAlign: "middle",
-                    accentColor: "black",
-                  }}
-                />{" "}
-                Yes
-              </Form.Label>
-            </Form.Group>
-            <Form.Group>
-              <Form.Label style={{ fontSize: "32px" }}>
-                  <input
-                    type="radio"
-                    onClick={registerAccount}
-                    style={{
-                      height: "30px",
-                      width: "30px",
-                      verticalAlign: "middle",
-                      accentColor: "black",
-                    }}
-                  />{" "}
-                  No
-              </Form.Label>
+              <Form>
+                <>
+                  <Radio name="group1" onClick={selectedRadioButtonOne}>
+                    Yes
+                  </Radio>
+                  <Radio name="group1" onClick={selectedRadioButtonTwo}>
+                    No
+                  </Radio>
+                </>
+              </Form>
             </Form.Group>
             <br></br>
           </div>

@@ -32,7 +32,7 @@ import { EOIDeclarations } from "./Components/FormStages/Scheme/EOI-Declarations
 import { EOISummary } from "./Components/FormStages/Scheme/EOI-Summary";
 import { ListSchemes } from "./Components/FormStages/Scheme/ListSchemes";
 import { GrantApplication } from "./Components/FormStages/Scheme/GrantApplication";
-import { RegisterSchemeLandingPage } from "./Components/FormStages/Scheme/RegisterSchemeLandingPage";
+import { RegisterSchemeLandingPage } from "./Components/FormStages/Scheme/Register-Scheme-Landing-Page";
 import { SchemeTitle } from "./Components/FormStages/Scheme/Scheme-Title";
 import { SchemeDescription } from "./Components/FormStages/Scheme/Scheme-Description";
 import { SchemeDates } from "./Components/FormStages/Scheme/Scheme-Dates";
@@ -48,27 +48,29 @@ import { EligibilityCheckerTradingLength } from "./Components/FormStages/Scheme/
 import { ApplicationFormBuildingInformation } from "./Components/FormStages/Scheme/Application-Form-Building-Information";
 import { ApplicationFormExhaustedForm } from "./Components/FormStages/Scheme/Application-Form-Exhausted-Form";
 import { ApplicationFormSummaryTable } from "./Components/FormStages/Scheme/Application-Form-Summary-Table";
+import { EligibilityCheckerProductInfo } from "./Components/FormStages/Scheme/Eligibility-Checker-Product-Info";
+import { EligibilityCheckerSoftwareDetails } from "./Components/FormStages/Scheme/Eligibility-Checker-Software-Details";
+import { EligibilityCheckerSummary } from "./Components/FormStages/Scheme/Eligibility-Checker-Summary";
 
 export default function App() {
   const [loggedIn] = useAuth();
   return (
     <div>
       <Router>
-        <GlobalStyle /> <div style={{ display: "flex", justifyContent: "center" }}>
+        <GlobalStyle />{" "}
+        <div style={{ display: "flex", justifyContent: "center" }}>
           {" "}
           <PhaseBanner level="POC">
             SSSP is currently a proof of concept –{" "}
             <Link href="https://example.com">find out what that means</Link>
           </PhaseBanner>{" "}
         </div>
-
         <NavbarComponent />
         <CookieConsent
           buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
         >
           This website uses cookies to enhance the user experience.
         </CookieConsent>
-       
         {loggedIn ? (
           <Routes>
             <Route path="/" element={<HomePage />} />
@@ -87,6 +89,10 @@ export default function App() {
             <Route
               path="/register-company-landing"
               element={<CompanyRegistrationLandingPage />}
+            />
+            <Route
+              path="/register-company-details"
+              element={<EnterCompanyDetails />}
             />
             <Route path="/change-first-name" element={<ChangeFirstName />} />
             <Route path="/change-last-name" element={<ChangeLastName />} />
@@ -139,6 +145,18 @@ export default function App() {
               element={<EnterCitizenEmail />}
             />
             <Route
+              path="/register-company-details"
+              element={<EnterCompanyDetails />}
+            />
+            <Route
+              path="/register-company-associated-contact"
+              element={<AssociateContact />}
+            />
+                    <Route
+              path="/register-company-link-account"
+              element={<LinkAccount />}
+            />
+            <Route
               path="/register-citizen-password"
               element={<EnterCitizenPassword />}
             />
@@ -152,12 +170,43 @@ export default function App() {
             <Route path="/EOI-Summary" element={<EOISummary />} />
             <Route path="/List-Schemes" element={<ListSchemes />} />
             <Route path="/Grant-Application" element={<GrantApplication />} />
-            <Route path="/Eligibility-Checker-Registered-Company" element={<EligibilityCheckerRegisteredCompany />} />
-            <Route path="/Eligibility-Checker-Employee-Count" element={<EligibilityCheckerEmployeeCount />} />
-            <Route path="/Eligibility-Checker-Trading-Length" element={<EligibilityCheckerTradingLength />} />
-            <Route path="/Application-Form-Exhausted-Funds" element={<ApplicationFormExhaustedForm />} />
-            <Route path="/Application-Form-Building-Information" element={<ApplicationFormBuildingInformation />} />
-            <Route path="/Application-Form-Summary-Table" element={<ApplicationFormSummaryTable />} />
+            <Route
+              path="/Eligibility-Checker-Registered-Company"
+              element={<EligibilityCheckerRegisteredCompany />}
+            />
+            <Route
+              path="/Eligibility-Checker-Employee-Count"
+              element={<EligibilityCheckerEmployeeCount />}
+            />
+            <Route
+              path="/Eligibility-Checker-Trading-Length"
+              element={<EligibilityCheckerTradingLength />}
+            />
+            <Route
+              path="/Eligibility-Checker-Selected-Product-Info"
+              element={<EligibilityCheckerProductInfo />}
+            />
+            <Route
+              path="/Eligibility-Checker-Software-Details"
+              element={<EligibilityCheckerSoftwareDetails />}
+            />
+            <Route
+              path="/Eligibility-Checker-Summary"
+              element={<EligibilityCheckerSummary />}
+            />
+
+            <Route
+              path="/Application-Form-Exhausted-Funds"
+              element={<ApplicationFormExhaustedForm />}
+            />
+            <Route
+              path="/Application-Form-Building-Information"
+              element={<ApplicationFormBuildingInformation />}
+            />
+            <Route
+              path="/Application-Form-Summary-Table"
+              element={<ApplicationFormSummaryTable />}
+            />
 
             <Route
               path="/publish-scheme-landing"
@@ -177,7 +226,7 @@ export default function App() {
               path="/publish-scheme-application-details"
               element={<SchemeApplicationDetails />}
             />
-                <Route
+            <Route
               path="/register-company-landing"
               element={<CompanyRegistrationLandingPage />}
             />

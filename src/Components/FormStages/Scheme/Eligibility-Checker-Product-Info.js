@@ -7,9 +7,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Divider } from "@mui/material";
 import { Button, ErrorSummary, Radio } from "govuk-react";
 
-export const EligibilityCheckerRegisteredCompany = () => {
+export const EligibilityCheckerProductInfo = () => {
   const { state } = useLocation();
-  console.log(state);
+
   const {
     register,
     handleSubmit,
@@ -23,9 +23,12 @@ export const EligibilityCheckerRegisteredCompany = () => {
   const [userResponse, setUserResponse] = useState("");
   const [radioButton, setRadioButton] = useState("");
   const setNextPage = () => {
-    navigate("/Eligibility-Checker-Employee-Count", {
+    navigate("/Eligibility-Checker-Software-Details", {
       state: {
-        registered_company: "Yes",
+        registered_company: state.registered_company,
+        employee_count: state.employee_count,
+        trading_length_criteria: "passed",
+        selected_product_criteria: "passed",
       },
     });
   };
@@ -36,13 +39,13 @@ export const EligibilityCheckerRegisteredCompany = () => {
         className="form"
         style={{ marginTop: "70px", display: "inline-block" }}
       >
-        {radioButton === "No" && (
+        {radioButton === "Fail" && (
           <ErrorSummary
-            description="Your business must be registered at Companies House or a Registered Society on the Financial Conduct Authority Mutuals Register."
+            description="Your business must be purchasing the approved software for the first time. You cannot apply for a software product that you already own or have an active subscription to."
             errors={[
               {
                 targetName: "radio-button-answer",
-                text: "Company not registered error",
+                text: "Your business must be purchasing the approved software for the first time",
               },
               {
                 targetName: "description",
@@ -58,32 +61,30 @@ export const EligibilityCheckerRegisteredCompany = () => {
           </MainHeading>
           <Divider style={{ background: "black" }}></Divider>
           <br></br>
-          <p style={{ color: "#505a5f" }}>Section 1 of 5</p>
+          <p style={{ color: "#505a5f" }}>Section 4 of 6</p>
 
           <Form.Group>
             <Form.Label>
-              Is your business registered at Companies House or a Registered
-              Society <br></br>on the Financial Conduct Authority Mutuals
-              Register?
+              Are you buying your selected product for the first time?
             </Form.Label>
             <p style={{ color: "#505a5f" }}>
-              You can find your Companies House number on your certificate of
-              incorporation. You can also search the Companies House register
-              (opens in new tab).
-              <br></br>For example, SP450735
-              <br></br>Mutual Societies can find this number on the Financial
-              Conduct Authority Public Mutuals Register (opens in new tab){" "}
-              <br></br>https://mutuals.Financial Conduct Authority.org.uk
+              Your business must be purchasing the approved software for the
+              first time.
+              <br></br>You cannot apply for a software product that you already
+              own or have an active subscription to.
+              <br></br>If you already have software with a supplier listed on
+              the Help to Grow: Digital platform, you can still apply for other
+              types of software provided by the same supplier.
+              <br></br>Major software upgrades are permitted.
             </p>
 
             <>
               <Radio onClick={setNextPage}>Yes</Radio>
-              <Radio onClick={() => setRadioButton("No")}>No</Radio>
+              <Radio onClick={() => setRadioButton("Fail")}>No</Radio>
             </>
           </Form.Group>
           <br></br>
         </form>
-        <div></div>
       </div>
     </div>
   );

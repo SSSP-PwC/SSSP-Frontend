@@ -59,7 +59,7 @@ export const SchemeDescription = () => {
             </MainHeading>
             <Divider style={{ background: "black" }}></Divider>
             <br></br>
-            <p style={{ color: "#505a5f" }}>Section 1 of 5</p>
+            <p style={{ color: "#505a5f" }}>Section 2 of 5</p>
             <MainHeading
               style={{ color: "#0B0C0C", fontWeight: "bold", fontSize: "20px" }}
             >

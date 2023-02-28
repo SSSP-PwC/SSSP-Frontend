@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { Form, Alert } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { Button, MainHeading } from "../../../globalStyles";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { Divider } from "@mui/material";
-import { BarLoader } from 'react-spinners';
+import { Spinner } from "govuk-react";
 
 export const EnterCompanyDetails = () => {
   const {
@@ -21,17 +21,24 @@ export const EnterCompanyDetails = () => {
   const [variantType, setVariantType] = useState("");
   const [userResponse, setUserResponse] = useState("");
   const [loading, setLoading] = useState(false);
-  var company_name = sessionStorage.getItem("company-name");
-  var company_address_1 = sessionStorage.getItem("company_address_line_1")
-  var company_address_2 = sessionStorage.getItem("company_address_line_2")
-  var company_postcode = sessionStorage.getItem("company_postal_code")
-  var company_country = sessionStorage.getItem("company_country")
-  var company_locality = sessionStorage.getItem("company_locality")
-  var company_region = sessionStorage.getItem("company_region")
-
+  const [companyName, setCompanyName] = useState("");
+  const [addressLine1, setAddressLine1] = useState("");
+  const [addressLine2, setAddressLine2] = useState("");
+  const [postalCode, setPostalCode] = useState("");
+  const [country, setCountry] = useState("");
+  const [locality, setLocality] = useState("");
+  const [region, setRegion] = useState("");
 
   function formatAddress(address) {
-    if (!address || !address.address_line_1 || !address.address_line_2 || !address.postal_code || !address.locality || !address.region || !address.country) {
+    if (
+      !address ||
+      !address.address_line_1 ||
+      !address.address_line_2 ||
+      !address.postal_code ||
+      !address.locality ||
+      !address.region ||
+      !address.country
+    ) {
       address.address_line_1 = address.address_line_1 || "N/A";
       address.address_line_2 = address.address_line_2 || "N/A";
       address.postal_code = address.postal_code || "N/A";
@@ -41,55 +48,80 @@ export const EnterCompanyDetails = () => {
     }
     return address;
   }
-  const handleClick = () => {
-    navigate("/register-company-associated-contact")
-  }
+  const handleClick = (data) => {
+    navigate("/register-company-associated-contact", {
+      state: {
+        company_name: data.company_name,
+        company_registration_number: data.company_registration_number,
+        company_address_line_1: addressLine1,
+        company_address_line_2: addressLine2,
+        postal_code: postalCode,
+        country: country,
+        locality: locality,
+        region: region
+      },
+    });
+  };
 
   const submitForm = async (information) => {
-    sessionStorage.setItem("company-name", information["CompanyName"]);
-    sessionStorage.setItem("company-registration-number", information["CompanyRegistrationNumber"]);
-    var company_name = sessionStorage.getItem("company-name");
-    var company_number = sessionStorage.getItem("company-registration-number")
-    setLoading(true);
-    fetch(`https://sssp-378808.nw.r.appspot.com/api/proxy?endpoint=company/${company_number}`)
-      .then(response => response.json())
-      .then(data => {
-        var registered_company_name = data['company_name'];
-        if (company_name === registered_company_name) {
-          const formattedAddress = formatAddress(data['registered_office_address'])
-          sessionStorage.setItem('company_address_line_1', formattedAddress.address_line_1);
-          sessionStorage.setItem('company_address_line_2', formattedAddress.address_line_2);
-          sessionStorage.setItem('company_postal_code', formattedAddress.postal_code);
-          sessionStorage.setItem('company_region', formattedAddress.region);
-          sessionStorage.setItem('company_country', formattedAddress.country); sessionStorage.setItem('company_locality', formattedAddress.locality);
+    setCompanyName(information.company_name);
+
+    fetch(
+      `https://20230227t090520-dot-sssp-378808.nw.r.appspot.com/api/proxy?endpoint=company/${information.company_registration_number}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        setLoading(true);
+        console.log(data);
+        console.log(data["company_name"]);
+
+        var registered_company_name = data["company_name"];
+
+        if (information.company_name === registered_company_name) {
+          const formattedAddress = formatAddress(
+            data["registered_office_address"]
+          );
+          setAddressLine1(formattedAddress.address_line_1);
+          setAddressLine2(formattedAddress.address_line_2);
+          setPostalCode(formattedAddress.postal_code);
+          setCountry(formattedAddress.country);
+          setLocality(formattedAddress.locality);
+          setRegion(formattedAddress.region);
           setDetailsReturned(true);
           setLoading(false);
         } else {
+          ///CHANGE THIS TO COMPANIES HOUSE ERROR MESSAGE
           setShow(true);
           setVariantType("danger");
-          setUserResponse("We're sorry, the company name or registration number you entered does not match any record from companies house. Please double-check the information and try again.")
+          setUserResponse(
+            "We're sorry, the company name or registration number you entered does not match any record from companies house. Please double-check the information and try again."
+          );
           setLoading(false);
-
         }
       })
-      .catch(error => {
-      });
+      .catch((error) => {});
   };
 
   return (
     <div className="container">
       {loading === true && (
-        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
-          <BarLoader loading={loading} size={200} />
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+          }}
+        >
+          <Spinner fill="black" height="256px" title="Spinner" width="256px" />{" "}
         </div>
-
       )}
       <div
         className="form"
         style={{ marginTop: "20px", display: "inline-block" }}
       >
         {show && (
-          <div style={{marginTop: "30px"}}>
+          <div style={{ marginTop: "30px" }}>
             <Alert
               variant={variantType}
               onClose={() => {
@@ -101,7 +133,6 @@ export const EnterCompanyDetails = () => {
             </Alert>
           </div>
         )}
-
 
         {detailsReturned === false && loading === false && (
           <div style={{ display: "inline-block" }}>
@@ -117,7 +148,8 @@ export const EnterCompanyDetails = () => {
                 companies house database.
               </p>
               <p style={{ color: "#0B0C0C", fontSize: "12px" }}>
-                Both fields must be an exact match to what is stored by companies house.
+                Both fields must be an exact match to what is stored by
+                companies house.
               </p>
             </div>
             <Form.Group>
@@ -126,16 +158,19 @@ export const EnterCompanyDetails = () => {
                 type="text"
                 placeholder="Enter company name"
                 style={{ borderColor: "black", maxWidth: "500px" }}
-                {...register("CompanyName", { required: true, maxLength: 120 })}
+                {...register("company_name", {
+                  required: true,
+                  maxLength: 120,
+                })}
               />
 
-              {errors.CompanyName && (
+              {errors.company_name && (
                 <p style={{ color: "red" }}>
                   <small>Company Name is required</small>
                 </p>
               )}
 
-              {errors.CompanyName?.type === "maxLength" && (
+              {errors.company_name?.type === "maxLength" && (
                 <p style={{ color: "red" }}>
                   <small>Max characters should be 120</small>
                 </p>
@@ -148,19 +183,19 @@ export const EnterCompanyDetails = () => {
                 type="text"
                 placeholder="Enter registration number"
                 style={{ borderColor: "black", maxWidth: "500px" }}
-                {...register("CompanyRegistrationNumber", {
+                {...register("company_registration_number", {
                   required: true,
                   maxLength: 120,
                 })}
               />
 
-              {errors.CompanyRegistrationNumber && (
+              {errors.company_registration_number && (
                 <p style={{ color: "red" }}>
                   <small>Registration Number is required</small>
                 </p>
               )}
 
-              {errors.CompanyRegistrationNumber?.type === "maxLength" && (
+              {errors.company_registration_number?.type === "maxLength" && (
                 <p style={{ color: "red" }}>
                   <small>Max characters should be 120</small>
                 </p>
@@ -176,18 +211,14 @@ export const EnterCompanyDetails = () => {
               </Button>
             </Form.Group>
             <br></br>
-
           </div>
         )}
-
-
-
 
         {detailsReturned === true && (
           <div style={{ display: "inline-block" }}>
             <form style={{ display: "inline-block" }}>
               <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
-                This is the correspondance address we will use for {company_name}
+                This is the correspondance address we will use for {companyName}
               </MainHeading>
               <p style={{ color: "#0B0C0C", fontSize: "12px" }}>
                 Check this address before continuing.
@@ -197,7 +228,7 @@ export const EnterCompanyDetails = () => {
                   Address line 1:
                 </Form.Label>
                 <small>
-                  {company_address_1}
+                  {addressLine1}
                   <Link to="/change-last-name" style={{ float: "right" }}>
                     Update
                   </Link>
@@ -209,7 +240,7 @@ export const EnterCompanyDetails = () => {
                   Address line 2:
                 </Form.Label>
                 <small>
-                  {company_address_2}
+                  {addressLine2}
                   <Link to="/change-last-name" style={{ float: "right" }}>
                     Update
                   </Link>
@@ -222,9 +253,10 @@ export const EnterCompanyDetails = () => {
                   Postcode:
                 </Form.Label>
                 <small>
-                  {company_postcode}
-                  <Link to="/change-last-name" style={{ float: "right" }}>Update</Link>
-
+                  {postalCode}
+                  <Link to="/change-last-name" style={{ float: "right" }}>
+                    Update
+                  </Link>
                 </small>
                 <Divider></Divider>
               </Form.Group>
@@ -233,9 +265,10 @@ export const EnterCompanyDetails = () => {
                   Country:
                 </Form.Label>
                 <small>
-                  {company_country}
-                  <Link to="/change-last-name" style={{ float: "right" }}>Update</Link>
-
+                  {country}
+                  <Link to="/change-last-name" style={{ float: "right" }}>
+                    Update
+                  </Link>
                 </small>
                 <Divider></Divider>
               </Form.Group>
@@ -245,9 +278,10 @@ export const EnterCompanyDetails = () => {
                   Locality:
                 </Form.Label>
                 <small>
-                  {company_locality}
-                  <Link to="/change-last-name" style={{ float: "right" }}>Update</Link>
-
+                  {locality}
+                  <Link to="/change-last-name" style={{ float: "right" }}>
+                    Update
+                  </Link>
                 </small>
                 <Divider></Divider>
               </Form.Group>
@@ -257,9 +291,10 @@ export const EnterCompanyDetails = () => {
                   Region:
                 </Form.Label>
                 <small>
-                  {company_region}
-                  <Link to="/change-last-name" style={{ float: "right" }}>Update</Link>
-
+                  {region}
+                  <Link to="/change-last-name" style={{ float: "right" }}>
+                    Update
+                  </Link>
                 </small>
                 <Divider></Divider>
               </Form.Group>
@@ -267,13 +302,12 @@ export const EnterCompanyDetails = () => {
               <Form.Group>
                 <Button
                   style={{ marginBottom: "15px" }}
-                  onClick={handleClick}
+                  onClick={handleSubmit(handleClick)}
                 >
                   Continue
                 </Button>
               </Form.Group>
               <br></br>
-
             </form>
           </div>
         )}

@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 export const CompanyRegistrationLandingPage = () => {
     const navigate = useNavigate();
     const handleNextPage = () => {
-        navigate("/register-company");
+        navigate("/register-company-details");
       };
   return (
     <div className="container">

@@ -28,7 +28,7 @@ export const SchemeObjectives = () => {
         scheme_details: state.scheme_details,
         scheme_start_date: state.scheme_start_date,
         scheme_end_date: state.scheme_end_date,
-        scheme_objectives: data.scheme_objectives
+        scheme_objectives_description: data.scheme_objectives_description
       },
     });
 
@@ -80,7 +80,7 @@ export const SchemeObjectives = () => {
                 placeholder="Please describe here"
                 rows="10"
                 style={{ borderColor: "black", maxWidth: "500px" }}
-                {...register("scheme_objectives", {
+                {...register("scheme_objectives_description", {
                   required: true,
                   maxLength: 4000,
                 })}

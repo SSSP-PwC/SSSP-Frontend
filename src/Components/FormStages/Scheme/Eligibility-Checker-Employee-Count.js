@@ -23,12 +23,15 @@ export const EligibilityCheckerEmployeeCount = () => {
   const [errorMessageTextLineOne, setErrorMessageTextLineOne] = useState("");
   const [errorMessageTextLineTwo, setErrorMessageTextLineTwo] = useState("");
   const [errorHeading, setErrorHeading] = useState("");
-
+  const { state } = useLocation();
   const submit = () => {
     var count = employeeCount.employee_count;
     if (count > 4 && count < 249) {
       navigate("/Eligibility-Checker-Trading-Length", {
-        state: { employee_count: count },
+        state: {
+          registered_company: state.registered_company,
+          employee_count: count,
+        },
       });
     } else if (count < 5) {
       setErrorMessageFlag(true);
