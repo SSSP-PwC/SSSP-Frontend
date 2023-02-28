@@ -4,7 +4,7 @@ import { MainHeading } from "../../../globalStyles";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Radio } from "govuk-react";
-import Cookies from 'universal-cookie';
+import Cookies from "universal-cookie";
 export const AssociateContact = () => {
   const {
     formState: { errors },
@@ -12,17 +12,28 @@ export const AssociateContact = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
   const cookies = new Cookies();
-  console.log(cookies.get("REACT_TOKEN_AUTH_KEY"))
   console.log(state);
   const [show, setShow] = useState(false);
   const [variantType, setVariantType] = useState("");
   const [userResponse, setUserResponse] = useState("");
   const [radioButton, setRadioButton] = useState("");
-
   const handleNextStage = () => {
     if (radioButton === "Yes") {
+      if (cookies.get("REACT_TOKEN_AUTH_KEY") !== undefined) {
+        navigate("/register-company-link-citizen", {
+          state: {
+              company_name: state.company_name,
+              company_registration_number: state.company_registration_number,
+              company_address_line_1: state.company_address_line_1,
+              company_address_line_2: state.company_address_line_2,
+              postal_code: state.postal_code,
+              country: state.country,
+              locality: state.locality,
+              region: state.region,
 
-      navigate("/Application-Form-Summary-Table");
+          }
+        });
+      }
     }
   };
   const selectedRadioButtonOne = () => {
