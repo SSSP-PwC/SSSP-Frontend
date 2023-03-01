@@ -21,6 +21,7 @@ export const SchemeObjectives = () => {
   const [userResponse, setUserResponse] = useState("");
 
   const handleNextStage = (data) => {
+    console.log(data.scheme_objectives_description)
     navigate("/publish-scheme-application-details", {
       state: {
         scheme_title: state.scheme_title,
@@ -82,21 +83,15 @@ export const SchemeObjectives = () => {
                 style={{ borderColor: "black", maxWidth: "500px" }}
                 {...register("scheme_objectives_description", {
                   required: true,
-                  maxLength: 4000,
                 })}
               />
 
-              {errors.scheme_objectives && (
+              {errors.scheme_objectives_description && (
                 <p style={{ color: "red" }}>
                   <small>Scheme objectives required</small>
                 </p>
               )}
 
-              {errors.scheme_objectives?.type === "maxLength" && (
-                <p style={{ color: "red" }}>
-                  <small>Max characters should be 4000</small>
-                </p>
-              )}
             </Form.Group>
             <br></br>
 

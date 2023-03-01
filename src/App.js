@@ -51,6 +51,8 @@ import { ApplicationFormSummaryTable } from "./Components/FormStages/Scheme/Appl
 import { EligibilityCheckerProductInfo } from "./Components/FormStages/Scheme/Eligibility-Checker-Product-Info";
 import { EligibilityCheckerSoftwareDetails } from "./Components/FormStages/Scheme/Eligibility-Checker-Software-Details";
 import { EligibilityCheckerSummary } from "./Components/FormStages/Scheme/Eligibility-Checker-Summary";
+import { SchemeSupportingInformation } from "./Components/FormStages/Scheme/Scheme-Supporting-Information";
+import { RegistrationFormLandingPage } from "./Components/FormStages/Scheme/Registration-Form-Landing-Page";
 
 export default function App() {
   const [loggedIn] = useAuth();
@@ -71,7 +73,6 @@ export default function App() {
         >
           This website uses cookies to enhance the user experience.
         </CookieConsent>
-        {loggedIn ? (
           <Routes>
             <Route path="/" element={<HomePage />} />
 
@@ -119,13 +120,13 @@ export default function App() {
             />
             <Route path="/publish-scheme-title" element={<SchemeTitle />} />
             <Route path="/publish-scheme-dates" element={<SchemeDates />} />
+            <Route path="/publish-scheme-supporting-information" element={<SchemeSupportingInformation />} />
+
             <Route
               path="/publish-scheme-objectives"
               element={<SchemeObjectives />}
             />
-          </Routes>
-        ) : (
-          <Routes>
+    
             <Route path="/" element={<HomePage />} />
             <Route
               path="/register-citizen-landing"
@@ -160,6 +161,8 @@ export default function App() {
               path="/register-citizen-password"
               element={<EnterCitizenPassword />}
             />
+                        <Route path="/publish-scheme-supporting-information" element={<SchemeSupportingInformation />} />
+
             <Route
               path="/register-citizen-summary"
               element={<CitizenRegistrationSummary />}
@@ -212,6 +215,10 @@ export default function App() {
               path="/publish-scheme-landing"
               element={<RegisterSchemeLandingPage />}
             />
+               <Route
+              path="/register-company-link-citizen"
+              element={<LinkAccount />}
+            />
             <Route path="/publish-scheme-title" element={<SchemeTitle />} />
             <Route
               path="/publish-scheme-details"
@@ -239,8 +246,10 @@ export default function App() {
               element={<SchemePublisherDetails />}
             />
             <Route path="/publish-scheme-summary" element={<SchemeSummary />} />
+            <Route path="/Registration-Form-Landing-Page" element={<RegistrationFormLandingPage />} />
+
           </Routes>
-        )}
+        
         <Footer />
       </Router>
     </div>

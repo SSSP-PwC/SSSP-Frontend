@@ -2,9 +2,12 @@ import React, { useState } from "react";
 import { Form, Alert } from "react-bootstrap";
 import { Button, MainHeading } from "../../../globalStyles";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import Cookies from "universal-cookie";
 
 export const LinkAccount = () => {
+  const { state } = useLocation();
+
   const {
     register,
     handleSubmit,
@@ -15,15 +18,43 @@ export const LinkAccount = () => {
   const [show, setShow] = useState(false);
   const [variantType, setVariantType] = useState("");
   const [userResponse, setUserResponse] = useState("");
-  const submitForm = (data) => {
-    if (data.CitizenID != undefined) {
-      console.log(data);
-      setUserResponse(data.message);
-      setShow(true);
-      sessionStorage.setItem("citizen-id", data["CitizenID"]);
-      navigate("/company-associated-contact");
-    } else {
-    }
+  const submitForm = async (d) => {
+    const cookies = new Cookies();
+
+    const token = JSON.parse(cookies.get("REACT_TOKEN_AUTH_KEY"))
+      const url = "http://127.0.0.1:21000/api/create-company";
+      const data = {
+        company_name: state.company_name,
+        company_registration_number: state.company_number,
+        company_address: {
+          address_line_1: state.address_line_1,
+          address_line_2: state.address_line_2,
+          postal_code: state.postal_code,
+          country: state.country,
+          locality: state.locality,
+          region: state.region,
+        },
+        email: d.EmailAddress,
+        password: d.Password
+
+      };
+
+      const options = {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      };
+      try {
+        const response = await fetch(url, options);
+        const result = await response.json();
+        console.log(result);
+      } catch (error) {
+        console.error(error);
+      }
   };
   return (
     <div className="container">

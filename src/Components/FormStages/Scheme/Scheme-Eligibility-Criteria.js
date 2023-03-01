@@ -29,8 +29,8 @@ export const SchemeEligibilityCriteria = () => {
         scheme_details: state.scheme_details,
         scheme_start_date: state.scheme_start_date,
         scheme_end_date: state.scheme_end_date,
-        scheme_objectives: state.scheme_objectives,
-        scheme_application_details: state.scheme_application_details,
+        scheme_objectives_description: state.scheme_objectives_description,
+        scheme_application_details_description: state.scheme_application_details_description,
         scheme_eligibility_criteria: data.scheme_eligibility_criteria
       },
     });

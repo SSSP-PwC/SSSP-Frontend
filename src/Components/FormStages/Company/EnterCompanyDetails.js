@@ -52,9 +52,9 @@ export const EnterCompanyDetails = () => {
     navigate("/register-company-associated-contact", {
       state: {
         company_name: data.company_name,
-        company_registration_number: data.company_registration_number,
-        company_address_line_1: addressLine1,
-        company_address_line_2: addressLine2,
+        company_number: data.company_registration_number,
+        address_line_1: addressLine1,
+        address_line_2: addressLine2,
         postal_code: postalCode,
         country: country,
         locality: locality,

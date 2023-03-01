@@ -25,7 +25,6 @@ export const SchemeSummary = () => {
   const submitForm = async () => {
     const url =
       "https://20230228t113400-dot-sssp-378808.nw.r.appspot.com/api/post-schemes";
-
     const data = {
       scheme_title: state.scheme_title,
       scheme_description: state.scheme_description,
@@ -34,7 +33,8 @@ export const SchemeSummary = () => {
       scheme_objectives_description: state.scheme_objectives_description,
       scheme_start_date: state.scheme_start_date,
       scheme_end_date: state.scheme_end_date,
-      scheme_application_details_description: state.scheme_application_details,
+      scheme_application_details_description:
+        state.scheme_application_details_description,
       scheme_supporting_information_details:
         state.scheme_supporting_information_details,
       scheme_publisher_details: state.scheme_publisher_details,
@@ -120,12 +120,10 @@ export const SchemeSummary = () => {
           }}
           {...getToggleProps()}
         >
-          {isExpanded
-            ? "Minimise Scheme Details ↑"
-            : "Scheme Details ↓"}
+          {isExpanded ? "Minimise Scheme Details ↑" : "Scheme Details ↓"}
         </div>
         <div {...getCollapseProps()}>
-          <div className="content" style={{whiteSpace: "pre-line"}}>
+          <div className="content" style={{ whiteSpace: "pre-line" }}>
             {state.scheme_details}
             <br />
             <br />
@@ -147,9 +145,7 @@ export const SchemeSummary = () => {
           }}
           {...getToggleProps()}
         >
-          {isExpanded
-            ? "Minimise Start Date ↑"
-            : "Scheme Start Date ↓"}
+          {isExpanded ? "Minimise Start Date ↑" : "Scheme Start Date ↓"}
         </div>
         <div {...getCollapseProps()}>
           <div className="content">
@@ -174,9 +170,7 @@ export const SchemeSummary = () => {
           }}
           {...getToggleProps()}
         >
-          {isExpanded
-            ? "Minimise End Date ↑"
-            : "Scheme End Date ↓"}
+          {isExpanded ? "Minimise End Date ↑" : "Scheme End Date ↓"}
         </div>
         <div {...getCollapseProps()}>
           <div className="content">
@@ -201,9 +195,7 @@ export const SchemeSummary = () => {
           }}
           {...getToggleProps()}
         >
-          {isExpanded
-            ? "Minimise Scheme Objectives ↑"
-            : "Scheme Objectives ↓"}
+          {isExpanded ? "Minimise Scheme Objectives ↑" : "Scheme Objectives ↓"}
         </div>
         <div {...getCollapseProps()}>
           <div className="content">
@@ -282,9 +274,7 @@ export const SchemeSummary = () => {
           }}
           {...getToggleProps()}
         >
-          {isExpanded
-            ? "Minimise Publisher ↑"
-            : "Scheme Publisher ↓"}
+          {isExpanded ? "Minimise Publisher ↑" : "Scheme Publisher ↓"}
         </div>
         <div {...getCollapseProps()}>
           <div className="content">
@@ -297,14 +287,9 @@ export const SchemeSummary = () => {
     );
   }
 
-
-
-
-
   return (
     <div className="container">
-      <div
-      >
+      <div>
         {show ? (
           <>
             <Alert
@@ -333,14 +318,6 @@ export const SchemeSummary = () => {
           <Form.Group>
             <small>
               <SchemeTitle />
-            </small>
-            <Divider></Divider>
-          </Form.Group>
-          <br></br>
-
-          <Form.Group>
-            <small>
-              <SchemeShortDescription />
             </small>
             <Divider></Divider>
           </Form.Group>

@@ -29,8 +29,8 @@ export const SchemeApplicationDetails = () => {
         scheme_details: state.scheme_details,
         scheme_start_date: state.scheme_start_date,
         scheme_end_date: state.scheme_end_date,
-        scheme_objectives: state.scheme_objectives,
-        scheme_application_details: data.scheme_application_details
+        scheme_objectives_description: state.scheme_objectives_description,
+        scheme_application_details_description: data.scheme_application_details_description
       },
     });
   };
@@ -78,19 +78,19 @@ export const SchemeApplicationDetails = () => {
                 placeholder="Please describe here"
                 rows="10"
                 style={{ borderColor: "black", maxWidth: "500px" }}
-                {...register("scheme_application_details", {
+                {...register("scheme_application_details_description", {
                   required: true,
                   maxLength: 4000,
                 })}
               />
 
-              {errors.scheme_application_details && (
+              {errors.scheme_application_details_description && (
                 <p style={{ color: "red" }}>
                   <small>Application process details required</small>
                 </p>
               )}
 
-              {errors.scheme_application_details?.type === "maxLength" && (
+              {errors.scheme_application_details_description?.type === "maxLength" && (
                 <p style={{ color: "red" }}>
                   <small>Max characters should be 4000</small>
                 </p>

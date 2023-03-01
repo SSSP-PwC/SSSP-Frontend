@@ -3,12 +3,11 @@ import { Form, Alert } from "react-bootstrap";
 import { Button, Heading } from "../../../globalStyles";
 import { MainHeading } from "../../../globalStyles";
 import { useForm } from "react-hook-form";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Divider } from "@mui/material";
 
-export const SchemePublisherDetails = () => {
+export const SchemeSupportingInformation = () => {
   const { state } = useLocation();
-
   const {
     register,
     handleSubmit,
@@ -22,7 +21,7 @@ export const SchemePublisherDetails = () => {
   const [userResponse, setUserResponse] = useState("");
 
   const handleNextStage = (data) => {
-    navigate("/publish-scheme-supporting-information", {
+    navigate("/publish-scheme-summary", {
       state: {
         scheme_title: state.scheme_title,
         scheme_description: state.scheme_description,
@@ -32,9 +31,11 @@ export const SchemePublisherDetails = () => {
         scheme_objectives_description: state.scheme_objectives_description,
         scheme_application_details_description: state.scheme_application_details_description,
         scheme_eligibility_criteria: state.scheme_eligibility_criteria,
-        scheme_publisher_details: data.scheme_publisher_details
+        scheme_publisher_details: state.scheme_publisher_details,
+        scheme_supporting_information_details: data.scheme_supporting_information_details
       },
     });
+
   };
 
   return (
@@ -63,33 +64,40 @@ export const SchemePublisherDetails = () => {
             <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
               Publish Scheme
             </MainHeading>
-            <Divider style={{ background: "black" }}></Divider>
+            <Divider></Divider>
             <br></br>
-            <p style={{ color: "#505a5f" }}>Section 1 of 5</p>
+            <p style={{ color: "#505a5f" }}>Section 4 of 5</p>
             <MainHeading
               style={{ color: "#0B0C0C", fontWeight: "bold", fontSize: "20px" }}
             >
-              Publisher Details
+              Scheme Supporting Information
             </MainHeading>
 
             <Form.Group>
-              <Form.Label>Name given to the publisher</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter publisher name"
+              <p style={{ color: "#505a5f" }}>
+                Add any supporting information about the scheme
+              </p>
+
+              <textarea
+                className="form-control"
+                placeholder="Please describe here"
+                rows="10"
                 style={{ borderColor: "black", maxWidth: "500px" }}
-                {...register("scheme_publisher_details", { required: true, maxLength: 80 })}
+                {...register("scheme_supporting_information_details", {
+                  required: true,
+                  maxLength: 4000,
+                })}
               />
 
-              {errors.scheme_publisher_details && (
+              {errors.scheme_supporting_information_details && (
                 <p style={{ color: "red" }}>
-                  <small>Publisher details required</small>
+                  <small>Scheme objectives required</small>
                 </p>
               )}
 
-              {errors.scheme_publisher_details?.type === "maxLength" && (
+              {errors.scheme_supporting_information_details?.type === "maxLength" && (
                 <p style={{ color: "red" }}>
-                  <small>Max characters should be 80</small>
+                  <small>Max characters should be 4000</small>
                 </p>
               )}
             </Form.Group>

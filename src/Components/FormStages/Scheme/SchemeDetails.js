@@ -20,10 +20,11 @@ export const SchemeDetails = ({ schemeId }) => {
       .then((data) => setScheme(data), setLoaded(true));
   }, [schemeId]);
 
-  function renderApplicationForm() {
-    navigate("/Application-Form-Building-Information", {
+  function renderRegisterForm() {
+    navigate("/Registration-Form-Landing-Page", {
       state: {
         scheme_id: schemeId,
+        scheme_title: scheme.scheme_title
       },
     });
   }
@@ -197,10 +198,10 @@ export const SchemeDetails = ({ schemeId }) => {
           <br></br>
           <Form.Group>
             <Button
-              onClick={renderApplicationForm}
+              onClick={renderRegisterForm}
               style={{ marginBottom: "15px" }}
             >
-              Submit new application
+              Register
             </Button>{" "}
             <Button
               onClick={renderSelfEligibilityChecker}
