@@ -22,7 +22,6 @@ import { ChangeTownCity } from "./Components/FormStages/Citizen/Change/ChangeTow
 import { ChangePostcode } from "./Components/FormStages/Citizen/Change/ChangePostcode";
 import { ChangeEmail } from "./Components/FormStages/Citizen/Change/ChangeEmail";
 import { CompanyRegistrationLandingPage } from "./Components/FormStages/Company/CompanyRegistrationLandingPage";
-import { CompanyRegistrationSummary } from "./Components/FormStages/Company/CompanyRegistrationSummary";
 import { EnterCompanyDetails } from "./Components/FormStages/Company/EnterCompanyDetails";
 import { CitizenSignIn } from "./Components/FormStages/Citizen/DataEntry/CitizenSignIn";
 import { useAuth } from "./Components/Auth/auth";
@@ -53,6 +52,8 @@ import { EligibilityCheckerSoftwareDetails } from "./Components/FormStages/Schem
 import { EligibilityCheckerSummary } from "./Components/FormStages/Scheme/Eligibility-Checker-Summary";
 import { SchemeSupportingInformation } from "./Components/FormStages/Scheme/Scheme-Supporting-Information";
 import { RegistrationFormLandingPage } from "./Components/FormStages/Scheme/Registration-Form-Landing-Page";
+import { RegisterCompanySummary } from "./Components/FormStages/Company/Register-Company-Summary";
+import FormBuilder from "./Components/FormStages/Scheme/FormBuilder";
 
 export default function App() {
   const [loggedIn] = useAuth();
@@ -84,7 +85,7 @@ export default function App() {
             />
             <Route
               path="/register-company-summary"
-              element={<CompanyRegistrationSummary />}
+              element={<RegisterCompanySummary />}
             />
             <Route path="/link-account" element={<LinkAccount />} />
             <Route
@@ -162,6 +163,10 @@ export default function App() {
               element={<EnterCitizenPassword />}
             />
                         <Route path="/publish-scheme-supporting-information" element={<SchemeSupportingInformation />} />
+                        <Route
+              path="/register-company-summary"
+              element={<RegisterCompanySummary />}
+            />
 
             <Route
               path="/register-citizen-summary"
@@ -229,6 +234,10 @@ export default function App() {
               path="/publish-scheme-objectives"
               element={<SchemeObjectives />}
             />
+              <Route
+              path="/Register-Scheme"
+              element={<FormBuilder />}
+            />
             <Route
               path="/publish-scheme-application-details"
               element={<SchemeApplicationDetails />}
@@ -236,6 +245,10 @@ export default function App() {
             <Route
               path="/register-company-landing"
               element={<CompanyRegistrationLandingPage />}
+            />
+               <Route
+              path="/register-company-summary"
+              element={<RegisterCompanySummary />}
             />
             <Route
               path="/publish-scheme-eligibility-criteria"
@@ -245,6 +258,7 @@ export default function App() {
               path="/publish-scheme-publisher-details"
               element={<SchemePublisherDetails />}
             />
+            
             <Route path="/publish-scheme-summary" element={<SchemeSummary />} />
             <Route path="/Registration-Form-Landing-Page" element={<RegistrationFormLandingPage />} />
 

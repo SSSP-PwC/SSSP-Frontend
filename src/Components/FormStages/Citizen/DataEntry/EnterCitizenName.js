@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Form, Alert } from "react-bootstrap";
-import { Button, MainHeading } from "../../../../globalStyles";
+import { MainHeading } from "../../../../globalStyles";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { LoadingBox, Button, InputField, ErrorSummary } from "govuk-react";
 
 export const EnterCitizenName = () => {
   const {
@@ -12,24 +13,27 @@ export const EnterCitizenName = () => {
     formState: { errors },
   } = useForm();
   const navigate = useNavigate();
+  const [errorMessageFlag, setErrorMessageFlag] = useState(false);
+  const [data, setData] = useState("");
 
-  const [show, setShow] = useState(false);
-  const [variantType, setVariantType] = useState("");
-  const [userResponse, setUserResponse] = useState("");
-  const submitForm = (data) => {
-    if (data.FirstName != undefined && data.LastName != undefined) {
-      setUserResponse(data.message);
-      setShow(true);
+  const submitForm = () => {
+    if (data.first_name != undefined && data.last_name != undefined) {
       navigate("/register-citizen-address", {
         state: {
-          first_name: data["FirstName"],
-          last_name: data["LastName"]
-
+          first_name: data.first_name,
+          last_name: data.last_name,
         },
       });
     } else {
-      alert("Company Name not defined");
+      setErrorMessageFlag(true);
     }
+  };
+  const updateData = (e) => {
+    console.log(data);
+    setData({
+      ...data,
+      [e.target.name]: e.target.value,
+    });
   };
 
   return (
@@ -38,20 +42,21 @@ export const EnterCitizenName = () => {
         className="form"
         style={{ marginTop: "70px", display: "inline-block" }}
       >
-        {show ? (
+        {errorMessageFlag && (
           <>
-            <Alert
-              variant={variantType}
-              onClose={() => {
-                setShow(false);
-              }}
-              dismissible
-            >
-              <p>{userResponse}</p>
-            </Alert>
+            <ErrorSummary
+              description={
+                "Please check that you have provided both first name and last name."
+              }
+              errors={[
+                {
+                  targetName: "description",
+                  text: "Name issue",
+                },
+              ]}
+              heading={"First name or last name not provided"}
+            />
           </>
-        ) : (
-          <div></div>
         )}
         <div style={{ display: "inline-block" }}>
           <div>
@@ -62,47 +67,26 @@ export const EnterCitizenName = () => {
             <p style={{ color: "#505a5f" }}>
               Please complete this section with your own details.
             </p>
-            <Form.Group>
-              <Form.Label>First Name</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter your first name"
-                style={{ borderColor: "black", maxWidth: "500px" }}
-                {...register("FirstName", { required: true, maxLength: 80 })}
-              />
-              {errors.FirstName && (
-                <p style={{ color: "red" }}>
-                  <small>First Name is required</small>
-                </p>
-              )}
-
-              {errors.FirstName?.type === "maxLength" && (
-                <p style={{ color: "red" }}>
-                  <small>Max characters should be 80</small>
-                </p>
-              )}
-            </Form.Group>
+            <InputField
+              onChange={updateData}
+              input={{
+                name: "first_name",
+                required: true,
+              }}
+            >
+              First name
+            </InputField>
             <br></br>
-            <Form.Group>
-              <Form.Label>Last Name</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter your last name"
-                style={{ borderColor: "black", maxWidth: "500px" }}
-                {...register("LastName", { required: true, maxLength: 80 })}
-              />
-
-              {errors.LastName && (
-                <p style={{ color: "red" }}>
-                  <small>Last Name is required</small>
-                </p>
-              )}
-              {errors.LastName?.type === "maxLength" && (
-                <p style={{ color: "red" }}>
-                  <small>Max characters should be 80</small>
-                </p>
-              )}
-            </Form.Group>
+            <InputField
+              onChange={updateData}
+              input={{
+                name: "last_name",
+                required: true,
+              }}
+            >
+              Last name
+            </InputField>
+            <br></br>
             <br></br>
             <br></br>
             <Form.Group>

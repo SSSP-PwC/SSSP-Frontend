@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Form, Alert } from "react-bootstrap";
-import { Button, MainHeading } from "../../../../globalStyles";
+import { MainHeading } from "../../../../globalStyles";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
+import { LoadingBox, Button, InputField, ErrorSummary } from "govuk-react";
 
 export const EnterCitizenEmail = () => {
   const {
@@ -13,15 +14,26 @@ export const EnterCitizenEmail = () => {
   } = useForm();
   const navigate = useNavigate();
   const { state } = useLocation();
+  const [data, setData] = useState("");
+  const [errorMessageFlag, setErrorMessageFlag] = useState(false);
+  const [errorMessageTitle, setErrorMessageTitle] = useState("");
+  const [errorMessageContent, setErrorMessageContent] = useState("");
+  const [errorMessageCause, setErrorMessageCause] = useState("");
 
-  const [show, setShow] = useState(false);
-  const [variantType, setVariantType] = useState("");
-  const [userResponse, setUserResponse] = useState("");
-  const submitForm = (data) => {
-    if (data.email != undefined) {
-      console.log(data);
-      setUserResponse(data.message);
-      setShow(true);
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    return emailRegex.test(email);
+  };
+  const updateData = (e) => {
+    setData({
+      ...data,
+      [e.target.name]: e.target.value,
+    });
+  };
+  const submitForm = () => {
+    if (data.email != undefined && validateEmail(data.email) === true) {
+
       navigate("/register-citizen-password", {
         state: {
           first_name: state.first_name,
@@ -30,10 +42,21 @@ export const EnterCitizenEmail = () => {
           address_line_2: state.address_line_2,
           town_city: state.town_city,
           postcode: state.postcode,
-          email: data["email"],
+          email: data.email,
         },
       });
-    } else {
+    } else if (data.email === undefined) {
+      setErrorMessageTitle("Email address is empty");
+      setErrorMessageContent("You must provide an email address.");
+      setErrorMessageCause("Email address");
+      setErrorMessageFlag(true);
+    } else if (validateEmail(data.email) === false) {
+      setErrorMessageTitle("Email address is invalid");
+      setErrorMessageContent(
+        "You must provide an email address in the correct format."
+      );
+      setErrorMessageCause("Email address");
+      setErrorMessageFlag(true);
     }
   };
   return (
@@ -42,20 +65,19 @@ export const EnterCitizenEmail = () => {
         className="form"
         style={{ marginTop: "70px", display: "inline-block" }}
       >
-        {show ? (
+        {errorMessageFlag && (
           <>
-            <Alert
-              variant={variantType}
-              onClose={() => {
-                setShow(false);
-              }}
-              dismissible
-            >
-              <p>{userResponse}</p>
-            </Alert>
+            <ErrorSummary
+              description={errorMessageContent}
+              errors={[
+                {
+                  targetName: "description",
+                  text: errorMessageCause,
+                },
+              ]}
+              heading={errorMessageTitle}
+            />
           </>
-        ) : (
-          <div></div>
         )}
         <div style={{ display: "inline-block" }}>
           <div>
@@ -67,27 +89,15 @@ export const EnterCitizenEmail = () => {
               Please complete this section with your own details.
             </p>
 
-            <Form.Group>
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                type="email"
-                placeholder="Enter your email address"
-                style={{ borderColor: "black", maxWidth: "500px" }}
-                {...register("email", { required: true, maxLength: 80 })}
-              />
-
-              {errors.email && (
-                <p style={{ color: "red" }}>
-                  <small>Email is required</small>
-                </p>
-              )}
-
-              {errors.email?.type === "maxLength" && (
-                <p style={{ color: "red" }}>
-                  <small>Max characters should be 80</small>
-                </p>
-              )}
-            </Form.Group>
+            <InputField
+              onChange={updateData}
+              input={{
+                name: "email",
+                required: true,
+              }}
+            >
+              Email address
+            </InputField>
             <br></br>
             <Form.Group>
               <Button

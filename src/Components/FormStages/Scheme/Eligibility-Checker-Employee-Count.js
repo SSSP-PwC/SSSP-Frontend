@@ -5,7 +5,7 @@ import { MainHeading } from "../../../globalStyles";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Divider } from "@mui/material";
-import { Button, ErrorSummary, InputField, Radio } from "govuk-react";
+import { Button, ErrorSummary, InputField } from "govuk-react";
 export const EligibilityCheckerEmployeeCount = () => {
   const {
     register,

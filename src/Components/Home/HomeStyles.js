@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { Button } from '../../globalStyles';
 
 export const HomeSection = styled.section`
-	height: 85vh;
+	height: 100vh;
 	background-position: center;
 	background-size: cover;
 	padding-top: clamp(70px, 25vh, 220px);

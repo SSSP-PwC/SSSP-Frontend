@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { Form, Alert } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { Button, MainHeading } from "../../../globalStyles";
-import { set, useForm } from "react-hook-form";
+import { MainHeading } from "../../../globalStyles";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { Divider } from "@mui/material";
-import { Spinner } from "govuk-react";
+import { LoadingBox, Button, InputField, ErrorSummary } from "govuk-react";
 
 export const EnterCompanyDetails = () => {
   const {
@@ -16,12 +16,14 @@ export const EnterCompanyDetails = () => {
   } = useForm();
   const navigate = useNavigate();
 
-  const [show, setShow] = useState(false);
+  const [errorMessageFlag, setErrorMessageFlag] = useState(false);
   const [detailsReturned, setDetailsReturned] = useState(false);
   const [variantType, setVariantType] = useState("");
   const [userResponse, setUserResponse] = useState("");
   const [loading, setLoading] = useState(false);
+  const [companyData, setCompanyData] = useState("");
   const [companyName, setCompanyName] = useState("");
+
   const [addressLine1, setAddressLine1] = useState("");
   const [addressLine2, setAddressLine2] = useState("");
   const [postalCode, setPostalCode] = useState("");
@@ -48,169 +50,114 @@ export const EnterCompanyDetails = () => {
     }
     return address;
   }
-  const handleClick = (data) => {
+  const handleClick = () => {
     navigate("/register-company-associated-contact", {
       state: {
-        company_name: data.company_name,
-        company_number: data.company_registration_number,
+        company_name: companyName,
+        company_number: companyData.company_registration_number,
         address_line_1: addressLine1,
         address_line_2: addressLine2,
         postal_code: postalCode,
         country: country,
         locality: locality,
-        region: region
+        region: region,
       },
     });
   };
+  const updateData = (e) => {
+    setCompanyData({
+      ...companyData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
-  const submitForm = async (information) => {
-    setCompanyName(information.company_name);
-
+  const submitForm = async () => {
+    setLoading(true);
     fetch(
-      `https://20230227t090520-dot-sssp-378808.nw.r.appspot.com/api/proxy?endpoint=company/${information.company_registration_number}`
+      `https://20230227t090520-dot-sssp-378808.nw.r.appspot.com/api/proxy?endpoint=company/${companyData.company_registration_number}`
     )
       .then((response) => response.json())
       .then((data) => {
-        setLoading(true);
         console.log(data);
-        console.log(data["company_name"]);
-
-        var registered_company_name = data["company_name"];
-
-        if (information.company_name === registered_company_name) {
-          const formattedAddress = formatAddress(
-            data["registered_office_address"]
-          );
-          setAddressLine1(formattedAddress.address_line_1);
-          setAddressLine2(formattedAddress.address_line_2);
-          setPostalCode(formattedAddress.postal_code);
-          setCountry(formattedAddress.country);
-          setLocality(formattedAddress.locality);
-          setRegion(formattedAddress.region);
-          setDetailsReturned(true);
-          setLoading(false);
-        } else {
-          ///CHANGE THIS TO COMPANIES HOUSE ERROR MESSAGE
-          setShow(true);
-          setVariantType("danger");
-          setUserResponse(
-            "We're sorry, the company name or registration number you entered does not match any record from companies house. Please double-check the information and try again."
-          );
-          setLoading(false);
-        }
+        const formattedAddress = formatAddress(
+          data["registered_office_address"]
+        );
+        setCompanyName(data.company_name)
+        setAddressLine1(formattedAddress.address_line_1);
+        setAddressLine2(formattedAddress.address_line_2);
+        setPostalCode(formattedAddress.postal_code);
+        setCountry(formattedAddress.country);
+        setLocality(formattedAddress.locality);
+        setRegion(formattedAddress.region);
+        setDetailsReturned(true);
+        setLoading(false);
       })
-      .catch((error) => {});
+      .catch((error) => {
+        setErrorMessageFlag(true);
+        setLoading(false);
+      });
   };
 
   return (
     <div className="container">
-      {loading === true && (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "100vh",
-          }}
-        >
-          <Spinner fill="black" height="256px" title="Spinner" width="256px" />{" "}
-        </div>
-      )}
       <div
         className="form"
         style={{ marginTop: "20px", display: "inline-block" }}
       >
-        {show && (
-          <div style={{ marginTop: "30px" }}>
-            <Alert
-              variant={variantType}
-              onClose={() => {
-                setShow(false);
-              }}
-              dismissible
-            >
-              <p>{userResponse}</p>
-            </Alert>
-          </div>
+        {detailsReturned === false && errorMessageFlag === true && (
+          <ErrorSummary
+            description={
+              "Please check that you have the correct company number."
+            }
+            errors={[
+              {
+                targetName: "description",
+                text: "Company profile not found",
+              },
+            ]}
+            heading={"Could not find company profile"}
+          />
         )}
-
-        {detailsReturned === false && loading === false && (
+        {detailsReturned === false && (
           <div style={{ display: "inline-block" }}>
-            <div>
-              <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
-                Enter your company name and registration number
-              </MainHeading>
-              <p style={{ color: "#505a5f" }}>
-                Profile Creation: Section 1 of 4
-              </p>
-              <p style={{ color: "#0B0C0C", fontSize: "12px" }}>
-                We will use this information to cross-reference against
-                companies house database.
-              </p>
-              <p style={{ color: "#0B0C0C", fontSize: "12px" }}>
-                Both fields must be an exact match to what is stored by
-                companies house.
-              </p>
-            </div>
-            <Form.Group>
-              <Form.Label>Company name</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter company name"
-                style={{ borderColor: "black", maxWidth: "500px" }}
-                {...register("company_name", {
+            <LoadingBox loading={loading}>
+              <div>
+                <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
+                  Enter your company details
+                </MainHeading>
+                <p style={{ color: "#505a5f" }}>
+                  Profile Creation: Section 1 of 4
+                </p>
+                <p style={{ color: "#0B0C0C", fontSize: "12px" }}>
+                  We will use this information to cross-reference against
+                  companies house database.
+                </p>
+                <p style={{ color: "#0B0C0C", fontSize: "12px" }}>
+                  Company number must be an exact match to companies house
+                  records.
+                </p>
+              </div>
+              <InputField
+                onChange={updateData}
+                input={{
+                  name: "company_registration_number",
                   required: true,
-                  maxLength: 120,
-                })}
-              />
-
-              {errors.company_name && (
-                <p style={{ color: "red" }}>
-                  <small>Company Name is required</small>
-                </p>
-              )}
-
-              {errors.company_name?.type === "maxLength" && (
-                <p style={{ color: "red" }}>
-                  <small>Max characters should be 120</small>
-                </p>
-              )}
-            </Form.Group>
-            <br></br>
-            <Form.Group>
-              <Form.Label>Registration number</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter registration number"
-                style={{ borderColor: "black", maxWidth: "500px" }}
-                {...register("company_registration_number", {
-                  required: true,
-                  maxLength: 120,
-                })}
-              />
-
-              {errors.company_registration_number && (
-                <p style={{ color: "red" }}>
-                  <small>Registration Number is required</small>
-                </p>
-              )}
-
-              {errors.company_registration_number?.type === "maxLength" && (
-                <p style={{ color: "red" }}>
-                  <small>Max characters should be 120</small>
-                </p>
-              )}
-            </Form.Group>
-            <br></br>
-            <Form.Group>
-              <Button
-                style={{ marginBottom: "15px" }}
-                onClick={handleSubmit(submitForm)}
+                }}
               >
-                Continue
-              </Button>
-            </Form.Group>
-            <br></br>
+                Company registration number
+              </InputField>
+              <br></br>
+
+              <Form.Group>
+                <Button
+                  style={{ marginBottom: "15px" }}
+                  onClick={handleSubmit(submitForm)}
+                >
+                  Continue
+                </Button>
+              </Form.Group>
+              <br></br>
+            </LoadingBox>
           </div>
         )}
 
@@ -218,7 +165,8 @@ export const EnterCompanyDetails = () => {
           <div style={{ display: "inline-block" }}>
             <form style={{ display: "inline-block" }}>
               <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
-                This is the correspondance address we will use for {companyName}
+                This is the correspondance address we will use for{" "}
+                {companyData.company_name}
               </MainHeading>
               <p style={{ color: "#0B0C0C", fontSize: "12px" }}>
                 Check this address before continuing.

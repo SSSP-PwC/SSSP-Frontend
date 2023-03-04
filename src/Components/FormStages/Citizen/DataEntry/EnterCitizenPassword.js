@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Form, Alert } from "react-bootstrap";
-import { Button, MainHeading } from "../../../../globalStyles";
+import { MainHeading } from "../../../../globalStyles";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
+import { LoadingBox, Button, InputField, ErrorSummary } from "govuk-react";
 
 export const EnterCitizenPassword = () => {
   const {
@@ -14,17 +15,22 @@ export const EnterCitizenPassword = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
 
-  const [show, setShow] = useState(false);
-  const [variantType, setVariantType] = useState("");
-  const [userResponse, setUserResponse] = useState("");
-  const submitForm = (data) => {
-    if (data.password === data.confirmPassword) {
-      console.log(data);
-      setUserResponse(data.message);
-      sessionStorage.setItem("Password", data.password);
-      setShow(true);
+  const [data, setData] = useState("");
+  const [errorMessageFlag, setErrorMessageFlag] = useState(false);
+  const [errorMessageTitle, setErrorMessageTitle] = useState("");
+  const [errorMessageContent, setErrorMessageContent] = useState("");
+  const [errorMessageCause, setErrorMessageCause] = useState("");
+  const updateData = (e) => {
+    console.log(data);
+    setData({
+      ...data,
+      [e.target.name]: e.target.value,
+    });
+  };
+  const submitForm = () => {
+    if (data.password === data.confirm_password) {
       navigate("/register-citizen-summary", {
-        state:{
+        state: {
           first_name: state.first_name,
           last_name: state.last_name,
           address_line_1: state.address_line_1,
@@ -32,14 +38,14 @@ export const EnterCitizenPassword = () => {
           town_city: state.town_city,
           postcode: state.postcode,
           email: state.email,
-          password: data["password"]
-        }
-
+          password: data.password,
+        },
       });
-    } else {
-      setUserResponse("Passwords do not match");
-      setShow(true);
-      setVariantType("danger");
+    } else if (data.password !== data.confirm_password) {
+      setErrorMessageTitle("Passwords do not match");
+      setErrorMessageContent("You must provide passwords that match.");
+      setErrorMessageCause("Password, Confirm Password");
+      setErrorMessageFlag(true);
     }
   };
   return (
@@ -48,20 +54,19 @@ export const EnterCitizenPassword = () => {
         className="form"
         style={{ marginTop: "70px", display: "inline-block" }}
       >
-        {show ? (
-          <div style={{ marginTop: "50px" }}>
-            <Alert
-              variant={variantType}
-              onClose={() => {
-                setShow(false);
-              }}
-              dismissible
-            >
-              <p>{userResponse}</p>
-            </Alert>
-          </div>
-        ) : (
-          <div></div>
+        {errorMessageFlag && (
+          <>
+            <ErrorSummary
+              description={errorMessageContent}
+              errors={[
+                {
+                  targetName: "description",
+                  text: errorMessageCause,
+                },
+              ]}
+              heading={errorMessageTitle}
+            />
+          </>
         )}
         <div style={{ display: "inline-block" }}>
           <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
@@ -71,46 +76,26 @@ export const EnterCitizenPassword = () => {
           <p style={{ color: "#505a5f" }}>
             Please complete this section with your own details.
           </p>
-          <Form.Group>
-            <Form.Label>Password</Form.Label>
-            <Form.Control
-              type="password"
-              placeholder="Enter a password"
-              style={{ borderColor: "black", maxWidth: "500px" }}
-              {...register("password", { required: true, minLength: 8 })}
-            />
 
-            {errors.password && (
-              <p style={{ color: "red" }}>
-                <small>Password is required</small>
-              </p>
-            )}
-            {errors.password?.type === "minLength" && (
-              <p style={{ color: "red" }}>
-                <small>Min characters should be 8</small>
-              </p>
-            )}
-          </Form.Group>
+          <InputField
+            onChange={updateData}
+            input={{
+              name: "password",
+              type: "password",
+            }}
+          >
+            Password
+          </InputField>
           <br></br>
-          <Form.Group>
-            <Form.Label>Confirm Password</Form.Label>
-            <Form.Control
-              type="password"
-              placeholder="Confirm your password"
-              style={{ borderColor: "black", maxWidth: "500px" }}
-              {...register("confirmPassword", { required: true, minLength: 8 })}
-            />
-            {errors.confirmPassword && (
-              <p style={{ color: "red" }}>
-                <small>Confirm Password is required</small>
-              </p>
-            )}
-            {errors.confirmPassword?.type === "minLength" && (
-              <p style={{ color: "red" }}>
-                <small>Min characters should be 8</small>
-              </p>
-            )}
-          </Form.Group>
+          <InputField
+            onChange={updateData}
+            input={{
+              name: "confirm_password",
+              type: "password",
+            }}
+          >
+            Confirm Password
+          </InputField>
           <br></br>
           <Button
             style={{ marginBottom: "15px" }}

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Form, Alert } from "react-bootstrap";
-import { Button, Heading } from "../../../globalStyles";
 import { MainHeading } from "../../../globalStyles";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Divider } from "@mui/material";
+import { TextArea, Button } from "govuk-react";
 
 export const SchemeDescription = () => {
   const { state } = useLocation();
@@ -16,7 +16,8 @@ export const SchemeDescription = () => {
     formState: { errors },
   } = useForm();
   const navigate = useNavigate();
-
+  const [schemeDescription, setSchemeDescription] = useState("");
+  const [schemeDetails, setSchemeDetails] = useState("");
   const [show, setShow] = useState(false);
   const [variantType, setVariantType] = useState("");
   const [userResponse, setUserResponse] = useState("");
@@ -26,8 +27,18 @@ export const SchemeDescription = () => {
       state: {
         scheme_title: state.scheme_title,
         scheme_description: data.scheme_description,
-        scheme_details: data.scheme_details
+        scheme_details: data.scheme_details,
       },
+    });
+  };
+  const updateData = (e) => {
+    setSchemeDescription({
+      ...schemeDescription,
+      [e.target.name]: e.target.value,
+    });
+    setSchemeDetails({
+      ...schemeDetails,
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -68,62 +79,30 @@ export const SchemeDescription = () => {
             <p style={{ color: "#0B0C0C" }}>
               Please complete this section with the title of the scheme.
             </p>
-            <Form.Group>
-              <Form.Label>Short description about the scheme</Form.Label>
-              <p style={{ color: "#505a5f" }}>This is for displaying a short blurb about the scheme</p>
-              <textarea
-                className="form-control"
-                placeholder="Please describe here"
-                rows="3"
-                style={{ borderColor: "black", maxWidth: "500px" }}
-                {...register("scheme_description", {
-                  required: true,
-                  maxLength: 250,
-                })}
-              />
 
-              {errors.scheme_description && (
-                <p style={{ color: "red" }}>
-                  <small>Short description required</small>
-                </p>
-              )}
-
-              {errors.scheme_description?.type === "maxLength" && (
-                <p style={{ color: "red" }}>
-                  <small>Max characters should be 250</small>
-                </p>
-              )}
-            </Form.Group>
-            <br></br>
-            <Form.Group>
-              <Form.Label>Further details about the scheme</Form.Label>
-              <p style={{ color: "#505a5f" }}>Add as much detail here about the scheme</p>
-
-              <textarea
-                className="form-control"
-                placeholder="Please describe here"
-                rows="10"
-                style={{ borderColor: "black", maxWidth: "500px" }}
-                {...register("scheme_details", {
-                  required: true,
-                  maxLength: 4000,
-                })}
-              />
-
-              {errors.scheme_details && (
-                <p style={{ color: "red" }}>
-                  <small>Scheme details required</small>
-                </p>
-              )}
-
-              {errors.scheme_details?.type === "maxLength" && (
-                <p style={{ color: "red" }}>
-                  <small>Max characters should be 4000</small>
-                </p>
-              )}
-            </Form.Group>
+            <TextArea
+              onChange={updateData}
+              input={{
+                name: "scheme_description",
+                rows: 5,
+                cols: 70,
+              }}
+            >
+              Short description about the scheme
+            </TextArea>
             <br></br>
 
+            <TextArea
+              onChange={updateData}
+              input={{
+                name: "scheme_details",
+                rows: 12,
+                cols: 70,
+              }}
+            >
+              Further details about the scheme
+            </TextArea>
+            <br></br>
             <Form.Group>
               <Button
                 style={{ marginBottom: "15px" }}

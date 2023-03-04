@@ -1,13 +1,14 @@
 import React from "react";
-import { Button, MainHeading } from "../../../globalStyles";
+import { MainHeading } from "../../../globalStyles";
 import { Divider } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { Button, InputField, ErrorSummary } from "govuk-react";
 
 export const CompanyRegistrationLandingPage = () => {
-    const navigate = useNavigate();
-    const handleNextPage = () => {
-        navigate("/register-company-details");
-      };
+  const navigate = useNavigate();
+  const handleNextPage = () => {
+    navigate("/register-company-details");
+  };
   return (
     <div className="container">
       <div
@@ -32,11 +33,7 @@ export const CompanyRegistrationLandingPage = () => {
           <li>Company Registration Number</li>
           <li>Contact Details</li>
         </ul>
-        <Button
-          style={{ marginBottom: "15px" }}
-          onClick={handleNextPage}
-
-        >
+        <Button style={{ marginBottom: "15px" }} onClick={handleNextPage}>
           Register now
         </Button>
       </div>

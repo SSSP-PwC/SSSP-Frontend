@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { Form, Alert } from "react-bootstrap";
 import { Link, useLocation } from "react-router-dom";
-import { Button, MainHeading } from "../../../../globalStyles";
+import { MainHeading } from "../../../../globalStyles";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { LoadingBox, Button, InputField, ErrorSummary } from "govuk-react";
 
 export const EnterCitizenAddress = () => {
   const {
@@ -14,30 +15,63 @@ export const EnterCitizenAddress = () => {
   } = useForm();
   const navigate = useNavigate();
 
-  const [show, setShow] = useState(false);
-  const [variantType, setVariantType] = useState("");
-  const [userResponse, setUserResponse] = useState("");
+  const [errorMessageFlag, setErrorMessageFlag] = useState(false);
+  const [errorMessageTitle, setErrorMessageTitle] = useState("");
+  const [errorMessageContent, setErrorMessageContent] = useState("");
+  const [errorMessageCause, setErrorMessageCause] = useState("");
+
+
   const { state } = useLocation();
-  const submitForm = (data) => {
-    //Replace with API callout to Companies House
+  const [data, setData] = useState("");
+  const updateData = (e) => {
+    setData({
+      ...data,
+      [e.target.name]: e.target.value,
+    });
+  };
+  const submitForm = () => {
     if (
-      data.CitizenAddressLine1 !== undefined &&
-      data.CitizenTownCity !== undefined &&
-      data.CitizenPostcode !== undefined
+      data.address_line_1 !== undefined &&
+      data.town_city !== undefined &&
+      data.postcode !== undefined
     ) {
-      setUserResponse(data.message);
-      setShow(true);
       navigate("/register-citizen-email", {
         state: {
           first_name: state.first_name,
           last_name: state.last_name,
-          address_line_1: data["CitizenAddressLine1"],
-          address_line_2: data["CitizenAddressLine2"],
-          town_city: data["CitizenTownCity"],
-          postcode: data["CitizenPostcode"],
+          address_line_1: data.address_line_1,
+          address_line_2: data.address_line_2,
+          town_city: data.town_city,
+          postcode: data.postcode,
         },
       });
-    } else {
+    } else if (data.address_line_1 === undefined && data.town_city === undefined && data.postcode === undefined){
+      setErrorMessageTitle("All address fields are empty")
+      setErrorMessageContent("You must provide your address details in order to proceed.")
+      setErrorMessageCause("Address Line 1, Town/City, Postcode")
+      setErrorMessageFlag(true)
+
+    }
+    else if (data.address_line_1 === undefined ){
+      setErrorMessageTitle("Address Line 1 is empty")
+      setErrorMessageContent("You must provide your address details in order to proceed.")
+      setErrorMessageCause("Address Line 1")
+      setErrorMessageFlag(true)
+
+    }
+    else if (data.town_city === undefined ){
+      setErrorMessageTitle("Town/City is empty")
+      setErrorMessageContent("You must provide your address details in order to proceed.")
+      setErrorMessageCause("Town/City")
+      setErrorMessageFlag(true)
+
+    }
+    else if (data.postcode === undefined ){
+      setErrorMessageTitle("Postcode is empty")
+      setErrorMessageContent("You must provide your address details in order to proceed.")
+      setErrorMessageCause("Postcode")
+      setErrorMessageFlag(true)
+
     }
   };
   return (
@@ -46,28 +80,21 @@ export const EnterCitizenAddress = () => {
         className="form"
         style={{ marginTop: "70px", display: "inline-block" }}
       >
-        {show ? (
+        {errorMessageFlag && (
           <>
-            <Alert
-              variant={variantType}
-              onClose={() => {
-                setShow(false);
-              }}
-              dismissible
-            >
-              <p>{userResponse}</p>
-            </Alert>
-
-            <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
-              Enter your company name
-            </MainHeading>
-            <p style={{ color: "#0B0C0C" }}>
-              We will use this information to cross-reference against companies
-              house database
-            </p>
+            <ErrorSummary
+              description={
+                errorMessageContent
+              }
+              errors={[
+                {
+                  targetName: "description",
+                  text: errorMessageCause,
+                },
+              ]}
+              heading={errorMessageTitle}
+            />
           </>
-        ) : (
-          <div></div>
         )}
         <div style={{ display: "inline-block" }}>
           <form style={{ display: "inline-block" }}>
@@ -78,98 +105,47 @@ export const EnterCitizenAddress = () => {
             <p style={{ color: "#505a5f" }}>
               Please complete this section with your own details.
             </p>
-            <Form.Group>
-              <Form.Label>Address Line 1</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter address line 1"
-                style={{ borderColor: "black", maxWidth: "500px" }}
-                {...register("CitizenAddressLine1", {
-                  required: true,
-                  maxLength: 80,
-                })}
-              />
-
-              {errors.CitizenAddressLine1 && (
-                <p style={{ color: "red" }}>
-                  <small>Address Line 1 is required</small>
-                </p>
-              )}
-
-              {errors.CitizenAddressLine1?.type === "maxLength" && (
-                <p style={{ color: "red" }}>
-                  <small>Max characters should be 80</small>
-                </p>
-              )}
-            </Form.Group>
+            <InputField
+              onChange={updateData}
+              input={{
+                name: "address_line_1",
+                required: true,
+              }}
+            >
+              Address Line 1
+            </InputField>
             <br></br>
-
-            <Form.Group>
-              <Form.Label>Address Line 2</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter address line 2"
-                style={{ borderColor: "black", maxWidth: "500px" }}
-                {...register("CitizenAddressLine2", {
-                  required: false,
-                  maxLength: 80,
-                })}
-              />
-              {errors.CitizenAddressLine2?.type === "maxLength" && (
-                <p style={{ color: "red" }}>
-                  <small>Max characters should be 80</small>
-                </p>
-              )}
-            </Form.Group>
+            <InputField
+              onChange={updateData}
+              input={{
+                name: "address_line_2",
+                required: true,
+              }}
+            >
+              Address Line 2
+            </InputField>
             <br></br>
-            <Form.Group>
-              <Form.Label>Town/City</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter town/city"
-                style={{ borderColor: "black", maxWidth: "500px" }}
-                {...register("CitizenTownCity", {
-                  required: true,
-                  maxLength: 80,
-                })}
-              />
-              {errors.CitizenTownCity && (
-                <p style={{ color: "red" }}>
-                  <small>Town/City is required</small>
-                </p>
-              )}
-              {errors.CitizenTownCity?.type === "maxLength" && (
-                <p style={{ color: "red" }}>
-                  <small>Max characters should be 80</small>
-                </p>
-              )}
-            </Form.Group>
+            <InputField
+              onChange={updateData}
+              input={{
+                name: "town_city",
+                required: true,
+              }}
+            >
+              Town/City
+            </InputField>
             <br></br>
-            <Form.Group>
-              <Form.Label>Postcode</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter postcode"
-                style={{ borderColor: "black", maxWidth: "500px" }}
-                {...register("CitizenPostcode", {
-                  required: true,
-                  maxLength: 8,
-                })}
-              />
-              {errors.CitizenPostcode && (
-                <p style={{ color: "red" }}>
-                  <small>Postcode is required</small>
-                </p>
-              )}
-              {errors.CitizenPostcode?.type === "maxLength" && (
-                <p style={{ color: "red" }}>
-                  <small>Max characters should be 8</small>
-                </p>
-              )}
-            </Form.Group>
+            <InputField
+              onChange={updateData}
+              input={{
+                name: "postcode",
+                required: true,
+              }}
+            >
+              Postcode
+            </InputField>
             <br></br>
           </form>
-
           <br></br>
           <Form.Group>
             <Button

@@ -60,10 +60,11 @@ export const ListSchemes = () => {
         </div>
       ) : (
         <div>
-          {loaded === true && (
+          {loaded === true  && (
             <div>
               <ListSchemesBreadcrumb />{" "}
               <div style={{ float: "right" }}>
+                
                 <Button>Register a scheme</Button>
               </div>
               <br></br>

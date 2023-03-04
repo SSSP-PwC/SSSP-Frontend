@@ -1,13 +1,22 @@
 import React, { useState } from "react";
 import { Form, Alert } from "react-bootstrap";
-import { Button, MainHeading } from "../../../globalStyles";
+import { MainHeading } from "../../../globalStyles";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
-import Cookies from "universal-cookie";
+import { Divider } from "@mui/material";
+import {
+  Button,
+  ErrorSummary,
+  InputField,
+  Radio,
+  LoadingBox,
+} from "govuk-react";
 
 export const LinkAccount = () => {
-  const { state } = useLocation();
+  const [emailAddress, setEmailAddress] = useState("");
+  const [password, setPassword] = useState("");
 
+  const { state } = useLocation();
   const {
     register,
     handleSubmit,
@@ -16,45 +25,61 @@ export const LinkAccount = () => {
   const navigate = useNavigate();
 
   const [show, setShow] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [variantType, setVariantType] = useState("");
   const [userResponse, setUserResponse] = useState("");
-  const submitForm = async (d) => {
-    const cookies = new Cookies();
 
-    const token = JSON.parse(cookies.get("REACT_TOKEN_AUTH_KEY"))
-      const url = "http://127.0.0.1:21000/api/create-company";
-      const data = {
-        company_name: state.company_name,
-        company_registration_number: state.company_number,
-        company_address: {
-          address_line_1: state.address_line_1,
-          address_line_2: state.address_line_2,
-          postal_code: state.postal_code,
-          country: state.country,
-          locality: state.locality,
-          region: state.region,
-        },
-        email: d.EmailAddress,
-        password: d.Password
+  const updateData = (e) => {
+    setEmailAddress({
+      ...emailAddress,
+      [e.target.name]: e.target.value,
+    });
+    setPassword({
+      ...password,
+      [e.target.name]: e.target.value,
+    });
+  };
+  const submit = async () => {
+    setLoading(true);
+    const url = "http://127.0.0.1:1000/api/link-citizen-to-company-checks";
 
-      };
+    const data = {
+      email: emailAddress.email,
+      password: password.password,
+    };
 
-      const options = {
-        method: "POST",
-        mode: "cors",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      };
-      try {
-        const response = await fetch(url, options);
-        const result = await response.json();
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    };
+    try {
+      const response = await fetch(url, options);
+      const result = await response.json();
+      setLoading(false);
+      if (result["citizen"]["message"] === "citizen exists") {
+        navigate("/register-company-summary", {
+          state: {
+            company_name: state.company_name,
+            company_registration_number: state.company_registration_number,
+            company_address: {
+              address_line_1: state.address_line_1,
+              address_line_2: state.address_line_2,
+              postal_code: state.postal_code,
+              country: state.country,
+              locality: state.locality,
+              region: state.region,
+            },
+            contact_person: result,
+          },
+        });
         console.log(result);
-      } catch (error) {
-        console.error(error);
       }
+    } catch (error) {
+      console.error(error);
+    }
   };
   return (
     <div className="container">
@@ -77,72 +102,48 @@ export const LinkAccount = () => {
         ) : (
           <div></div>
         )}
-        <div style={{ display: "inline-block" }}>
-          <div>
+
+        <form style={{ display: "inline-block" }}>
+          <LoadingBox loading={loading}>
             <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
-              Link an existing citizen account to {sessionStorage.getItem("company-name")} account
+              Link an existing citizen account
             </MainHeading>
-
-            <Form.Group>
-              <Form.Label>Email Address</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter email address"
-                style={{ borderColor: "black", maxWidth: "500px" }}
-                {...register("EmailAddress", {
-                  required: true,
-                  maxLength: 120,
-                })}
-              />
-
-              {errors.EmailAddress && (
-                <p style={{ color: "red" }}>
-                  <small>Email Address is required</small>
-                </p>
-              )}
-
-              {errors.CitizenID?.type === "maxLength" && (
-                <p style={{ color: "red" }}>
-                  <small>Max characters should be 120</small>
-                </p>
-              )}
-            </Form.Group>
+            <Divider style={{ background: "black" }}></Divider>
             <br></br>
+            <p style={{ color: "#505a5f" }}>Section 2 of 5</p>
             <Form.Group>
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Enter password"
-                style={{ borderColor: "black", maxWidth: "500px" }}
-                {...register("Password", {
-                  required: true,
-                  maxLength: 120,
-                })}
-              />
-
-              {errors.Password && (
-                <p style={{ color: "red" }}>
-                  <small>Password is required</small>
-                </p>
-              )}
-
-              {errors.Password?.type === "maxLength" && (
-                <p style={{ color: "red" }}>
-                  <small>Max characters should be 120</small>
-                </p>
-              )}
-            </Form.Group>
-            <br></br>
-            <Form.Group>
-              <Button
-                style={{ marginBottom: "15px" }}
-                onClick={handleSubmit(submitForm)}
+              <Form.Label>
+                How many people does your business employ?
+              </Form.Label>
+              <p style={{ color: "#505a5f" }}>
+                For more information on employee count go to <br></br>
+                https://mutuals.FinancialConductAuthority.org.uk
+              </p>
+              <InputField
+                onChange={updateData}
+                input={{
+                  name: "email",
+                  type: "email",
+                }}
               >
-                Continue
-              </Button>
-            </Form.Group>
-          </div>
-        </div>
+                Email Address
+              </InputField>
+              <br></br>
+              <InputField
+                onChange={updateData}
+                input={{
+                  name: "password",
+                  type: "password",
+                }}
+              >
+                Password
+              </InputField>
+              <br></br>
+            </Form.Group>{" "}
+            <Button onClick={handleSubmit(submit)}>Continue</Button>
+            <br></br>
+          </LoadingBox>
+        </form>
       </div>
     </div>
   );

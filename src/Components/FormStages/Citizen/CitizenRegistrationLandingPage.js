@@ -1,7 +1,8 @@
 import React from "react";
-import { Button, MainHeading } from "../../../globalStyles";
+import { MainHeading } from "../../../globalStyles";
 import { useNavigate } from "react-router-dom";
 import { Divider } from "@mui/material";
+import { Button } from "govuk-react";
 
 export const CitizenRegistrationLandingPage = () => {
   const navigate = useNavigate();

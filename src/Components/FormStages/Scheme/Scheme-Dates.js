@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Form, Alert } from "react-bootstrap";
-import { Button, Heading } from "../../../globalStyles";
 import { MainHeading } from "../../../globalStyles";
 import { useForm } from "react-hook-form";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Divider } from "@mui/material";
+import { Button, DateField } from "govuk-react";
 
 export const SchemeDates = () => {
   const { state } = useLocation();
@@ -67,37 +67,55 @@ export const SchemeDates = () => {
               Scheme Dates
             </MainHeading>
             <p style={{ color: "#0B0C0C" }}>
-              Please complete this section with the title of the scheme.
+              Please complete this section with the scheme dates.
             </p>
-            <Form.Group>
-              <Form.Label>Start Date</Form.Label>
-              <Form.Control
-                type="date"
-                style={{ borderColor: "black", maxWidth: "500px" }}
-                {...register("scheme_start_date", { required: true })}
-              />
-
-              {errors.scheme_start_date && (
-                <p style={{ color: "red" }}>
-                  <small>Scheme start date is required</small>
-                </p>
-              )}
-            </Form.Group>
+            <DateField
+              input={{
+                onBlur: function noRefCheck() {},
+                onChange: function noRefCheck() {},
+                onFocus: function noRefCheck() {},
+              }}
+              inputNames={{
+                day: "dayInputName",
+              }}
+              inputs={{
+                day: {
+                  autoComplete: "bday-day",
+                },
+                month: {
+                  autoComplete: "bday-month",
+                },
+                year: {
+                  autoComplete: "bday-year",
+                },
+              }}
+            >
+              Start Date
+            </DateField>
             <br></br>
-            <Form.Group>
-              <Form.Label>End Date</Form.Label>
-              <Form.Control
-                type="date"
-                style={{ borderColor: "black", maxWidth: "500px" }}
-                {...register("scheme_end_date", { required: true })}
-              />
-
-              {errors.scheme_end_date && (
-                <p style={{ color: "red" }}>
-                  <small>Scheme end date is required</small>
-                </p>
-              )}
-            </Form.Group>
+            <DateField
+              input={{
+                onBlur: function noRefCheck() {},
+                onChange: function noRefCheck() {},
+                onFocus: function noRefCheck() {},
+              }}
+              inputNames={{
+                day: "dayInputName",
+              }}
+              inputs={{
+                day: {
+                  autoComplete: "bday-day",
+                },
+                month: {
+                  autoComplete: "bday-month",
+                },
+                year: {
+                  autoComplete: "bday-year",
+                },
+              }}
+            >
+              End Date
+            </DateField>
             <br></br>
 
             <Form.Group>

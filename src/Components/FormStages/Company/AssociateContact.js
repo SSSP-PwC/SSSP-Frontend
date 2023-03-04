@@ -16,77 +16,37 @@ export const AssociateContact = () => {
   const [show, setShow] = useState(false);
   const [variantType, setVariantType] = useState("");
   const [userResponse, setUserResponse] = useState("");
-  const [radioButton, setRadioButton] = useState("");
 
   const submitForm = async () => {
     navigate("/register-company-link-citizen", {
       state: {
         company_name: state.company_name,
         company_registration_number: state.company_number,
-        company_address: {
           address_line_1: state.address_line_1,
           address_line_2: state.address_line_2,
           postal_code: state.postal_code,
           country: state.country,
           locality: state.locality,
           region: state.region,
-        },
+      
       },
     });
-    if (cookies.get("REACT_TOKEN_AUTH_KEY") !== undefined) {
-      const token = JSON.parse(cookies.get("REACT_TOKEN_AUTH_KEY"));
-      const url = "http://127.0.0.1:21000/api/create-company";
-      const data = {
+  };
+
+  const selectedRadioButtonTwo = () => {
+    navigate("/register-company-create-citizen-account", {
+      state: {
         company_name: state.company_name,
         company_registration_number: state.company_number,
-        company_address: {
           address_line_1: state.address_line_1,
           address_line_2: state.address_line_2,
           postal_code: state.postal_code,
           country: state.country,
           locality: state.locality,
           region: state.region,
-        },
-      };
-
-      const options = {
-        method: "POST",
-        mode: "cors",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      };
-      try {
-        const response = await fetch(url, options);
-        console.log(JSON.parse(token));
-        const result = await response.json();
-        console.log(result);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  };
-
-  const selectedRadioButtonOne = () => {
-    if (cookies.get("REACT_TOKEN_AUTH_KEY") !== undefined) {
-      navigate("/register-company-link-citizen", {
-        state: {
-          company_name: state.company_name,
-          company_registration_number: state.company_registration_number,
-          company_address_line_1: state.company_address_line_1,
-          company_address_line_2: state.company_address_line_2,
-          postal_code: state.postal_code,
-          country: state.country,
-          locality: state.locality,
-          region: state.region,
-        },
-      });
-    }
-  };
-  const selectedRadioButtonTwo = () => {
-    setRadioButton("No");
+      
+      },
+    });
   };
 
   return (
