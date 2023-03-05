@@ -2,10 +2,14 @@ import React, { useState } from "react";
 import { Form, Alert } from "react-bootstrap";
 import { MainHeading } from "../../../../globalStyles";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import { LoadingBox, Button, InputField, ErrorSummary } from "govuk-react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { DateField, Button, InputField, ErrorSummary } from "govuk-react";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
-export const EnterCitizenName = () => {
+export const EnterDOB = () => {
   const {
     register,
     handleSubmit,
@@ -13,28 +17,33 @@ export const EnterCitizenName = () => {
     formState: { errors },
   } = useForm();
   const navigate = useNavigate();
+  const { state } = useLocation();
+  const composeDate = (date) => {
+    return new Date(date);
+  };
   const [errorMessageFlag, setErrorMessageFlag] = useState(false);
   const [data, setData] = useState("");
-
+  console.log(data)
   const submitForm = () => {
-    if (data.first_name != undefined && data.last_name != undefined) {
-      navigate("/register-citizen-dob", {
+    if (data !== undefined ) {
+      navigate("/register-citizen-address", {
         state: {
-          first_name: data.first_name,
-          last_name: data.last_name,
+          first_name: state.first_name,
+          last_name: state.last_name,
+          dob: composeDate(data)
         },
       });
     } else {
       setErrorMessageFlag(true);
     }
   };
-  const updateData = (e) => {
-    console.log(data);
-    setData({
-      ...data,
-      [e.target.name]: e.target.value,
-    });
-  };
+  console.log(data.$D);
+  console.log(data.$M + 1);
+  console.log(data.$y);
+
+
+  let dateString = data.$M + 1 + "-" + data.$D + "-" + data.$y;
+  console.log(composeDate(dateString.toString()));
 
   return (
     <div className="container">
@@ -64,30 +73,17 @@ export const EnterCitizenName = () => {
               Applicant name
             </MainHeading>
             <p style={{ color: "#505a5f" }}>Profile Creation: Section 1 of 5</p>
-            <p style={{ color: "#505a5f" }}>
-              Please complete this section with your own details.
-            </p>
-            <InputField
-              onChange={updateData}
-              input={{
-                name: "first_name",
-                required: true,
-              }}
-            >
-              First name
-            </InputField>
-            <br></br>
-            <InputField
-              onChange={updateData}
-              input={{
-                name: "last_name",
-                required: true,
-              }}
-            >
-              Last name
-            </InputField>
-            <br></br>
-            <br></br>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DemoContainer components={["DatePicker"]}>
+                <DatePicker
+                  label="Date of Birth"
+                  name="date"
+                  onChange={(date) => {
+                    setData(date);
+                  }}
+                />
+              </DemoContainer>
+            </LocalizationProvider>
             <br></br>
             <Form.Group>
               <Button

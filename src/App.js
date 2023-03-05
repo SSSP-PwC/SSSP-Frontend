@@ -54,6 +54,7 @@ import { SchemeSupportingInformation } from "./Components/FormStages/Scheme/Sche
 import { RegistrationFormLandingPage } from "./Components/FormStages/Scheme/Registration-Form-Landing-Page";
 import { RegisterCompanySummary } from "./Components/FormStages/Company/Register-Company-Summary";
 import FormBuilder from "./Components/FormStages/Scheme/FormBuilder";
+import { EnterDOB } from "./Components/FormStages/Citizen/DataEntry/EnterDOB";
 
 export default function App() {
   const [loggedIn] = useAuth();
@@ -219,6 +220,10 @@ export default function App() {
             <Route
               path="/publish-scheme-landing"
               element={<RegisterSchemeLandingPage />}
+            />
+              <Route
+              path="/register-citizen-dob"
+              element={<EnterDOB />}
             />
                <Route
               path="/register-company-link-citizen"

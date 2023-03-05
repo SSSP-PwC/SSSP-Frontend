@@ -22,6 +22,7 @@ export const EnterCitizenAddress = () => {
 
 
   const { state } = useLocation();
+  console.log(state)
   const [data, setData] = useState("");
   const updateData = (e) => {
     setData({

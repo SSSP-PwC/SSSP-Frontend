@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button } from "govuk-react";
 import { MainHeading } from "../../../globalStyles";
 import { Divider } from "@mui/material";
+
 const FormBuilder = () => {
   const [fields, setFields] = useState([]);
 
@@ -22,8 +23,28 @@ const FormBuilder = () => {
     newFields[index] = field;
     setFields(newFields);
   };
+
   const handleFormState = () => {
     console.log(fields);
+  };
+
+  const renderForm = () => {
+    return (
+      <form>
+        {fields.map((field, index) => (
+          <div key={index}>
+            <label>
+              {field.label}
+              <input
+                type={field.type}
+                name={field.label}
+                required={field.required}
+              />
+            </label>
+          </div>
+        ))}
+      </form>
+    );
   };
 
   return (
@@ -92,6 +113,7 @@ const FormBuilder = () => {
       ))}
       <br></br>
 
+      {renderForm()}
       <Button onClick={handleFormState}>Continue</Button>
     </div>
   );
