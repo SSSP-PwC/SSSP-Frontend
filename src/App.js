@@ -54,7 +54,9 @@ import { SchemeSupportingInformation } from "./Components/FormStages/Scheme/Sche
 import { RegistrationFormLandingPage } from "./Components/FormStages/Scheme/Registration-Form-Landing-Page";
 import { RegisterCompanySummary } from "./Components/FormStages/Company/Register-Company-Summary";
 import FormBuilder from "./Components/FormStages/Scheme/FormBuilder";
-import { EnterDOB } from "./Components/FormStages/Citizen/DataEntry/EnterDOB";
+import PageBuilder from "./Components/FormStages/Scheme/PageBuilder";
+import DynamicPage from './Components/FormStages/Scheme/DynamicPage';
+import RenderForm from "./Components/FormStages/Scheme/Render-Form";
 
 export default function App() {
   const [loggedIn] = useAuth();
@@ -75,200 +77,208 @@ export default function App() {
         >
           This website uses cookies to enhance the user experience.
         </CookieConsent>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
 
-            <Route path="/register-company" element={<EnterCompanyDetails />} />
+          <Route path="/register-company" element={<EnterCompanyDetails />} />
 
-            <Route
-              path="/register-company-associated-contact"
-              element={<AssociateContact />}
-            />
-            <Route
-              path="/register-company-summary"
-              element={<RegisterCompanySummary />}
-            />
-            <Route path="/link-account" element={<LinkAccount />} />
-            <Route
-              path="/register-company-landing"
-              element={<CompanyRegistrationLandingPage />}
-            />
-            <Route
-              path="/register-company-details"
-              element={<EnterCompanyDetails />}
-            />
-            <Route path="/change-first-name" element={<ChangeFirstName />} />
-            <Route path="/change-last-name" element={<ChangeLastName />} />
-            <Route
-              path="/change-address-line-1"
-              element={<ChangeAddressLine1 />}
-            />
-            <Route
-              path="/change-address-line-2"
-              element={<ChangeAddressLine2 />}
-            />
-            <Route path="/change-town-city" element={<ChangeTownCity />} />
-            <Route path="/change-postcode" element={<ChangePostcode />} />
-            <Route path="/EOI-Contact-Info" element={<EOIContactInfo />} />
-            <Route path="/EOI-Product-Info" element={<EOIProductInfo />} />
-            <Route path="/EOI-Declarations" element={<EOIDeclarations />} />
-            <Route path="/EOI-Summary" element={<EOISummary />} />
-            <Route path="/List-Schemes" element={<ListSchemes />} />
-            <Route path="/Grant-Application" element={<GrantApplication />} />
-            <Route path="/change-email-address" element={<ChangeEmail />} />
-            <Route
-              path="/publish-scheme-landing"
-              element={<RegisterSchemeLandingPage />}
-            />
-            <Route path="/publish-scheme-title" element={<SchemeTitle />} />
-            <Route path="/publish-scheme-dates" element={<SchemeDates />} />
-            <Route path="/publish-scheme-supporting-information" element={<SchemeSupportingInformation />} />
+          <Route
+            path="/register-company-associated-contact"
+            element={<AssociateContact />}
+          />
+          <Route
+            path="/register-company-summary"
+            element={<RegisterCompanySummary />}
+          />
+          <Route path="/link-account" element={<LinkAccount />} />
+          <Route
+            path="/register-company-landing"
+            element={<CompanyRegistrationLandingPage />}
+          />
+          <Route
+            path="/register-company-details"
+            element={<EnterCompanyDetails />}
+          />
+          <Route path="/change-first-name" element={<ChangeFirstName />} />
+          <Route path="/change-last-name" element={<ChangeLastName />} />
+          <Route
+            path="/change-address-line-1"
+            element={<ChangeAddressLine1 />}
+          />
+          <Route path="/page/:pageId" element={<DynamicPage/>} />
 
-            <Route
-              path="/publish-scheme-objectives"
-              element={<SchemeObjectives />}
-            />
-    
-            <Route path="/" element={<HomePage />} />
-            <Route
-              path="/register-citizen-landing"
-              element={<CitizenRegistrationLandingPage />}
-            />
-            <Route path="/sign-in-citizen" element={<CitizenSignIn />} />
-            <Route
-              path="/register-citizen-name"
-              element={<EnterCitizenName />}
-            />
-            <Route
-              path="/register-citizen-address"
-              element={<EnterCitizenAddress />}
-            />
-            <Route
-              path="/register-citizen-email"
-              element={<EnterCitizenEmail />}
-            />
-            <Route
-              path="/register-company-details"
-              element={<EnterCompanyDetails />}
-            />
-            <Route
-              path="/register-company-associated-contact"
-              element={<AssociateContact />}
-            />
-                    <Route
-              path="/register-company-link-account"
-              element={<LinkAccount />}
-            />
-            <Route
-              path="/register-citizen-password"
-              element={<EnterCitizenPassword />}
-            />
-                        <Route path="/publish-scheme-supporting-information" element={<SchemeSupportingInformation />} />
-                        <Route
-              path="/register-company-summary"
-              element={<RegisterCompanySummary />}
-            />
+          <Route
+            path="/change-address-line-2"
+            element={<ChangeAddressLine2 />}
+          />
+          <Route path="/change-town-city" element={<ChangeTownCity />} />
+          <Route path="/change-postcode" element={<ChangePostcode />} />
+          <Route path="/EOI-Contact-Info" element={<EOIContactInfo />} />
+          <Route path="/EOI-Product-Info" element={<EOIProductInfo />} />
+          <Route path="/EOI-Declarations" element={<EOIDeclarations />} />
+          <Route path="/EOI-Summary" element={<EOISummary />} />
+          <Route path="/List-Schemes" element={<ListSchemes />} />
+          <Route path="/Grant-Application" element={<GrantApplication />} />
+          <Route path="/change-email-address" element={<ChangeEmail />} />
+          <Route
+            path="/publish-scheme-landing"
+            element={<RegisterSchemeLandingPage />}
+          />
+          <Route path="/publish-scheme-title" element={<SchemeTitle />} />
+          <Route path="/publish-scheme-dates" element={<SchemeDates />} />
+          <Route
+            path="/publish-scheme-supporting-information"
+            element={<SchemeSupportingInformation />}
+          />
 
-            <Route
-              path="/register-citizen-summary"
-              element={<CitizenRegistrationSummary />}
-            />
-            <Route path="/EOI-Contact-Info" element={<EOIContactInfo />} />
-            <Route path="/EOI-Product-Info" element={<EOIProductInfo />} />
-            <Route path="/EOI-Declarations" element={<EOIDeclarations />} />
-            <Route path="/EOI-Summary" element={<EOISummary />} />
-            <Route path="/List-Schemes" element={<ListSchemes />} />
-            <Route path="/Grant-Application" element={<GrantApplication />} />
-            <Route
-              path="/Eligibility-Checker-Registered-Company"
-              element={<EligibilityCheckerRegisteredCompany />}
-            />
-            <Route
-              path="/Eligibility-Checker-Employee-Count"
-              element={<EligibilityCheckerEmployeeCount />}
-            />
-            <Route
-              path="/Eligibility-Checker-Trading-Length"
-              element={<EligibilityCheckerTradingLength />}
-            />
-            <Route
-              path="/Eligibility-Checker-Selected-Product-Info"
-              element={<EligibilityCheckerProductInfo />}
-            />
-            <Route
-              path="/Eligibility-Checker-Software-Details"
-              element={<EligibilityCheckerSoftwareDetails />}
-            />
-            <Route
-              path="/Eligibility-Checker-Summary"
-              element={<EligibilityCheckerSummary />}
-            />
+          <Route
+            path="/publish-scheme-objectives"
+            element={<SchemeObjectives />}
+          />
 
-            <Route
-              path="/Application-Form-Exhausted-Funds"
-              element={<ApplicationFormExhaustedForm />}
-            />
-            <Route
-              path="/Application-Form-Building-Information"
-              element={<ApplicationFormBuildingInformation />}
-            />
-            <Route
-              path="/Application-Form-Summary-Table"
-              element={<ApplicationFormSummaryTable />}
-            />
+          <Route path="/" element={<HomePage />} />
+          <Route
+            path="/register-citizen-landing"
+            element={<CitizenRegistrationLandingPage />}
+          />
+          <Route path="/sign-in-citizen" element={<CitizenSignIn />} />
+          <Route path="/register-citizen-name" element={<EnterCitizenName />} />
+          <Route
+            path="/register-citizen-address"
+            element={<EnterCitizenAddress />}
+          />
+          <Route
+            path="/register-citizen-email"
+            element={<EnterCitizenEmail />}
+          />
+          <Route
+            path="/register-company-details"
+            element={<EnterCompanyDetails />}
+          />
+          <Route
+            path="/register-company-associated-contact"
+            element={<AssociateContact />}
+          />
+          <Route
+            path="/register-company-link-account"
+            element={<LinkAccount />}
+          />
+          <Route
+            path="/register-citizen-password"
+            element={<EnterCitizenPassword />}
+          />
+          <Route
+            path="/publish-scheme-supporting-information"
+            element={<SchemeSupportingInformation />}
+          />
+          <Route
+            path="/register-company-summary"
+            element={<RegisterCompanySummary />}
+          />
 
-            <Route
-              path="/publish-scheme-landing"
-              element={<RegisterSchemeLandingPage />}
-            />
-              <Route
-              path="/register-citizen-dob"
-              element={<EnterDOB />}
-            />
-               <Route
-              path="/register-company-link-citizen"
-              element={<LinkAccount />}
-            />
-            <Route path="/publish-scheme-title" element={<SchemeTitle />} />
-            <Route
-              path="/publish-scheme-details"
-              element={<SchemeDescription />}
-            />
-            <Route path="/publish-scheme-dates" element={<SchemeDates />} />
-            <Route
-              path="/publish-scheme-objectives"
-              element={<SchemeObjectives />}
-            />
-              <Route
-              path="/Register-Scheme"
-              element={<FormBuilder />}
-            />
-            <Route
-              path="/publish-scheme-application-details"
-              element={<SchemeApplicationDetails />}
-            />
-            <Route
-              path="/register-company-landing"
-              element={<CompanyRegistrationLandingPage />}
-            />
-               <Route
-              path="/register-company-summary"
-              element={<RegisterCompanySummary />}
-            />
-            <Route
-              path="/publish-scheme-eligibility-criteria"
-              element={<SchemeEligibilityCriteria />}
-            />
-            <Route
-              path="/publish-scheme-publisher-details"
-              element={<SchemePublisherDetails />}
-            />
-            
-            <Route path="/publish-scheme-summary" element={<SchemeSummary />} />
-            <Route path="/Registration-Form-Landing-Page" element={<RegistrationFormLandingPage />} />
+          <Route
+            path="/register-citizen-summary"
+            element={<CitizenRegistrationSummary />}
+          />
+          <Route path="/EOI-Contact-Info" element={<EOIContactInfo />} />
+          <Route path="/EOI-Product-Info" element={<EOIProductInfo />} />
+          <Route path="/EOI-Declarations" element={<EOIDeclarations />} />
+          <Route path="/EOI-Summary" element={<EOISummary />} />
+          <Route path="/List-Schemes" element={<ListSchemes />} />
+          <Route path="/Grant-Application" element={<GrantApplication />} />
+          <Route
+            path="/Eligibility-Checker-Registered-Company"
+            element={<EligibilityCheckerRegisteredCompany />}
+          />
+          <Route
+            path="/Eligibility-Checker-Employee-Count"
+            element={<EligibilityCheckerEmployeeCount />}
+          />
+          <Route
+            path="/Eligibility-Checker-Trading-Length"
+            element={<EligibilityCheckerTradingLength />}
+          />
+          <Route
+            path="/Eligibility-Checker-Selected-Product-Info"
+            element={<EligibilityCheckerProductInfo />}
+          />
+          <Route
+            path="/Eligibility-Checker-Software-Details"
+            element={<EligibilityCheckerSoftwareDetails />}
+          />
+          <Route
+            path="/Eligibility-Checker-Summary"
+            element={<EligibilityCheckerSummary />}
+          />
 
-          </Routes>
-        
+          <Route
+            path="/Application-Form-Exhausted-Funds"
+            element={<ApplicationFormExhaustedForm />}
+          />
+          <Route
+            path="/Application-Form-Building-Information"
+            element={<ApplicationFormBuildingInformation />}
+          />
+          <Route
+            path="/Application-Form-Summary-Table"
+            element={<ApplicationFormSummaryTable />}
+          />
+           <Route
+            path="/Page-Builder"
+            element={<PageBuilder />}
+          />
+                  <Route
+            path="/Render-Form"
+            element={<RenderForm />}
+          />
+
+
+          <Route
+            path="/publish-scheme-landing"
+            element={<RegisterSchemeLandingPage />}
+          />
+          <Route
+            path="/register-company-link-citizen"
+            element={<LinkAccount />}
+          />
+          <Route path="/publish-scheme-title" element={<SchemeTitle />} />
+          <Route
+            path="/publish-scheme-details"
+            element={<SchemeDescription />}
+          />
+          <Route path="/publish-scheme-dates" element={<SchemeDates />} />
+          <Route
+            path="/publish-scheme-objectives"
+            element={<SchemeObjectives />}
+          />
+          <Route path="/Register-Scheme" element={<FormBuilder />} />
+          <Route
+            path="/publish-scheme-application-details"
+            element={<SchemeApplicationDetails />}
+          />
+          <Route
+            path="/register-company-landing"
+            element={<CompanyRegistrationLandingPage />}
+          />
+          <Route
+            path="/register-company-summary"
+            element={<RegisterCompanySummary />}
+          />
+          <Route
+            path="/publish-scheme-eligibility-criteria"
+            element={<SchemeEligibilityCriteria />}
+          />
+          <Route
+            path="/publish-scheme-publisher-details"
+            element={<SchemePublisherDetails />}
+          />
+
+          <Route path="/publish-scheme-summary" element={<SchemeSummary />} />
+          <Route
+            path="/Registration-Form-Landing-Page"
+            element={<RegistrationFormLandingPage />}
+          />
+        </Routes>
         <Footer />
       </Router>
     </div>

@@ -1,38 +1,39 @@
 import React, { useState } from "react";
 import { Form, Alert } from "react-bootstrap";
-import { Button, MainHeading } from "../../../../globalStyles";
+import { MainHeading } from "../../../../globalStyles";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { login } from "../../../Auth/auth";
+import { LoadingBox, Button, InputField, ErrorSummary } from "govuk-react";
 
 export const CitizenSignIn = () => {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm();
+  const { handleSubmit } = useForm();
   const navigate = useNavigate();
 
-  const [show, setShow] = useState(false);
-  const [variantType, setVariantType] = useState("");
-  const [userResponse, setUserResponse] = useState("");
-
-  const submitForm = (data) => {
-    const requestOptions={
-        method:"POST",
-        headers: {
-            "content-type" : "application/json"
-        },
-        body:JSON.stringify(data)
-    }
-    fetch("https://20230226t215147-dot-sssp-378808.nw.r.appspot.com/api/login", requestOptions)
-    .then(res=>res.json())
-    .then(data=>{
-        console.log(data)
-        login(data.access_token)
-        navigate("/")
-    })
+  const [data, setData] = useState("");
+  const [errorMessageFlag, setErrorMessageFlag] = useState(false);
+  const submitForm = () => {
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(data),
+    };
+    fetch("https://sssp-378808.nw.r.appspot.com/api/login", requestOptions)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        login(data.access_token);
+        navigate("/");
+      });
+  };
+  const updateData = (e) => {
+    console.log(data);
+    setData({
+      ...data,
+      [e.target.name]: e.target.value,
+    });
   };
   return (
     <div className="container">
@@ -40,20 +41,21 @@ export const CitizenSignIn = () => {
         className="form"
         style={{ marginTop: "70px", display: "inline-block" }}
       >
-        {show ? (
+        {errorMessageFlag && (
           <>
-            <Alert
-              variant={variantType}
-              onClose={() => {
-                setShow(false);
-              }}
-              dismissible
-            >
-              <p>{userResponse}</p>
-            </Alert>
+            <ErrorSummary
+              description={
+                "A user already exists with the email address provided."
+              }
+              errors={[
+                {
+                  targetName: "description",
+                  text: "Email address",
+                },
+              ]}
+              heading={"User already exists"}
+            />
           </>
-        ) : (
-          <div></div>
         )}
         <div style={{ display: "inline-block" }}>
           <div>
@@ -61,51 +63,29 @@ export const CitizenSignIn = () => {
               Sign in to your citizen account
             </MainHeading>
 
-        
-
-            <Form.Group>
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                type="email"
-                placeholder="Enter your email address"
-                style={{ borderColor: "black", maxWidth: "500px" }}
-                {...register("email", { required: true, maxLength: 80 })}
-              />
-
-              {errors.email && (
-                <p style={{ color: "red" }}>
-                  <small>Email is required</small>
-                </p>
-              )}
-
-              {errors.email?.type === "maxLength" && (
-                <p style={{ color: "red" }}>
-                  <small>Max characters should be 80</small>
-                </p>
-              )}
-            </Form.Group>
+            <InputField
+              onChange={updateData}
+              input={{
+                name: "email",
+                required: true,
+              }}
+            >
+              Email
+            </InputField>
             <br></br>
-            <Form.Group>
-            <Form.Label>Password</Form.Label>
-            <Form.Control
-              type="password"
-              placeholder="Enter a password"
-              style={{ borderColor: "black", maxWidth: "500px" }}
-              {...register("password", { required: true, minLength: 8 })}
-            />
 
-            {errors.password && (
-              <p style={{ color: "red" }}>
-                <small>Password is required</small>
-              </p>
-            )}
-            {errors.password?.type === "minLength" && (
-              <p style={{ color: "red" }}>
-                <small>Min characters should be 8</small>
-              </p>
-            )}
-          </Form.Group>
-          <br></br>
+            <InputField
+              onChange={updateData}
+              input={{
+                name: "password",
+                type: 'password',
+                required: true,
+              }}
+            >
+              Password
+            </InputField>
+            <br></br>
+
             <Form.Group>
               <Button
                 style={{ marginBottom: "15px" }}
@@ -115,7 +95,10 @@ export const CitizenSignIn = () => {
               </Button>
             </Form.Group>
             <Form.Group>
-              <small>Don't have an account? <Link to='/register-citizen-landing'>Create One</Link></small>
+              <small>
+                Don't have an account?{" "}
+                <Link to="/register-citizen-landing">Create One</Link>
+              </small>
             </Form.Group>
             <br></br>
           </div>

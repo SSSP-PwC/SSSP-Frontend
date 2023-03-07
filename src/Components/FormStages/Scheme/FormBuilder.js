@@ -1,14 +1,20 @@
 import React, { useState } from "react";
-import { Button } from "govuk-react";
+import { Button, Heading, Checkbox, InputField, Select } from "govuk-react";
 import { MainHeading } from "../../../globalStyles";
 import { Divider } from "@mui/material";
-
 const FormBuilder = () => {
   const [fields, setFields] = useState([]);
 
   const handleAddField = () => {
     const newFields = [...fields];
-    newFields.push({ label: "New Field", type: "text", required: false });
+    newFields.push({
+      label: "",
+      type: "",
+      required: false,
+      displayOnSeparatePage: false,
+      name: "",
+      endpoint: "",
+    });
     setFields(newFields);
   };
 
@@ -33,14 +39,63 @@ const FormBuilder = () => {
       <form>
         {fields.map((field, index) => (
           <div key={index}>
-            <label>
-              {field.label}
-              <input
-                type={field.type}
-                name={field.label}
-                required={field.required}
-              />
-            </label>
+            {field.type === "button" && (
+              <div>
+                <Button
+                  type={field.type}
+                  name={field.label}
+                  required={field.required}
+                >
+                  {field.label}
+                </Button>
+              </div>
+            )}
+            {field.type === "string" && (
+              <div>
+                <label style={{ textAlign: "center" }}>{field.label}</label>
+                <br></br>
+                <InputField
+                  input={{
+                    type: field.type,
+                    name: field.label,
+                    required: field.required,
+                  }}
+                />
+              </div>
+            )}
+            {field.type === "password" && (
+              <div>
+                <label style={{ textAlign: "center" }}>{field.label}</label>
+                <br></br>
+                <InputField
+                  input={{
+                    type: field.type,
+                    name: field.label,
+                    required: field.required,
+                  }}
+                />
+              </div>
+            )}
+            {field.type === "number" && (
+              <div>
+                <label style={{ textAlign: "center" }}>{field.label}</label>
+                <br></br>
+                <InputField
+                  input={{
+                    type: field.type,
+                    name: field.label,
+                    required: field.required,
+                  }}
+                />
+              </div>
+            )}
+            {field.type === "checkbox" && (
+              <div>
+                <label style={{ textAlign: "center" }}>{field.label}</label>
+                <br></br>
+                <Checkbox name={field.label} required={field.required} />
+              </div>
+            )}
           </div>
         ))}
       </form>
@@ -54,67 +109,116 @@ const FormBuilder = () => {
       </MainHeading>
       <Divider style={{ background: "black" }}></Divider>
       <br></br>
-      <Button onClick={handleAddField}>Add Field</Button>
-      <br></br>
-      {fields.map((field, index) => (
-        <div key={index}>
-          <label>
-            Label:
-            <input
-              type="text"
-              value={field.label}
-              onChange={(e) =>
-                handleUpdateField(index, { ...field, label: e.target.value })
-              }
-            />
-          </label>
-          <label>
-            Type:
-            <select
-              value={field.type}
-              onChange={(e) =>
-                handleUpdateField(index, { ...field, type: e.target.value })
-              }
-            >
-              <option value="text">Text</option>
-              <option value="email">Email</option>
-              <option value="phone">Phone</option>
-              <option value="checkbox">Checkbox</option>
-            </select>
-          </label>
-          <label>
-            Required:
-            <input
-              type="checkbox"
-              checked={field.required}
-              onChange={(e) =>
-                handleUpdateField(index, {
-                  ...field,
-                  required: e.target.checked,
-                })
-              }
-            />
-          </label>
-          <label>
-            Display on Separate Page:
-            <input
-              type="checkbox"
-              checked={field.displayOnSeparatePage}
-              onChange={(e) =>
-                handleUpdateField(index, {
-                  ...field,
-                  displayOnSeparatePage: e.target.checked,
-                })
-              }
-            />
-          </label>
-          <button onClick={() => handleRemoveField(index)}>Remove</button>
-        </div>
-      ))}
-      <br></br>
+      <div style={{ float: "right" }}>
+        <Heading>Preview</Heading>
+        {renderForm()}
+      </div>
+      <div>
+        <Button onClick={handleAddField}>Add Field</Button>
+        <br></br>
+        {fields.map((field, index) => (
+          <div key={index}>
+            <label>
+              Label:
+              <InputField
+                onChange={(e) =>
+                  handleUpdateField(index, { ...field, label: e.target.value })
+                }
+                input={{
+                  type: "text",
+                  value: field.label,
+                }}
+              />
+            </label>
+            <br></br>
+            <label>
+              Type:
+              <Select
+                style={{ minWidth: "180px", maxWidth: "480px" }}
+                value={field.type}
+                onChange={(e) =>
+                  handleUpdateField(index, { ...field, type: e.target.value })
+                }
+              >
+                <option value="string">Text</option>
+                <option value="string">Email</option>
+                <option value="number">Number</option>
+                <option value="button">Button</option>
+                <option value="password">Password</option>
+                <option value="checkbox">Checkbox</option>
+              </Select>
+            </label>
 
-      {renderForm()}
-      <Button onClick={handleFormState}>Continue</Button>
+            <br></br>
+            <label>
+              Name:
+              <InputField
+                onChange={(e) =>
+                  handleUpdateField(index, { ...field, name: e.target.value })
+                }
+                input={{
+                  type: "text",
+                  value: field.name,
+                }}
+              />
+            </label>
+            <br></br>
+            <label>
+              Required:
+              <Checkbox
+                onChange={(e) =>
+                  handleUpdateField(index, {
+                    ...field,
+                    required: e.target.checked,
+                  })
+                }
+                input={{
+                  type: "checkbox",
+                  checked: field.required,
+                }}
+              />
+            </label>
+            <br></br>
+            <label>
+              Display on Separate Page:
+              <Checkbox
+                onChange={(e) =>
+                  handleUpdateField(index, {
+                    ...field,
+                    displayOnSeparatePage: e.target.checked,
+                  })
+                }
+                input={{
+                  type: "checkbox",
+                  checked: field.displayOnSeparatePage,
+                }}
+              />
+            </label>
+            <br></br>
+            <label>
+              Endpoint:
+              <InputField
+                onChange={(e) =>
+                  handleUpdateField(index, {
+                    ...field,
+                    endpoint: e.target.value,
+                  })
+                }
+                input={{
+                  type: "text",
+                  value: field.endpoint,
+                }}
+              />
+            </label>
+            <br></br>
+            <br></br>
+            <Button  onClick={() => handleRemoveField(index)}>Remove</Button>
+          </div>
+        ))}
+        <br></br>
+
+        <Button onClick={handleFormState}>Continue</Button>
+      </div>
     </div>
   );
 };

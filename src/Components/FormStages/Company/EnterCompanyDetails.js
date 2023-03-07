@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { Divider } from "@mui/material";
 import { LoadingBox, Button, InputField, ErrorSummary } from "govuk-react";
+import Breadcrumb from "react-bootstrap/Breadcrumb";
 
 export const EnterCompanyDetails = () => {
   const {
@@ -18,12 +19,10 @@ export const EnterCompanyDetails = () => {
 
   const [errorMessageFlag, setErrorMessageFlag] = useState(false);
   const [detailsReturned, setDetailsReturned] = useState(false);
-  const [variantType, setVariantType] = useState("");
-  const [userResponse, setUserResponse] = useState("");
+
   const [loading, setLoading] = useState(false);
   const [companyData, setCompanyData] = useState("");
   const [companyName, setCompanyName] = useState("");
-
   const [addressLine1, setAddressLine1] = useState("");
   const [addressLine2, setAddressLine2] = useState("");
   const [postalCode, setPostalCode] = useState("");
@@ -98,6 +97,16 @@ export const EnterCompanyDetails = () => {
       });
   };
 
+  const RegistrationFormBreadcrumb = () => {
+    return (
+      <Breadcrumb>
+        <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
+        <Breadcrumb.Item href="/register-company-landing">Register Company</Breadcrumb.Item>
+        <Breadcrumb.Item active>Company details</Breadcrumb.Item>
+      </Breadcrumb>
+    );
+  };
+
   return (
     <div className="container">
       <div
@@ -121,6 +130,7 @@ export const EnterCompanyDetails = () => {
         {detailsReturned === false && (
           <div style={{ display: "inline-block" }}>
             <LoadingBox loading={loading}>
+              <RegistrationFormBreadcrumb/>
               <div>
                 <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
                   Enter your company details
@@ -164,9 +174,10 @@ export const EnterCompanyDetails = () => {
         {detailsReturned === true && (
           <div style={{ display: "inline-block" }}>
             <form style={{ display: "inline-block" }}>
+              <RegistrationFormBreadcrumb/>
               <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
-                This is the correspondance address we will use for{" "}
-                {companyData.company_name}
+                This is the correspondance address we will use 
+       
               </MainHeading>
               <p style={{ color: "#0B0C0C", fontSize: "12px" }}>
                 Check this address before continuing.

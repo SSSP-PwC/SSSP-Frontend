@@ -3,10 +3,10 @@ import { Form, Alert } from "react-bootstrap";
 import { MainHeading } from "../../../globalStyles";
 import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import Cookies from "universal-cookie";
 import { Divider } from "@mui/material";
 import { Button, LoadingBox } from "govuk-react";
 import { CompanyRegisteredSuccessMessage } from "./Company-Registered-Success-Message";
+import Breadcrumb from "react-bootstrap/Breadcrumb";
 
 export const RegisterCompanySummary = () => {
   const [emailAddress, setEmailAddress] = useState("");
@@ -25,7 +25,7 @@ export const RegisterCompanySummary = () => {
   const [show, setShow] = useState(false);
   const [variantType, setVariantType] = useState("");
   const [userResponse, setUserResponse] = useState("");
-
+  console.log(state)
   const updateData = (e) => {
     setEmailAddress({
       ...emailAddress,
@@ -36,6 +36,7 @@ export const RegisterCompanySummary = () => {
       [e.target.name]: e.target.value,
     });
   };
+  
   const submit = async () => {
     setLoading(true);
     const url = "http://127.0.0.1:1000/api/create-company";
@@ -76,6 +77,18 @@ export const RegisterCompanySummary = () => {
       console.error(error);
     }
   };
+  const RegistrationFormBreadcrumb = () => {
+    return (
+      <Breadcrumb>
+        <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
+        <Breadcrumb.Item href="/register-company-landing">Register Company</Breadcrumb.Item>
+        <Breadcrumb.Item href="/register-company-details">Company details</Breadcrumb.Item>
+        <Breadcrumb.Item href="/register-company-associated-contact">Contact association</Breadcrumb.Item>
+        <Breadcrumb.Item href="/register-company-associated-contact">Summary</Breadcrumb.Item>
+
+      </Breadcrumb>
+    );
+  };
   return (
     <div className="container">
       <div
@@ -84,6 +97,7 @@ export const RegisterCompanySummary = () => {
       >
         {successMessage === false && (
           <form style={{ display: "inline-block" }}>
+            <RegistrationFormBreadcrumb/>
             <LoadingBox loading={loading}>
               <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
                 Link an existing citizen account to{" "}
@@ -192,6 +206,43 @@ export const RegisterCompanySummary = () => {
                 </small>
                 <Divider></Divider>
               </Form.Group>{" "}
+              <Form.Group>
+                <Form.Label style={{ fontWeight: "bold", margin: "10px" }}>
+                  Linked Contact First Name:
+                </Form.Label>
+                <small>
+                  {state.contact_person.citizen.first_name}
+                  <Link to="/change-email-address" style={{ float: "right" }}>
+                    Change
+                  </Link>
+                </small>
+                <Divider></Divider>
+              </Form.Group>{" "}
+              <Form.Group>
+                <Form.Label style={{ fontWeight: "bold", margin: "10px" }}>
+                  Linked Contact Last Name:
+                </Form.Label>
+                <small>
+                  {state.contact_person.citizen.last_name}
+                  <Link to="/change-email-address" style={{ float: "right" }}>
+                    Change
+                  </Link>
+                </small>
+                <Divider></Divider>
+              </Form.Group>{" "}
+              <Form.Group>
+                <Form.Label style={{ fontWeight: "bold", margin: "10px" }}>
+                  Linked Contact Email:
+                </Form.Label>
+                <small>
+                  {state.contact_person.citizen.email}
+                  <Link to="/change-email-address" style={{ float: "right" }}>
+                    Change
+                  </Link>
+                </small>
+                <Divider></Divider>
+              </Form.Group>{" "}
+              <br></br>
               <Button onClick={handleSubmit(submit)}>Continue</Button>
               <br></br>
             </LoadingBox>

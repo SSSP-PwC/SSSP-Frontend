@@ -4,7 +4,8 @@ import { Link, useLocation } from "react-router-dom";
 import { MainHeading } from "../../../../globalStyles";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { LoadingBox, Button, InputField, ErrorSummary } from "govuk-react";
+import {Button, InputField, ErrorSummary } from "govuk-react";
+import Breadcrumb from "react-bootstrap/Breadcrumb";
 
 export const EnterCitizenAddress = () => {
   const {
@@ -20,9 +21,8 @@ export const EnterCitizenAddress = () => {
   const [errorMessageContent, setErrorMessageContent] = useState("");
   const [errorMessageCause, setErrorMessageCause] = useState("");
 
-
   const { state } = useLocation();
-  console.log(state)
+  console.log(state);
   const [data, setData] = useState("");
   const updateData = (e) => {
     setData({
@@ -46,35 +46,56 @@ export const EnterCitizenAddress = () => {
           postcode: data.postcode,
         },
       });
-    } else if (data.address_line_1 === undefined && data.town_city === undefined && data.postcode === undefined){
-      setErrorMessageTitle("All address fields are empty")
-      setErrorMessageContent("You must provide your address details in order to proceed.")
-      setErrorMessageCause("Address Line 1, Town/City, Postcode")
-      setErrorMessageFlag(true)
-
-    }
-    else if (data.address_line_1 === undefined ){
-      setErrorMessageTitle("Address Line 1 is empty")
-      setErrorMessageContent("You must provide your address details in order to proceed.")
-      setErrorMessageCause("Address Line 1")
-      setErrorMessageFlag(true)
-
-    }
-    else if (data.town_city === undefined ){
-      setErrorMessageTitle("Town/City is empty")
-      setErrorMessageContent("You must provide your address details in order to proceed.")
-      setErrorMessageCause("Town/City")
-      setErrorMessageFlag(true)
-
-    }
-    else if (data.postcode === undefined ){
-      setErrorMessageTitle("Postcode is empty")
-      setErrorMessageContent("You must provide your address details in order to proceed.")
-      setErrorMessageCause("Postcode")
-      setErrorMessageFlag(true)
-
+    } else if (
+      data.address_line_1 === undefined &&
+      data.town_city === undefined &&
+      data.postcode === undefined
+    ) {
+      setErrorMessageTitle("All address fields are empty");
+      setErrorMessageContent(
+        "You must provide your address details in order to proceed."
+      );
+      setErrorMessageCause("Address Line 1, Town/City, Postcode");
+      setErrorMessageFlag(true);
+    } else if (data.address_line_1 === undefined) {
+      setErrorMessageTitle("Address Line 1 is empty");
+      setErrorMessageContent(
+        "You must provide your address details in order to proceed."
+      );
+      setErrorMessageCause("Address Line 1");
+      setErrorMessageFlag(true);
+    } else if (data.town_city === undefined) {
+      setErrorMessageTitle("Town/City is empty");
+      setErrorMessageContent(
+        "You must provide your address details in order to proceed."
+      );
+      setErrorMessageCause("Town/City");
+      setErrorMessageFlag(true);
+    } else if (data.postcode === undefined) {
+      setErrorMessageTitle("Postcode is empty");
+      setErrorMessageContent(
+        "You must provide your address details in order to proceed."
+      );
+      setErrorMessageCause("Postcode");
+      setErrorMessageFlag(true);
     }
   };
+  const RegistrationFormBreadcrumb = () => {
+    return (
+      <Breadcrumb>
+        <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
+
+        <Breadcrumb.Item href="/register-citizen-landing">
+          Register Citizen
+        </Breadcrumb.Item>
+        <Breadcrumb.Item href="/register-citizen-name">
+          Applicant name
+        </Breadcrumb.Item>
+        <Breadcrumb.Item active>Applicant address</Breadcrumb.Item>
+      </Breadcrumb>
+    );
+  };
+
   return (
     <div className="container">
       <div
@@ -84,9 +105,7 @@ export const EnterCitizenAddress = () => {
         {errorMessageFlag && (
           <>
             <ErrorSummary
-              description={
-                errorMessageContent
-              }
+              description={errorMessageContent}
               errors={[
                 {
                   targetName: "description",
@@ -99,6 +118,7 @@ export const EnterCitizenAddress = () => {
         )}
         <div style={{ display: "inline-block" }}>
           <form style={{ display: "inline-block" }}>
+            <RegistrationFormBreadcrumb/>
             <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
               Enter your address
             </MainHeading>

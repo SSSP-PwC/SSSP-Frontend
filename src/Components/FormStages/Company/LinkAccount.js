@@ -11,6 +11,8 @@ import {
   Radio,
   LoadingBox,
 } from "govuk-react";
+import Breadcrumb from "react-bootstrap/Breadcrumb";
+
 
 export const LinkAccount = () => {
   const [emailAddress, setEmailAddress] = useState("");
@@ -81,6 +83,16 @@ export const LinkAccount = () => {
       console.error(error);
     }
   };
+  const RegistrationFormBreadcrumb = () => {
+    return (
+      <Breadcrumb>
+        <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
+        <Breadcrumb.Item href="/register-company-landing">Register Company</Breadcrumb.Item>
+        <Breadcrumb.Item href="/register-company-details">Company details</Breadcrumb.Item>
+        <Breadcrumb.Item active>Contact association</Breadcrumb.Item>
+      </Breadcrumb>
+    );
+  };
   return (
     <div className="container">
       <div
@@ -104,6 +116,7 @@ export const LinkAccount = () => {
         )}
 
         <form style={{ display: "inline-block" }}>
+          <RegistrationFormBreadcrumb/>
           <LoadingBox loading={loading}>
             <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
               Link an existing citizen account
@@ -113,12 +126,9 @@ export const LinkAccount = () => {
             <p style={{ color: "#505a5f" }}>Section 2 of 5</p>
             <Form.Group>
               <Form.Label>
-                How many people does your business employ?
+                Please enter email address and password
               </Form.Label>
-              <p style={{ color: "#505a5f" }}>
-                For more information on employee count go to <br></br>
-                https://mutuals.FinancialConductAuthority.org.uk
-              </p>
+   
               <InputField
                 onChange={updateData}
                 input={{

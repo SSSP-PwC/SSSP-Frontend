@@ -3,7 +3,8 @@ import { Form, Alert } from "react-bootstrap";
 import { MainHeading } from "../../../../globalStyles";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { LoadingBox, Button, InputField, ErrorSummary } from "govuk-react";
+import { Button, InputField, ErrorSummary } from "govuk-react";
+import Breadcrumb from "react-bootstrap/Breadcrumb";
 
 export const EnterCitizenName = () => {
   const {
@@ -18,7 +19,7 @@ export const EnterCitizenName = () => {
 
   const submitForm = () => {
     if (data.first_name != undefined && data.last_name != undefined) {
-      navigate("/register-citizen-dob", {
+      navigate("/register-citizen-address", {
         state: {
           first_name: data.first_name,
           last_name: data.last_name,
@@ -34,6 +35,18 @@ export const EnterCitizenName = () => {
       ...data,
       [e.target.name]: e.target.value,
     });
+  };
+  const RegistrationFormBreadcrumb = () => {
+    return (
+      <Breadcrumb>
+        <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
+
+        <Breadcrumb.Item href="/register-citizen-landing">
+          Register Citizen
+        </Breadcrumb.Item>
+        <Breadcrumb.Item active>Applicant name</Breadcrumb.Item>
+      </Breadcrumb>
+    );
   };
 
   return (
@@ -60,6 +73,8 @@ export const EnterCitizenName = () => {
         )}
         <div style={{ display: "inline-block" }}>
           <div>
+            {" "}
+            <RegistrationFormBreadcrumb />
             <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
               Applicant name
             </MainHeading>
@@ -86,8 +101,6 @@ export const EnterCitizenName = () => {
             >
               Last name
             </InputField>
-            <br></br>
-            <br></br>
             <br></br>
             <Form.Group>
               <Button

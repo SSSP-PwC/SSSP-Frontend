@@ -4,6 +4,7 @@ import { MainHeading } from "../../../../globalStyles";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import { LoadingBox, Button, InputField, ErrorSummary } from "govuk-react";
+import Breadcrumb from "react-bootstrap/Breadcrumb";
 
 export const EnterCitizenPassword = () => {
   const {
@@ -48,6 +49,28 @@ export const EnterCitizenPassword = () => {
       setErrorMessageFlag(true);
     }
   };
+  const RegistrationFormBreadcrumb = () => {
+    return (
+      <Breadcrumb>
+        <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
+
+        <Breadcrumb.Item href="/register-citizen-landing">
+          Register Citizen
+        </Breadcrumb.Item>
+        <Breadcrumb.Item href="/register-citizen-name">
+          Applicant name
+        </Breadcrumb.Item>
+        <Breadcrumb.Item href="/register-citizen-address">
+          Applicant address
+        </Breadcrumb.Item>
+        <Breadcrumb.Item href="/register-citizen-email">
+          Applicant email
+        </Breadcrumb.Item>
+        <Breadcrumb.Item active>Applicant password</Breadcrumb.Item>
+      </Breadcrumb>
+    );
+  };
+  
   return (
     <div className="container">
       <div
@@ -69,6 +92,7 @@ export const EnterCitizenPassword = () => {
           </>
         )}
         <div style={{ display: "inline-block" }}>
+          <RegistrationFormBreadcrumb/>
           <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
             Create a Password
           </MainHeading>

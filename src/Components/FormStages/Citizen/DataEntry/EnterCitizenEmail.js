@@ -3,7 +3,8 @@ import { Form, Alert } from "react-bootstrap";
 import { MainHeading } from "../../../../globalStyles";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
-import { LoadingBox, Button, InputField, ErrorSummary } from "govuk-react";
+import { Button, InputField, ErrorSummary } from "govuk-react";
+import Breadcrumb from "react-bootstrap/Breadcrumb";
 
 export const EnterCitizenEmail = () => {
   const {
@@ -33,7 +34,6 @@ export const EnterCitizenEmail = () => {
   };
   const submitForm = () => {
     if (data.email != undefined && validateEmail(data.email) === true) {
-
       navigate("/register-citizen-password", {
         state: {
           first_name: state.first_name,
@@ -59,6 +59,25 @@ export const EnterCitizenEmail = () => {
       setErrorMessageFlag(true);
     }
   };
+  const RegistrationFormBreadcrumb = () => {
+    return (
+      <Breadcrumb>
+        <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
+
+        <Breadcrumb.Item href="/register-citizen-landing">
+          Register Citizen
+        </Breadcrumb.Item>
+        <Breadcrumb.Item href="/register-citizen-name">
+          Applicant name
+        </Breadcrumb.Item>
+        <Breadcrumb.Item href="/register-citizen-address">
+          Applicant address
+        </Breadcrumb.Item>
+        <Breadcrumb.Item active>Applicant email</Breadcrumb.Item>
+      </Breadcrumb>
+    );
+  };
+
   return (
     <div className="container">
       <div
@@ -81,6 +100,7 @@ export const EnterCitizenEmail = () => {
         )}
         <div style={{ display: "inline-block" }}>
           <div>
+            <RegistrationFormBreadcrumb />
             <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
               Enter your email address
             </MainHeading>
