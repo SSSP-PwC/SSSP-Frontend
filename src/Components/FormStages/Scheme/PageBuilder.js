@@ -14,6 +14,8 @@ import React, { useState } from "react";
 import { Tab, Tabs } from "react-bootstrap";
 import { MainHeading } from "../../../globalStyles";
 import { useNavigate } from "react-router-dom";
+import Image from "material-ui-image";
+
 const PageBuilder = () => {
   const [pageElements, setPageElements] = useState([]);
   const [pageTitle, setPageTitle] = useState("");
@@ -24,6 +26,8 @@ const PageBuilder = () => {
   const [showForm, setShowForm] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
   const [numTabs, setNumTabs] = useState(1);
+  const [fileData, setFileData] = useState(null);
+
   const [tabs, setTabs] = useState([
     {
       id: 1,
@@ -45,6 +49,15 @@ const PageBuilder = () => {
   };
   const handleNavigate = () => {
     navigate(`${tabs[activeTab].fields[activeTab].button_link}`);
+  };
+  const handleFileChange = (event) => {
+    console.log("Called");
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setFileData(e.target.result);
+    };
+    reader.readAsDataURL(file);
   };
 
   const handlePageSelect = (event) => {
@@ -127,20 +140,8 @@ const PageBuilder = () => {
           case "file":
             formField = (
               <div key={index}>
-                <FileUpload
-                  input={{
-                    type: "text",
-                    value: field.button_link,
-                    onChange: (e) =>
-                      handleUpdateField(index, {
-                        ...field,
-                        button_link: e.target.value,
-                      }),
-                  }}
-                >
-                  {" "}
-                  {field.label}
-                </FileUpload>
+                {fileData &&  <img src={fileData} alt="uploaded file" />}
+
                 <br></br>
               </div>
             );
@@ -213,7 +214,7 @@ const PageBuilder = () => {
 
     return (
       <div className="container">
-        <form style={{overflowWrap: "break-word"}}>
+        <form style={{ overflowWrap: "break-word" }}>
           <label htmlFor="page-select">Select a page:</label>
           <Select
             id="page-select"
@@ -480,6 +481,17 @@ const PageBuilder = () => {
                         Button Link:
                       </InputField>
                     )}
+                    {field.type === "file" && (
+                      <FileUpload
+                        onChange={handleFileChange}
+                        input={{
+                          type: "file",
+                        }}
+                      >
+                        {" "}
+                      </FileUpload>
+                    )}
+                    <br></br>
                     <br></br>
                     <br></br>
                     <Button onClick={() => handleRemoveField(index)}>
