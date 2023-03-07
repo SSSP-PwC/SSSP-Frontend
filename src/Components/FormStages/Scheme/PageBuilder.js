@@ -1,13 +1,24 @@
-import { Divider, TextField } from "@mui/material";
-import { Button, Checkbox, Heading, InputField, Select, TextArea } from "govuk-react";
+import { Divider } from "@mui/material";
+import {
+  Button,
+  Checkbox,
+  Heading,
+  InputField,
+  Select,
+  TextArea,
+  FileUpload,
+  Label,
+  TopNav,
+} from "govuk-react";
 import React, { useState } from "react";
 import { Tab, Tabs } from "react-bootstrap";
 import { MainHeading } from "../../../globalStyles";
-import FormBuilder from "./FormBuilder";
 import { useNavigate } from "react-router-dom";
 const PageBuilder = () => {
   const [pageElements, setPageElements] = useState([]);
   const [pageTitle, setPageTitle] = useState("");
+  const [selectedPage, setSelectedPage] = useState(null);
+
   const [pageUrl, setPageUrl] = useState("");
   const [fields, setFields] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -36,27 +47,47 @@ const PageBuilder = () => {
     navigate(`${tabs[activeTab].fields[activeTab].button_link}`);
   };
 
+  const handlePageSelect = (event) => {
+    setSelectedPage(event.target.value);
+  };
+
   const renderForm = () => {
-    return (
-      <form>
-        {tabs[activeTab].fields.map((field, index) => (
-          <div key={index}>
-            {field.type === "button" && (
-              <div>
+    const fieldsToRender = [];
+
+    // Find the tab for the selected page
+    const tab = tabs.find((tab) => tab.title === selectedPage);
+
+    // Render fields for the selected tab
+    if (tab) {
+      tab.fields.forEach((field, index) => {
+        let formField = null;
+
+        // Render the field based on its type
+        switch (field.type) {
+          case "button":
+            formField = (
+              <div key={index}>
                 <Button
-                  onClick={handleNavigate}
-                  type={field.type}
+                  onClick={() => {
+                    navigate(field.button_link);
+                  }}
                   name={field.label}
                   required={field.required}
                 >
                   {field.label}
                 </Button>
-              </div>
-            )}
-            {field.type === "string" && (
-              <div>
-                <label style={{ textAlign: "center" }}>{field.label}</label>
                 <br></br>
+              </div>
+            );
+            break;
+
+          case "string":
+          case "password":
+          case "number":
+            formField = (
+              <div key={index}>
+                <label style={{ textAlign: "center" }}>{field.label}</label>
+                <br />
                 <InputField
                   input={{
                     type: field.type,
@@ -64,58 +95,143 @@ const PageBuilder = () => {
                     required: field.required,
                   }}
                 />
-              </div>
-            )}
-            {field.type === "password" && (
-              <div>
-                <label style={{ textAlign: "center" }}>{field.label}</label>
                 <br></br>
-                <InputField
-                  input={{
-                    type: field.type,
-                    name: field.label,
-                    required: field.required,
-                  }}
-                />
               </div>
-            )}
-            {field.type === "number" && (
-              <div>
-                <label style={{ textAlign: "center" }}>{field.label}</label>
-                <br></br>
-                <InputField
-                  input={{
-                    type: field.type,
-                    name: field.label,
-                    required: field.required,
-                  }}
-                />
-              </div>
-            )}
-            {field.type === "checkbox" && (
-              <div>
-                <label style={{ textAlign: "center" }}>{field.label}</label>
-                <br></br>
+            );
+            break;
+
+          case "checkbox":
+            formField = (
+              <div key={index}>
                 <Checkbox name={field.label} required={field.required} />
-              </div>
-            )}
-            {field.type === "textarea" && (
-              <div>
                 <label style={{ textAlign: "center" }}>{field.label}</label>
                 <br></br>
+              </div>
+            );
+            break;
+
+          case "textarea":
+            formField = (
+              <div key={index}>
+                <label style={{ textAlign: "center" }}>{field.label}</label>
+                <br />
                 <TextArea
+                  name={field.label}
+                  required={field.required}
+                  multiline
+                />
+                <br></br>
+              </div>
+            );
+            break;
+          case "file":
+            formField = (
+              <div key={index}>
+                <FileUpload
                   input={{
-                    type: field.type,
-                    name: field.label,
-                    required: field.required,
+                    type: "text",
+                    value: field.button_link,
+                    onChange: (e) =>
+                      handleUpdateField(index, {
+                        ...field,
+                        button_link: e.target.value,
+                      }),
                   }}
                 >
-                </TextArea>
+                  {" "}
+                  {field.label}
+                </FileUpload>
+                <br></br>
               </div>
-            )}
-          </div>
-        ))}
-      </form>
+            );
+            break;
+          case "label":
+            formField = (
+              <div key={index}>
+                <Label
+                  input={{
+                    type: "text",
+                    value: field.label,
+                    onChange: (e) =>
+                      handleUpdateField(index, {
+                        ...field,
+                        button_link: e.target.value,
+                      }),
+                  }}
+                >
+                  {" "}
+                  {field.label}
+                </Label>
+                <br></br>
+              </div>
+            );
+            break;
+          case "heading":
+            formField = (
+              <div key={index}>
+                <Heading
+                  size="LARGE"
+                  input={{
+                    type: "text",
+                    onChange: (e) =>
+                      handleUpdateField(index, {
+                        ...field,
+                        button_link: e.target.value,
+                      }),
+                  }}
+                >
+                  {field.label}
+                </Heading>
+                <br></br>
+              </div>
+            );
+            break;
+          case "navbar":
+            formField = (
+              <div key={index}>
+                <TopNav
+                  company={
+                    <TopNav.Anchor href="https://example.com" target="new">
+                      {field.label}
+                    </TopNav.Anchor>
+                  }
+                />
+                <br></br>
+              </div>
+            );
+            break;
+
+          default:
+            break;
+        }
+
+        if (formField) {
+          fieldsToRender.push(formField);
+        }
+      });
+    }
+
+    return (
+      <div className="container">
+        <form style={{overflowWrap: "break-word"}}>
+          <label htmlFor="page-select">Select a page:</label>
+          <Select
+            id="page-select"
+            onChange={handlePageSelect}
+            value={selectedPage || ""}
+          >
+            <option value="">-- Select a page --</option>
+            {tabs.map((tab) => (
+              <option key={tab.id} value={tab.title}>
+                {tab.title}
+              </option>
+            ))}
+          </Select>
+          <br></br>
+          <br></br>
+          {fieldsToRender}
+        </form>
+      </div>
     );
   };
 
@@ -290,7 +406,6 @@ const PageBuilder = () => {
                 disabled={tab.disabled}
               >
                 <br></br>
-                {console.log(fields)}
                 {tabs[activeTab].fields.map((field, index) => (
                   <div key={`field-${index}`}>
                     <InputField
@@ -322,9 +437,14 @@ const PageBuilder = () => {
                       <option value="string">Email</option>
                       <option value="textarea">Textbox</option>
                       <option value="number">Number</option>
+                      <option value="file">File</option>
                       <option value="button">Button</option>
+                      <option value="heading">Heading</option>
+                      <option value="navbar">Navbar</option>
+
                       <option value="password">Password</option>
                       <option value="checkbox">Checkbox</option>
+                      <option value="label">Label</option>
                     </Select>
 
                     <br></br>
@@ -373,7 +493,11 @@ const PageBuilder = () => {
           <br></br>
         </div>
       )}
-      {showForm === true && <div>{renderForm()}</div>}
+      {showForm === true && (
+        <div>
+          {renderForm()} <br></br>
+        </div>
+      )}
     </div>
   );
 };
