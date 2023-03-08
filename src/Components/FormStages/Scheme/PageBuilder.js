@@ -9,30 +9,35 @@ import {
   FileUpload,
   Label,
   TopNav,
+  Footer,
+  MultiChoice,
+  Radio,
+  Link,
 } from "govuk-react";
 import React, { useState } from "react";
 import { Tab, Tabs } from "react-bootstrap";
 import { MainHeading } from "../../../globalStyles";
 import { useNavigate } from "react-router-dom";
-import Image from "material-ui-image";
+import PhoneInput from "react-phone-number-input";
 
 const PageBuilder = () => {
   const [pageElements, setPageElements] = useState([]);
   const [pageTitle, setPageTitle] = useState("");
   const [selectedPage, setSelectedPage] = useState(null);
-
   const [pageUrl, setPageUrl] = useState("");
   const [fields, setFields] = useState([]);
+  const [numberOfElements, setNumberOfElements] = useState(1);
   const [showForm, setShowForm] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
   const [numTabs, setNumTabs] = useState(1);
   const [fileData, setFileData] = useState(null);
-
+  const [numberOfRadioButtons, setNumberOfRadioButtons] = useState(0);
+  const [phoneNumber, setPhoneNumber] = useState();
+  console.log(numberOfElements);
   const [tabs, setTabs] = useState([
     {
       id: 1,
       title: "Portal",
-      content: "",
       fields: [
         {
           label: "",
@@ -44,6 +49,25 @@ const PageBuilder = () => {
     },
   ]);
   const navigate = useNavigate();
+
+  const submit = () => {
+    for (let i = 0; i < numberOfElements; i++) {
+      console.log(numberOfElements);
+      const data = {
+        id: tabs[i].id,
+        title: tabs[i].title,
+        fields: [
+          {
+            label: tabs[i].fields[i].label,
+            type: tabs[i].fields[i].type,
+            required: tabs[i].fields[i].required,
+            button_link: tabs[i].fields[i].button_link,
+          },
+        ],
+      };
+      console.log(data);
+    }
+  };
   const showPortal = () => {
     setShowForm(true);
   };
@@ -51,7 +75,6 @@ const PageBuilder = () => {
     navigate(`${tabs[activeTab].fields[activeTab].button_link}`);
   };
   const handleFileChange = (event) => {
-    console.log("Called");
     const file = event.target.files[0];
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -62,6 +85,29 @@ const PageBuilder = () => {
 
   const handlePageSelect = (event) => {
     setSelectedPage(event.target.value);
+  };
+
+  const incrementNumberOfButtons = () => {
+    setNumberOfRadioButtons(numberOfRadioButtons + 1);
+  };
+  const RenderRadioButtons = () => {
+    const fieldsToRender = [];
+    let formField = null;
+    for (let i = 0; i < numberOfRadioButtons; i++) {
+      formField = <Radio inline name="group1"></Radio>;
+
+      if (formField) {
+        fieldsToRender.push(formField);
+      }
+    }
+    return (
+      <div className="container">
+        <form style={{ overflowWrap: "break-word" }}>
+          <br></br>
+          {fieldsToRender}
+        </form>
+      </div>
+    );
   };
 
   const renderForm = () => {
@@ -140,7 +186,7 @@ const PageBuilder = () => {
           case "file":
             formField = (
               <div key={index}>
-                {fileData &&  <img src={fileData} alt="uploaded file" />}
+                {fileData && <img src={fileData} alt="uploaded file" />}
 
                 <br></br>
               </div>
@@ -201,6 +247,97 @@ const PageBuilder = () => {
               </div>
             );
             break;
+          case "footer":
+            formField = (
+              <div key={index}>
+                <Footer
+                  licence={
+                    <span>
+                      All content is available under the{" "}
+                      <styled
+                        href="https://creativecommons.org/licenses/by/4.0/"
+                        rel="license"
+                      >
+                        Creative Commons Attribution 4.0 International Licence{" "}
+                      </styled>
+                      , except where otherwise stated
+                    </span>
+                  }
+                />
+              </div>
+            );
+            break;
+          case "multichoice":
+            formField = (
+              <div key={index}>
+                <MultiChoice label={field.label}>
+                  <RenderRadioButtons />
+                </MultiChoice>
+              </div>
+            );
+            break;
+          case "dropdown":
+            formField = (
+              <div key={index}>
+                <Select
+                  id="page-select"
+                  onChange={handlePageSelect}
+                  value={selectedPage || ""}
+                >
+                  <option value="">{field.label}</option>)
+                </Select>
+              </div>
+            );
+            break;
+          case "website_url":
+            formField = (
+              <div key={index}>
+                <Link href={`${field.label}`}>
+                  <Label
+                    input={{
+                      type: "text",
+                      value: field.label,
+                      onChange: (e) =>
+                        handleUpdateField(index, {
+                          ...field,
+                          button_link: e.target.value,
+                        }),
+                    }}
+                  >
+                    {field.label}
+                  </Label>
+                </Link>
+                <br></br>
+              </div>
+            );
+            break;
+          case "phonenumber":
+            formField = (
+              <div key={index}>
+                <PhoneInput
+                  placeholder={field.label}
+                  value={phoneNumber}
+                  onChange={setPhoneNumber}
+                />
+                <br></br>
+              </div>
+            );
+            break;
+          //slider
+          //dropdown
+          //togglebox
+          //radio box
+          //checkbox
+          //multiple choice
+          //number slider
+          //captcha
+          //recaptcha
+          //gdpr agreement
+          //website url
+          //phone formatting
+
+          //email formatting
+          //grid
 
           default:
             break;
@@ -241,7 +378,6 @@ const PageBuilder = () => {
     const newTab = {
       id: newId,
       title: pageTitle,
-      content: fields[newId],
       fields: [{}],
     };
     setTabs([...tabs, newTab]);
@@ -266,23 +402,19 @@ const PageBuilder = () => {
   const handleAddField = () => {
     const currentTab = tabs[activeTab];
     const currentTabFields = currentTab.fields ? [...currentTab.fields] : [];
-    console.log(currentTab);
-    console.log(currentTabFields);
 
+    setNumberOfElements(currentTabFields.length);
     currentTabFields.push({
       label: "",
       type: "",
       required: false,
       button_link: "",
     });
-
     const newTabs = [...tabs];
     newTabs[activeTab] = {
       ...currentTab,
       fields: currentTabFields,
     };
-    console.log(newTabs);
-
     setTabs(newTabs);
   };
   const savePage = () => {
@@ -348,7 +480,7 @@ const PageBuilder = () => {
               onChange: (e) => setPageUrl(e.target.value),
             }}
           >
-            Page Endpoint
+            Page URL
           </InputField>
           <br></br>
 
@@ -373,6 +505,9 @@ const PageBuilder = () => {
           <Button onClick={showPortal} style={{ margin: "5px" }}>
             Preview
           </Button>
+          <Button onClick={submit} style={{ margin: "5px" }}>
+            Print
+          </Button>
           <br></br>
           {pageElements.map((element) => {
             if (element.type === "text") {
@@ -394,6 +529,7 @@ const PageBuilder = () => {
             }
           })}
           <br></br>
+
           <Tabs activeKey={activeTab} onSelect={(key) => setActiveTab(key)}>
             {tabs.map((tab, index) => (
               <Tab
@@ -409,6 +545,9 @@ const PageBuilder = () => {
                 <br></br>
                 {tabs[activeTab].fields.map((field, index) => (
                   <div key={`field-${index}`}>
+                    <p>Element</p>
+                    <Divider style={{ background: "black" }}></Divider>
+                    <br></br>
                     <InputField
                       input={{
                         type: "text",
@@ -442,10 +581,15 @@ const PageBuilder = () => {
                       <option value="button">Button</option>
                       <option value="heading">Heading</option>
                       <option value="navbar">Navbar</option>
-
+                      <option value="footer">Footer</option>
                       <option value="password">Password</option>
                       <option value="checkbox">Checkbox</option>
                       <option value="label">Label</option>
+                      <option value="multichoice">Multi-choice</option>
+                      <option value="dropdown">Dropdown</option>
+                      <option value="website_url">Website URL</option>
+                      <option value="phonenumber">Phone number</option>
+
                     </Select>
 
                     <br></br>
@@ -481,6 +625,17 @@ const PageBuilder = () => {
                         Button Link:
                       </InputField>
                     )}
+                    {field.type === "multichoice" && (
+                      <Button
+                        onClick={incrementNumberOfButtons}
+                        input={{
+                          type: "number",
+                          value: field.number_of_radio_buttons,
+                        }}
+                      >
+                        Add Radio Button
+                      </Button>
+                    )}
                     {field.type === "file" && (
                       <FileUpload
                         onChange={handleFileChange}
@@ -502,6 +657,7 @@ const PageBuilder = () => {
               </Tab>
             ))}
           </Tabs>
+
           <br></br>
         </div>
       )}
