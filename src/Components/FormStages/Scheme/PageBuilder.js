@@ -33,17 +33,16 @@ const PageBuilder = () => {
   const [fileData, setFileData] = useState(null);
   const [numberOfRadioButtons, setNumberOfRadioButtons] = useState(0);
   const [phoneNumber, setPhoneNumber] = useState();
-  console.log(numberOfElements);
   const [tabs, setTabs] = useState([
     {
       id: 1,
       title: "Portal",
       fields: [
         {
-          label: "",
-          type: "string",
-          required: false,
-          button_link: "",
+          id: 0,
+          page_id: 0,
+          name: "",
+          props: {},
         },
       ],
     },
@@ -51,23 +50,64 @@ const PageBuilder = () => {
   const navigate = useNavigate();
 
   const submit = () => {
-    for (let i = 0; i < numberOfElements; i++) {
-      console.log(numberOfElements);
-      const data = {
+    const fieldsData = [];
+
+    for (let i = 0; i < numTabs; i++) {
+      const tabFields = tabs[i].fields;
+      const tabFieldsData = [];
+
+      for (let j = 0; j < tabFields.length; j++) {
+        const fieldData = {
+          id: j + 1,
+          page_id: tabFields[j].id,
+          props: {
+            type: tabFields[j].type,
+            required: tabFields[j].required,
+            button_link: tabFields[j].button_link,
+          },
+        };
+        tabFieldsData.push(fieldData);
+      }
+
+      const tabData = {
         id: tabs[i].id,
         title: tabs[i].title,
-        fields: [
-          {
-            label: tabs[i].fields[i].label,
-            type: tabs[i].fields[i].type,
-            required: tabs[i].fields[i].required,
-            button_link: tabs[i].fields[i].button_link,
-          },
-        ],
+        fields: tabFieldsData,
       };
-      console.log(data);
+      console.log(tabData);
+      fieldsData.push(tabData);
     }
+
+    console.log(JSON.stringify({
+      fields: fieldsData,
+    }))
+
+    // Send data to the server using Fetch API
+    fetch("http://127.0.0.1:1000/api/pages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        fields: fieldsData,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+        // Show success message to the user
+      })
+      .catch((error) => {
+        console.log(error);
+        // Show error message to the user
+      });
   };
+
   const showPortal = () => {
     setShowForm(true);
   };
@@ -417,9 +457,7 @@ const PageBuilder = () => {
     };
     setTabs(newTabs);
   };
-  const savePage = () => {
-    console.log(tabs);
-  };
+  const savePage = () => {};
   const handleRemoveField = (index) => {
     const currentTab = tabs[activeTab];
     if (!currentTab) {
@@ -589,7 +627,6 @@ const PageBuilder = () => {
                       <option value="dropdown">Dropdown</option>
                       <option value="website_url">Website URL</option>
                       <option value="phonenumber">Phone number</option>
-
                     </Select>
 
                     <br></br>
