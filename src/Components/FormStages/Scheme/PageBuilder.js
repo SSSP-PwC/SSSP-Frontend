@@ -17,7 +17,7 @@ import {
 import React, { useState } from "react";
 import { Tab, Tabs } from "react-bootstrap";
 import { MainHeading } from "../../../globalStyles";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import PhoneInput from "react-phone-number-input";
 
 const PageBuilder = () => {
@@ -33,81 +33,94 @@ const PageBuilder = () => {
   const [fileData, setFileData] = useState(null);
   const [numberOfRadioButtons, setNumberOfRadioButtons] = useState(0);
   const [phoneNumber, setPhoneNumber] = useState();
+
   const [tabs, setTabs] = useState([
     {
       id: 1,
-      title: "Portal",
+      title: "",
       fields: [
         {
           id: 0,
-          page_id: 0,
-          name: "",
-          props: {},
+          type: "",
+          label: "",
+          required: false,
+          button_link: "",
         },
       ],
     },
   ]);
+
   const navigate = useNavigate();
+  const { state } = useLocation();
+  console.log(state.portal_id);
+  const defaultProps = {
+    label: "",
+    type: "",
 
-  const submit = () => {
-    const fieldsData = [];
-
-    for (let i = 0; i < numTabs; i++) {
-      const tabFields = tabs[i].fields;
-      const tabFieldsData = [];
-
-      for (let j = 0; j < tabFields.length; j++) {
-        const fieldData = {
-          id: j + 1,
-          page_id: tabFields[j].id,
-          props: {
-            type: tabFields[j].type,
-            required: tabFields[j].required,
-            button_link: tabFields[j].button_link,
-          },
-        };
-        tabFieldsData.push(fieldData);
-      }
-
-      const tabData = {
-        id: tabs[i].id,
-        title: tabs[i].title,
-        fields: tabFieldsData,
-      };
-      console.log(tabData);
-      fieldsData.push(tabData);
-    }
-
-    console.log(JSON.stringify({
-      fields: fieldsData,
-    }))
-
-    // Send data to the server using Fetch API
-    fetch("http://127.0.0.1:1000/api/pages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        fields: fieldsData,
-      }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log(data);
-        // Show success message to the user
-      })
-      .catch((error) => {
-        console.log(error);
-        // Show error message to the user
-      });
+    onChange: () => {},
+    // Add all other expected properties here
   };
 
+  const createPage = async (tabData) => {
+    try {
+      const response = await fetch("http://127.0.0.1:1000/api/page", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: tabData.title,
+          fields: tabData.fields,
+          portal_id: state.portal_id,
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      console.log(data);
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  
+
+  const submit = async () => {
+    try {
+      console.log("PORTAL ID:", state.portal_id);
+
+      for (let i = 0; i < numTabs; i++) {
+        const tabFields = tabs[i].fields;
+        const fieldsData = [];
+
+        for (let j = 0; j < tabFields.length; j++) {
+          const fieldData = {
+            id: j + 1,
+            props: {
+              name: tabFields[j].label,
+              type: tabFields[j].type,
+              required: tabFields[j].required,
+              button_link: tabFields[j].button_link,
+            },
+          };
+
+          fieldsData.push(fieldData);
+        }
+
+        const tabData = {
+          title: tabs[i].title,
+          fields: fieldsData,
+        };
+
+        await createPage(tabData);
+      }
+    } catch (error) {
+      console.log(error);
+      // Show error message to the user
+    }
+  };
   const showPortal = () => {
     setShowForm(true);
   };
@@ -149,7 +162,6 @@ const PageBuilder = () => {
       </div>
     );
   };
-
   const renderForm = () => {
     const fieldsToRender = [];
 
@@ -340,7 +352,7 @@ const PageBuilder = () => {
                       onChange: (e) =>
                         handleUpdateField(index, {
                           ...field,
-                          button_link: e.target.value,
+                          label: e.target.value,
                         }),
                     }}
                   >
@@ -443,18 +455,16 @@ const PageBuilder = () => {
     const currentTab = tabs[activeTab];
     const currentTabFields = currentTab.fields ? [...currentTab.fields] : [];
 
-    setNumberOfElements(currentTabFields.length);
+    setNumberOfElements((prevState) => prevState + 1);
+
     currentTabFields.push({
-      label: "",
-      type: "",
-      required: false,
-      button_link: "",
+      label: `Field ${numberOfElements + 1}`,
+      type: "input",
+      props: {},
     });
+
     const newTabs = [...tabs];
-    newTabs[activeTab] = {
-      ...currentTab,
-      fields: currentTabFields,
-    };
+    newTabs[activeTab].fields = currentTabFields;
     setTabs(newTabs);
   };
   const savePage = () => {};
@@ -511,16 +521,7 @@ const PageBuilder = () => {
             Page Title
           </InputField>
           <br></br>
-          <InputField
-            input={{
-              label: "Page URL",
-              value: pageUrl,
-              onChange: (e) => setPageUrl(e.target.value),
-            }}
-          >
-            Page URL
-          </InputField>
-          <br></br>
+         
 
           <Button
             variant="contained"
