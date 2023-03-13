@@ -28,7 +28,7 @@ const RegisterPortal = () => {
     try {
       // Check if endpoint already exists
       const response = await fetch(
-        `http://127.0.0.1:1000/api/portals/${pageUrl}`
+        `https://sssp-378808.nw.r.appspot.com/api/portals/${pageUrl}`
       );
       const data = await response.json();
 
@@ -45,7 +45,7 @@ const RegisterPortal = () => {
       // Create new portal
     } catch (error) {
       console.log(error);
-      const response2 = await fetch("http://127.0.0.1:1000/api/portal", {
+      const response2 = await fetch("https://sssp-378808.nw.r.appspot.com/api/portal", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

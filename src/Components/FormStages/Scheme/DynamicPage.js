@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Divider } from "@mui/material";
 import {
@@ -14,13 +14,12 @@ import {
   TopNav,
   Footer,
   MultiChoice,
-  Radio,
   Link,
 } from "govuk-react";
-import { Tab, Tabs } from "react-bootstrap";
-import { MainHeading } from "../../../globalStyles";
+
 import { useNavigate } from "react-router-dom";
 import PhoneInput from "react-phone-number-input";
+import ReCAPTCHA from "react-google-recaptcha";
 
 function DynamicPage() {
   const { pageId, endpoint } = useParams();
@@ -33,6 +32,22 @@ function DynamicPage() {
   const [buttonIndex, setButtonIndex] = useState(0);
   const [fileData, setFileData] = useState(null);
   const [phoneNumber, setPhoneNumber] = useState();
+  const [formData, setFormData] = useState({});
+
+  const { state: locationState } = useLocation();
+  const prevData = locationState?.data || {};
+
+  console.log(prevData);
+
+  const updateData = (e) => {
+    const { name, value, checked, type } = e.target;
+    const newValue = type === "checkbox" ? checked : value;
+    setFormData({
+      ...formData,
+      [name]: newValue,
+    });
+    console.log(formData);
+  };
 
   useEffect(() => {
     fetchData();
@@ -40,18 +55,42 @@ function DynamicPage() {
 
   async function fetchData() {
     const response = await fetch(
-      `http://127.0.0.1:1000/api/page/${pageId}/${endpoint}`
+      `https://sssp-378808.nw.r.appspot.com/api/page/${pageId}/${endpoint}`
     );
     const info = await response.json();
     console.log(info);
     setData(info.fields);
   }
 
-  const selectPage = () => {
+  const nextPage = (event) => {
+    event.preventDefault();
+
     const nextPageId = parseInt(pageId, 10) + 1;
-    navigate(`/Page/${nextPageId}/${endpoint}`);
+    navigate(`/Page/${nextPageId}/${endpoint}`, {
+      state: {
+        data: { ...prevData, ...formData },
+      },
+    });
+    window.location.reload();
   };
-  
+
+  const previousPage = (event) => {
+    event.preventDefault();
+    const nextPageId = parseInt(pageId, 10) - 1;
+    navigate(`/Page/${nextPageId}/${endpoint}`, {
+      state: {
+        data: { ...prevData, ...formData },
+      },
+    });
+    window.location.reload();
+  };
+
+  const submit = (event) => {
+    event.preventDefault();
+
+    const nextPageId = parseInt(pageId, 10) - 1;
+    alert(formData);
+  };
 
   const renderForm = () => {
     const fieldsToRender = [];
@@ -61,29 +100,62 @@ function DynamicPage() {
 
     data &&
       data.map((field, index) => {
-        console.log(field);
         switch (field.type) {
-          case "button":
+          case "next-button":
             formField = (
               <div key={index}>
-                <Button
-                  onClick={selectPage}
-                  required={field.required}
-                >
-                  {field.name}
+                <Button onClick={nextPage} required={field.required}>
+                  {field.label}
                 </Button>
                 <br></br>
               </div>
             );
             break;
-          case "string":
-          case "password":
-          case "number":
+          case "previous-button":
+            formField = (
+              <div key={index}>
+                <Button onClick={previousPage} required={field.required}>
+                  {field.label}
+                </Button>
+                <br></br>
+              </div>
+            );
+            break;
+          case "submit-button":
+            formField = (
+              <div key={index}>
+                <Button onClick={submit} required={field.required}>
+                  {field.label}
+                </Button>
+                <br></br>
+              </div>
+            );
+            break;
+          case "textfield":
+            formField = (
+              <div key={index}>
+                <label style={{ textAlign: "center" }}>{field.label}</label>
+
+                <br />
+                <InputField
+                  onChange={updateData}
+                  input={{
+                    type: field.type,
+                    name: field.label,
+                    required: field.required,
+                  }}
+                />
+                <br></br>
+              </div>
+            );
+            break;
+          case "email":
             formField = (
               <div key={index}>
                 <label style={{ textAlign: "center" }}>{field.label}</label>
                 <br />
                 <InputField
+                  onChange={updateData}
                   input={{
                     type: field.type,
                     name: field.label,
@@ -95,16 +167,54 @@ function DynamicPage() {
             );
             break;
 
-          case "checkbox":
+          case "password":
             formField = (
               <div key={index}>
-                <Checkbox name={field.label} required={field.required} />
                 <label style={{ textAlign: "center" }}>{field.label}</label>
+                <br />
+                <InputField
+                  onChange={updateData}
+                  input={{
+                    type: field.type,
+                    name: field.name,
+                    required: field.required,
+                  }}
+                />
                 <br></br>
               </div>
             );
             break;
 
+          case "number":
+            formField = (
+              <div key={index}>
+                <label style={{ textAlign: "center" }}>{field.label}</label>
+                <br />
+                <InputField
+                  onChange={updateData}
+                  input={{
+                    type: field.type,
+                    name: field.label,
+                    required: field.required,
+                  }}
+                />
+                <br></br>
+              </div>
+            );
+            break;
+          case "checkbox":
+            formField = (
+              <div key={index}>
+                <Checkbox
+                  onChange={updateData}
+                  name={field.label}
+                  required={field.required}
+                />
+                <label style={{ textAlign: "center" }}>{field.label}</label>
+                <br></br>
+              </div>
+            );
+            break;
           case "textarea":
             formField = (
               <div key={index}>
@@ -114,6 +224,7 @@ function DynamicPage() {
                   name={field.label}
                   required={field.required}
                   multiline
+                  onChange={updateData}
                 />
                 <br></br>
               </div>
@@ -122,8 +233,8 @@ function DynamicPage() {
           case "file":
             formField = (
               <div key={index}>
+                onChange={updateData}
                 {fileData && <img src={fileData} alt="uploaded file" />}
-
                 <br></br>
               </div>
             );
@@ -132,13 +243,14 @@ function DynamicPage() {
             formField = (
               <div key={index}>
                 <Label
+                  onChange={updateData}
                   input={{
                     type: "text",
-                    value: field.name,
+                    value: field.label,
                   }}
                 >
                   {" "}
-                  {field.name}
+                  {field.label}
                 </Label>
                 <br></br>
               </div>
@@ -148,6 +260,7 @@ function DynamicPage() {
             formField = (
               <div key={index}>
                 <Heading
+                  onChange={updateData}
                   size="LARGE"
                   input={{
                     type: "text",
@@ -163,9 +276,10 @@ function DynamicPage() {
             formField = (
               <div key={index}>
                 <TopNav
+                  onChange={updateData}
                   company={
                     <TopNav.Anchor href="https://example.com" target="new">
-                      {field.name}
+                      {field.label}
                     </TopNav.Anchor>
                   }
                 />
@@ -177,15 +291,16 @@ function DynamicPage() {
             formField = (
               <div key={index}>
                 <Footer
+                  onChange={updateData}
                   licence={
                     <span>
                       All content is available under the{" "}
-                      <styled
+                      <a
                         href="https://creativecommons.org/licenses/by/4.0/"
                         rel="license"
                       >
                         Creative Commons Attribution 4.0 International Licence{" "}
-                      </styled>
+                      </a>
                       , except where otherwise stated
                     </span>
                   }
@@ -196,6 +311,7 @@ function DynamicPage() {
           case "multichoice":
             formField = (
               <div key={index}>
+                onChange={updateData}
                 <MultiChoice label={field.label}></MultiChoice>
               </div>
             );
@@ -204,7 +320,8 @@ function DynamicPage() {
             formField = (
               <div key={index}>
                 <Select id="page-select">
-                  <option value="">{field.label}</option>)
+                  onChange={updateData}
+                  <option value="">{field.name}</option>)
                 </Select>
               </div>
             );
@@ -214,9 +331,10 @@ function DynamicPage() {
               <div key={index}>
                 <Link href={`${field.label}`}>
                   <Label
+                    onChange={updateData}
                     input={{
                       type: "text",
-                      value: field.label,
+                      value: field.name,
                     }}
                   >
                     {field.label}
@@ -229,11 +347,20 @@ function DynamicPage() {
           case "phonenumber":
             formField = (
               <div key={index}>
+                onChange={updateData}
                 <PhoneInput
-                  placeholder={field.label}
+                  placeholder={field.name}
                   value={phoneNumber}
                   onChange={setPhoneNumber}
                 />
+                <br></br>
+              </div>
+            );
+            break;
+          case "captcha":
+            formField = (
+              <div key={index}>
+                <ReCAPTCHA sitekey={`${field.captcha_key}`} />
                 <br></br>
               </div>
             );

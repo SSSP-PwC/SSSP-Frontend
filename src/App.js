@@ -29,7 +29,7 @@ import { EOIContactInfo } from "./Components/FormStages/Scheme/EOI-Contact-Info"
 import { EOIProductInfo } from "./Components/FormStages/Scheme/EOI-Product-Info";
 import { EOIDeclarations } from "./Components/FormStages/Scheme/EOI-Declarations";
 import { EOISummary } from "./Components/FormStages/Scheme/EOI-Summary";
-import { ListSchemes } from "./Components/FormStages/Scheme/ListSchemes";
+import { ListPortals } from "./Components/FormStages/Scheme/ListPortals";
 import { GrantApplication } from "./Components/FormStages/Scheme/GrantApplication";
 import { RegisterSchemeLandingPage } from "./Components/FormStages/Scheme/Register-Scheme-Landing-Page";
 import { SchemeTitle } from "./Components/FormStages/Scheme/Scheme-Title";
@@ -82,6 +82,8 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <HomePage />
+                <Footer />
+
               </>
             }
           />
@@ -103,6 +105,8 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <EnterCompanyDetails />
+                <Footer />
+
               </>
             }
           />
@@ -127,6 +131,8 @@ export default function App() {
                 </CookieConsent>
 
                 <AssociateContact />
+                <Footer />
+
               </>
             }
           />
@@ -148,6 +154,8 @@ export default function App() {
                 </CookieConsent>
 
                 <RegisterCompanySummary />
+                <Footer />
+
               </>
             }
           />
@@ -168,6 +176,8 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <LinkAccount />
+                <Footer />
+
               </>
             }
           />
@@ -188,6 +198,8 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <CompanyRegistrationLandingPage />
+                <Footer />
+
               </>
             }
           />
@@ -208,6 +220,8 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <EnterCompanyDetails />
+                <Footer />
+
               </>
             }
           />
@@ -228,6 +242,8 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <ChangeFirstName />
+                <Footer />
+
               </>
             }
           />
@@ -249,6 +265,8 @@ export default function App() {
                 </CookieConsent>
 
                 <ChangeLastName />
+                <Footer />
+
               </>
             }
           />
@@ -269,6 +287,8 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <ChangeAddressLine1 />
+                <Footer />
+
               </>
             }
           />
@@ -290,6 +310,8 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <ChangeAddressLine2 />
+                <Footer />
+
               </>
             }
           />
@@ -310,6 +332,8 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <ChangeTownCity />
+                <Footer />
+
               </>
             }
           />
@@ -330,6 +354,8 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <ChangePostcode />
+                <Footer />
+
               </>
             }
           />
@@ -350,6 +376,8 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <EOIContactInfo />
+                <Footer />
+
               </>
             }
           />
@@ -370,6 +398,8 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <EOIProductInfo />
+                <Footer />
+
               </>
             }
           />
@@ -390,6 +420,8 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <EOIDeclarations />
+                <Footer />
+
               </>
             }
           />
@@ -410,6 +442,8 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <EOISummary />
+                <Footer />
+
               </>
             }
           />
@@ -429,7 +463,9 @@ export default function App() {
                 >
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
-                <ListSchemes />
+                <ListPortals />
+                <Footer />
+
               </>
             }
           />
@@ -451,6 +487,8 @@ export default function App() {
                 </CookieConsent>
 
                 <GrantApplication />
+                <Footer />
+
               </>
             }
           />
@@ -471,6 +509,8 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <ChangeEmail />
+                <Footer />
+
               </>
             }
           />
@@ -491,6 +531,8 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <RegisterSchemeLandingPage />
+                <Footer />
+
               </>
             }
           />
@@ -511,6 +553,8 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <SchemeTitle />
+                <Footer />
+
               </>
             }
           />
@@ -531,6 +575,8 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <SchemeDates />
+                <Footer />
+
               </>
             }
           />
@@ -552,6 +598,8 @@ export default function App() {
                 </CookieConsent>
 
                 <SchemeSupportingInformation />
+                <Footer />
+
               </>
             }
           />
@@ -574,6 +622,8 @@ export default function App() {
                 </CookieConsent>
 
                 <SchemeObjectives />
+                <Footer />
+
               </>
             }
           />
@@ -595,6 +645,8 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <HomePage />
+                <Footer />
+
               </>
             }
           />
@@ -615,6 +667,8 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <CitizenRegistrationLandingPage />
+                <Footer />
+
               </>
             }
           />
@@ -635,6 +689,8 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <CitizenSignIn />
+                <Footer />
+
               </>
             }
           />
@@ -655,6 +711,8 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <EnterCitizenName />
+                <Footer />
+
               </>
             }
           />
@@ -675,6 +733,8 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <EnterCitizenAddress />
+                <Footer />
+
               </>
             }
           />
@@ -696,6 +756,8 @@ export default function App() {
                 </CookieConsent>
 
                 <EnterCitizenEmail />
+                <Footer />
+
               </>
             }
           />
@@ -717,6 +779,8 @@ export default function App() {
                 </CookieConsent>
 
                 <EnterCompanyDetails />
+                <Footer />
+
               </>
             }
           />
@@ -738,6 +802,8 @@ export default function App() {
                 </CookieConsent>
 
                 <AssociateContact />
+                <Footer />
+
               </>
             }
           />
@@ -759,6 +825,8 @@ export default function App() {
                 </CookieConsent>
 
                 <LinkAccount />
+                <Footer />
+
               </>
             }
           />
@@ -780,6 +848,8 @@ export default function App() {
                 </CookieConsent>
 
                 <EnterCitizenPassword />
+                <Footer />
+
               </>
             }
           />
@@ -801,6 +871,8 @@ export default function App() {
                 </CookieConsent>
 
                 <SchemeSupportingInformation />
+                <Footer />
+
               </>
             }
           />
@@ -822,6 +894,8 @@ export default function App() {
                 </CookieConsent>
 
                 <RegisterCompanySummary />
+                <Footer />
+
               </>
             }
           />
@@ -844,6 +918,8 @@ export default function App() {
                 </CookieConsent>
 
                 <CitizenRegistrationSummary />
+                <Footer />
+
               </>
             }
           />
@@ -864,6 +940,8 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <EOIContactInfo />
+                <Footer />
+
               </>
             }
           />
@@ -884,6 +962,8 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <EOIProductInfo />
+                <Footer />
+
               </>
             }
           />
@@ -905,6 +985,8 @@ export default function App() {
                 </CookieConsent>
 
                 <EOIDeclarations />
+                <Footer />
+
               </>
             }
           />
@@ -926,6 +1008,8 @@ export default function App() {
                 </CookieConsent>
 
                 <EOISummary />
+                <Footer />
+
               </>
             }
           />
@@ -946,7 +1030,9 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
 
-                <ListSchemes />
+                <ListPortals />
+                <Footer />
+
               </>
             }
           />
@@ -968,6 +1054,8 @@ export default function App() {
                 </CookieConsent>
 
                 <GrantApplication />
+                <Footer />
+
               </>
             }
           />
@@ -989,6 +1077,8 @@ export default function App() {
                 </CookieConsent>
 
                 <EligibilityCheckerRegisteredCompany />
+                <Footer />
+
               </>
             }
           />
@@ -1009,6 +1099,8 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <EligibilityCheckerEmployeeCount />
+                <Footer />
+
               </>
             }
           />
@@ -1029,6 +1121,8 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <EligibilityCheckerTradingLength />
+                <Footer />
+
               </>
             }
           />
@@ -1050,6 +1144,8 @@ export default function App() {
                 </CookieConsent>
 
                 <EligibilityCheckerProductInfo />
+                <Footer />
+
               </>
             }
           />
@@ -1070,6 +1166,8 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <EligibilityCheckerSoftwareDetails />
+                <Footer />
+
               </>
             }
           />
@@ -1090,6 +1188,8 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <EligibilityCheckerSummary />
+                <Footer />
+
               </>
             }
           />
@@ -1112,6 +1212,8 @@ export default function App() {
                 </CookieConsent>
 
                 <ApplicationFormExhaustedForm />
+                <Footer />
+
               </>
             }
           />
@@ -1132,6 +1234,8 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <ApplicationFormBuildingInformation />
+                <Footer />
+
               </>
             }
           />
@@ -1153,6 +1257,8 @@ export default function App() {
                 </CookieConsent>
 
                 <ApplicationFormSummaryTable />
+                <Footer />
+
               </>
             }
           />
@@ -1173,6 +1279,8 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <PageBuilder />
+                <Footer />
+
               </>
             }
           />
@@ -1193,6 +1301,8 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <RegisterPortal />
+                <Footer />
+
               </>
             }
           />
@@ -1213,6 +1323,8 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <RenderForm />
+                <Footer />
+
               </>
             }
           />
@@ -1235,6 +1347,8 @@ export default function App() {
                 </CookieConsent>
 
                 <RegisterSchemeLandingPage />
+                <Footer />
+
               </>
             }
           />
@@ -1255,6 +1369,8 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <LinkAccount />
+                <Footer />
+
               </>
             }
           />
@@ -1275,6 +1391,8 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <SchemeTitle />
+                <Footer />
+
               </>
             }
           />
@@ -1296,6 +1414,8 @@ export default function App() {
                 </CookieConsent>
 
                 <SchemeDescription />
+                <Footer />
+
               </>
             }
           />
@@ -1317,6 +1437,8 @@ export default function App() {
                 </CookieConsent>
 
                 <SchemeDates />
+                <Footer />
+
               </>
             }
           />
@@ -1337,6 +1459,8 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <SchemeObjectives />
+                <Footer />
+
               </>
             }
           />
@@ -1357,6 +1481,8 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <FormBuilder />
+                <Footer />
+
               </>
             }
           />
@@ -1378,6 +1504,8 @@ export default function App() {
                 </CookieConsent>
 
                 <SchemeApplicationDetails />
+                <Footer />
+
               </>
             }
           />
@@ -1399,6 +1527,8 @@ export default function App() {
                 </CookieConsent>
 
                 <CompanyRegistrationLandingPage />
+                <Footer />
+
               </>
             }
           />
@@ -1420,6 +1550,8 @@ export default function App() {
                 </CookieConsent>
 
                 <RegisterCompanySummary />
+                <Footer />
+
               </>
             }
           />
@@ -1441,6 +1573,8 @@ export default function App() {
                 </CookieConsent>
 
                 <SchemeEligibilityCriteria />
+                <Footer />
+
               </>
             }
           />
@@ -1462,6 +1596,8 @@ export default function App() {
                 </CookieConsent>
 
                 <SchemePublisherDetails />
+                <Footer />
+
               </>
             }
           />
@@ -1484,6 +1620,9 @@ export default function App() {
                 </CookieConsent>
 
                 <SchemeSummary />
+
+                <Footer />
+
               </>
             }
           />

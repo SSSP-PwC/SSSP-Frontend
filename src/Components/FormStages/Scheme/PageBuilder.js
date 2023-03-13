@@ -19,6 +19,7 @@ import { Tab, Tabs } from "react-bootstrap";
 import { MainHeading } from "../../../globalStyles";
 import { useLocation, useNavigate } from "react-router-dom";
 import PhoneInput from "react-phone-number-input";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const PageBuilder = () => {
   const [pageElements, setPageElements] = useState([]);
@@ -37,14 +38,16 @@ const PageBuilder = () => {
   const [tabs, setTabs] = useState([
     {
       id: 1,
-      title: "",
+      title: "Portal",
       fields: [
         {
           id: 0,
           type: "",
           label: "",
+          name: "",
+          body: "",
+          captcha_key: "",
           required: false,
-          button_link: "",
         },
       ],
     },
@@ -63,7 +66,7 @@ const PageBuilder = () => {
 
   const createPage = async (tabData) => {
     try {
-      const response = await fetch("http://127.0.0.1:1000/api/page", {
+      const response = await fetch("https://sssp-378808.nw.r.appspot.com/api/page", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -74,7 +77,7 @@ const PageBuilder = () => {
           portal_id: state.portal_id,
         }),
       });
-  
+
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -85,7 +88,6 @@ const PageBuilder = () => {
       console.log(error);
     }
   };
-  
 
   const submit = async () => {
     try {
@@ -99,10 +101,10 @@ const PageBuilder = () => {
           const fieldData = {
             id: j + 1,
             props: {
-              name: tabFields[j].label,
+              name: tabFields[j].name,
+              label: tabFields[j].label,
               type: tabFields[j].type,
               required: tabFields[j].required,
-              button_link: tabFields[j].button_link,
             },
           };
 
@@ -162,6 +164,11 @@ const PageBuilder = () => {
       </div>
     );
   };
+  const handleClick = (event) => {
+    event.preventDefault();
+
+    alert("Button event does not work in preview mode");
+  };
   const renderForm = () => {
     const fieldsToRender = [];
 
@@ -175,16 +182,12 @@ const PageBuilder = () => {
 
         // Render the field based on its type
         switch (field.type) {
-          case "button":
+          case "next-button":
+          case "previous-button":
+          case "submit-button":
             formField = (
               <div key={index}>
-                <Button
-                  onClick={() => {
-                    navigate(field.button_link);
-                  }}
-                  name={field.label}
-                  required={field.required}
-                >
+                <Button onClick={handleClick} required={field.required}>
                   {field.label}
                 </Button>
                 <br></br>
@@ -192,12 +195,27 @@ const PageBuilder = () => {
             );
             break;
 
-          case "string":
-          case "password":
-          case "number":
+          case "textfield":
             formField = (
               <div key={index}>
-                <label style={{ textAlign: "center" }}>{field.label}</label>
+                <label style={{ textAlign: "center" }}>{field.name}</label>
+
+                <br />
+                <InputField
+                  input={{
+                    type: field.type,
+                    name: field.label,
+                    required: field.required,
+                  }}
+                />
+                <br></br>
+              </div>
+            );
+            break;
+          case "email":
+            formField = (
+              <div key={index}>
+                <label style={{ textAlign: "center" }}>{field.name}</label>
                 <br />
                 <InputField
                   input={{
@@ -211,20 +229,52 @@ const PageBuilder = () => {
             );
             break;
 
-          case "checkbox":
+          case "password":
             formField = (
               <div key={index}>
-                <Checkbox name={field.label} required={field.required} />
-                <label style={{ textAlign: "center" }}>{field.label}</label>
+                <label style={{ textAlign: "center" }}>{field.name}</label>
+                <br />
+                <InputField
+                  input={{
+                    type: field.type,
+                    name: field.name,
+                    required: field.required,
+                  }}
+                />
                 <br></br>
               </div>
             );
             break;
 
+          case "number":
+            formField = (
+              <div key={index}>
+                <label style={{ textAlign: "center" }}>{field.name}</label>
+                <br />
+                <InputField
+                  input={{
+                    type: field.type,
+                    name: field.label,
+                    required: field.required,
+                  }}
+                />
+                <br></br>
+              </div>
+            );
+            break;
+          case "checkbox":
+            formField = (
+              <div key={index}>
+                <Checkbox name={field.label} required={field.required} />
+                <label style={{ textAlign: "center" }}>{field.name}</label>
+                <br></br>
+              </div>
+            );
+            break;
           case "textarea":
             formField = (
               <div key={index}>
-                <label style={{ textAlign: "center" }}>{field.label}</label>
+                <label style={{ textAlign: "center" }}>{field.name}</label>
                 <br />
                 <TextArea
                   name={field.label}
@@ -239,7 +289,6 @@ const PageBuilder = () => {
             formField = (
               <div key={index}>
                 {fileData && <img src={fileData} alt="uploaded file" />}
-
                 <br></br>
               </div>
             );
@@ -251,15 +300,26 @@ const PageBuilder = () => {
                   input={{
                     type: "text",
                     value: field.label,
-                    onChange: (e) =>
-                      handleUpdateField(index, {
-                        ...field,
-                        button_link: e.target.value,
-                      }),
                   }}
                 >
                   {" "}
                   {field.label}
+                </Label>
+                <br></br>
+              </div>
+            );
+            break;
+          case "body":
+            formField = (
+              <div key={index}>
+                <Label
+                  input={{
+                    type: "text",
+                    value: field.body,
+                  }}
+                >
+                  {" "}
+                  {field.body}
                 </Label>
                 <br></br>
               </div>
@@ -272,11 +332,6 @@ const PageBuilder = () => {
                   size="LARGE"
                   input={{
                     type: "text",
-                    onChange: (e) =>
-                      handleUpdateField(index, {
-                        ...field,
-                        button_link: e.target.value,
-                      }),
                   }}
                 >
                   {field.label}
@@ -322,21 +377,15 @@ const PageBuilder = () => {
           case "multichoice":
             formField = (
               <div key={index}>
-                <MultiChoice label={field.label}>
-                  <RenderRadioButtons />
-                </MultiChoice>
+                <MultiChoice label={field.name}></MultiChoice>
               </div>
             );
             break;
           case "dropdown":
             formField = (
               <div key={index}>
-                <Select
-                  id="page-select"
-                  onChange={handlePageSelect}
-                  value={selectedPage || ""}
-                >
-                  <option value="">{field.label}</option>)
+                <Select id="page-select">
+                  <option value="">{field.name}</option>)
                 </Select>
               </div>
             );
@@ -344,19 +393,14 @@ const PageBuilder = () => {
           case "website_url":
             formField = (
               <div key={index}>
-                <Link href={`${field.label}`}>
+                <Link href={`${field.name}`}>
                   <Label
                     input={{
                       type: "text",
-                      value: field.label,
-                      onChange: (e) =>
-                        handleUpdateField(index, {
-                          ...field,
-                          label: e.target.value,
-                        }),
+                      value: field.name,
                     }}
                   >
-                    {field.label}
+                    {field.name}
                   </Label>
                 </Link>
                 <br></br>
@@ -367,7 +411,7 @@ const PageBuilder = () => {
             formField = (
               <div key={index}>
                 <PhoneInput
-                  placeholder={field.label}
+                  placeholder={field.name}
                   value={phoneNumber}
                   onChange={setPhoneNumber}
                 />
@@ -375,21 +419,14 @@ const PageBuilder = () => {
               </div>
             );
             break;
-          //slider
-          //dropdown
-          //togglebox
-          //radio box
-          //checkbox
-          //multiple choice
-          //number slider
-          //captcha
-          //recaptcha
-          //gdpr agreement
-          //website url
-          //phone formatting
-
-          //email formatting
-          //grid
+          case "captcha":
+            formField = (
+              <div key={index}>
+                <ReCAPTCHA sitekey={`${field.captcha_key}`} />
+                <br></br>
+              </div>
+            );
+            break;
 
           default:
             break;
@@ -467,7 +504,6 @@ const PageBuilder = () => {
     newTabs[activeTab].fields = currentTabFields;
     setTabs(newTabs);
   };
-  const savePage = () => {};
   const handleRemoveField = (index) => {
     const currentTab = tabs[activeTab];
     if (!currentTab) {
@@ -521,7 +557,6 @@ const PageBuilder = () => {
             Page Title
           </InputField>
           <br></br>
-         
 
           <Button
             variant="contained"
@@ -530,14 +565,7 @@ const PageBuilder = () => {
           >
             Add Element
           </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={savePage}
-            style={{ margin: "5px" }}
-          >
-            Save Page
-          </Button>
+
           <Button onClick={handleAddTab} style={{ margin: "5px" }}>
             + Add Page
           </Button>
@@ -545,7 +573,7 @@ const PageBuilder = () => {
             Preview
           </Button>
           <Button onClick={submit} style={{ margin: "5px" }}>
-            Print
+            Publish Portal
           </Button>
           <br></br>
           {pageElements.map((element) => {
@@ -587,19 +615,84 @@ const PageBuilder = () => {
                     <p>Element</p>
                     <Divider style={{ background: "black" }}></Divider>
                     <br></br>
-                    <InputField
-                      input={{
-                        type: "text",
-                        value: field.label,
-                        onChange: (e) =>
-                          handleUpdateField(index, {
-                            ...field,
-                            label: e.target.value,
-                          }),
-                      }}
-                    >
-                      Label:
-                    </InputField>
+                    {field.type === "textfield" ||
+                    field.type === "email" ||
+                    field.type === "textarea" ||
+                    field.type === "number" ||
+                    field.type === "file" ||
+                    field.type === "password" ||
+                    field.type === "checkbox" ||
+                    field.type === "multichoice" ||
+                    field.type === "dropdown" ||
+                    field.type === "website_url" ||
+                    field.type === "phonenumber" ? (
+                      <InputField
+                        input={{
+                          type: "text",
+                          value: field.name,
+                          onChange: (e) =>
+                            handleUpdateField(index, {
+                              ...field,
+                              name: e.target.value,
+                            }),
+                        }}
+                      >
+                        Input Name:
+                      </InputField>
+                    ) : (
+                      <div></div>
+                    )}
+                    <br></br>
+                    {field.type === "textfield" ||
+                    field.type === "email" ||
+                    field.type === "textarea" ||
+                    field.type === "number" ||
+                    field.type === "file" ||
+                    field.type === "next-button" ||
+                    field.type === "previous-button" ||
+                    field.type === "submit-button" ||
+                    field.type === "heading" ||
+                    field.type === "navbar" ||
+                    field.type === "footer" ||
+                    field.type === "password" ||
+                    field.type === "checkbox" ||
+                    field.type === "label" ||
+                    field.type === "multichoice" ||
+                    field.type === "dropdown" ||
+                    field.type === "website_url" ||
+                    field.type === "phonenumber" ||
+                    field.type === "captcha" ? (
+                      <InputField
+                        input={{
+                          type: "text",
+                          value: field.label,
+                          onChange: (e) =>
+                            handleUpdateField(index, {
+                              ...field,
+                              label: e.target.value,
+                            }),
+                        }}
+                      >
+                        Label:
+                      </InputField>
+                    ) : (
+                      <div></div>
+                    )}
+                    {field.type === "body" && (
+                      <TextArea
+                        input={{
+                          type: "text",
+                          value: field.body,
+                          onChange: (e) =>
+                            handleUpdateField(index, {
+                              ...field,
+                              body: e.target.value,
+                            }),
+                        }}
+                      >
+                        Label:
+                      </TextArea>
+                    )}
                     <br></br>
 
                     <Select
@@ -612,12 +705,14 @@ const PageBuilder = () => {
                         })
                       }
                     >
-                      <option value="string">Text Field</option>
-                      <option value="string">Email</option>
+                      <option value="textfield">Text Field</option>
+                      <option value="email">Email</option>
                       <option value="textarea">Textbox</option>
                       <option value="number">Number</option>
                       <option value="file">File</option>
-                      <option value="button">Button</option>
+                      <option value="next-button">Next Button</option>
+                      <option value="previous-button">Previous Button</option>
+                      <option value="submit-button">Submit Button</option>
                       <option value="heading">Heading</option>
                       <option value="navbar">Navbar</option>
                       <option value="footer">Footer</option>
@@ -628,41 +723,42 @@ const PageBuilder = () => {
                       <option value="dropdown">Dropdown</option>
                       <option value="website_url">Website URL</option>
                       <option value="phonenumber">Phone number</option>
+                      <option value="body">Body</option>
+                      <option value="captcha">Captcha</option>
                     </Select>
 
                     <br></br>
-                    <label>
-                      Required:
-                      <Checkbox
-                        onChange={(e) =>
-                          handleUpdateField(index, {
-                            ...field,
-                            required: e.target.checked,
-                          })
-                        }
-                        input={{
-                          type: "checkbox",
-                          checked: field.required,
-                        }}
-                      />
-                    </label>
-                    <br></br>
-                    {field.type === "button" && (
-                      <InputField
-                        input={{
-                          type: "text",
-                          value: field.button_link,
-                          onChange: (e) =>
+                    {field.type === "textfield" ||
+                    field.type === "email" ||
+                    field.type === "textarea" ||
+                    field.type === "number" ||
+                    field.type === "file" ||
+                    field.type === "password" ||
+                    field.type === "checkbox" ||
+                    field.type === "multichoice" ||
+                    field.type === "dropdown" ||
+                    field.type === "website_url" ||
+                    field.type === "phonenumber" ? (
+                      <label>
+                        Required:
+                        <Checkbox
+                          onChange={(e) =>
                             handleUpdateField(index, {
                               ...field,
-                              button_link: e.target.value,
-                            }),
-                        }}
-                      >
-                        {" "}
-                        Button Link:
-                      </InputField>
+                              required: e.target.checked,
+                            })
+                          }
+                          input={{
+                            type: "checkbox",
+                            checked: field.required,
+                          }}
+                        />
+                      </label>
+                    ) : (
+                      <div></div>
                     )}
+                    <br></br>
+
                     {field.type === "multichoice" && (
                       <Button
                         onClick={incrementNumberOfButtons}
@@ -683,6 +779,21 @@ const PageBuilder = () => {
                       >
                         {" "}
                       </FileUpload>
+                    )}
+                    {field.type === "captcha" && (
+                      <InputField
+                        input={{
+                          type: "text",
+                          value: field.captcha_key,
+                          onChange: (e) =>
+                            handleUpdateField(index, {
+                              ...field,
+                              captcha_key: e.target.value,
+                            }),
+                        }}
+                      >
+                        reCAPTCHA key from Google:
+                      </InputField>
                     )}
                     <br></br>
                     <br></br>

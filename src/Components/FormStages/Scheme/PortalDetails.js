@@ -3,37 +3,35 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useCollapse from "react-collapsed";
 import { Form } from "react-bootstrap";
-import {  MainHeading } from "../../../globalStyles";
+import { MainHeading } from "../../../globalStyles";
 import { Button } from "govuk-react";
 
 import { BarLoader } from "react-spinners";
 import { Panel, PhaseBanner } from "govuk-react";
 import banner from "../../../img/banner.jpg";
-export const SchemeDetails = ({ schemeId }) => {
+export const PortalDetails = ({ endpoint }) => {
   const [scheme, setScheme] = useState(null);
   const navigate = useNavigate();
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    fetch(
-      `https://20230226t215147-dot-sssp-378808.nw.r.appspot.com/api/scheme/${schemeId}`
-    )
+    fetch(`https://sssp-378808.nw.r.appspot.com//api/portals/${endpoint}`)
       .then((response) => response.json())
       .then((data) => setScheme(data), setLoaded(true));
-  }, [schemeId]);
+  }, [endpoint]);
 
   function renderRegisterForm() {
     navigate("/Registration-Form-Landing-Page", {
       state: {
-        scheme_id: schemeId,
-        scheme_title: scheme.scheme_title
+        scheme_id: endpoint,
+        scheme_title: scheme.scheme_title,
       },
     });
   }
   function renderSelfEligibilityChecker() {
     navigate("/Eligibility-Checker-Registered-Company", {
       state: {
-        scheme_id: schemeId,
+        scheme_id: endpoint,
       },
     });
   }
