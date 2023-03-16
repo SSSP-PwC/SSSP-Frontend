@@ -355,10 +355,11 @@ function DynamicPage() {
                 </div>
               );
               break;
+              
             case "captcha":
               formField = (
                 <div key={index}>
-                  <ReCAPTCHA sitekey={`${field.captcha_key}`} />
+                  <ReCAPTCHA sitekey={"6LeiNAclAAAAAImMXqIfk2YOFJF99SD6UVUAqyvd"} />
                   <br></br>
                 </div>
               );
