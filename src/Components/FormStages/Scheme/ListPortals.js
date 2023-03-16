@@ -33,7 +33,7 @@ export const ListPortals = () => {
   }, []);
 
   const handleRowClick = (row) => {
-    navigate(`/page/${1}/${row.endpoint}`);
+    navigate(`/${row.endpoint}/pages/${1}`);
   };
   const handleClick = () => {
     navigate("/Register-Portal")

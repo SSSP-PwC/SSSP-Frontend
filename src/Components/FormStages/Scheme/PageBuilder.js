@@ -45,7 +45,6 @@ const PageBuilder = () => {
           type: "",
           label: "",
           name: "",
-          body: "",
           captcha_key: "",
           required: false,
         },
@@ -61,22 +60,24 @@ const PageBuilder = () => {
     type: "",
 
     onChange: () => {},
-    // Add all other expected properties here
   };
 
   const createPage = async (tabData) => {
     try {
-      const response = await fetch("https://sssp-378808.nw.r.appspot.com/api/page", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title: tabData.title,
-          fields: tabData.fields,
-          portal_id: state.portal_id,
-        }),
-      });
+      const response = await fetch(
+        "http://127.0.0.1:1000/api/page",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title: tabData.title,
+            fields: tabData.fields,
+            portal_id: state.portal_id,
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -91,8 +92,6 @@ const PageBuilder = () => {
 
   const submit = async () => {
     try {
-      console.log("PORTAL ID:", state.portal_id);
-
       for (let i = 0; i < numTabs; i++) {
         const tabFields = tabs[i].fields;
         const fieldsData = [];
@@ -120,14 +119,10 @@ const PageBuilder = () => {
       }
     } catch (error) {
       console.log(error);
-      // Show error message to the user
     }
   };
   const showPortal = () => {
     setShowForm(true);
-  };
-  const handleNavigate = () => {
-    navigate(`${tabs[activeTab].fields[activeTab].button_link}`);
   };
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -315,11 +310,11 @@ const PageBuilder = () => {
                 <Label
                   input={{
                     type: "text",
-                    value: field.body,
+                    value: field.label,
                   }}
                 >
                   {" "}
-                  {field.body}
+                  {field.label}
                 </Label>
                 <br></br>
               </div>
@@ -682,11 +677,11 @@ const PageBuilder = () => {
                       <TextArea
                         input={{
                           type: "text",
-                          value: field.body,
+                          value: field.label,
                           onChange: (e) =>
                             handleUpdateField(index, {
                               ...field,
-                              body: e.target.value,
+                              label: e.target.value,
                             }),
                         }}
                       >

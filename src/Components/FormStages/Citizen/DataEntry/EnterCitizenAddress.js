@@ -4,7 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import { MainHeading } from "../../../../globalStyles";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import {Button, InputField, ErrorSummary } from "govuk-react";
+import { Button, InputField, ErrorSummary } from "govuk-react";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 
 export const EnterCitizenAddress = () => {
@@ -20,6 +20,7 @@ export const EnterCitizenAddress = () => {
   const [errorMessageTitle, setErrorMessageTitle] = useState("");
   const [errorMessageContent, setErrorMessageContent] = useState("");
   const [errorMessageCause, setErrorMessageCause] = useState("");
+  const [addressVerified, setAddressVerified] = useState(false);
 
   const { state } = useLocation();
   console.log(state);
@@ -30,23 +31,39 @@ export const EnterCitizenAddress = () => {
       [e.target.name]: e.target.value,
     });
   };
-  const submitForm = () => {
+
+  const submitForm = async () => {
     if (
       data.address_line_1 !== undefined &&
       data.town_city !== undefined &&
       data.postcode !== undefined
     ) {
-      navigate("/register-citizen-email", {
-        state: {
-          first_name: state.first_name,
-          last_name: state.last_name,
-          address_line_1: data.address_line_1,
-          address_line_2: data.address_line_2,
-          town_city: data.town_city,
-          postcode: data.postcode,
-        },
-      });
-    } else if (
+      const response = await fetch(
+        `https:/api.postcodes.io/postcodes/${data.postcode}/validate`
+      );
+
+      const outcome = await response.json();
+      if (outcome.result === true) {
+        navigate("/register-citizen-email", {
+          state: {
+            first_name: state.first_name,
+            last_name: state.last_name,
+            address_line_1: data.address_line_1,
+            address_line_2: data.address_line_2,
+            town_city: data.town_city,
+            postcode: data.postcode,
+          },
+        });
+      } else if (outcome.result === false) {
+        setErrorMessageTitle("Postcode is incorrect");
+        setErrorMessageContent(
+          "You must provide correct address credentials before proceeding."
+        );
+        setErrorMessageCause("Postcode");
+        setErrorMessageFlag(true);
+      }
+    }
+    if (
       data.address_line_1 === undefined &&
       data.town_city === undefined &&
       data.postcode === undefined
@@ -118,7 +135,7 @@ export const EnterCitizenAddress = () => {
         )}
         <div style={{ display: "inline-block" }}>
           <form style={{ display: "inline-block" }}>
-            <RegistrationFormBreadcrumb/>
+            <RegistrationFormBreadcrumb />
             <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
               Enter your address
             </MainHeading>

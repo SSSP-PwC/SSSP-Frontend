@@ -5,6 +5,7 @@ import useCollapse from "react-collapsed";
 import { Form } from "react-bootstrap";
 import { MainHeading } from "../../../globalStyles";
 import { Button } from "govuk-react";
+import urlencode from "urlencode";
 
 import { BarLoader } from "react-spinners";
 import { Panel, PhaseBanner } from "govuk-react";
@@ -15,7 +16,7 @@ export const PortalDetails = ({ endpoint }) => {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    fetch(`https://sssp-378808.nw.r.appspot.com//api/portals/${endpoint}`)
+    fetch(`https://sssp-378808.nw.r.appspot.com/api/portals/${endpoint}`)
       .then((response) => response.json())
       .then((data) => setScheme(data), setLoaded(true));
   }, [endpoint]);

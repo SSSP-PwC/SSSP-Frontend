@@ -55,7 +55,7 @@ function DynamicPage() {
 
   async function fetchData() {
     const response = await fetch(
-      `https://sssp-378808.nw.r.appspot.com/api/page/${pageId}/${endpoint}`
+      `https://sssp-378808.nw.r.appspot.com/api/portals/${endpoint}/pages/${pageId}`
     );
     const info = await response.json();
     console.log(info);
@@ -66,7 +66,7 @@ function DynamicPage() {
     event.preventDefault();
 
     const nextPageId = parseInt(pageId, 10) + 1;
-    navigate(`/Page/${nextPageId}/${endpoint}`, {
+    navigate(`/${endpoint}/pages/${nextPageId}`, {
       state: {
         data: { ...prevData, ...formData },
       },
@@ -77,7 +77,7 @@ function DynamicPage() {
   const previousPage = (event) => {
     event.preventDefault();
     const nextPageId = parseInt(pageId, 10) - 1;
-    navigate(`/Page/${nextPageId}/${endpoint}`, {
+    navigate(`/${endpoint}/pages/${nextPageId}`, {
       state: {
         data: { ...prevData, ...formData },
       },
@@ -131,240 +131,238 @@ function DynamicPage() {
               </div>
             );
             break;
-          case "textfield":
-            formField = (
-              <div key={index}>
-                <label style={{ textAlign: "center" }}>{field.label}</label>
-
-                <br />
-                <InputField
-                  onChange={updateData}
-                  input={{
-                    type: field.type,
-                    name: field.label,
-                    required: field.required,
-                  }}
-                />
-                <br></br>
-              </div>
-            );
-            break;
-          case "email":
-            formField = (
-              <div key={index}>
-                <label style={{ textAlign: "center" }}>{field.label}</label>
-                <br />
-                <InputField
-                  onChange={updateData}
-                  input={{
-                    type: field.type,
-                    name: field.label,
-                    required: field.required,
-                  }}
-                />
-                <br></br>
-              </div>
-            );
-            break;
-
-          case "password":
-            formField = (
-              <div key={index}>
-                <label style={{ textAlign: "center" }}>{field.label}</label>
-                <br />
-                <InputField
-                  onChange={updateData}
-                  input={{
-                    type: field.type,
-                    name: field.name,
-                    required: field.required,
-                  }}
-                />
-                <br></br>
-              </div>
-            );
-            break;
-
-          case "number":
-            formField = (
-              <div key={index}>
-                <label style={{ textAlign: "center" }}>{field.label}</label>
-                <br />
-                <InputField
-                  onChange={updateData}
-                  input={{
-                    type: field.type,
-                    name: field.label,
-                    required: field.required,
-                  }}
-                />
-                <br></br>
-              </div>
-            );
-            break;
-          case "checkbox":
-            formField = (
-              <div key={index}>
-                <Checkbox
-                  onChange={updateData}
-                  name={field.label}
-                  required={field.required}
-                />
-                <label style={{ textAlign: "center" }}>{field.label}</label>
-                <br></br>
-              </div>
-            );
-            break;
-          case "textarea":
-            formField = (
-              <div key={index}>
-                <label style={{ textAlign: "center" }}>{field.label}</label>
-                <br />
-                <TextArea
-                  name={field.label}
-                  required={field.required}
-                  multiline
-                  onChange={updateData}
-                />
-                <br></br>
-              </div>
-            );
-            break;
-          case "file":
-            formField = (
-              <div key={index}>
-                onChange={updateData}
-                {fileData && <img src={fileData} alt="uploaded file" />}
-                <br></br>
-              </div>
-            );
-            break;
-          case "label":
-            formField = (
-              <div key={index}>
-                <Label
-                  onChange={updateData}
-                  input={{
-                    type: "text",
-                    value: field.label,
-                  }}
-                >
-                  {" "}
-                  {field.label}
-                </Label>
-                <br></br>
-              </div>
-            );
-            break;
-          case "heading":
-            formField = (
-              <div key={index}>
-                <Heading
-                  onChange={updateData}
-                  size="LARGE"
-                  input={{
-                    type: "text",
-                  }}
-                >
-                  {field.label}
-                </Heading>
-                <br></br>
-              </div>
-            );
-            break;
-          case "navbar":
-            formField = (
-              <div key={index}>
-                <TopNav
-                  onChange={updateData}
-                  company={
-                    <TopNav.Anchor href="https://example.com" target="new">
-                      {field.label}
-                    </TopNav.Anchor>
-                  }
-                />
-                <br></br>
-              </div>
-            );
-            break;
-          case "footer":
-            formField = (
-              <div key={index}>
-                <Footer
-                  onChange={updateData}
-                  licence={
-                    <span>
-                      All content is available under the{" "}
-                      <a
-                        href="https://creativecommons.org/licenses/by/4.0/"
-                        rel="license"
-                      >
-                        Creative Commons Attribution 4.0 International Licence{" "}
-                      </a>
-                      , except where otherwise stated
-                    </span>
-                  }
-                />
-              </div>
-            );
-            break;
-          case "multichoice":
-            formField = (
-              <div key={index}>
-                onChange={updateData}
-                <MultiChoice label={field.label}></MultiChoice>
-              </div>
-            );
-            break;
-          case "dropdown":
-            formField = (
-              <div key={index}>
-                <Select id="page-select">
-                  onChange={updateData}
-                  <option value="">{field.name}</option>)
-                </Select>
-              </div>
-            );
-            break;
-          case "website_url":
-            formField = (
-              <div key={index}>
-                <Link href={`${field.label}`}>
+            case "textfield":
+              formField = (
+                <div key={index}>
+                  <label style={{ textAlign: "center" }}>{field.name}</label>
+  
+                  <br />
+                  <InputField
+                    input={{
+                      type: field.type,
+                      name: field.label,
+                      required: field.required,
+                    }}
+                  />
+                  <br></br>
+                </div>
+              );
+              break;
+            case "email":
+              formField = (
+                <div key={index}>
+                  <label style={{ textAlign: "center" }}>{field.name}</label>
+                  <br />
+                  <InputField
+                    input={{
+                      type: field.type,
+                      name: field.label,
+                      required: field.required,
+                    }}
+                  />
+                  <br></br>
+                </div>
+              );
+              break;
+  
+            case "password":
+              formField = (
+                <div key={index}>
+                  <label style={{ textAlign: "center" }}>{field.name}</label>
+                  <br />
+                  <InputField
+                    input={{
+                      type: field.type,
+                      name: field.name,
+                      required: field.required,
+                    }}
+                  />
+                  <br></br>
+                </div>
+              );
+              break;
+  
+            case "number":
+              formField = (
+                <div key={index}>
+                  <label style={{ textAlign: "center" }}>{field.name}</label>
+                  <br />
+                  <InputField
+                    input={{
+                      type: field.type,
+                      name: field.label,
+                      required: field.required,
+                    }}
+                  />
+                  <br></br>
+                </div>
+              );
+              break;
+            case "checkbox":
+              formField = (
+                <div key={index}>
+                  <Checkbox name={field.label} required={field.required} />
+                  <label style={{ textAlign: "center" }}>{field.name}</label>
+                  <br></br>
+                </div>
+              );
+              break;
+            case "textarea":
+              formField = (
+                <div key={index}>
+                  <label style={{ textAlign: "center" }}>{field.name}</label>
+                  <br />
+                  <TextArea
+                    name={field.label}
+                    required={field.required}
+                    multiline
+                  />
+                  <br></br>
+                </div>
+              );
+              break;
+            case "file":
+              formField = (
+                <div key={index}>
+                  {fileData && <img src={fileData} alt="uploaded file" />}
+                  <br></br>
+                </div>
+              );
+              break;
+            case "label":
+              formField = (
+                <div key={index}>
                   <Label
-                    onChange={updateData}
                     input={{
                       type: "text",
-                      value: field.name,
+                      value: field.label,
+                    }}
+                  >
+                    {" "}
+                    {field.label}
+                  </Label>
+                  <br></br>
+                </div>
+              );
+              break;
+            case "body":
+              formField = (
+                <div key={index}>
+                  <Label
+                    input={{
+                      type: "text",
+                      value: field.label,
+                    }}
+                  >
+                    {" "}
+                    {field.label}
+                  </Label>
+                  <br></br>
+                </div>
+              );
+              break;
+            case "heading":
+              formField = (
+                <div key={index}>
+                  <Heading
+                    size="LARGE"
+                    input={{
+                      type: "text",
                     }}
                   >
                     {field.label}
-                  </Label>
-                </Link>
-                <br></br>
-              </div>
-            );
-            break;
-          case "phonenumber":
-            formField = (
-              <div key={index}>
-                onChange={updateData}
-                <PhoneInput
-                  placeholder={field.name}
-                  value={phoneNumber}
-                  onChange={setPhoneNumber}
-                />
-                <br></br>
-              </div>
-            );
-            break;
-          case "captcha":
-            formField = (
-              <div key={index}>
-                <ReCAPTCHA sitekey={`${field.captcha_key}`} />
-                <br></br>
-              </div>
-            );
-            break;
+                  </Heading>
+                  <br></br>
+                </div>
+              );
+              break;
+            case "navbar":
+              formField = (
+                <div key={index}>
+                  <TopNav
+                    company={
+                      <TopNav.Anchor href="https://example.com" target="new">
+                        {field.label}
+                      </TopNav.Anchor>
+                    }
+                  />
+                  <br></br>
+                </div>
+              );
+              break;
+            case "footer":
+              formField = (
+                <div key={index}>
+                  <Footer
+                    licence={
+                      <span>
+                        All content is available under the{" "}
+                        <styled
+                          href="https://creativecommons.org/licenses/by/4.0/"
+                          rel="license"
+                        >
+                          Creative Commons Attribution 4.0 International Licence{" "}
+                        </styled>
+                        , except where otherwise stated
+                      </span>
+                    }
+                  />
+                </div>
+              );
+              break;
+            case "multichoice":
+              formField = (
+                <div key={index}>
+                  <MultiChoice label={field.name}></MultiChoice>
+                </div>
+              );
+              break;
+            case "dropdown":
+              formField = (
+                <div key={index}>
+                  <Select id="page-select">
+                    <option value="">{field.name}</option>)
+                  </Select>
+                </div>
+              );
+              break;
+            case "website_url":
+              formField = (
+                <div key={index}>
+                  <Link href={`${field.name}`}>
+                    <Label
+                      input={{
+                        type: "text",
+                        value: field.name,
+                      }}
+                    >
+                      {field.name}
+                    </Label>
+                  </Link>
+                  <br></br>
+                </div>
+              );
+              break;
+            case "phonenumber":
+              formField = (
+                <div key={index}>
+                  <PhoneInput
+                    placeholder={field.name}
+                    value={phoneNumber}
+                    onChange={setPhoneNumber}
+                  />
+                  <br></br>
+                </div>
+              );
+              break;
+            case "captcha":
+              formField = (
+                <div key={index}>
+                  <ReCAPTCHA sitekey={`${field.captcha_key}`} />
+                  <br></br>
+                </div>
+              );
+              break;
         }
         if (formField) {
           fieldsToRender.push(formField);

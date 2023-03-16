@@ -111,7 +111,7 @@ export default function App() {
             }
           />
           <>
-            <Route path="/page/:pageId/:endpoint" element={<DynamicPage />} />
+            <Route path="/:endpoint/pages/:pageId/" element={<DynamicPage />} />
           </>
           <Route
             path="/register-company-associated-contact"

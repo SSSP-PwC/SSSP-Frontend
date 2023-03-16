@@ -1,73 +1,72 @@
 import { Divider } from "@mui/material";
-import { Button, InputField } from "govuk-react";
+import { Button, ErrorText, InputField } from "govuk-react";
 import React, { useState } from "react";
 import { MainHeading } from "../../../globalStyles";
 import { useNavigate } from "react-router-dom";
-
+import urlencode from "urlencode";
 const RegisterPortal = () => {
   const [pageTitle, setPageTitle] = useState("");
   const [pageUrl, setPageUrl] = useState("");
 
   const [portal_id, setPortalID] = useState();
-  const [tabs, setTabs] = useState([
-    {
-      title: "Portal",
-      endpoint: "/",
-    },
-  ]);
+  const [portalExists, setPortalExists] = useState(false);
 
   const navigate = useNavigate();
-  const defaultProps = {
-    label: "",
-    type: "",
-
-    onChange: () => {},
-    // Add all other expected properties here
+  const hasWhiteSpace = (s) => {
+    return /\s/.test(s);
   };
+
   const createPortal = async () => {
-    try {
-      // Check if endpoint already exists
-      const response = await fetch(
-        `https://sssp-378808.nw.r.appspot.com/api/portals/${pageUrl}`
-      );
-      const data = await response.json();
+    if (hasWhiteSpace(pageUrl) === true) {
+      alert("URL cannot be processed");
+    } else {
+      try {
+        // Check if endpoint already exists
+        const response = await fetch(
+          `http://127.0.0.1:1000/api/portals/${pageUrl}`
+        );
+        const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      const existingPortal = data.endpoint === pageUrl;
-      if (existingPortal) {
-        console.log("Portal endpoint already exists");
-        return;
-      }
-
-      // Create new portal
-    } catch (error) {
-      console.log(error);
-      const response2 = await fetch("https://sssp-378808.nw.r.appspot.com/api/portal", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: pageTitle,
-          endpoint: pageUrl,
-        }),
-      });
-      if (!response2.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const data2 = await response2.json();
-      console.log(data2);
-      setPortalID(data2.id);
-      navigate("/Page-Builder", {
-        state: {
-            portal_endpoint: pageUrl,
-            portal_id: data2.id
+        if (!response.ok) {
+          setPortalExists(true);
         }
-      })
-      return data2.id;
+
+        const existingPortal =
+          data.endpoint.toUpperCase() === pageUrl.toUpperCase();
+        if (existingPortal) {
+          setPortalExists(true);
+          return;
+        }
+
+        // Create new portal
+      } catch (error) {
+        console.log(error);
+        const response2 = await fetch(
+          "http://127.0.0.1:1000/api/portal",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name: pageTitle,
+              endpoint: pageUrl,
+            }),
+          }
+        );
+        if (!response2.ok) {
+        }
+        const data2 = await response2.json();
+        console.log(data2);
+        setPortalID(data2.id);
+        navigate("/Page-Builder", {
+          state: {
+            portal_endpoint: pageUrl,
+            portal_id: data2.id,
+          },
+        });
+        return data2.id;
+      }
     }
   };
 
@@ -88,18 +87,46 @@ const RegisterPortal = () => {
           onChange: (e) => setPageTitle(e.target.value),
         }}
       >
-        Page Title
+        Portal Title
+        <p style={{ color: "#505a5f" }}>
+          Please provide a title for the portal
+        </p>
       </InputField>
       <br></br>
-      <InputField
-        input={{
-          label: "Page URL",
-          value: pageUrl,
-          onChange: (e) => setPageUrl(e.target.value),
-        }}
-      >
-        Page URL
-      </InputField>
+      {portalExists === true ? (
+        <div>
+          <InputField
+            input={{
+              label: "Page URL",
+              value: pageUrl,
+              onChange: (e) => setPageUrl(e.target.value),
+            }}
+          >
+            {" "}
+            <ErrorText>Portal Endpoint already exists</ErrorText>
+            Portal Endpoint
+            <p style={{ color: "#505a5f" }}>
+              This will be used to locate the portal at a later date
+            </p>
+          </InputField>
+        </div>
+      ) : (
+        <div>
+          <InputField
+            input={{
+              label: "Page URL",
+              value: pageUrl,
+              onChange: (e) => setPageUrl(e.target.value),
+            }}
+          >
+            Portal Endpoint
+            <p style={{ color: "#505a5f" }}>
+              Please provide a title for the portal
+            </p>
+          </InputField>
+        </div>
+      )}
+
       <br></br>
       <Button onClick={() => createPortal()}>Create Portal</Button>
 
