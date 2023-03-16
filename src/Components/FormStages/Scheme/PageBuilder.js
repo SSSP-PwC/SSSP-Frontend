@@ -65,7 +65,7 @@ const PageBuilder = () => {
   const createPage = async (tabData) => {
     try {
       const response = await fetch(
-        "http://127.0.0.1:1000/api/page",
+        "https://sssp-378808.nw.r.appspot.com/api/page",
         {
           method: "POST",
           headers: {
@@ -124,6 +124,7 @@ const PageBuilder = () => {
   const showPortal = () => {
     setShowForm(true);
   };
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     const reader = new FileReader();
