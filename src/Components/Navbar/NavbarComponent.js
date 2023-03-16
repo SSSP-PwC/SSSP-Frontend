@@ -114,5 +114,5 @@ const LoggedOutNavbar = () => {
 export const NavbarComponent = () => {
   const [loggedIn] = useAuth();
 
-  return <div>{loggedIn ? <LoggedOutNavbar /> : <LoggedOutNavbar />}</div>;
+  return <div>{loggedIn ? <LoggedInNavbar /> : <LoggedOutNavbar />}</div>;
 };

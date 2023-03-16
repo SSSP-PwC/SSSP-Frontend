@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Form, Alert } from "react-bootstrap";
 import { MainHeading } from "../../../globalStyles";
-import { useForm } from "react-hook-form";
+import { MDBDataTable } from "mdbreact";
 import { Link, useNavigate } from "react-router-dom";
 import { Divider } from "@mui/material";
 import Table from "react-bootstrap/Table";
-import { PortalDetails } from "./PortalDetails";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import { BarLoader } from "react-spinners";
-import { Button } from "govuk-react";
+import { Button, SearchBox } from "govuk-react";
 import DynamicPage from "./DynamicPage";
 
 export const ListPortals = () => {
@@ -16,6 +15,17 @@ export const ListPortals = () => {
   const [data, setData] = useState([]);
   const [endpoint, setPortalEndpoint] = useState(null);
   const [loaded, setLoaded] = useState(false);
+  const [search, setSearch] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
+
+  const handleChange = (event) => {
+    const searchValue = event.target.value.toLowerCase();
+    const filtered = data.filter((portal) =>
+      portal.name.toLowerCase().includes(searchValue)
+    );
+    setFilteredData(filtered);
+    setSearch(searchValue);
+  };
 
   function ListSchemesBreadcrumb() {
     return (
@@ -36,8 +46,8 @@ export const ListPortals = () => {
     navigate(`/${row.endpoint}/pages/${1}`);
   };
   const handleClick = () => {
-    navigate("/Register-Portal")
-  }
+    navigate("/Register-Portal");
+  };
   return (
     <div className="container">
       <br></br>
@@ -55,40 +65,45 @@ export const ListPortals = () => {
         </div>
       )}
       {endpoint && <DynamicPage />}
-        <div>
-          {loaded === true && (
-            <div>
-              <ListSchemesBreadcrumb />{" "}
-              <div style={{ float: "right" }}>
-                <Button onClick={handleClick}>Register a scheme</Button>
-              </div>
-              <br></br>
-              <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
-                All Schemes
-              </MainHeading>
-              <Divider style={{ background: "black" }}></Divider>
-              <br></br>
-              <Table bordered hover size="sm">
-                <thead style={{ textAlign: "center" }}>
-                  <tr>
-                    <th style={{ textAlign: "center" }}>Scheme</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.map((portal) => (
-                    <tr key={portal.id} onClick={() => handleRowClick(portal)}>
-                      {console.log(portal)}
-                      <Link>
-                        <td>{portal.name}</td>
-                      </Link>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
+      <div>
+        {loaded === true && (
+          <div>
+            <ListSchemesBreadcrumb />{" "}
+            <div style={{ float: "right" }}>
+              <Button onClick={handleClick}>Register a scheme</Button>
             </div>
-          )}
-        </div>
-      
+            <br></br>
+            <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
+              All Schemes
+            </MainHeading>
+            <Divider style={{ background: "black" }}></Divider>
+            <br></br>
+            <SearchBox>
+              <SearchBox.Input
+                placeholder="Search SSSP"
+                onChange={handleChange}
+              />
+              <SearchBox.Button />
+            </SearchBox>
+            <Table>
+              <thead style={{ textAlign: "center" }}>
+                <tr>
+                  <th style={{ textAlign: "center" }}>Scheme</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(search ? filteredData : data).map((portal) => (
+                  <tr key={portal.id} onClick={() => handleRowClick(portal)}>
+                    <Link>
+                      <td style={{fontSize: "24px"}}>{portal.name}</td>
+                    </Link>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

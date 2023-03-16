@@ -95,9 +95,6 @@ function DynamicPage() {
   const renderForm = () => {
     const fieldsToRender = [];
     let formField = null;
-
-    console.log(numPages);
-
     data &&
       data.map((field, index) => {
         switch (field.type) {
@@ -254,7 +251,6 @@ function DynamicPage() {
                       value: field.label,
                     }}
                   >
-                    {" "}
                     {field.label}
                   </Label>
                   <br></br>
