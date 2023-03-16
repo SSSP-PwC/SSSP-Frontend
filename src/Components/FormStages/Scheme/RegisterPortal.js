@@ -122,7 +122,7 @@ const RegisterPortal = () => {
           >
             Portal Endpoint
             <p style={{ color: "#505a5f" }}>
-              Please provide a title for the portal
+              Please provide an endpoint for the portal
             </p>
           </InputField>
         </div>
