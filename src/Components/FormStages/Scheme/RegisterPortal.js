@@ -20,7 +20,7 @@ const RegisterPortal = () => {
 
     if (hasWhiteSpace(pageUrl) === true) {
       alert("URL cannot be processed")
-    }
+    } else {
     try {
       // Check if endpoint already exists
       const response = await fetch(
@@ -68,6 +68,7 @@ const RegisterPortal = () => {
       });
       return data2.id;
     }
+  }
   };
 
   return (
