@@ -13,6 +13,7 @@ export const CitizenRegistrationSummary = () => {
   const { handleSubmit } = useForm();
   const navigate = useNavigate();
   const { state } = useLocation();
+  console.log(state);
 
   const [errorMessageFlag, setErrorMessageFlag] = useState(false);
   const [accountCreated, setAccountCreated] = useState(false);
@@ -27,6 +28,7 @@ export const CitizenRegistrationSummary = () => {
   var postcode = state.postcode;
   var email = state.email;
   var password = state.password;
+  console.log(state);
 
   const submitForm = async () => {
     setLoading(true);
@@ -58,6 +60,51 @@ export const CitizenRegistrationSummary = () => {
       setLoading(false);
       if (result["message"] === "User created successfully") {
         setAccountCreated(true);
+        if (state.company.company_creation_journey === true) {
+          const url =
+            "https://sssp-378808.nw.r.appspot.com/api/link-citizen-to-company-checks";
+
+          const data = {
+            email: email,
+            password: password,
+          };
+
+          const options = {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          };
+          try {
+            const response = await fetch(url, options);
+            const result = await response.json();
+            setLoading(false);
+            if (result["citizen"]["message"] === "citizen exists") {
+              navigate("/register-company-summary", {
+                state: {
+                  company: {
+                    company_name: state.company.company_name,
+                    company_registration_number:
+                      state.company.company_registration_number,
+                    company_address: {
+                      address_line_1: state.company.company_address.address_line_1,
+                      address_line_2: state.company.company_address.address_line_2,
+                      postal_code: state.company.company_address.postal_code,
+                      country: state.company.company_address.country,
+                      locality: state.company.company_address.locality,
+                      region: state.company.company_address.region,
+                    },
+                  },
+                  contact_person: result,
+                },
+              });
+              console.log(result);
+            }
+          } catch (error) {
+            console.error(error);
+          }
+        }
       } else if (result["message"] === "User already exists") {
         setErrorMessageFlag(true);
       }
@@ -116,7 +163,7 @@ export const CitizenRegistrationSummary = () => {
         )}
         {accountCreated === false && (
           <div style={{ display: "inline-block" }}>
-            <RegistrationFormBreadcrumb/>
+            <RegistrationFormBreadcrumb />
             <LoadingBox loading={loading}>
               <form style={{ display: "inline-block" }}>
                 <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
@@ -225,7 +272,7 @@ export const CitizenRegistrationSummary = () => {
                     style={{ marginBottom: "15px" }}
                     onClick={handleSubmit(submitForm)}
                   >
-                    Submit
+                    Sign Up
                   </Button>
                 </Form.Group>
                 <br></br>

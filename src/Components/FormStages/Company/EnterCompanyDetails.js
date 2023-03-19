@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Form, Alert } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { MainHeading } from "../../../globalStyles";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -16,6 +16,10 @@ export const EnterCompanyDetails = () => {
     formState: { errors },
   } = useForm();
   const navigate = useNavigate();
+  const { state } = useLocation();
+
+  console.log(state)
+
 
   const [errorMessageFlag, setErrorMessageFlag] = useState(false);
   const [detailsReturned, setDetailsReturned] = useState(false);
@@ -53,13 +57,15 @@ export const EnterCompanyDetails = () => {
     navigate("/register-company-associated-contact", {
       state: {
         company_name: companyName,
-        company_number: companyData.company_registration_number,
+        company_registration_number: companyData.company_registration_number,
+        company_address: {
         address_line_1: addressLine1,
         address_line_2: addressLine2,
         postal_code: postalCode,
         country: country,
         locality: locality,
         region: region,
+        }
       },
     });
   };

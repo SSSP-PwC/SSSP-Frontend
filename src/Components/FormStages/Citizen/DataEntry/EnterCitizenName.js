@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Form, Alert } from "react-bootstrap";
 import { MainHeading } from "../../../../globalStyles";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Button, InputField, ErrorSummary } from "govuk-react";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 
@@ -16,6 +16,8 @@ export const EnterCitizenName = () => {
   const navigate = useNavigate();
   const [errorMessageFlag, setErrorMessageFlag] = useState(false);
   const [data, setData] = useState("");
+  const { state } = useLocation();
+  console.log(state);
 
   const submitForm = () => {
     if (data.first_name != undefined && data.last_name != undefined) {
@@ -23,6 +25,20 @@ export const EnterCitizenName = () => {
         state: {
           first_name: data.first_name,
           last_name: data.last_name,
+          company: {
+            company_name: state.company.company_name,
+            company_registration_number: state.company.company_registration_number,         
+             company_creation_journey: state.company.company_creation_journey,
+
+            company_address: {
+              address_line_1: state.company.company_address.address_line_1,
+              address_line_2: state.company.company_address.address_line_2,
+              postal_code: state.company.company_address.postal_code,
+              country: state.company.company_address.country,
+              locality: state.company.company_address.locality,
+              region: state.company.company_address.region,
+            },
+          },
         },
       });
     } else {

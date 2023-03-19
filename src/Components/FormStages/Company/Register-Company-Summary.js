@@ -14,6 +14,8 @@ export const RegisterCompanySummary = () => {
   const [successMessage, setSuccessMessage] = useState(false);
 
   const { state } = useLocation();
+  console.log(state);
+
   const {
     register,
     handleSubmit,
@@ -25,7 +27,7 @@ export const RegisterCompanySummary = () => {
   const [show, setShow] = useState(false);
   const [variantType, setVariantType] = useState("");
   const [userResponse, setUserResponse] = useState("");
-  console.log(state)
+  console.log(state);
   const updateData = (e) => {
     setEmailAddress({
       ...emailAddress,
@@ -36,23 +38,23 @@ export const RegisterCompanySummary = () => {
       [e.target.name]: e.target.value,
     });
   };
-  
   const submit = async () => {
     setLoading(true);
-    const url = "http://127.0.0.1:1000/api/create-company";
+    const url = "https://sssp-378808.nw.r.appspot.com/api/create-company";
     const data = {
       company: {
-        company_name: state.company_name,
-        company_registration_number: state.company_registration_number,
+        company_name: state.company.company_name,
+        company_registration_number: state.company.company_registration_number,
         company_address: {
-          address_line_1: state.company_address.address_line_1,
-          address_line_2: state.company_address.address_line_2,
-          postal_code: state.company_address.postal_code,
-          country: state.company_address.country,
-          locality: state.company_address.locality,
-          region: state.company_address.region,
+          address_line_1: state.company.company_address.address_line_1,
+          address_line_2: state.company.company_address.address_line_2,
+          postal_code: state.company.company_address.postal_code,
+          country: state.company.company_address.country,
+          locality: state.company.company_address.locality,
+          region: state.company.company_address.region,
         },
       },
+
       contact_person: state.contact_person.citizen,
     };
 
@@ -81,11 +83,18 @@ export const RegisterCompanySummary = () => {
     return (
       <Breadcrumb>
         <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
-        <Breadcrumb.Item href="/register-company-landing">Register Company</Breadcrumb.Item>
-        <Breadcrumb.Item href="/register-company-details">Company details</Breadcrumb.Item>
-        <Breadcrumb.Item href="/register-company-associated-contact">Contact association</Breadcrumb.Item>
-        <Breadcrumb.Item href="/register-company-associated-contact">Summary</Breadcrumb.Item>
-
+        <Breadcrumb.Item href="/register-company-landing">
+          Register Company
+        </Breadcrumb.Item>
+        <Breadcrumb.Item href="/register-company-details">
+          Company details
+        </Breadcrumb.Item>
+        <Breadcrumb.Item href="/register-company-associated-contact">
+          Contact association
+        </Breadcrumb.Item>
+        <Breadcrumb.Item href="/register-company-associated-contact">
+          Summary
+        </Breadcrumb.Item>
       </Breadcrumb>
     );
   };
@@ -97,7 +106,7 @@ export const RegisterCompanySummary = () => {
       >
         {successMessage === false && (
           <form style={{ display: "inline-block" }}>
-            <RegistrationFormBreadcrumb/>
+            <RegistrationFormBreadcrumb />
             <LoadingBox loading={loading}>
               <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
                 Link an existing citizen account to{" "}
@@ -114,7 +123,7 @@ export const RegisterCompanySummary = () => {
                   Company name:
                 </Form.Label>
                 <small>
-                  {state.company_name}
+                  {state.company.company_name}
                   <Link to="/change-first-name" style={{ float: "right" }}>
                     Change
                   </Link>
@@ -126,7 +135,7 @@ export const RegisterCompanySummary = () => {
                   Company registration number:
                 </Form.Label>
                 <small>
-                  {state.company_registration_number}
+                  {state.company.company_registration_number}
                   <Link to="/change-last-name" style={{ float: "right" }}>
                     Change
                   </Link>
@@ -138,7 +147,7 @@ export const RegisterCompanySummary = () => {
                   Address line 1:
                 </Form.Label>
                 <small>
-                  {state.company_address.address_line_1}
+                  {state.company.company_address.address_line_1}
                   <Link to="/change-address-line-1" style={{ float: "right" }}>
                     Change
                   </Link>
@@ -150,7 +159,7 @@ export const RegisterCompanySummary = () => {
                   Address line 2:
                 </Form.Label>
                 <small>
-                  {state.company_address.address_line_2}
+                  {state.company.company_address.address_line_2}
                   <Link to="/change-address-line-2" style={{ float: "right" }}>
                     Change
                   </Link>
@@ -162,7 +171,7 @@ export const RegisterCompanySummary = () => {
                   Country:
                 </Form.Label>
                 <small>
-                  {state.company_address.country}
+                  {state.company.company_address.country}
                   <Link to="/change-town-city" style={{ float: "right" }}>
                     Change
                   </Link>
@@ -174,7 +183,7 @@ export const RegisterCompanySummary = () => {
                   Locality:
                 </Form.Label>
                 <small>
-                  {state.company_address.locality}
+                  {state.company.company_address.locality}
 
                   <Link to="/change-postcode" style={{ float: "right" }}>
                     Change
@@ -187,7 +196,7 @@ export const RegisterCompanySummary = () => {
                   Postal code
                 </Form.Label>
                 <small>
-                  {state.company_address.postal_code}
+                  {state.company.company_address.postal_code}
                   <Link to="/change-email-address" style={{ float: "right" }}>
                     Change
                   </Link>
@@ -199,7 +208,7 @@ export const RegisterCompanySummary = () => {
                   Region
                 </Form.Label>
                 <small>
-                  {state.company_address.region}
+                  {state.company.company_address.region}
                   <Link to="/change-email-address" style={{ float: "right" }}>
                     Change
                   </Link>

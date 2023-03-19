@@ -13,8 +13,9 @@ export const AssociateContact = () => {
   } = useForm();
   const navigate = useNavigate();
   const { state } = useLocation();
+  console.log("HERE");
+  console.log(state.company_registration_number);
   const cookies = new Cookies();
-  console.log(state);
   const [show, setShow] = useState(false);
   const [variantType, setVariantType] = useState("");
   const [userResponse, setUserResponse] = useState("");
@@ -23,30 +24,33 @@ export const AssociateContact = () => {
     navigate("/register-company-link-citizen", {
       state: {
         company_name: state.company_name,
-        company_registration_number: state.company_number,
-          address_line_1: state.address_line_1,
-          address_line_2: state.address_line_2,
-          postal_code: state.postal_code,
-          country: state.country,
-          locality: state.locality,
-          region: state.region,
-      
+        company_registration_number: state.company_registration_number,
+        address_line_1: state.company_address.address_line_1,
+        address_line_2: state.company_address.address_line_2,
+        postal_code: state.company_address.postal_code,
+        country: state.company_address.country,
+        locality: state.company_address.locality,
+        region: state.company_address.region,
       },
     });
   };
 
   const selectedRadioButtonTwo = () => {
-    navigate("/register-company-create-citizen-account", {
+    navigate("/register-citizen-landing", {
       state: {
-        company_name: state.company_name,
-        company_registration_number: state.company_number,
-          address_line_1: state.address_line_1,
-          address_line_2: state.address_line_2,
-          postal_code: state.postal_code,
-          country: state.country,
-          locality: state.locality,
-          region: state.region,
-      
+        company: {
+          company_name: state.company_name,
+          company_registration_number: state.company_registration_number,
+          company_address: {
+            address_line_1: state.company_address.address_line_1,
+            address_line_2: state.company_address.address_line_2,
+            postal_code: state.company_address.postal_code,
+            country: state.company_address.country,
+            locality: state.company_address.locality,
+            region: state.company_address.region,
+          },
+          company_creation_journey: true,
+        },
       },
     });
   };
@@ -54,8 +58,12 @@ export const AssociateContact = () => {
     return (
       <Breadcrumb>
         <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
-        <Breadcrumb.Item href="/register-company-landing">Register Company</Breadcrumb.Item>
-        <Breadcrumb.Item href="/register-company-details">Company details</Breadcrumb.Item>
+        <Breadcrumb.Item href="/register-company-landing">
+          Register Company
+        </Breadcrumb.Item>
+        <Breadcrumb.Item href="/register-company-details">
+          Company details
+        </Breadcrumb.Item>
         <Breadcrumb.Item active>Contact association</Breadcrumb.Item>
       </Breadcrumb>
     );
@@ -84,11 +92,11 @@ export const AssociateContact = () => {
         )}
         <div style={{ display: "inline-block" }}>
           <div>
-            <RegistrationFormBreadcrumb/>
+            <RegistrationFormBreadcrumb />
             <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
               Contact Person Details
             </MainHeading>
-            
+
             <p style={{ color: "#0B0C0C" }}>
               Is this contact person already registered as a citizen?
             </p>

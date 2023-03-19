@@ -19,6 +19,8 @@ export const LinkAccount = () => {
   const [password, setPassword] = useState("");
 
   const { state } = useLocation();
+  console.log(state)
+
   const {
     register,
     handleSubmit,
@@ -43,7 +45,7 @@ export const LinkAccount = () => {
   };
   const submit = async () => {
     setLoading(true);
-    const url = "http://127.0.0.1:1000/api/link-citizen-to-company-checks";
+    const url = "https://sssp-378808.nw.r.appspot.com/api/link-citizen-to-company-checks";
 
     const data = {
       email: emailAddress.email,

@@ -23,7 +23,6 @@ export const EnterCitizenAddress = () => {
   const [addressVerified, setAddressVerified] = useState(false);
 
   const { state } = useLocation();
-  console.log(state);
   const [data, setData] = useState("");
   const updateData = (e) => {
     setData({
@@ -52,6 +51,19 @@ export const EnterCitizenAddress = () => {
             address_line_2: data.address_line_2,
             town_city: data.town_city,
             postcode: data.postcode,
+            company: {
+              company_name: state.company.company_name,
+              company_registration_number: state.company.company_registration_number,
+              company_creation_journey: state.company.company_creation_journey,
+              company_address: {
+                address_line_1: state.company.company_address.address_line_1,
+                address_line_2: state.company.company_address.address_line_2,
+                postal_code: state.company.company_address.postal_code,
+                country: state.company.company_address.country,
+                locality: state.company.company_address.locality,
+                region: state.company.company_address.region,
+              },
+            },
           },
         });
       } else if (outcome.result === false) {
