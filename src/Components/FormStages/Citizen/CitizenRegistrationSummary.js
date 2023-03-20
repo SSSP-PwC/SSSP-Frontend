@@ -80,7 +80,9 @@ export const CitizenRegistrationSummary = () => {
             const response = await fetch(url, options);
             const result = await response.json();
             setLoading(false);
-            if (result["citizen"]["message"] === "citizen exists") {
+            if (state?.company === undefined) {
+              setAccountCreated(true);
+            } else if (result["citizen"]["message"] === "citizen exists") {
               navigate("/register-company-summary", {
                 state: {
                   company: {
@@ -88,8 +90,10 @@ export const CitizenRegistrationSummary = () => {
                     company_registration_number:
                       state.company.company_registration_number,
                     company_address: {
-                      address_line_1: state.company.company_address.address_line_1,
-                      address_line_2: state.company.company_address.address_line_2,
+                      address_line_1:
+                        state.company.company_address.address_line_1,
+                      address_line_2:
+                        state.company.company_address.address_line_2,
                       postal_code: state.company.company_address.postal_code,
                       country: state.company.company_address.country,
                       locality: state.company.company_address.locality,

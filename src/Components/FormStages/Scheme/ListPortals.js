@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Form, Alert } from "react-bootstrap";
 import { MainHeading } from "../../../globalStyles";
-import { MDBDataTable } from "mdbreact";
 import { Link, useNavigate } from "react-router-dom";
 import { Divider } from "@mui/material";
 import Table from "react-bootstrap/Table";

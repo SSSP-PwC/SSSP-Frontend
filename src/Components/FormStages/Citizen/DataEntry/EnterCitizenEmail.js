@@ -35,7 +35,19 @@ export const EnterCitizenEmail = () => {
     });
   };
   const submitForm = () => {
-    if (data.email != undefined && validateEmail(data.email) === true) {
+    if (state?.company === undefined) {
+      navigate("/register-citizen-password", {
+        state: {
+          first_name: state.first_name,
+          last_name: state.last_name,
+          address_line_1: state.address_line_1,
+          address_line_2: state.address_line_2,
+          town_city: state.town_city,
+          postcode: state.postcode,
+          email: data.email,
+        },
+      });
+    } else if (data.email != undefined && validateEmail(data.email) === true) {
       navigate("/register-citizen-password", {
         state: {
           first_name: state.first_name,

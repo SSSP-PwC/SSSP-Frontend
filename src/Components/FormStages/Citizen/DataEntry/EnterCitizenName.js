@@ -20,15 +20,23 @@ export const EnterCitizenName = () => {
   console.log(state);
 
   const submitForm = () => {
-    if (data.first_name != undefined && data.last_name != undefined) {
+    if (state?.company === undefined) {
+      navigate("/register-citizen-address", {
+        state: {
+          first_name: data.first_name,
+          last_name: data.last_name,
+        },
+      });
+    } else if (data.first_name != undefined && data.last_name != undefined) {
       navigate("/register-citizen-address", {
         state: {
           first_name: data.first_name,
           last_name: data.last_name,
           company: {
             company_name: state.company.company_name,
-            company_registration_number: state.company.company_registration_number,         
-             company_creation_journey: state.company.company_creation_journey,
+            company_registration_number:
+              state.company.company_registration_number,
+            company_creation_journey: state.company.company_creation_journey,
 
             company_address: {
               address_line_1: state.company.company_address.address_line_1,

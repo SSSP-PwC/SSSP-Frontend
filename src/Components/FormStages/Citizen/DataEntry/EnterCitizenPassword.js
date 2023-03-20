@@ -30,7 +30,20 @@ export const EnterCitizenPassword = () => {
     });
   };
   const submitForm = () => {
-    if (data.password === data.confirm_password) {
+    if (state?.company === undefined) {
+      navigate("/register-citizen-summary", {
+        state: {
+          first_name: state.first_name,
+          last_name: state.last_name,
+          address_line_1: state.address_line_1,
+          address_line_2: state.address_line_2,
+          town_city: state.town_city,
+          postcode: state.postcode,
+          email: state.email,
+          password: data.password,
+        },
+      });
+    } else if (data.password === data.confirm_password) {
       navigate("/register-citizen-summary", {
         state: {
           first_name: state.first_name,

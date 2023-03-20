@@ -32,9 +32,23 @@ const LoggedInNavbar = () => {
         </Nav>
 
         <Nav>
-<Nav.Link href="/" onClick={logout}>
-  Sign Out
-</Nav.Link>
+           
+            <NavDropdown title={
+                <>
+                  <MdOutlineLogin style={{ fontSize: "25px" }}/> Profile
+                </>
+              } id="collasible-nav-dropdown">
+              <NavDropdown.Item href="/personal-profile">
+                Edit Profile
+              </NavDropdown.Item>
+              <NavDropdown.Item href="/" onClick={logout}>
+                Sign Out
+              </NavDropdown.Item>
+            
+            </NavDropdown>
+          </Nav>
+        <Nav>
+
 </Nav>
       </Navbar.Collapse>
     </Container>
@@ -97,12 +111,7 @@ const LoggedOutNavbar = () => {
               <NavDropdown.Item href="/sign-in-citizen">
                 Citizen
               </NavDropdown.Item>
-              <NavDropdown.Item href="/sign-in-company">
-                Company
-              </NavDropdown.Item>
-              <NavDropdown.Item href="/sign-in-organisation">
-                Organisation
-              </NavDropdown.Item>
+        
             </NavDropdown>
           </Nav>
         </Navbar.Collapse>

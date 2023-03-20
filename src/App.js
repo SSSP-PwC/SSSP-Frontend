@@ -58,6 +58,8 @@ import PageBuilder from "./Components/FormStages/Scheme/PageBuilder";
 import DynamicPage from "./Components/FormStages/Scheme/DynamicPage";
 import RenderForm from "./Components/FormStages/Scheme/Render-Form";
 import RegisterPortal from "./Components/FormStages/Scheme/RegisterPortal";
+import PagePreview from "./Components/FormStages/Scheme/PagePreview";
+import PersonalProfile from "./Components/FormStages/Citizen/PersonalProfile";
 
 export default function App() {
   const [loggedIn] = useAuth();
@@ -132,6 +134,17 @@ export default function App() {
 
                 <AssociateContact />
                 <Footer />
+
+              </>
+            }
+          />
+                    <Route
+            path="/page-preview"
+            element={
+              <>
+          
+
+                <PagePreview />
 
               </>
             }
@@ -1369,6 +1382,28 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <LinkAccount />
+                <Footer />
+
+              </>
+            }
+          />
+               <Route
+            path="/personal-profile"
+            element={
+              <>
+                <GlobalStyle />
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                  <PhaseBanner level="POC">
+                    SSSP is currently a proof of concept{" "}
+                  </PhaseBanner>
+                </div>
+                <NavbarComponent />
+                <CookieConsent
+                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
+                >
+                  This website uses cookies to enhance the user experience.
+                </CookieConsent>
+                <PersonalProfile />
                 <Footer />
 
               </>

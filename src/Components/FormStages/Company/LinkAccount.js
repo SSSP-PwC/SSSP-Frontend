@@ -19,7 +19,7 @@ export const LinkAccount = () => {
   const [password, setPassword] = useState("");
 
   const { state } = useLocation();
-  console.log(state)
+  
 
   const {
     register,
@@ -64,18 +64,21 @@ export const LinkAccount = () => {
       const result = await response.json();
       setLoading(false);
       if (result["citizen"]["message"] === "citizen exists") {
+        alert("HERE IT")
         navigate("/register-company-summary", {
           state: {
-            company_name: state.company_name,
-            company_registration_number: state.company_registration_number,
+            company: {
+            company_name: state.company.company_name,
+            company_registration_number: state.company.company_registration_number,
             company_address: {
-              address_line_1: state.address_line_1,
-              address_line_2: state.address_line_2,
-              postal_code: state.postal_code,
-              country: state.country,
-              locality: state.locality,
-              region: state.region,
+              address_line_1: state.company.company_address.address_line_1,
+              address_line_2: state.company.company_address.address_line_2,
+              postal_code: state.company.company_address.postal_code,
+              country: state.company.company_address.country,
+              locality: state.company.company_address.locality,
+              region: state.company.company_address.region,
             },
+          },
             contact_person: result,
           },
         });

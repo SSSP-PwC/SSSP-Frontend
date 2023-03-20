@@ -3,7 +3,6 @@ import { Button, ErrorText, InputField } from "govuk-react";
 import React, { useState } from "react";
 import { MainHeading } from "../../../globalStyles";
 import { useNavigate } from "react-router-dom";
-import urlencode from "urlencode";
 const RegisterPortal = () => {
   const [pageTitle, setPageTitle] = useState("");
   const [pageUrl, setPageUrl] = useState("");

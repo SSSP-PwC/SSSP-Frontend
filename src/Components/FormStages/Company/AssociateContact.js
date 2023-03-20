@@ -23,14 +23,19 @@ export const AssociateContact = () => {
   const submitForm = async () => {
     navigate("/register-company-link-citizen", {
       state: {
-        company_name: state.company_name,
-        company_registration_number: state.company_registration_number,
-        address_line_1: state.company_address.address_line_1,
-        address_line_2: state.company_address.address_line_2,
-        postal_code: state.company_address.postal_code,
-        country: state.company_address.country,
-        locality: state.company_address.locality,
-        region: state.company_address.region,
+        company: {
+          company_name: state.company_name,
+          company_registration_number: state.company_registration_number,
+          company_address: {
+            address_line_1: state.company_address.address_line_1,
+            address_line_2: state.company_address.address_line_2,
+            postal_code: state.company_address.postal_code,
+            country: state.company_address.country,
+            locality: state.company_address.locality,
+            region: state.company_address.region,
+          },
+          company_creation_journey: true,
+        },
       },
     });
   };

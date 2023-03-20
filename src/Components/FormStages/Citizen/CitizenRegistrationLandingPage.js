@@ -11,24 +11,28 @@ export const CitizenRegistrationLandingPage = () => {
 
   const navigate = useNavigate();
   const handleNextPage = () => {
-    navigate("/register-citizen-name", {
-      state: {
-        company: {
-          company_name: state.company.company_name,
-          company_registration_number:
-            state.company.company_registration_number,
-          company_address: {
-            address_line_1: state.company.company_address.address_line_1,
-            address_line_2: state.company.company_address.address_line_2,
-            postal_code: state.company.company_address.postal_code,
-            country: state.company.company_address.country,
-            locality: state.company.company_address.locality,
-            region: state.company.company_address.region,
+    if (state !== null && state.company.company_creation_journey === true) {
+      navigate("/register-citizen-name", {
+        state: {
+          company: {
+            company_name: state.company.company_name,
+            company_registration_number:
+              state.company.company_registration_number,
+            company_address: {
+              address_line_1: state.company.company_address.address_line_1,
+              address_line_2: state.company.company_address.address_line_2,
+              postal_code: state.company.company_address.postal_code,
+              country: state.company.company_address.country,
+              locality: state.company.company_address.locality,
+              region: state.company.company_address.region,
+            },
+            company_creation_journey: state.company.company_creation_journey,
           },
-          company_creation_journey: state.company.company_creation_journey,
         },
-      },
-    });
+      });
+    } else if (state === null) {
+      navigate("/register-citizen-name");
+    }
   };
   const RegistrationFormBreadcrumb = () => {
     return (
