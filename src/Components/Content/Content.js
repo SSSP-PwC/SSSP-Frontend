@@ -4,13 +4,14 @@ import {
 	ContentRow,
 	TextWrapper,
 	TopLine,
-	Heading,
 	ContentButton,
 	Subtitle,
 	ImgWrapper,
 	Img,
 	ContentColumn,
 } from './ContentStyles.js';
+import { Heading } from "govuk-react";
+
 
 import { useInView } from 'react-intersection-observer';
 import { useAnimation } from 'framer-motion';
@@ -41,7 +42,7 @@ export const Content = ({
 	}, [inView, animation]);
 
 	return (
-		<Section inverse={inverse} ref={ref}>
+		<Section style={{background: "#4682B4"}}inverse={inverse.toString()} ref={ref}>
 			<Container>
 				<ContentRow reverse={reverse}>
 					<ContentColumn>
@@ -57,27 +58,20 @@ export const Content = ({
 								initial={initial}
 								transition={{ delay: 0.5, duration: 0.6 }}
 								animate={animation}
-								inverse={inverse}
+								inverse={inverse.toString()}
 							>
 								{headline}
 							</Heading>
 							<Subtitle
+							style={{color: "black"}}
 								initial={initial}
 								transition={{ delay: 0.7, duration: 0.6 }}
 								animate={animation}
-								inverse={inverse}
+								inverse={inverse.toString()}
 							>
 								{description}
 							</Subtitle>
-							<ContentButton
-								initial={initial}
-								transition={{ delay: 1, duration: 0.6 }}
-								animate={animation}
-								inverse={inverse}
-								primary={primary}
-							>
-								{buttonLabel}
-							</ContentButton>
+							
 						</TextWrapper>
 					</ContentColumn>
 					<ContentColumn
@@ -89,7 +83,7 @@ export const Content = ({
 							<Img
 								src={img}
 								alt={alt}
-								whileHover={{ rotate: 2, scale: 1.02 }}
+								whileHover={{ rotate: 1, scale: 1.02 }}
 								transition={{ duration: 0.5 }}
 							/>
 						</ImgWrapper>

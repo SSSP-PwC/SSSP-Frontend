@@ -71,7 +71,6 @@ export default function App() {
             path="/"
             element={
               <>
-                <GlobalStyle />
                 <div style={{ display: "flex", justifyContent: "center" }}>
                   <PhaseBanner level="POC">
                     SSSP is currently a proof of concept{" "}
@@ -1687,7 +1686,4 @@ export default function App() {
       </Router>
     </>
   );
-  function NoStyles({ children }) {
-    return <div>{children}</div>;
-  }
 }

@@ -54,7 +54,7 @@ export const TextWrapper = styled.div`
 export const ImgWrapper = styled(motion.div)`
 	display: flex;
 	justify-content: 'flex-end';
-	max-height: 700px;
+	max-height: 200px;
 	justify-content: center;
 	position: relative;
 `;
@@ -75,7 +75,7 @@ export const Img = styled(motion.img)`
 	vertical-align: middle;
 	display: inline-block;
 	object-fit: cover;
-	max-height: 700px;
+	max-height: 200px;
 	z-index: 1;
 `;
 

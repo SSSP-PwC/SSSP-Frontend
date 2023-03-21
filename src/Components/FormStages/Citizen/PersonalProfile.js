@@ -87,12 +87,11 @@ export default function PersonalProfile() {
         `https://sssp-378808.nw.r.appspot.com/api/citizen/${citizen_id}/companies`
       );
       const data = await response.json();
-      if (data.message.includes("No companies found for this citizen.")) {
+      if (data.message?.includes("No companies found for this citizen.")) {
         setCompanyCount(0);
         setLoaded(true);
       } else {
         setCompanyCount(data.length);
-
         setLoaded(true);
       }
     }

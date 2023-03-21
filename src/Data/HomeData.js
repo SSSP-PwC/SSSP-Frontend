@@ -8,6 +8,6 @@ export const info = {
 	buttonLabel: 'Find out more',
 	linkTo: "https://www.google.com/",
 	imgStart: 'start',
-	img: 'https://thumbs.dreamstime.com/b/smart-city-wireless-communication-network-iotinternet-t-things-era-internet-internet-every-things-internet-every-day-81062976.jpg',
+	img: 'https://upload.wikimedia.org/wikipedia/commons/4/47/PricewaterhouseCoopers_Logo.png',
 	start: 'true',
 };
