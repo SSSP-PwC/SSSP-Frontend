@@ -12,6 +12,7 @@ export const CitizenSignIn = () => {
 
   const [data, setData] = useState("");
   const [errorMessageFlag, setErrorMessageFlag] = useState(false);
+
   const submitForm = () => {
     const requestOptions = {
       method: "POST",
@@ -23,11 +24,15 @@ export const CitizenSignIn = () => {
     fetch("https://sssp-378808.nw.r.appspot.com/api/login", requestOptions)
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        sessionStorage.setItem("Citizen_ID", data.citizen_id);
         login(data.access_token);
         navigate("/");
-      });
+      });  
+      
+      
+
   };
+
   const updateData = (e) => {
     console.log(data);
     setData({

@@ -1,22 +1,26 @@
-import {createAuthProvider} from 'react-token-auth'
-import Cookies from 'universal-cookie';
+import { createAuthProvider } from "react-token-auth";
+import Cookies from "universal-cookie";
 
 const cookies = new Cookies();
 const now = new Date();
-const expires = new Date(now.getTime()+ 1 * 3600 * 1000);
+const expires = new Date(now.getTime() + 1 * 3600 * 1000);
 const authProvider = createAuthProvider({
-    accessTokenKey: 'access_token',
-    
-    onUpdateToken: (token) => fetch('/auth/refresh', {
-        method: 'POST',
-        body: token.refresh_token
-    })
-    .then(r => r.json()),
-    storage: {
-        getItem: (key) => cookies.get(key),
-        setItem: (key, value) => cookies.set(key, JSON.stringify(value),  {expires} ),
-        removeItem: (key) => cookies.remove(key),
-      },
+  accessTokenKey: "access_token",
+  onUpdateToken: (token) => {
+    return fetch("/auth/refresh", {
+      method: "POST",
+      body: token.refresh_token,
+    }).then((r) => r.json());
+  },
+  storage: {
+    getItem: (key) => cookies.get(key),
+    setItem: (key, value) =>
+      cookies.set(key, JSON.stringify(value), { expires }),
+    removeItem: (key) => {
+      sessionStorage.removeItem("Citizen_ID");
+      cookies.remove(key);
+    },
+  },
 });
 
 export const useAuth = authProvider.useAuth;
