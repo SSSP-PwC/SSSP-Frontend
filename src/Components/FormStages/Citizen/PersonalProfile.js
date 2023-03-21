@@ -63,7 +63,7 @@ export default function PersonalProfile() {
       });
   };
   const fetchCompany = () => {
-    fetch(`http://192.168.68.119:1000/api/citizen/${id}/companies`)
+    fetch(`https://sssp-378808.nw.r.appspot.com/api/citizen/${id}/companies`)
       .then((response) => {
         if (!response.ok) {
           throw Error(response.statusText);
