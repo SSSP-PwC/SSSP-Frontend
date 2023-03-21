@@ -1,14 +1,22 @@
 import { Divider } from "@mui/material";
-import { Button, ErrorText, InputField } from "govuk-react";
-import React, { useState } from "react";
+import { Button, ErrorText, InputField, Select } from "govuk-react";
+import React, { useEffect, useState } from "react";
 import { MainHeading } from "../../../globalStyles";
 import { useNavigate } from "react-router-dom";
+
 const RegisterPortal = () => {
   const [pageTitle, setPageTitle] = useState("");
+  const id = sessionStorage.getItem("Citizen_ID");
   const [pageUrl, setPageUrl] = useState("");
-
-  const [portal_id, setPortalID] = useState();
+  const [options, setOptions] = useState([]);
+  const [selectedOption, setSelectedOption] = useState("");
   const [portalExists, setPortalExists] = useState(false);
+
+  useEffect(() => {
+    fetch(`https://sssp-378808.nw.r.appspot.com/api/citizen/${id}/companies`)
+      .then((response) => response.json())
+      .then((data) => setOptions(data));
+  }, [id]);
 
   const navigate = useNavigate();
   const hasWhiteSpace = (s) => {
@@ -57,7 +65,6 @@ const RegisterPortal = () => {
         }
         const data2 = await response2.json();
         console.log(data2);
-        setPortalID(data2.id);
         navigate("/Page-Builder", {
           state: {
             portal_endpoint: pageUrl,
@@ -87,9 +94,6 @@ const RegisterPortal = () => {
         }}
       >
         Portal Title
-        <p style={{ color: "#505a5f" }}>
-          Please provide a title for the portal
-        </p>
       </InputField>
       <br></br>
       {portalExists === true && (
@@ -104,9 +108,6 @@ const RegisterPortal = () => {
             {" "}
             <ErrorText>Portal Endpoint already exists</ErrorText>
             Portal Endpoint
-            <p style={{ color: "#505a5f" }}>
-              This will be used to locate the portal at a later date
-            </p>
           </InputField>
         </div>
       )}
@@ -120,10 +121,24 @@ const RegisterPortal = () => {
             }}
           >
             Portal Endpoint
-            <p style={{ color: "#505a5f" }}>
-              Please provide an endpoint for the portal
-            </p>
           </InputField>
+          <br></br>
+
+          <Select
+            input={{
+              name: "group1",
+              onChange: (event) => {
+                setSelectedOption(event.target.value);
+              },
+            }}
+            label="Company"
+          >
+            {options.map((option, index) => (
+              <option value={index} key={index}>
+                {option.company_name}
+              </option>
+            ))}
+          </Select>
         </div>
       )}
 
