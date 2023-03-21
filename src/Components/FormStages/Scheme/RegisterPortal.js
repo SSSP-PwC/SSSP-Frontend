@@ -9,7 +9,7 @@ const RegisterPortal = () => {
   const id = sessionStorage.getItem("Citizen_ID");
   const [pageUrl, setPageUrl] = useState("");
   const [options, setOptions] = useState([]);
-  const [selectedOption, setSelectedOption] = useState("");
+  const [selectedOption, setSelectedOption] = useState(0 + 1);
   const [portalExists, setPortalExists] = useState(false);
 
   useEffect(() => {
@@ -48,19 +48,17 @@ const RegisterPortal = () => {
         // Create new portal
       } catch (error) {
         console.log(error);
-        const response2 = await fetch(
-          "https://sssp-378808.nw.r.appspot.com/api/portal",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              name: pageTitle,
-              endpoint: pageUrl,
-            }),
-          }
-        );
+        const response2 = await fetch("https://sssp-378808.nw.r.appspot.com/api/portal", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: pageTitle,
+            endpoint: pageUrl,
+            company_id: selectedOption,
+          }),
+        });
         if (!response2.ok) {
         }
         const data2 = await response2.json();
