@@ -60,6 +60,7 @@ import RenderForm from "./Components/FormStages/Scheme/Render-Form";
 import RegisterPortal from "./Components/FormStages/Scheme/RegisterPortal";
 import PagePreview from "./Components/FormStages/Scheme/PagePreview";
 import PersonalProfile from "./Components/FormStages/Citizen/PersonalProfile";
+import EditDetails from "./Components/FormStages/Citizen/DataEntry/EditDetails";
 
 export default function App() {
   const [loggedIn] = useAuth();
@@ -1335,6 +1336,28 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <RenderForm />
+                <Footer />
+
+              </>
+            }
+          />
+                    <Route
+            path="/edit-details"
+            element={
+              <>
+                <GlobalStyle />
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                  <PhaseBanner level="POC">
+                    SSSP is currently a proof of concept{" "}
+                  </PhaseBanner>
+                </div>
+                <NavbarComponent />
+                <CookieConsent
+                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
+                >
+                  This website uses cookies to enhance the user experience.
+                </CookieConsent>
+                <EditDetails />
                 <Footer />
 
               </>

@@ -46,10 +46,12 @@ export const EnterCitizenAddress = () => {
           state: {
             first_name: state.first_name,
             last_name: state.last_name,
+            address: {
             address_line_1: data.address_line_1,
             address_line_2: data.address_line_2,
             town_city: data.town_city,
             postcode: data.postcode,
+            }
           },
         });
       } else if (outcome.result === true) {

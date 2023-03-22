@@ -22,7 +22,7 @@ const LoggedInNavbar = () => {
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
       <Navbar.Collapse id="responsive-navbar-nav">
         <Nav className="me-auto">
-          <Nav.Link href="/" onClick={logout}>
+          <Nav.Link href="/" >
             <span style={{ fontSize: "25px" }}><AiOutlineHome/></span> Home
           </Nav.Link>
           <Nav.Link href="/List-Schemes">

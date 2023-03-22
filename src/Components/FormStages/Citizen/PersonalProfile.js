@@ -1,17 +1,11 @@
 import React, { useEffect, useState } from "react";
-import {
-  MDBCol,
-  MDBContainer,
-  MDBRow,
-  MDBCard,
-  MDBCardText,
-  MDBTypography,
-} from "mdb-react-ui-kit";
+
 import { Button, H3, H4, Heading, InputField } from "govuk-react";
+
 import { Divider } from "@mui/material";
-import { Container, Form } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 export default function PersonalProfile() {
   const [citizen, setCitizen] = useState(null);
   const [companyCount, setCompanyCount] = useState(0);
@@ -28,39 +22,22 @@ export default function PersonalProfile() {
     postal_code: "",
     town_city: "",
   });
-  const handleProfileUpdate = () => {
-    const data = {
-      first_name: formValues.first_name,
-      last_name: formValues.last_name,
-      email: formValues.email,
-      citizen_address: {
-        address_line_1: formValues.address_line_1,
-        address_line_2: formValues.address_line_2,
-        town_city: formValues.town_city,
-        postcode: formValues.postal_code,
-      },
-    };
-    console.log(data);
+  const navigate = useNavigate();
 
-    fetch(`https://sssp-378808.nw.r.appspot.com/api/edit_citizen/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
+  const handleEditProfile = () => {
+    navigate("/edit-details", {
+      state: {
+        first_name: citizen.first_name,
+        last_name: citizen.last_name,
+        email: citizen.email,
+        address: {
+          address_line_1: citizen.citizen_address.address_line_1,
+          address_line_2: citizen.citizen_address.address_line_2,
+          town_city: citizen.citizen_address.town_city,
+          postal_code: citizen.citizen_address.postcode,
+        },
       },
-      body: JSON.stringify(data),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log("Profile updated successfully:", data);
-      })
-      .catch((error) => {
-        console.error("Error updating profile:", error);
-      });
+    });
   };
   const fetchCompany = () => {
     fetch(`https://sssp-378808.nw.r.appspot.com/api/citizen/${id}/companies`)
@@ -78,6 +55,7 @@ export default function PersonalProfile() {
   };
 
   const Companies = () => {
+    const navigate = useNavigate();
     return (
       <Table striped bordered hover>
         <thead>
@@ -91,7 +69,14 @@ export default function PersonalProfile() {
           {data.map((company, index) => (
             <tr key={company.company_id}>
               <td>{index + 1}</td>
-              <td>{company.company_name}</td>
+              <td>
+                <Link
+                  to={`/company-details/${index+1}`}
+                  onClick={() => navigate(`/company-details/${index+1}`)}
+                >
+                  {company.company_name}
+                </Link>
+              </td>
               <td>{company.company_registration_number}</td>
             </tr>
           ))}
@@ -99,6 +84,7 @@ export default function PersonalProfile() {
       </Table>
     );
   };
+  
 
   const updateData = (event) => {
     const { name, value } = event.target;
@@ -120,9 +106,9 @@ export default function PersonalProfile() {
       setCitizen(data);
       setLoaded(true);
     }
-    async function fetchCompanies() {
+    async function fetchCompanyData() {
       const response = await fetch(
-        `https://sssp-378808.nw.r.appspot.com/api/citizen/${citizen_id}/companies`
+        `https://sssp-378808.nw.r.appspot.com/api/company/${citizen_id}/companies`
       );
       const data = await response.json();
       if (data.message?.includes("No companies found for this citizen.")) {
@@ -147,185 +133,182 @@ export default function PersonalProfile() {
         <div>Loading...</div>
       ) : (
         <div>
-          {editing === false && (
-            <div>
-              <br></br>
-              <Heading>Account</Heading>
-              <Divider style={{ backgroundColor: "black" }}></Divider>
-              <br></br>
-              <H3 style={{ fontWeight: "normal" }}>
-                Hi, {citizen.first_name}.
-              </H3>
-              <br></br>
-              <br></br>
-              <H3>Account Details</H3>
-              <br></br>
-              <table
-                style={{
-                  borderSpacing: 0,
-                  borderCollapse: "collapse",
-                  width: "100%",
-                  marginBottom: "20px",
-                }}
-              >
-                <tbody>
-                  <tr>
-                    <th
-                      style={{
-                        padding: "10px",
-                        textAlign: "left",
-                        borderBottom: "1px solid #ddd",
-                      }}
-                    >
-                      First Name:
-                    </th>
-                    <td
-                      style={{
-                        padding: "10px",
-                        textAlign: "left",
-                        borderBottom: "1px solid #ddd",
-                      }}
-                    >
-                      {citizen.first_name}
-                    </td>
-                  </tr>
-                  <tr>
-                    <th
-                      style={{
-                        padding: "10px",
-                        textAlign: "left",
-                        borderBottom: "1px solid #ddd",
-                      }}
-                    >
-                      Last Name:
-                    </th>
-                    <td
-                      style={{
-                        padding: "10px",
-                        textAlign: "left",
-                        borderBottom: "1px solid #ddd",
-                      }}
-                    >
-                      {citizen.last_name}
-                    </td>
-                  </tr>
-                  <tr>
-                    <th
-                      style={{
-                        padding: "10px",
-                        textAlign: "left",
-                        borderBottom: "1px solid #ddd",
-                      }}
-                    >
-                      Email:
-                    </th>
-                    <td
-                      style={{
-                        padding: "10px",
-                        textAlign: "left",
-                        borderBottom: "1px solid #ddd",
-                      }}
-                    >
-                      {citizen.email}
-                    </td>
-                  </tr>
-                  <tr>
-                    <th
-                      style={{
-                        padding: "10px",
-                        textAlign: "left",
-                        borderBottom: "1px solid #ddd",
-                      }}
-                    >
-                      Address Line 1:
-                    </th>
-                    <td
-                      style={{
-                        padding: "10px",
-                        textAlign: "left",
-                        borderBottom: "1px solid #ddd",
-                      }}
-                    >
-                      {citizen.citizen_address.address_line_1}
-                    </td>
-                  </tr>
-                  <tr>
-                    <th
-                      style={{
-                        padding: "10px",
-                        textAlign: "left",
-                        borderBottom: "1px solid #ddd",
-                      }}
-                    >
-                      Address Line 2:
-                    </th>
-                    <td
-                      style={{
-                        padding: "10px",
-                        textAlign: "left",
-                        borderBottom: "1px solid #ddd",
-                      }}
-                    >
-                      {citizen.citizen_address.address_line_2}
-                    </td>
-                  </tr>
-                  <tr>
-                    <th
-                      style={{
-                        padding: "10px",
-                        textAlign: "left",
-                        borderBottom: "1px solid #ddd",
-                      }}
-                    >
-                      Town/City:
-                    </th>
-                    <td
-                      style={{
-                        padding: "10px",
-                        textAlign: "left",
-                        borderBottom: "1px solid #ddd",
-                      }}
-                    >
-                      {citizen.citizen_address.town_city}
-                    </td>
-                  </tr>
-                  <tr>
-                    <th
-                      style={{
-                        padding: "10px",
-                        textAlign: "left",
-                        borderBottom: "1px solid #ddd",
-                      }}
-                    >
-                      Postal Code:
-                    </th>
-                    <td
-                      style={{
-                        padding: "10px",
-                        textAlign: "left",
-                        borderBottom: "1px solid #ddd",
-                      }}
-                    >
-                      {citizen.citizen_address.postcode}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <Form.Group>
-                <small>
-                  Edit your account details{" "}
-                  <Link to="/register-citizen-landing">here</Link>.
-                </small>
-              </Form.Group>
-              <br></br>
+          <div>
+            <br></br>
+            <Heading>Account</Heading>
+            <Divider style={{ backgroundColor: "black" }}></Divider>
+            <br></br>
+            <H3 style={{ fontWeight: "normal" }}>Hi, {citizen.first_name}.</H3>
+            <br></br>
+            <br></br>
+            <H3>Account Details</H3>
+            <br></br>
+            <table
+              style={{
+                borderSpacing: 0,
+                borderCollapse: "collapse",
+                width: "100%",
+                marginBottom: "20px",
+              }}
+            >
+              <tbody>
+                <tr>
+                  <th
+                    style={{
+                      padding: "10px",
+                      textAlign: "left",
+                      borderBottom: "1px solid #ddd",
+                    }}
+                  >
+                    First Name:
+                  </th>
+                  <td
+                    style={{
+                      padding: "10px",
+                      textAlign: "left",
+                      borderBottom: "1px solid #ddd",
+                    }}
+                  >
+                    {citizen.first_name}
+                  </td>
+                </tr>
+                <tr>
+                  <th
+                    style={{
+                      padding: "10px",
+                      textAlign: "left",
+                      borderBottom: "1px solid #ddd",
+                    }}
+                  >
+                    Last Name:
+                  </th>
+                  <td
+                    style={{
+                      padding: "10px",
+                      textAlign: "left",
+                      borderBottom: "1px solid #ddd",
+                    }}
+                  >
+                    {citizen.last_name}
+                  </td>
+                </tr>
+                <tr>
+                  <th
+                    style={{
+                      padding: "10px",
+                      textAlign: "left",
+                      borderBottom: "1px solid #ddd",
+                    }}
+                  >
+                    Email:
+                  </th>
+                  <td
+                    style={{
+                      padding: "10px",
+                      textAlign: "left",
+                      borderBottom: "1px solid #ddd",
+                    }}
+                  >
+                    {citizen.email}
+                  </td>
+                </tr>
+                <tr>
+                  <th
+                    style={{
+                      padding: "10px",
+                      textAlign: "left",
+                      borderBottom: "1px solid #ddd",
+                    }}
+                  >
+                    Address Line 1:
+                  </th>
+                  <td
+                    style={{
+                      padding: "10px",
+                      textAlign: "left",
+                      borderBottom: "1px solid #ddd",
+                    }}
+                  >
+                    {citizen.citizen_address.address_line_1}
+                  </td>
+                </tr>
+                <tr>
+                  <th
+                    style={{
+                      padding: "10px",
+                      textAlign: "left",
+                      borderBottom: "1px solid #ddd",
+                    }}
+                  >
+                    Address Line 2:
+                  </th>
+                  <td
+                    style={{
+                      padding: "10px",
+                      textAlign: "left",
+                      borderBottom: "1px solid #ddd",
+                    }}
+                  >
+                    {citizen.citizen_address.address_line_2}
+                  </td>
+                </tr>
+                <tr>
+                  <th
+                    style={{
+                      padding: "10px",
+                      textAlign: "left",
+                      borderBottom: "1px solid #ddd",
+                    }}
+                  >
+                    Town/City:
+                  </th>
+                  <td
+                    style={{
+                      padding: "10px",
+                      textAlign: "left",
+                      borderBottom: "1px solid #ddd",
+                    }}
+                  >
+                    {citizen.citizen_address.town_city}
+                  </td>
+                </tr>
+                <tr>
+                  <th
+                    style={{
+                      padding: "10px",
+                      textAlign: "left",
+                      borderBottom: "1px solid #ddd",
+                    }}
+                  >
+                    Postal Code:
+                  </th>
+                  <td
+                    style={{
+                      padding: "10px",
+                      textAlign: "left",
+                      borderBottom: "1px solid #ddd",
+                    }}
+                  >
+                    {citizen.citizen_address.postcode}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <Form.Group>
+              <small>
+                Edit your account details{" "}
+                <label onClick={handleEditProfile}>    <Link>here</Link></label>
+            .
+              </small>
+            </Form.Group>
+            <br></br>
 
-              <H3>Companies</H3>
-              <br></br>
-              <Companies />
-    
-              <br></br>
-            </div>
-          )}
+            <H3>Companies</H3>
+            <br></br>
+            <Companies />
+
+            <br></br>
+          </div>
         </div>
       )}
     </div>

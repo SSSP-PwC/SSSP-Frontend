@@ -69,11 +69,11 @@ export const ListPortals = () => {
           <div>
             <ListSchemesBreadcrumb />{" "}
             <div style={{ float: "right" }}>
-              <Button onClick={handleClick}>Register a scheme</Button>
+              <Button onClick={handleClick}>Register your scheme</Button>
             </div>
             <br></br>
             <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
-              All Schemes
+              Schemes
             </MainHeading>
             <Divider style={{ background: "black" }}></Divider>
             <br></br>
