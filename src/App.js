@@ -196,7 +196,7 @@ export default function App() {
             }
           />
           <Route
-            path="/wallet/callback:consentId"
+            path="/wallet/callback/"
             element={
               <>
                 <GlobalStyle />
