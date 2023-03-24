@@ -15,8 +15,8 @@ export default function DisplayTransactions() {
         try {
           const response = await fetch(`https://sssp-378808.nw.r.appspot.com/api/wallet/account_transaction/${accountId}/${consentToken}`);
           const data = await response.json();
-          console.log(data)
-          setAccountTransactions(response.data.data);
+          console.log(data.data)
+          setAccountTransactions(data.data);
         } catch (error) {
           setError(error.message);
         }
