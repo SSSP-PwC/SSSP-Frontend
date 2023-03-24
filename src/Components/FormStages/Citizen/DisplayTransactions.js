@@ -13,7 +13,9 @@ export default function DisplayTransactions() {
     const formattedBalance = currencyFormatter.format(balance, {
       code: currency,
     });
-    return <div>{formattedBalance}</div>;
+    const isWithdrawal = balance < 0;
+    const amountStyle = isWithdrawal ? { color: 'red' } : {};
+    return <div style={amountStyle}>{formattedBalance}</div>;
   }
 
   const fetchData = async () => {
@@ -35,7 +37,6 @@ export default function DisplayTransactions() {
   return (
     <div className="container" style={{ padding: "20px" }}>
       <Heading style={{ fontSize: "2em" }}>Transaction History</Heading>
-      <br />
       <Divider style={{ backgroundColor: "black", margin: "20px 0" }} />
       {error ? (
         <div style={{ color: "red", fontWeight: "bold" }}>Error: {error}</div>
