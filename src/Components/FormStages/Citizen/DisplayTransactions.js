@@ -5,7 +5,7 @@ import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { Divider, ImageList, ImageListItem } from "@mui/material";
 
 export default function DisplayTransactions() {
-    const [accountTransactions, setAccountTransactions] = useState([]);
+    const [transactions, setAccountTransactions] = useState([]);
     const [error, setError] = useState(null);
     const { accountId, consentToken } = useParams();
 
@@ -28,17 +28,24 @@ export default function DisplayTransactions() {
     if (error) {
       return <div>Error: {error}</div>;
     }
-  return (
-    <div className="container">
-      <br />
-      <Heading>Account</Heading>
+return (
+    <div>
+      <Heading>Transaction History</Heading>
       <Divider style={{ backgroundColor: "black" }} />
       <br />
-      <Caption>Select your account</Caption>
-      <div>
-        <br />
-      </div>
-      <br />
+      <Caption>Your transactions</Caption>
+      <ul>
+        {transactions.map((transaction) => (
+          <li key={transaction.id}>
+            <p>
+              Date: {new Date(transaction.date).toLocaleDateString()}
+            </p>
+            <p>Amount: {transaction.amount}</p>
+            <p>Description: {transaction.description}</p>
+            <p>Currency: {transaction.currency}</p>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

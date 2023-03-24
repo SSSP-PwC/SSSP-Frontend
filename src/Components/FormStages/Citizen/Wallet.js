@@ -42,7 +42,7 @@ export default function Wallet() {
   }
   
   async function registerUser() {
-    const url = `http://127.0.0.1:5000/api/wallet/create_user/${userId}`;
+    const url = `https://sssp-378808.nw.r.appspot.com/api/wallet/create_user/${userId}`;
     const options = {
       method: "POST",
       headers: {
