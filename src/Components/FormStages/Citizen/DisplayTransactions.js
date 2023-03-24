@@ -3,7 +3,6 @@ import { Caption, Heading, Label } from "govuk-react";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { Divider, ImageList, ImageListItem } from "@mui/material";
-import currencyFormatter from "currency-formatter";
 
 export default function DisplayTransactions() {
     const [accountTransactions, setAccountTransactions] = useState([]);
@@ -14,7 +13,7 @@ export default function DisplayTransactions() {
     useEffect(() => {
       const fetchData = async () => {
         try {
-          const response = await fetch(`/wallet/account_transaction/${props.accountId}/${props.consentToken}`);
+          const response = await fetch(`/wallet/account_transaction/${accountId}/${consentToken}`);
           const data = await response.json();
           console.log(data)
           setAccountTransactions(data);
