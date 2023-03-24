@@ -12,7 +12,7 @@ const LoggedInNavbar = () => {
     <Container>
       <Navbar.Brand href="/">
         <img
-          src="./city.png"
+          src={"/img/city.png"}
           width="30"
           height="30"
           className="d-inline-block align-top"
@@ -70,7 +70,7 @@ const LoggedOutNavbar = () => {
       <Container>
         <Navbar.Brand href="/">
           <img
-            src="./city.png"
+            src="/img/city.png"
             width="30"
             height="30"
             className="d-inline-block align-top"
