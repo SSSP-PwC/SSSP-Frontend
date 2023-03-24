@@ -16,7 +16,7 @@ export default function DisplayTransactions() {
           const response = await fetch(`https://sssp-378808.nw.r.appspot.com/api/wallet/account_transaction/${accountId}/${consentToken}`);
           const data = await response.json();
           console.log(data)
-          setAccountTransactions(data);
+          setAccountTransactions(response.data.data);
         } catch (error) {
           setError(error.message);
         }
@@ -29,7 +29,7 @@ export default function DisplayTransactions() {
       return <div>Error: {error}</div>;
     }
 return (
-    <div>
+    <div className="container">
       <Heading>Transaction History</Heading>
       <Divider style={{ backgroundColor: "black" }} />
       <br />
