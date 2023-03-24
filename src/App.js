@@ -217,7 +217,7 @@ export default function App() {
             }
           />
                     <Route
-            path="/wallet/account_transactions/:accountId"
+            path="/wallet/account_transactions/:accountId/:consentToken"
             element={
               <>
                 <GlobalStyle />

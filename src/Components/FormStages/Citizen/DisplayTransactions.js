@@ -45,9 +45,7 @@ function AccountItem({ item, index }) {
                 {" / "}
               </>
             ) : (
-                <>             { account.identification} 
-                /
-</>
+              <> {account.identification}/</>
             )}
           </span>
         ))}
