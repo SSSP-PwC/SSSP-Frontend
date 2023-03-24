@@ -5,19 +5,30 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Divider, ImageList, ImageListItem } from "@mui/material";
 import currencyFormatter from "currency-formatter";
 
-
-
 export default function DisplayTransactions() {
+    const [accountTransactions, setAccountTransactions] = useState([]);
+    const [error, setError] = useState(null);
+    const { accountId, consentToken } = useParams();
 
-
-  const Accounts = () => {
-    return (
-      <div>
-      
-      </div>
-    );
-  };
-
+  
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await fetch(`/wallet/account_transaction/${props.accountId}/${props.consentToken}`);
+          const data = await response.json();
+          console.log(data)
+          setAccountTransactions(data);
+        } catch (error) {
+          setError(error.message);
+        }
+      };
+  
+      fetchData();
+    }, [props.accountId, props.consentToken]);
+  
+    if (error) {
+      return <div>Error: {error}</div>;
+    }
   return (
     <div className="container">
       <br />
@@ -27,7 +38,6 @@ export default function DisplayTransactions() {
       <Caption>Select your account</Caption>
       <div>
         <br />
-        <Accounts />
       </div>
       <br />
     </div>

@@ -31,7 +31,6 @@ function AccountItem({ item, index }) {
         to={`/wallet/account_transactions/${item.id}/${state.consent_token}`}
         onClick={() => navigate(`/wallet/account_transactions/${item.id}/${state.consent_token}`)}
       >
-        {console.log(item.id)}
         {item.accountType}
       </Link>
 
@@ -60,7 +59,6 @@ function AccountItem({ item, index }) {
 export default function Account() {
   const { state } = useLocation();
 
-  console.log(state);
 
   const Accounts = () => {
     const navigate = useNavigate();
