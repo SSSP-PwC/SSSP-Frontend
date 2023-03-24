@@ -11,12 +11,10 @@ const LoggedInNavbar = () => {
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
     <Container>
       <Navbar.Brand href="/">
-        <img
-          src={"/img/city.png"}
+      <img src={process.env.PUBLIC_URL + '/img/city.png'} alt="Logo" 
           width="30"
           height="30"
           className="d-inline-block align-top"
-          alt="SSSP Logo"
         />
       </Navbar.Brand>
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
@@ -69,12 +67,10 @@ const LoggedOutNavbar = () => {
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container>
         <Navbar.Brand href="/">
-          <img
-            src="/img/city.png"
+        <img src={process.env.PUBLIC_URL + '/img/city.png'} alt="Logo"
             width="30"
             height="30"
             className="d-inline-block align-top"
-            alt="SSSP Logo"
           />
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
