@@ -1,7 +1,7 @@
 import { Table } from "react-bootstrap";
 import { Caption, Heading, Label } from "govuk-react";
 import React, { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { Divider, ImageList, ImageListItem } from "@mui/material";
 import currencyFormatter from "currency-formatter";
 
