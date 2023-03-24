@@ -23,7 +23,7 @@ export default function DisplayTransactions() {
       };
   
       fetchData();
-    }, [props.accountId, props.consentToken]);
+    }, [accountId, consentToken]);
   
     if (error) {
       return <div>Error: {error}</div>;
