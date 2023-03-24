@@ -117,7 +117,7 @@ export default function EditDetails() {
               </H3>
               <br></br>
               <br></br>
-              <H3>Account Details</H3>
+              <H3>Edit Account Details</H3>
               <br></br>
               <table
                 style={{

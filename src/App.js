@@ -62,10 +62,12 @@ import PagePreview from "./Components/FormStages/Scheme/PagePreview";
 import PersonalProfile from "./Components/FormStages/Citizen/PersonalProfile";
 import EditDetails from "./Components/FormStages/Citizen/DataEntry/EditDetails";
 import Wallet from "./Components/FormStages/Citizen/Wallet";
+import CallBack from "./Components/FormStages/Citizen/Callback";
+import Account from "./Components/FormStages/Citizen/Account";
+import DisplayTransactions from "./Components/FormStages/Citizen/DisplayTransactions";
 
-const queryParameters = new URLSearchParams(window.location.search)
-console.log(queryParameters.get('consent'))
-
+const queryParameters = new URLSearchParams(window.location.search);
+console.log(queryParameters.get("consent"));
 
 export default function App() {
   const [loggedIn] = useAuth();
@@ -90,7 +92,6 @@ export default function App() {
                 </CookieConsent>
                 <HomePage />
                 <Footer />
-
               </>
             }
           />
@@ -113,7 +114,6 @@ export default function App() {
                 </CookieConsent>
                 <EnterCompanyDetails />
                 <Footer />
-
               </>
             }
           />
@@ -139,7 +139,6 @@ export default function App() {
 
                 <AssociateContact />
                 <Footer />
-
               </>
             }
           />
@@ -147,10 +146,7 @@ export default function App() {
             path="/page-preview"
             element={
               <>
-
-
                 <PagePreview />
-
               </>
             }
           />
@@ -173,7 +169,6 @@ export default function App() {
 
                 <RegisterCompanySummary />
                 <Footer />
-
               </>
             }
           />
@@ -197,7 +192,69 @@ export default function App() {
 
                 <Wallet />
                 <Footer />
-
+              </>
+            }
+          />
+          <Route
+            path="/wallet/callback"
+            element={
+              <>
+                <GlobalStyle />
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                  <PhaseBanner level="POC">
+                    SSSP is currently a proof of concept{" "}
+                  </PhaseBanner>
+                </div>
+                <NavbarComponent />
+                <CookieConsent
+                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
+                >
+                  This website uses cookies to enhance the user experience.
+                </CookieConsent>
+                <CallBack />
+                <Footer />
+              </>
+            }
+          />
+                    <Route
+            path="/wallet/account_transactions/:accountId"
+            element={
+              <>
+                <GlobalStyle />
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                  <PhaseBanner level="POC">
+                    SSSP is currently a proof of concept{" "}
+                  </PhaseBanner>
+                </div>
+                <NavbarComponent />
+                <CookieConsent
+                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
+                >
+                  This website uses cookies to enhance the user experience.
+                </CookieConsent>
+                <DisplayTransactions />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/wallet/account"
+            element={
+              <>
+                <GlobalStyle />
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                  <PhaseBanner level="POC">
+                    SSSP is currently a proof of concept{" "}
+                  </PhaseBanner>
+                </div>
+                <NavbarComponent />
+                <CookieConsent
+                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
+                >
+                  This website uses cookies to enhance the user experience.
+                </CookieConsent>
+                <Account />
+                <Footer />
               </>
             }
           />
@@ -220,7 +277,6 @@ export default function App() {
                 </CookieConsent>
                 <LinkAccount />
                 <Footer />
-
               </>
             }
           />
@@ -242,7 +298,6 @@ export default function App() {
                 </CookieConsent>
                 <CompanyRegistrationLandingPage />
                 <Footer />
-
               </>
             }
           />
@@ -264,7 +319,6 @@ export default function App() {
                 </CookieConsent>
                 <EnterCompanyDetails />
                 <Footer />
-
               </>
             }
           />
@@ -286,7 +340,6 @@ export default function App() {
                 </CookieConsent>
                 <ChangeFirstName />
                 <Footer />
-
               </>
             }
           />
@@ -309,7 +362,6 @@ export default function App() {
 
                 <ChangeLastName />
                 <Footer />
-
               </>
             }
           />
@@ -331,7 +383,6 @@ export default function App() {
                 </CookieConsent>
                 <ChangeAddressLine1 />
                 <Footer />
-
               </>
             }
           />
@@ -354,7 +405,6 @@ export default function App() {
                 </CookieConsent>
                 <ChangeAddressLine2 />
                 <Footer />
-
               </>
             }
           />
@@ -376,7 +426,6 @@ export default function App() {
                 </CookieConsent>
                 <ChangeTownCity />
                 <Footer />
-
               </>
             }
           />
@@ -398,7 +447,6 @@ export default function App() {
                 </CookieConsent>
                 <ChangePostcode />
                 <Footer />
-
               </>
             }
           />
@@ -420,7 +468,6 @@ export default function App() {
                 </CookieConsent>
                 <EOIContactInfo />
                 <Footer />
-
               </>
             }
           />
@@ -442,7 +489,6 @@ export default function App() {
                 </CookieConsent>
                 <EOIProductInfo />
                 <Footer />
-
               </>
             }
           />
@@ -464,7 +510,6 @@ export default function App() {
                 </CookieConsent>
                 <EOIDeclarations />
                 <Footer />
-
               </>
             }
           />
@@ -486,7 +531,6 @@ export default function App() {
                 </CookieConsent>
                 <EOISummary />
                 <Footer />
-
               </>
             }
           />
@@ -508,7 +552,6 @@ export default function App() {
                 </CookieConsent>
                 <ListPortals />
                 <Footer />
-
               </>
             }
           />
@@ -531,7 +574,6 @@ export default function App() {
 
                 <GrantApplication />
                 <Footer />
-
               </>
             }
           />
@@ -553,7 +595,6 @@ export default function App() {
                 </CookieConsent>
                 <ChangeEmail />
                 <Footer />
-
               </>
             }
           />
@@ -575,7 +616,6 @@ export default function App() {
                 </CookieConsent>
                 <RegisterSchemeLandingPage />
                 <Footer />
-
               </>
             }
           />
@@ -597,7 +637,6 @@ export default function App() {
                 </CookieConsent>
                 <SchemeTitle />
                 <Footer />
-
               </>
             }
           />
@@ -619,7 +658,6 @@ export default function App() {
                 </CookieConsent>
                 <SchemeDates />
                 <Footer />
-
               </>
             }
           />
@@ -642,7 +680,6 @@ export default function App() {
 
                 <SchemeSupportingInformation />
                 <Footer />
-
               </>
             }
           />
@@ -666,7 +703,6 @@ export default function App() {
 
                 <SchemeObjectives />
                 <Footer />
-
               </>
             }
           />
@@ -689,7 +725,6 @@ export default function App() {
                 </CookieConsent>
                 <HomePage />
                 <Footer />
-
               </>
             }
           />
@@ -711,7 +746,6 @@ export default function App() {
                 </CookieConsent>
                 <CitizenRegistrationLandingPage />
                 <Footer />
-
               </>
             }
           />
@@ -733,7 +767,6 @@ export default function App() {
                 </CookieConsent>
                 <CitizenSignIn />
                 <Footer />
-
               </>
             }
           />
@@ -755,7 +788,6 @@ export default function App() {
                 </CookieConsent>
                 <EnterCitizenName />
                 <Footer />
-
               </>
             }
           />
@@ -777,7 +809,6 @@ export default function App() {
                 </CookieConsent>
                 <EnterCitizenAddress />
                 <Footer />
-
               </>
             }
           />
@@ -800,7 +831,6 @@ export default function App() {
 
                 <EnterCitizenEmail />
                 <Footer />
-
               </>
             }
           />
@@ -823,7 +853,6 @@ export default function App() {
 
                 <EnterCompanyDetails />
                 <Footer />
-
               </>
             }
           />
@@ -846,7 +875,6 @@ export default function App() {
 
                 <AssociateContact />
                 <Footer />
-
               </>
             }
           />
@@ -869,7 +897,6 @@ export default function App() {
 
                 <LinkAccount />
                 <Footer />
-
               </>
             }
           />
@@ -892,7 +919,6 @@ export default function App() {
 
                 <EnterCitizenPassword />
                 <Footer />
-
               </>
             }
           />
@@ -915,7 +941,6 @@ export default function App() {
 
                 <SchemeSupportingInformation />
                 <Footer />
-
               </>
             }
           />
@@ -938,7 +963,6 @@ export default function App() {
 
                 <RegisterCompanySummary />
                 <Footer />
-
               </>
             }
           />
@@ -962,7 +986,6 @@ export default function App() {
 
                 <CitizenRegistrationSummary />
                 <Footer />
-
               </>
             }
           />
@@ -984,7 +1007,6 @@ export default function App() {
                 </CookieConsent>
                 <EOIContactInfo />
                 <Footer />
-
               </>
             }
           />
@@ -1006,7 +1028,6 @@ export default function App() {
                 </CookieConsent>
                 <EOIProductInfo />
                 <Footer />
-
               </>
             }
           />
@@ -1029,7 +1050,6 @@ export default function App() {
 
                 <EOIDeclarations />
                 <Footer />
-
               </>
             }
           />
@@ -1052,7 +1072,6 @@ export default function App() {
 
                 <EOISummary />
                 <Footer />
-
               </>
             }
           />
@@ -1075,7 +1094,6 @@ export default function App() {
 
                 <ListPortals />
                 <Footer />
-
               </>
             }
           />
@@ -1098,7 +1116,6 @@ export default function App() {
 
                 <GrantApplication />
                 <Footer />
-
               </>
             }
           />
@@ -1121,7 +1138,6 @@ export default function App() {
 
                 <EligibilityCheckerRegisteredCompany />
                 <Footer />
-
               </>
             }
           />
@@ -1143,7 +1159,6 @@ export default function App() {
                 </CookieConsent>
                 <EligibilityCheckerEmployeeCount />
                 <Footer />
-
               </>
             }
           />
@@ -1165,7 +1180,6 @@ export default function App() {
                 </CookieConsent>
                 <EligibilityCheckerTradingLength />
                 <Footer />
-
               </>
             }
           />
@@ -1188,7 +1202,6 @@ export default function App() {
 
                 <EligibilityCheckerProductInfo />
                 <Footer />
-
               </>
             }
           />
@@ -1210,7 +1223,6 @@ export default function App() {
                 </CookieConsent>
                 <EligibilityCheckerSoftwareDetails />
                 <Footer />
-
               </>
             }
           />
@@ -1232,7 +1244,6 @@ export default function App() {
                 </CookieConsent>
                 <EligibilityCheckerSummary />
                 <Footer />
-
               </>
             }
           />
@@ -1256,7 +1267,6 @@ export default function App() {
 
                 <ApplicationFormExhaustedForm />
                 <Footer />
-
               </>
             }
           />
@@ -1278,7 +1288,6 @@ export default function App() {
                 </CookieConsent>
                 <ApplicationFormBuildingInformation />
                 <Footer />
-
               </>
             }
           />
@@ -1301,7 +1310,6 @@ export default function App() {
 
                 <ApplicationFormSummaryTable />
                 <Footer />
-
               </>
             }
           />
@@ -1323,7 +1331,6 @@ export default function App() {
                 </CookieConsent>
                 <PageBuilder />
                 <Footer />
-
               </>
             }
           />
@@ -1345,7 +1352,6 @@ export default function App() {
                 </CookieConsent>
                 <RegisterPortal />
                 <Footer />
-
               </>
             }
           />
@@ -1367,7 +1373,6 @@ export default function App() {
                 </CookieConsent>
                 <RenderForm />
                 <Footer />
-
               </>
             }
           />
@@ -1389,7 +1394,6 @@ export default function App() {
                 </CookieConsent>
                 <EditDetails />
                 <Footer />
-
               </>
             }
           />
@@ -1413,7 +1417,6 @@ export default function App() {
 
                 <RegisterSchemeLandingPage />
                 <Footer />
-
               </>
             }
           />
@@ -1435,7 +1438,6 @@ export default function App() {
                 </CookieConsent>
                 <LinkAccount />
                 <Footer />
-
               </>
             }
           />
@@ -1457,7 +1459,6 @@ export default function App() {
                 </CookieConsent>
                 <PersonalProfile />
                 <Footer />
-
               </>
             }
           />
@@ -1479,7 +1480,6 @@ export default function App() {
                 </CookieConsent>
                 <SchemeTitle />
                 <Footer />
-
               </>
             }
           />
@@ -1502,7 +1502,6 @@ export default function App() {
 
                 <SchemeDescription />
                 <Footer />
-
               </>
             }
           />
@@ -1525,7 +1524,6 @@ export default function App() {
 
                 <SchemeDates />
                 <Footer />
-
               </>
             }
           />
@@ -1547,7 +1545,6 @@ export default function App() {
                 </CookieConsent>
                 <SchemeObjectives />
                 <Footer />
-
               </>
             }
           />
@@ -1569,7 +1566,6 @@ export default function App() {
                 </CookieConsent>
                 <FormBuilder />
                 <Footer />
-
               </>
             }
           />
@@ -1592,7 +1588,6 @@ export default function App() {
 
                 <SchemeApplicationDetails />
                 <Footer />
-
               </>
             }
           />
@@ -1615,7 +1610,6 @@ export default function App() {
 
                 <CompanyRegistrationLandingPage />
                 <Footer />
-
               </>
             }
           />
@@ -1638,7 +1632,6 @@ export default function App() {
 
                 <RegisterCompanySummary />
                 <Footer />
-
               </>
             }
           />
@@ -1661,7 +1654,6 @@ export default function App() {
 
                 <SchemeEligibilityCriteria />
                 <Footer />
-
               </>
             }
           />
@@ -1684,7 +1676,6 @@ export default function App() {
 
                 <SchemePublisherDetails />
                 <Footer />
-
               </>
             }
           />
@@ -1709,7 +1700,6 @@ export default function App() {
                 <SchemeSummary />
 
                 <Footer />
-
               </>
             }
           />

@@ -39,7 +39,13 @@ const LoggedInNavbar = () => {
                 </>
               } id="collasible-nav-dropdown">
               <NavDropdown.Item href="/personal-profile">
-                Edit Profile
+                Account Profile
+              </NavDropdown.Item>
+              <NavDropdown.Item href="/personal-profile">
+                Digital Wallet
+              </NavDropdown.Item>
+              <NavDropdown.Item href="/personal-profile">
+                Credential Management
               </NavDropdown.Item>
               <NavDropdown.Item href="/" onClick={logout}>
                 Sign Out
