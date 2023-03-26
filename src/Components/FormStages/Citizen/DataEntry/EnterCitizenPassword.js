@@ -36,10 +36,10 @@ export const EnterCitizenPassword = () => {
           first_name: state.first_name,
           last_name: state.last_name,
           address: {
-          address_line_1: state.address_line_1,
-          address_line_2: state.address_line_2,
-          town_city: state.town_city,
-          postcode: state.postcode,
+            address_line_1: state.address_line_1,
+            address_line_2: state.address_line_2,
+            town_city: state.town_city,
+            postcode: state.postcode,
           },
           email: state.email,
           password: data.password,
@@ -51,16 +51,17 @@ export const EnterCitizenPassword = () => {
           first_name: state.first_name,
           last_name: state.last_name,
           address: {
-          address_line_1: state.address_line_1,
-          address_line_2: state.address_line_2,
-          town_city: state.town_city,
-          postcode: state.postcode,
-          email: state.email,
+            address_line_1: state.address.address_line_1,
+            address_line_2: state.address.address_line_2,
+            town_city: state.address.town_city,
+            postcode: state.address.postcode,
           },
+          email: state.email,
           password: data.password,
           company: {
             company_name: state.company.company_name,
-            company_registration_number: state.company.company_registration_number,
+            company_registration_number:
+              state.company.company_registration_number,
             company_creation_journey: state.company.company_creation_journey,
             company_address: {
               address_line_1: state.company.company_address.address_line_1,
