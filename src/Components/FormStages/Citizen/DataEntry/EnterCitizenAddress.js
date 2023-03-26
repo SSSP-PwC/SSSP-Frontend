@@ -38,11 +38,10 @@ export const EnterCitizenAddress = () => {
       data.postcode !== undefined
     ) {
       const response = await fetch(
-        `https:/api.postcodes.io/postcodes/${data.postcode}/validate`
+        `https://api.postcodes.io/postcodes/${data.postcode}/validate`
       );
       const outcome = await response.json();
-      console.log(outcome)
-      if (state?.company === undefined) {
+      if (state?.company === undefined && outcome.result === true) {
         navigate("/register-citizen-email", {
           state: {
             first_name: state.first_name,
