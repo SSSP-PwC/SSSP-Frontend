@@ -47,11 +47,11 @@ export const EnterCitizenAddress = () => {
             first_name: state.first_name,
             last_name: state.last_name,
             address: {
-            address_line_1: data.address_line_1,
-            address_line_2: data.address_line_2,
-            town_city: data.town_city,
-            postcode: data.postcode,
-            }
+              address_line_1: data.address_line_1,
+              address_line_2: data.address_line_2,
+              town_city: data.town_city,
+              postcode: data.postcode,
+            },
           },
         });
       } else if (outcome.result === true) {
@@ -59,13 +59,16 @@ export const EnterCitizenAddress = () => {
           state: {
             first_name: state.first_name,
             last_name: state.last_name,
-            address_line_1: data.address_line_1,
-            address_line_2: data.address_line_2,
-            town_city: data.town_city,
-            postcode: data.postcode,
+            address: {
+              address_line_1: data.address_line_1,
+              address_line_2: data.address_line_2,
+              town_city: data.town_city,
+              postcode: data.postcode,
+            },
             company: {
               company_name: state.company.company_name,
-              company_registration_number: state.company.company_registration_number,
+              company_registration_number:
+                state.company.company_registration_number,
               company_creation_journey: state.company.company_creation_journey,
               company_address: {
                 address_line_1: state.company.company_address.address_line_1,

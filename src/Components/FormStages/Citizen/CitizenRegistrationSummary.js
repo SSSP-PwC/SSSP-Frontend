@@ -22,10 +22,10 @@ export const CitizenRegistrationSummary = () => {
 
   var first_name = state.first_name;
   var last_name = state.last_name;
-  var address_line_1 = state.address_line_1;
-  var address_line_2 = state.address_line_2;
-  var town_city = state.town_city;
-  var postcode = state.postcode;
+  var address_line_1 = state.address.address_line_1;
+  var address_line_2 = state.address.address_line_2;
+  var town_city = state.address.town_city;
+  var postcode = state.address.postcode;
   var email = state.email;
   var password = state.password;
   console.log(state);

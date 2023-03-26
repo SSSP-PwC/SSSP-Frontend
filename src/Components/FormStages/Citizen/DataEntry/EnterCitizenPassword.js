@@ -35,10 +35,12 @@ export const EnterCitizenPassword = () => {
         state: {
           first_name: state.first_name,
           last_name: state.last_name,
+          address: {
           address_line_1: state.address_line_1,
           address_line_2: state.address_line_2,
           town_city: state.town_city,
           postcode: state.postcode,
+          },
           email: state.email,
           password: data.password,
         },
@@ -48,11 +50,13 @@ export const EnterCitizenPassword = () => {
         state: {
           first_name: state.first_name,
           last_name: state.last_name,
+          address: {
           address_line_1: state.address_line_1,
           address_line_2: state.address_line_2,
           town_city: state.town_city,
           postcode: state.postcode,
           email: state.email,
+          },
           password: data.password,
           company: {
             company_name: state.company.company_name,
