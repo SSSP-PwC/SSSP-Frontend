@@ -65,6 +65,7 @@ import Wallet from "./Components/FormStages/Citizen/Wallet";
 import CallBack from "./Components/FormStages/Citizen/Callback";
 import Account from "./Components/FormStages/Citizen/Account";
 import DisplayTransactions from "./Components/FormStages/Citizen/DisplayTransactions";
+import EmailConfirmed from "./Components/EmailConfirmed";
 
 const queryParameters = new URLSearchParams(window.location.search);
 console.log(queryParameters.get("consent"));
@@ -216,7 +217,7 @@ export default function App() {
               </>
             }
           />
-                    <Route
+          <Route
             path="/wallet/account_transactions/:accountId/:consentToken"
             element={
               <>
@@ -237,6 +238,31 @@ export default function App() {
               </>
             }
           />
+
+<Route
+            path="/email-confirmed"
+            element={
+              <>
+                <GlobalStyle />
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                  <PhaseBanner level="POC">
+                    SSSP is currently a proof of concept{" "}
+                  </PhaseBanner>
+                </div>
+                <NavbarComponent />
+                <CookieConsent
+                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
+                >
+                  This website uses cookies to enhance the user experience.
+                </CookieConsent>
+                <EmailConfirmed />
+                <Footer />
+              </>
+            }
+          />
+
+
+
           <Route
             path="/wallet/account"
             element={
