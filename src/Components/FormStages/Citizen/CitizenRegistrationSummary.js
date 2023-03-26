@@ -12,6 +12,7 @@ import SignUpMessage from "../../SignUpMessage";
 
 export const CitizenRegistrationSummary = () => {
   const { handleSubmit } = useForm();
+  const [signUpMessage, setSignUpMessage] = useState(false);
   const navigate = useNavigate();
   const { state } = useLocation();
   console.log(state);
@@ -58,11 +59,15 @@ export const CitizenRegistrationSummary = () => {
     try {
       const response = await fetch(url, options);
       const result = await response.json();
+      console.log(result);
       setLoading(false);
       if (result["message"] === "User created successfully") {
         setAccountCreated(true);
-        if (result["message"] === "A confirmation email has been sent to your email address") {
-          <SignUpMessage/>
+        if (
+          result["message"] ===
+          "A confirmation email has been sent to your email address"
+        ) {
+          setSignUpMessage(true);
         }
         if (state.company.company_creation_journey === true) {
           const url =
@@ -148,6 +153,7 @@ export const CitizenRegistrationSummary = () => {
         className="form"
         style={{ marginTop: "70px", display: "inline-block" }}
       >
+        {signUpMessage === true && <SignUpMessage />}
         {errorMessageFlag && (
           <>
             <ErrorSummary
