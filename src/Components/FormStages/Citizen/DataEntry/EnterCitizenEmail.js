@@ -40,10 +40,12 @@ export const EnterCitizenEmail = () => {
         state: {
           first_name: state.first_name,
           last_name: state.last_name,
+          address: { 
           address_line_1: state.address_line_1,
           address_line_2: state.address_line_2,
           town_city: state.town_city,
           postcode: state.postcode,
+          },
           email: data.email,
         },
       });
@@ -52,11 +54,13 @@ export const EnterCitizenEmail = () => {
         state: {
           first_name: state.first_name,
           last_name: state.last_name,
+          address: {
           address_line_1: state.address_line_1,
           address_line_2: state.address_line_2,
           town_city: state.town_city,
           postcode: state.postcode,
           email: data.email,
+          },
           company: {
             company_name: state.company.company_name,
             company_registration_number: state.company.company_registration_number,          
