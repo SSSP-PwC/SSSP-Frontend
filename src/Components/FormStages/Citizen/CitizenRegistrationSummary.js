@@ -61,14 +61,8 @@ export const CitizenRegistrationSummary = () => {
       const result = await response.json();
       console.log(result);
       setLoading(false);
-      if (result["message"] === "User created successfully") {
         setAccountCreated(true);
-        if (
-          result["message"] ===
-          "A confirmation email has been sent to your email address"
-        ) {
-          setSignUpMessage(true);
-        }
+
         if (state.company.company_creation_journey === true) {
           const url =
             "https://sssp-378808.nw.r.appspot.com/api/link-citizen-to-company-checks";
@@ -92,6 +86,8 @@ export const CitizenRegistrationSummary = () => {
             if (state?.company === undefined) {
               setAccountCreated(true);
             } else if (result["citizen"]["message"] === "citizen exists") {
+              setSignUpMessage(true);
+
               navigate("/register-company-summary", {
                 state: {
                   company: {
@@ -117,7 +113,7 @@ export const CitizenRegistrationSummary = () => {
           } catch (error) {
             console.error(error);
           }
-        }
+      
       } else if (result["message"] === "User already exists") {
         setErrorMessageFlag(true);
       }
