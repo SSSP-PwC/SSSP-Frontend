@@ -8,6 +8,7 @@ import { Divider } from "@mui/material";
 import { LoadingBox, Button, ErrorSummary } from "govuk-react";
 import { AccountCreatedMessage } from "./Account-Created-Message";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
+import SignUpMessage from "../../SignUpMessage";
 
 export const CitizenRegistrationSummary = () => {
   const { handleSubmit } = useForm();
@@ -60,6 +61,9 @@ export const CitizenRegistrationSummary = () => {
       setLoading(false);
       if (result["message"] === "User created successfully") {
         setAccountCreated(true);
+        if (result["message"] === "A confirmation email has been sent to your email address") {
+          <SignUpMessage/>
+        }
         if (state.company.company_creation_journey === true) {
           const url =
             "https://sssp-378808.nw.r.appspot.com/api/link-citizen-to-company-checks";
