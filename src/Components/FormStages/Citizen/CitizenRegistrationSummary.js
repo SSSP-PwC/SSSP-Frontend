@@ -168,7 +168,7 @@ export const CitizenRegistrationSummary = () => {
         )}
         {accountCreated && (
           <>
-            <AccountCreatedMessage />
+           <SignUpMessage />
           </>
         )}
         {accountCreated === false && (
