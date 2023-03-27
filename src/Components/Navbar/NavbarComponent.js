@@ -39,7 +39,7 @@ const LoggedInNavbar = () => {
               <NavDropdown.Item href="/personal-profile">
                 Account Profile
               </NavDropdown.Item>
-              <NavDropdown.Item href="/wallet">
+              <NavDropdown.Item href="/link-wallet">
                 Digital Wallet
               </NavDropdown.Item>
               <NavDropdown.Item href="/personal-profile">

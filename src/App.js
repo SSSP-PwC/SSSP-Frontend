@@ -66,6 +66,9 @@ import CallBack from "./Components/FormStages/Citizen/Callback";
 import Account from "./Components/FormStages/Citizen/Account";
 import DisplayTransactions from "./Components/FormStages/Citizen/DisplayTransactions";
 import EmailConfirmed from "./Components/EmailConfirmed";
+import { ChangePassword } from "./Components/FormStages/Citizen/ChangePassword";
+import { CreateOpenBankingAccount } from "./Components/FormStages/Citizen/CreateOpenBankingAccount";
+import LinkWalletAccount from "./Components/FormStages/Citizen/Link-Account";
 
 const queryParameters = new URLSearchParams(window.location.search);
 console.log(queryParameters.get("consent"));
@@ -239,7 +242,7 @@ export default function App() {
             }
           />
 
-<Route
+          <Route
             path="/email-confirmed"
             element={
               <>
@@ -260,8 +263,70 @@ export default function App() {
               </>
             }
           />
+          <Route
+            path="/change-password"
+            element={
+              <>
+                <GlobalStyle />
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                  <PhaseBanner level="POC">
+                    SSSP is currently a proof of concept{" "}
+                  </PhaseBanner>
+                </div>
+                <NavbarComponent />
+                <CookieConsent
+                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
+                >
+                  This website uses cookies to enhance the user experience.
+                </CookieConsent>
+                <ChangePassword />
+                <Footer />
+              </>
+            }
+          />
 
-
+          <Route
+            path="/link-wallet"
+            element={
+              <>
+                <GlobalStyle />
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                  <PhaseBanner level="POC">
+                    SSSP is currently a proof of concept{" "}
+                  </PhaseBanner>
+                </div>
+                <NavbarComponent />
+                <CookieConsent
+                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
+                >
+                  This website uses cookies to enhance the user experience.
+                </CookieConsent>
+                <CreateOpenBankingAccount />
+                <Footer />
+              </>
+            }
+          />
+              <Route
+            path="/wallet/link-institution"
+            element={
+              <>
+                <GlobalStyle />
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                  <PhaseBanner level="POC">
+                    SSSP is currently a proof of concept{" "}
+                  </PhaseBanner>
+                </div>
+                <NavbarComponent />
+                <CookieConsent
+                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
+                >
+                  This website uses cookies to enhance the user experience.
+                </CookieConsent>
+                <LinkWalletAccount />
+                <Footer />
+              </>
+            }
+          />
 
           <Route
             path="/wallet/account"

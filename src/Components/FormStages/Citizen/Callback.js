@@ -12,21 +12,13 @@ export default function CallBack() {
 
   useEffect(() => {
     async function fetchData() {
-      const resp = await fetch(
-        `https://sssp-378808.nw.r.appspot.com/api/wallet/accounts/${consent}`,
-        {
-          method: "GET",
-        }
-      );
 
-      const response = await resp.json();
-      console.log(response.data);
-      navigate("/wallet/account", {
+      navigate("/wallet/link-institution", {
         state: {
-          "response" : response.data,
-          "consent_token" : consent
-        }
-      })
+          response: response.data,
+          consent_token: consent,
+        },
+      });
     }
     fetchData();
   }, []);
@@ -40,8 +32,7 @@ export default function CallBack() {
         display: "flex",
       }}
     >
-        <Spinner fill="black" height="256px" width="256px" />
-
+      <Spinner fill="black" height="256px" width="256px" />
     </div>
   );
 }

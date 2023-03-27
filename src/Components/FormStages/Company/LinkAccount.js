@@ -64,7 +64,6 @@ export const LinkAccount = () => {
       const result = await response.json();
       setLoading(false);
       if (result["citizen"]["message"] === "citizen exists") {
-        alert("HERE IT")
         navigate("/register-company-summary", {
           state: {
             company: {
