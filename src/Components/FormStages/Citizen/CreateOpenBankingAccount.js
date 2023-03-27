@@ -82,7 +82,7 @@ export const CreateOpenBankingAccount = () => {
         if (createData.error.status === "CONFLICT") {
           setUserExists(true);
           setTimeout(() => {
-            navigate("/credential-management");
+            navigate("/wallet");
           }, 3000);
         }
       }
