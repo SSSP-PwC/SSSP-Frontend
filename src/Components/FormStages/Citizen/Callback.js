@@ -13,8 +13,9 @@ export default function CallBack() {
   useEffect(() => {
     async function fetchData() {
 
-      navigate("/wallet/link-institution", {
+      navigate("/wallet/account", {
         state: {
+          response: response.data,
           consent_token: consent,
         },
       });
