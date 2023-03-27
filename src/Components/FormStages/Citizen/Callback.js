@@ -31,6 +31,8 @@ export default function CallBack() {
     fetchData();
   }, []);
 
+  
+
   return (
     <div
       className="container"
