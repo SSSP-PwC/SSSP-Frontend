@@ -5,8 +5,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 
 export default function LinkWalletAccount() {
     const { state } = useLocation();
-
-    const institution_id = "modelo-sandbox"
+  const institution_id = "modelo-sandbox"
   useEffect(() => {
     fetch(`http://192.168.68.108:2000/api/wallet/link-consent-to-profile/${institution_id}`, {
       method: "POST",
