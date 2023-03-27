@@ -15,7 +15,6 @@ export default function CallBack() {
 
       navigate("/wallet/link-institution", {
         state: {
-          response: response.data,
           consent_token: consent,
         },
       });
