@@ -110,24 +110,6 @@ export const CreateOpenBankingAccount = () => {
           <div></div>
         )}
         <div>
-          {userExists === true ? (
-            <div
-              style={{
-                justifyContent: "center",
-                alignItems: "center",
-                display: "flex",
-                flexDirection: "column", // Added to align elements in column
-              }}
-            >
-              <Caption style={{ display: "block" }}>
-                You already have your credentials linked
-              </Caption>
-              <Caption style={{ display: "block" }}>
-                Navigating to credentials viewer.
-              </Caption>
-              <Spinner fill="black" height="256px" width="256px" />
-            </div>
-          ) : (
             <div>
               <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
                 Digital Wallet
@@ -152,7 +134,7 @@ export const CreateOpenBankingAccount = () => {
               </Form.Group>
               <br></br>
             </div>
-          )}
+        
         </div>
       </div>
     </div>
