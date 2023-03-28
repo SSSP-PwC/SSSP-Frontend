@@ -36,7 +36,7 @@ export const EnterCitizenEmail = () => {
   };
   const submitForm = () => {
     if (state?.company === undefined) {
-      navigate("/register-citizen-password", {
+      navigate("/register-citizen-phone-number", {
         state: {
           first_name: state.first_name,
           last_name: state.last_name,
@@ -50,7 +50,7 @@ export const EnterCitizenEmail = () => {
         },
       });
     } else if (data.email != undefined && validateEmail(data.email) === true) {
-      navigate("/register-citizen-password", {
+      navigate("/register-citizen-phone-number", {
         state: {
           first_name: state.first_name,
           last_name: state.last_name,

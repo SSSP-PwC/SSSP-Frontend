@@ -69,6 +69,7 @@ import EmailConfirmed from "./Components/EmailConfirmed";
 import { ChangePassword } from "./Components/FormStages/Citizen/ChangePassword";
 import { CreateOpenBankingAccount } from "./Components/FormStages/Citizen/CreateOpenBankingAccount";
 import LinkWalletAccount from "./Components/FormStages/Citizen/Link-Account";
+import { EnterCitizenPhoneNumber } from "./Components/FormStages/Citizen/DataEntry/EnterCitizenPhoneNumber";
 
 const queryParameters = new URLSearchParams(window.location.search);
 console.log(queryParameters.get("consent"));
@@ -323,6 +324,27 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <LinkWalletAccount />
+                <Footer />
+              </>
+            }
+          />
+            <Route
+            path="/register-citizen-phone-number"
+            element={
+              <>
+                <GlobalStyle />
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                  <PhaseBanner level="POC">
+                    SSSP is currently a proof of concept{" "}
+                  </PhaseBanner>
+                </div>
+                <NavbarComponent />
+                <CookieConsent
+                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
+                >
+                  This website uses cookies to enhance the user experience.
+                </CookieConsent>
+                <EnterCitizenPhoneNumber />
                 <Footer />
               </>
             }

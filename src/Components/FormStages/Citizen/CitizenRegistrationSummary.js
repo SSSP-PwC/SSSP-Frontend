@@ -29,6 +29,7 @@ export const CitizenRegistrationSummary = () => {
   var town_city = state.address.town_city;
   var postcode = state.address.postcode;
   var email = state.email;
+  var phone_number = state.phone_number;
   var password = state.password;
   console.log(state);
 
@@ -39,6 +40,7 @@ export const CitizenRegistrationSummary = () => {
       first_name: first_name,
       last_name: last_name,
       email: email,
+      phone_number: phone_number,
       password: password,
       address: {
         address_line_1: address_line_1,
@@ -134,6 +136,9 @@ export const CitizenRegistrationSummary = () => {
         </Breadcrumb.Item>
         <Breadcrumb.Item href="/register-citizen-email">
           Applicant email
+        </Breadcrumb.Item>
+        <Breadcrumb.Item href="/register-citizen-phone-number">
+          Applicant phone number
         </Breadcrumb.Item>
         <Breadcrumb.Item href="/register-citizen-password">
           Applicant password
@@ -270,6 +275,18 @@ export const CitizenRegistrationSummary = () => {
                   <small>
                     {email}
                     <Link to="/change-email-address" style={{ float: "right" }}>
+                      Change
+                    </Link>
+                  </small>
+                  <Divider></Divider>
+                </Form.Group>
+                <Form.Group>
+                  <Form.Label style={{ fontWeight: "bold", margin: "10px" }}>
+                   Phone number:
+                  </Form.Label>
+                  <small>
+                    {phone_number}
+                    <Link to="/change-phone-number" style={{ float: "right" }}>
                       Change
                     </Link>
                   </small>

@@ -42,6 +42,7 @@ export const EnterCitizenPassword = () => {
             postcode: state.address.postcode,
           },
           email: state.email,
+          phone_number: state.phone_number,
           password: data.password,
         },
       });
@@ -57,6 +58,7 @@ export const EnterCitizenPassword = () => {
             postcode: state.address.postcode,
           },
           email: state.email,
+          phone_number: state.phone_number,
           password: data.password,
           company: {
             company_name: state.company.company_name,
@@ -81,27 +83,31 @@ export const EnterCitizenPassword = () => {
       setErrorMessageFlag(true);
     }
   };
-  const RegistrationFormBreadcrumb = () => {
-    return (
-      <Breadcrumb>
-        <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
 
-        <Breadcrumb.Item href="/register-citizen-landing">
-          Register Citizen
-        </Breadcrumb.Item>
-        <Breadcrumb.Item href="/register-citizen-name">
-          Applicant name
-        </Breadcrumb.Item>
-        <Breadcrumb.Item href="/register-citizen-address">
-          Applicant address
-        </Breadcrumb.Item>
-        <Breadcrumb.Item href="/register-citizen-email">
-          Applicant email
-        </Breadcrumb.Item>
-        <Breadcrumb.Item active>Applicant password</Breadcrumb.Item>
-      </Breadcrumb>
-    );
-  };
+      const RegistrationFormBreadcrumb = () => {
+        return (
+          <Breadcrumb>
+            <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
+    
+            <Breadcrumb.Item href="/register-citizen-landing">
+              Register Citizen
+            </Breadcrumb.Item>
+            <Breadcrumb.Item href="/register-citizen-name">
+              Applicant name
+            </Breadcrumb.Item>
+            <Breadcrumb.Item href="/register-citizen-address">
+              Applicant address
+            </Breadcrumb.Item>
+            <Breadcrumb.Item href="/register-citizen-address">
+              Applicant email
+            </Breadcrumb.Item>
+            <Breadcrumb.Item href="/register-citizen-address">
+              Applicant phone number
+            </Breadcrumb.Item>
+            <Breadcrumb.Item active>Applicant password</Breadcrumb.Item>
+          </Breadcrumb>
+        );
+      };
 
   return (
     <div className="container">
