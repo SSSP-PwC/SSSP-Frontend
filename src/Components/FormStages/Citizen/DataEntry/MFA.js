@@ -15,6 +15,7 @@ export const MFA = () => {
   const [errorMessageContent, setErrorMessageContent] = useState("");
   const [errorMessageCause, setErrorMessageCause] = useState("");
   const [verificationCode, setVerificationCodeField] = useState(false);
+  const [verificationType, setVerificationType] = useState("")
   const [data, setData] = useState();
   console.log(data);
 
@@ -26,17 +27,17 @@ export const MFA = () => {
       },
       body: JSON.stringify({
         email: state.email,
-        otp: data.otp,
+        otp: data.verification_code,
       }),
     };
     fetch(
-      `https://sssp-378808.nw.r.appspot.com/api/very-email-otp/${state.email}/${data.otp}`,
+      `https://sssp-378808.nw.r.appspot.com/api/very-email-otp/${state.email}/${data.verification_code}`,
       requestOptions
     )
       .then((res) => res.json())
       .then((data) => {
         if (data.message === "email verified") {
-            navigate("/")
+          navigate("/");
         }
       })
       .catch((error) => {
@@ -56,20 +57,19 @@ export const MFA = () => {
       }),
     };
     fetch(
-      `https://sssp-378808.nw.r.appspot.com/api/verify-phone-otp/${state.phone_number}/${data.otp}`,
+      `https://sssp-378808.nw.r.appspot.com/api/verify-phone-otp/${state.phone_number}/${data.verification_code}`,
       requestOptions
     )
       .then((res) => res.json())
       .then((data) => {
         if (data.message === "phone number verified") {
-            navigate("/")
+          navigate("/");
         }
       })
       .catch((error) => {
         console.error(error);
       });
   };
-
 
   const updateData = (e) => {
     console.log(data);
@@ -78,10 +78,10 @@ export const MFA = () => {
       [e.target.name]: e.target.value,
     });
   };
-  
 
   const phoneVerification = () => {
     setVerificationCodeField(true);
+    setVerificationType("phone")
 
     const requestOptions = {
       method: "POST",
@@ -135,6 +135,8 @@ export const MFA = () => {
   };
 
   const emailVerification = () => {
+    setVerificationCodeField(true);
+    setVerificationType("email")
     const requestOptions = {
       method: "POST",
       headers: {
@@ -227,29 +229,53 @@ export const MFA = () => {
               <Form>
                 <>
                   <Radio onClick={phoneVerification}>Phone</Radio>
-                  <Radio onClick={emailVerification}>Email</Radio>
-                  {verificationCode === true && (
-                    <>
-                      <p style={{ color: "#505a5f" }}>
-                        A verification code has been sent to the email linked to
-                        your account.
-                      </p>
-                      <InputField
-                        onChange={updateData}
-                        input={{
-                          name: "verification_code",
-                          required: true,
-                        }}
-                      >
-                        Verification code
-                      </InputField>
-                    </>
-                  )}
+                  {verificationCode === true &&
+                    verificationType ===
+                      "phone"(
+                        <>
+                          <p style={{ color: "#505a5f" }}>
+                            A verification code has been sent to the email
+                            linked to your account.
+                          </p>
+                          <InputField
+                            onChange={updateData}
+                            input={{
+                              name: "verification_code",
+                              required: true,
+                            }}
+                          >
+                            Verification code
+                          </InputField>
+                          <br></br>
+                          <Button onClick={verifyPhoneOTP}>Verify</Button>
+                        </>
+                      )}
+                  <Radio onClick={phoneVerification}>Email</Radio>
+                  {verificationCode === true &&
+                    verificationType ===
+                      "email"(
+                        <>
+                          <p style={{ color: "#505a5f" }}>
+                            A verification code has been sent to the email
+                            linked to your account.
+                          </p>
+                          <InputField
+                            onChange={updateData}
+                            input={{
+                              name: "verification_code",
+                              required: true,
+                            }}
+                          >
+                            Verification code
+                          </InputField>
+                          <br></br>
+                          <Button onClick={verifyEmailOTP}>Verify</Button>
+                        </>
+                      )}
                 </>
               </Form>
             </Form.Group>
-            <br></br>
-            <Button onClick={verifyEmailOTP}>Verify</Button>
+
             <br></br>
           </div>
         </div>
