@@ -231,7 +231,7 @@ export const MFA = () => {
                   <Radio onClick={phoneVerification}>Phone</Radio>
                   {verificationCode === true &&
                     verificationType ===
-                      "phone"(
+                      "phone" && (
                         <>
                           <p style={{ color: "#505a5f" }}>
                             A verification code has been sent to the email
@@ -253,7 +253,7 @@ export const MFA = () => {
                   <Radio onClick={emailVerification}>Email</Radio>
                   {verificationCode === true &&
                     verificationType ===
-                      "email"(
+                      "email" && (
                         <>
                           <p style={{ color: "#505a5f" }}>
                             A verification code has been sent to the email
