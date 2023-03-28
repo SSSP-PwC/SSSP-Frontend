@@ -250,7 +250,7 @@ export const MFA = () => {
                           <Button onClick={verifyPhoneOTP}>Verify</Button>
                         </>
                       )}
-                  <Radio onClick={phoneVerification}>Email</Radio>
+                  <Radio onClick={emailVerification}>Email</Radio>
                   {verificationCode === true &&
                     verificationType ===
                       "email"(
