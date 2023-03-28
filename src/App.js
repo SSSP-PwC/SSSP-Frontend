@@ -70,6 +70,7 @@ import { ChangePassword } from "./Components/FormStages/Citizen/ChangePassword";
 import { CreateOpenBankingAccount } from "./Components/FormStages/Citizen/CreateOpenBankingAccount";
 import LinkWalletAccount from "./Components/FormStages/Citizen/Link-Account";
 import { EnterCitizenPhoneNumber } from "./Components/FormStages/Citizen/DataEntry/EnterCitizenPhoneNumber";
+import { MFA } from "./Components/FormStages/Citizen/DataEntry/MFA";
 
 const queryParameters = new URLSearchParams(window.location.search);
 console.log(queryParameters.get("consent"));
@@ -173,6 +174,29 @@ export default function App() {
                 </CookieConsent>
 
                 <RegisterCompanySummary />
+                <Footer />
+              </>
+            }
+          />
+
+<Route
+            path="/sign-in-mfa"
+            element={
+              <>
+                <GlobalStyle />
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                  <PhaseBanner level="POC">
+                    SSSP is currently a proof of concept{" "}
+                  </PhaseBanner>
+                </div>
+                <NavbarComponent />
+                <CookieConsent
+                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
+                >
+                  This website uses cookies to enhance the user experience.
+                </CookieConsent>
+
+                <MFA />
                 <Footer />
               </>
             }

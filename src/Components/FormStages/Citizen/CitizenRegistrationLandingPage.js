@@ -69,6 +69,7 @@ export const CitizenRegistrationLandingPage = () => {
           <li>Last Name</li>
           <li>Address</li>
           <li>Email Address</li>
+          <li>Phone number</li>
           <li>Password</li>
         </ul>
         <Button style={{ marginBottom: "15px" }} onClick={handleNextPage}>

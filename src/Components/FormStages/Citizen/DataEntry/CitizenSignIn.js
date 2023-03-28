@@ -12,25 +12,17 @@ export const CitizenSignIn = () => {
 
   const [data, setData] = useState("");
   const [errorMessageFlag, setErrorMessageFlag] = useState(false);
+  const [errorMessageTitle, setErrorMessageTitle] = useState("");
+  const [errorMessageContent, setErrorMessageContent] = useState("");
+  const [errorMessageCause, setErrorMessageCause] = useState("");
 
-  const submitForm = () => {
-    const requestOptions = {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify(data),
-    };
-    fetch("https://sssp-378808.nw.r.appspot.com/api/login", requestOptions)
-      .then((res) => res.json())
-      .then((data) => {
-        sessionStorage.setItem("Citizen_ID", data.citizen_id);
-        login(data.access_token);
-        navigate("/");
-      });  
-      
-      
-
+  const handleNextStage = () => {
+    navigate("/sign-in-mfa", {
+      state: {
+        email: data.email,
+        password: data.password
+      }})
+   
   };
 
   const updateData = (e) => {
@@ -49,16 +41,14 @@ export const CitizenSignIn = () => {
         {errorMessageFlag && (
           <>
             <ErrorSummary
-              description={
-                "A user already exists with the email address provided."
-              }
+              description={errorMessageContent}
               errors={[
                 {
                   targetName: "description",
-                  text: "Email address",
+                  text: errorMessageCause,
                 },
               ]}
-              heading={"User already exists"}
+              heading={errorMessageTitle}
             />
           </>
         )}
@@ -83,7 +73,7 @@ export const CitizenSignIn = () => {
               onChange={updateData}
               input={{
                 name: "password",
-                type: 'password',
+                type: "password",
                 required: true,
               }}
             >
@@ -94,7 +84,7 @@ export const CitizenSignIn = () => {
             <Form.Group>
               <Button
                 style={{ marginBottom: "15px" }}
-                onClick={handleSubmit(submitForm)}
+                onClick={handleSubmit(handleNextStage)}
               >
                 Sign In
               </Button>

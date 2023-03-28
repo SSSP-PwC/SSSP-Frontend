@@ -63,59 +63,58 @@ export const CitizenRegistrationSummary = () => {
       const result = await response.json();
       console.log(result);
       setLoading(false);
-        setAccountCreated(true);
+      setAccountCreated(true);
 
-        if (state.company.company_creation_journey === true) {
-          const url =
-            "https://sssp-378808.nw.r.appspot.com/api/link-citizen-to-company-checks";
+      if (state.company.company_creation_journey === true) {
+        const url =
+          "https://sssp-378808.nw.r.appspot.com/api/link-citizen-to-company-checks";
 
-          const data = {
-            email: email,
-            password: password,
-          };
+        const data = {
+          email: email,
+          password: password,
+        };
 
-          const options = {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          };
-          try {
-            const response = await fetch(url, options);
-            const result = await response.json();
-            setLoading(false);
-            if (state?.company === undefined) {
-              setAccountCreated(true);
-            } else if (result["citizen"]["message"] === "citizen exists") {
-              setSignUpMessage(true);
+        const options = {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        };
+        try {
+          const response = await fetch(url, options);
+          const result = await response.json();
+          setLoading(false);
+          if (state?.company === undefined) {
+            setAccountCreated(true);
+          } else if (result["citizen"]["message"] === "citizen exists") {
+            setSignUpMessage(true);
 
-              navigate("/register-company-summary", {
-                state: {
-                  company: {
-                    company_name: state.company.company_name,
-                    company_registration_number:
-                      state.company.company_registration_number,
-                    company_address: {
-                      address_line_1:
-                        state.company.company_address.address_line_1,
-                      address_line_2:
-                        state.company.company_address.address_line_2,
-                      postal_code: state.company.company_address.postal_code,
-                      country: state.company.company_address.country,
-                      locality: state.company.company_address.locality,
-                      region: state.company.company_address.region,
-                    },
+            navigate("/register-company-summary", {
+              state: {
+                company: {
+                  company_name: state.company.company_name,
+                  company_registration_number:
+                    state.company.company_registration_number,
+                  company_address: {
+                    address_line_1:
+                      state.company.company_address.address_line_1,
+                    address_line_2:
+                      state.company.company_address.address_line_2,
+                    postal_code: state.company.company_address.postal_code,
+                    country: state.company.company_address.country,
+                    locality: state.company.company_address.locality,
+                    region: state.company.company_address.region,
                   },
-                  contact_person: result,
                 },
-              });
-              console.log(result);
-            }
-          } catch (error) {
-            console.error(error);
+                contact_person: result,
+              },
+            });
+            console.log(result);
           }
-      
+        } catch (error) {
+          console.error(error);
+        }
       } else if (result["message"] === "User already exists") {
         setErrorMessageFlag(true);
       }
@@ -173,7 +172,7 @@ export const CitizenRegistrationSummary = () => {
         )}
         {accountCreated && (
           <>
-           <SignUpMessage />
+            <SignUpMessage />
           </>
         )}
         {accountCreated === false && (
@@ -282,7 +281,7 @@ export const CitizenRegistrationSummary = () => {
                 </Form.Group>
                 <Form.Group>
                   <Form.Label style={{ fontWeight: "bold", margin: "10px" }}>
-                   Phone number:
+                    Phone number:
                   </Form.Label>
                   <small>
                     {phone_number}
