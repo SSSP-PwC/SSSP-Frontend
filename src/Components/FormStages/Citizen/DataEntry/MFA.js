@@ -62,13 +62,12 @@ export const MFA = () => {
     )
       .then((res) => res.json())
       .then((data) => {
-        
         console.log(data);
-        if (data.message === "Authenticated") { 
-        sessionStorage.setItem("Citizen_ID", data.citizen_id);
-        login(data.access_token);
-        setLoading(false); 
-        navigate("/");
+        if (data.message === "Authenticated") {
+          sessionStorage.setItem("Citizen_ID", data.citizen_id);
+          login(data.access_token);
+          setLoading(false);
+          navigate("/");
         }
       })
       .catch((error) => {
@@ -111,7 +110,7 @@ export const MFA = () => {
 
   const verifyPhoneOTP = () => {
     setLoading(true);
-
+  
     const requestOptionsOne = {
       method: "GET",
       headers: {
@@ -123,42 +122,38 @@ export const MFA = () => {
       requestOptionsOne
     )
       .then((res) => res.json())
-      .then((data) => {
-        setLoading(false);
-        if (data.phone_number != undefined) {
-          setPhoneNumber(data.phone_number);
-        }
-      });
-    if (phoneNumber !== "") {
-      setLoading(true);
-      const requestOptionsTwo = {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-        },
-      };
+      .then((response) => {
+
   
-
-      fetch(
-        `https://sssp-378808.nw.r.appspot.com/api/verify-phone-otp/${data.verification_code}/+${phoneNumber}`,
-        requestOptionsTwo
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          setLoading(false);
-
-          if (data.message === "Phone number verified") {
-            login(data.access_token);
-            navigate("/");
-          }
-        })
-        .catch((error) => {
-          setLoading(false);
-
-          console.error(error);
-        });
-    }
+        const requestOptionsTwo = {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+          },
+        };
+        
+        fetch(
+          `https://sssp-378808.nw.r.appspot.com/api/verify-phone-otp/${data?.verification_code}/${response.phone_number}`,
+          requestOptionsTwo
+        )
+          .then((res) => res.json())
+          .then((response_two) => {
+            setLoading(false);
+  
+            if (response_two.message === "Phone number verified") {
+              login(response_two.access_token);
+              sessionStorage.setItem("Citizen_ID", response_two.citizen_id)
+              navigate("/");
+            }
+          })
+          .catch((error) => {
+            setLoading(false);
+  
+            console.error(error);
+          });
+      });
   };
+  
 
   const updateData = (e) => {
     console.log(data);
@@ -335,7 +330,6 @@ export const MFA = () => {
         .then((res) => res.json())
         .then((data) => {
           setLoading(false);
-
           if (
             data.message ===
             "Please enter the following secret into the google authenticator app"
@@ -343,6 +337,27 @@ export const MFA = () => {
             setRenderToken(true);
             setVerificationCodeField(true);
             setToken(data.token);
+          } else if (data.message === "MFA already configured") {
+            const requestOptionsTwo = {
+              method: "GET",
+              headers: {
+                "content-type": "application/json",
+              },
+            };
+            fetch(
+              `https://sssp-378808.nw.r.appspot.com/api/obtain-secret-key/${state.email}`,
+              requestOptionsTwo
+            )
+              .then((res) => res.json())
+              .then((data) => {
+                setLoading(false);
+                if (data.message === "token present") {
+                  setVerificationCodeField(true);
+                  setToken(data.token);
+                } else {
+                  alert("error occured");
+                }
+              });
           }
         })
         .catch((error) => {
@@ -360,27 +375,26 @@ export const MFA = () => {
 
   return (
     <div className="container">
-                  <LoadingBox loading={loading}>
-
-      <div
-        className="form"
-        style={{ marginTop: "20px", display: "inline-block" }}
-      >
-        {errorMessageFlag && (
-          <>
-            <ErrorSummary
-              description={errorMessageContent}
-              errors={[
-                {
-                  targetName: "description",
-                  text: errorMessageCause,
-                },
-              ]}
-              heading={errorMessageTitle}
-            />
-          </>
-        )}
-        <div style={{ display: "inline-block" }}>
+      <LoadingBox loading={loading}>
+        <div
+          className="form"
+          style={{ marginTop: "20px", display: "inline-block" }}
+        >
+          {errorMessageFlag && (
+            <>
+              <ErrorSummary
+                description={errorMessageContent}
+                errors={[
+                  {
+                    targetName: "description",
+                    text: errorMessageCause,
+                  },
+                ]}
+                heading={errorMessageTitle}
+              />
+            </>
+          )}
+          <div style={{ display: "inline-block" }}>
             <div>
               <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
                 Multi-factor authentication
@@ -391,7 +405,7 @@ export const MFA = () => {
               </p>
 
               <>
-                <Radio onClick={phoneVerification}>Phone</Radio>
+                <Radio onClick={phoneVerification}>SMS</Radio>
                 <Radio onClick={emailVerification}>Email</Radio>
                 <Radio onClick={googleAuthenticator}>
                   Google Authenticator
@@ -400,8 +414,7 @@ export const MFA = () => {
                 {verificationCode === true && renderToken === false && (
                   <>
                     <p style={{ color: "#505a5f" }}>
-                      A verification code has been sent to the phone number
-                      linked to your account.
+                      A verification code has been sent to the communication channel of preference.
                     </p>
                     <InputField
                       onChange={updateData}
@@ -477,9 +490,9 @@ export const MFA = () => {
 
               <br></br>
             </div>{" "}
-        </div>
-      </div>          </LoadingBox>
-
+          </div>
+        </div>{" "}
+      </LoadingBox>
     </div>
   );
 };
