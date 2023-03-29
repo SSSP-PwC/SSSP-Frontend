@@ -2,25 +2,28 @@ import React, { useState } from "react";
 import { Form, Alert } from "react-bootstrap";
 import { MainHeading } from "../../../../globalStyles";
 import { useForm } from "react-hook-form";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { login } from "../../../Auth/auth";
-import { Radio, ErrorSummary, InputField, Button } from "govuk-react";
+import { Radio, ErrorSummary, InputField, Button, Label } from "govuk-react";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 
 export const MFA = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
+  const [text, setText] = useState("Copy this text to clipboard");
+  const [isCopied, setIsCopied] = useState(false);
 
   const [errorMessageFlag, setErrorMessageFlag] = useState(false);
   const [errorMessageTitle, setErrorMessageTitle] = useState("");
   const [errorMessageContent, setErrorMessageContent] = useState("");
   const [errorMessageCause, setErrorMessageCause] = useState("");
   const [verificationCode, setVerificationCodeField] = useState(false);
-  const [verificationType, setVerificationType] = useState("");
-  const [onClickHandler, setOnClickHandler] = useState(null);
+  const [verificationType, setVerificationType] = useState("google");
+  const [renderToken, setRenderToken] = useState(false);
+  const [token, setToken] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
 
-  const [data, setData] = useState();
-  console.log(data?.verification_code.length);
-  console.log(onClickHandler);
+  const [data, setData] = useState({});
 
   const handleVerifyClick = () => {
     verify(verificationType);
@@ -29,36 +32,59 @@ export const MFA = () => {
   const verify = (mfa) => {
     if (mfa === "phone") {
       verifyPhoneOTP();
-    } else if (mfa === "email" && data?.verification_code.length === 6) {
+    } else if (mfa === "email") {
       verifyEmailOTP();
+    } else if (mfa === "google") {
+      verifyGoogleKey();
     }
   };
 
+  const verifyGoogleKey = () => {
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+    };
+    fetch(
+      `https://sssp-378808.nw.r.appspot.com/api/google-auth-verify/${token}/${data?.verification_code}`,
+      requestOptions
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        sessionStorage.setItem("Citizen_ID", data.citizen_id);
+        login(data.access_token);
+        //navigate("/");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   const verifyEmailOTP = () => {
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+    };
     if (data?.verification_code.length === 6) {
-      const requestOptions = {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-        },
-      };
       fetch(
-        `https://sssp-378808.nw.r.appspot.com/api/verify-email-otp/${state.email}/${data.verification_code}`,
+        `https://sssp-378808.nw.r.appspot.com/api/verify-email-otp/${state.email}/${data?.verification_code}`,
         requestOptions
       )
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
           if (data.message === "email verified") {
             login(data.access_token);
             navigate("/");
+          } else {
           }
         })
         .catch((error) => {
           console.error(error);
         });
-    } else {
-      alert(data?.verification_code);
     }
   };
 
@@ -70,19 +96,31 @@ export const MFA = () => {
       },
     };
     fetch(
-      `https://sssp-378808.nw.r.appspot.com/api/verify-phone-otp/${state.phone_number}/${data.otp}`,
+      `https://sssp-378808.nw.r.appspot.com/api/get-phone-number/${state.email}`,
       requestOptions
     )
       .then((res) => res.json())
       .then((data) => {
-        if (data.message === "phone number verified") {
-          login(data.access_token);
-          navigate("/");
+        if (data.phone_number != undefined) {
+          setPhoneNumber(data.phone_number);
         }
-      })
-      .catch((error) => {
-        console.error(error);
       });
+    if (phoneNumber !== "") {
+      fetch(
+        `https://sssp-378808.nw.r.appspot.com/api/verify-phone-otp/${state.phone_number}/${data.verification_code}`,
+        requestOptions
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.message === "phone number verified") {
+            login(data.access_token);
+            navigate("/");
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
   };
 
   const updateData = (e) => {
@@ -201,6 +239,53 @@ export const MFA = () => {
         });
     }
   };
+  const googleAuthenticator = () => {
+    setVerificationType("google");
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        email: state.email,
+        password: state.password,
+        mfa_preference: "google",
+      }),
+    };
+    if (state.email === "") {
+      setErrorMessageTitle("Email address not provided");
+      setErrorMessageContent("Please enter your email address.");
+      setErrorMessageCause("Email address");
+      setErrorMessageFlag(true);
+    } else if (state.password === "") {
+      setErrorMessageTitle("Password not provided");
+      setErrorMessageContent("Please enter your password.");
+      setErrorMessageCause("Password");
+      setErrorMessageFlag(true);
+    } else {
+      fetch("https://sssp-378808.nw.r.appspot.com/api/login", requestOptions)
+        .then((res) => res.json())
+        .then((data) => {
+          if (
+            data.message ===
+            "Please enter the following secret into the google authenticator app"
+          ) {
+            setRenderToken(true);
+            setVerificationCodeField(true);
+            setToken(data.token);
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+          setErrorMessageTitle("Error");
+          setErrorMessageContent(
+            "An unexpected error occurred. Please try again later."
+          );
+          setErrorMessageCause("System error");
+          setErrorMessageFlag(true);
+        });
+    }
+  };
 
   return (
     <div className="container">
@@ -232,34 +317,88 @@ export const MFA = () => {
               What is your preferred method of authentication?
             </p>
 
-            <Form.Group>
-              <Form>
-                <>
-                  <Radio onClick={phoneVerification}>Phone</Radio>
-                  <Radio onClick={emailVerification}>Email</Radio>
+            <>
+              <Radio onClick={phoneVerification}>Phone</Radio>
+              <Radio onClick={emailVerification}>Email</Radio>
+              <Radio onClick={googleAuthenticator}>Google Authenticator</Radio>
 
-                  {verificationCode === true && (
-                    <>
-                      <p style={{ color: "#505a5f" }}>
-                        A verification code has been sent to the phone number
-                        linked to your account.
-                      </p>
-                      <InputField
-                        onChange={updateData}
-                        input={{
-                          name: "verification_code",
-                          required: true,
-                        }}
-                      >
-                        Verification code
-                      </InputField>
-                      <br></br>
-                      <Button onClick={handleVerifyClick}>Verify</Button>
-                    </>
-                  )}
+              {verificationCode === true && renderToken === false && (
+                <>
+                  <p style={{ color: "#505a5f" }}>
+                    A verification code has been sent to the phone number linked
+                    to your account.
+                  </p>
+                  <InputField
+                    onChange={updateData}
+                    input={{
+                      name: "verification_code",
+                      required: true,
+                    }}
+                  >
+                    Verification code
+                  </InputField>
+                  <br></br>
+                  <Button onClick={handleVerifyClick}>Verify</Button>
                 </>
-              </Form>
-            </Form.Group>
+              )}
+              {verificationCode === true && renderToken === true && (
+                <>
+                  <br></br>
+                  <p style={{ color: "#505a5f" }}>
+                    Please enter the following secret key into google
+                    authenticator.
+                  </p>
+
+                  <Label>
+                    Secret key:
+                    <Label style={{ fontWeight: "bold" }}>{token}</Label>
+                  </Label>
+                  {isCopied ? (
+                    <p className="success-msg">Text copied to clipboard</p>
+                  ) : null}
+
+                  <CopyToClipboard
+                    text={token}
+                    onCopy={() => {
+                      setIsCopied(true);
+                      setTimeout(() => {
+                        setIsCopied(false);
+                      }, 1000);
+                    }}
+                  >
+                    <Button className="btn">COPY</Button>
+                  </CopyToClipboard>
+                  <br></br>
+                  <p style={{ color: "#0B0C0C" }}>Guidance:</p>
+                  <ul>
+                    <li>
+                      Download{" "}
+                      <a href="https://googleauthenticator.net/">
+                        Google Authenticator
+                      </a>{" "}
+                      on your mobile device
+                    </li>
+                    <li>Create a new account with the secret key</li>
+                    <li>Provide the required details</li>
+                    <li>Select time based authentication</li>
+                    <li>
+                      Submit the generated key from the app into the
+                      verification code field
+                    </li>
+                  </ul>
+                  <InputField
+                    onChange={updateData}
+                    input={{
+                      name: "verification_code",
+                    }}
+                  >
+                    Verification code
+                  </InputField>
+                  <br></br>
+                  <Button onClick={handleVerifyClick}>Verify</Button>
+                </>
+              )}
+            </>
 
             <br></br>
           </div>
