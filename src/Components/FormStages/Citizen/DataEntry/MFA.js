@@ -4,7 +4,14 @@ import { MainHeading } from "../../../../globalStyles";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import { login } from "../../../Auth/auth";
-import { Radio, ErrorSummary, InputField, Button, Label } from "govuk-react";
+import {
+  Radio,
+  ErrorSummary,
+  InputField,
+  Button,
+  Label,
+  LoadingBox,
+} from "govuk-react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 
 export const MFA = () => {
@@ -22,6 +29,7 @@ export const MFA = () => {
   const [renderToken, setRenderToken] = useState(false);
   const [token, setToken] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const [data, setData] = useState({});
 
@@ -90,7 +98,7 @@ export const MFA = () => {
 
   const verifyPhoneOTP = () => {
     const requestOptions = {
-      method: "POST",
+      method: "GET",
       headers: {
         "content-type": "application/json",
       },
@@ -308,100 +316,104 @@ export const MFA = () => {
           </>
         )}
         <div style={{ display: "inline-block" }}>
-          <div>
-            <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
-              Multi-factor authentication
-            </MainHeading>
+          <LoadingBox loading={loading}>
+            <div>
+              <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
+                Multi-factor authentication
+              </MainHeading>
 
-            <p style={{ color: "#0B0C0C" }}>
-              What is your preferred method of authentication?
-            </p>
+              <p style={{ color: "#0B0C0C" }}>
+                What is your preferred method of authentication?
+              </p>
 
-            <>
-              <Radio onClick={phoneVerification}>Phone</Radio>
-              <Radio onClick={emailVerification}>Email</Radio>
-              <Radio onClick={googleAuthenticator}>Google Authenticator</Radio>
+              <>
+                <Radio onClick={phoneVerification}>Phone</Radio>
+                <Radio onClick={emailVerification}>Email</Radio>
+                <Radio onClick={googleAuthenticator}>
+                  Google Authenticator
+                </Radio>
 
-              {verificationCode === true && renderToken === false && (
-                <>
-                  <p style={{ color: "#505a5f" }}>
-                    A verification code has been sent to the phone number linked
-                    to your account.
-                  </p>
-                  <InputField
-                    onChange={updateData}
-                    input={{
-                      name: "verification_code",
-                      required: true,
-                    }}
-                  >
-                    Verification code
-                  </InputField>
-                  <br></br>
-                  <Button onClick={handleVerifyClick}>Verify</Button>
-                </>
-              )}
-              {verificationCode === true && renderToken === true && (
-                <>
-                  <br></br>
-                  <p style={{ color: "#505a5f" }}>
-                    Please enter the following secret key into google
-                    authenticator.
-                  </p>
+                {verificationCode === true && renderToken === false && (
+                  <>
+                    <p style={{ color: "#505a5f" }}>
+                      A verification code has been sent to the phone number
+                      linked to your account.
+                    </p>
+                    <InputField
+                      onChange={updateData}
+                      input={{
+                        name: "verification_code",
+                        required: true,
+                      }}
+                    >
+                      Verification code
+                    </InputField>
+                    <br></br>
+                    <Button onClick={handleVerifyClick}>Verify</Button>
+                  </>
+                )}
+                {verificationCode === true && renderToken === true && (
+                  <>
+                    <br></br>
+                    <p style={{ color: "#505a5f" }}>
+                      Please enter the following secret key into google
+                      authenticator.
+                    </p>
 
-                  <Label>
-                    Secret key:
-                    <Label style={{ fontWeight: "bold" }}>{token}</Label>
-                  </Label>
-                  {isCopied ? (
-                    <p className="success-msg">Text copied to clipboard</p>
-                  ) : null}
+                    <Label>
+                      Secret key:
+                      <Label style={{ fontWeight: "bold" }}>{token}</Label>
+                    </Label>
+                    {isCopied ? (
+                      <p className="success-msg">Text copied to clipboard</p>
+                    ) : null}
 
-                  <CopyToClipboard
-                    text={token}
-                    onCopy={() => {
-                      setIsCopied(true);
-                      setTimeout(() => {
-                        setIsCopied(false);
-                      }, 1000);
-                    }}
-                  >
-                    <Button className="btn">COPY</Button>
-                  </CopyToClipboard>
-                  <br></br>
-                  <p style={{ color: "#0B0C0C" }}>Guidance:</p>
-                  <ul>
-                    <li>
-                      Download{" "}
-                      <a href="https://googleauthenticator.net/">
-                        Google Authenticator
-                      </a>{" "}
-                      on your mobile device
-                    </li>
-                    <li>Create a new account with the secret key</li>
-                    <li>Provide the required details</li>
-                    <li>Select time based authentication</li>
-                    <li>
-                      Submit the generated key from the app into the
-                      verification code field
-                    </li>
-                  </ul>
-                  <InputField
-                    onChange={updateData}
-                    input={{
-                      name: "verification_code",
-                    }}
-                  >
-                    Verification code
-                  </InputField>
-                  <br></br>
-                  <Button onClick={handleVerifyClick}>Verify</Button>
-                </>
-              )}
-            </>
+                    <CopyToClipboard
+                      text={token}
+                      onCopy={() => {
+                        setIsCopied(true);
+                        setTimeout(() => {
+                          setIsCopied(false);
+                        }, 1000);
+                      }}
+                    >
+                      <Button className="btn">COPY</Button>
+                    </CopyToClipboard>
+                    <br></br>
+                    <p style={{ color: "#0B0C0C" }}>Guidance:</p>
+                    <ul>
+                      <li>
+                        Download{" "}
+                        <a href="https://googleauthenticator.net/">
+                          Google Authenticator
+                        </a>{" "}
+                        on your mobile device
+                      </li>
+                      <li>Create a new account with the secret key</li>
+                      <li>Provide the required details</li>
+                      <li>Select time based authentication</li>
+                      <li>
+                        Submit the generated key from the app into the
+                        verification code field
+                      </li>
+                    </ul>
+                    <InputField
+                      onChange={updateData}
+                      input={{
+                        name: "verification_code",
+                      }}
+                    >
+                      Verification code
+                    </InputField>
+                    <br></br>
+                    <Button onClick={handleVerifyClick}>Verify</Button>
+                  </>
+                )}
+              </>
 
-            <br></br>
-          </div>
+              <br></br>
+            </div>{" "}
+          </LoadingBox>
         </div>
       </div>
     </div>
