@@ -57,17 +57,17 @@ export const MFA = () => {
     };
 
     fetch(
-      `https://sssp-378808.nw.r.appspot.com/api/google-auth-verify/${token}/${data?.verification_code}`,
+      `https://sssp-378808.nw.r.appspot.com/api/google-auth-verify/${state.email}/${token}/${data?.verification_code}`,
       requestOptions
     )
       .then((res) => res.json())
       .then((data) => {
         
         console.log(data);
-        if (data.message === "success") { 
+        if (data.message === "Authenticated") { 
         sessionStorage.setItem("Citizen_ID", data.citizen_id);
         login(data.access_token);
-        setLoading(false);
+        setLoading(false); 
         navigate("/");
         }
       })
@@ -112,7 +112,7 @@ export const MFA = () => {
   const verifyPhoneOTP = () => {
     setLoading(true);
 
-    const requestOptions = {
+    const requestOptionsOne = {
       method: "GET",
       headers: {
         "content-type": "application/json",
@@ -120,7 +120,7 @@ export const MFA = () => {
     };
     fetch(
       `https://sssp-378808.nw.r.appspot.com/api/get-phone-number/${state.email}`,
-      requestOptions
+      requestOptionsOne
     )
       .then((res) => res.json())
       .then((data) => {
@@ -131,10 +131,17 @@ export const MFA = () => {
       });
     if (phoneNumber !== "") {
       setLoading(true);
+      const requestOptionsTwo = {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+      };
+  
 
       fetch(
-        `https://sssp-378808.nw.r.appspot.com/api/verify-phone-otp/${state.phone_number}/${data.verification_code}`,
-        requestOptions
+        `https://sssp-378808.nw.r.appspot.com/api/verify-phone-otp/${data.verification_code}/+${phoneNumber}`,
+        requestOptionsTwo
       )
         .then((res) => res.json())
         .then((data) => {
