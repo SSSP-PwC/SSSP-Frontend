@@ -26,7 +26,6 @@ export const CitizenSignIn = () => {
   };
 
   const updateData = (e) => {
-    console.log(data);
     setData({
       ...data,
       [e.target.name]: e.target.value,

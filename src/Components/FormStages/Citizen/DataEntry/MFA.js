@@ -15,34 +15,51 @@ export const MFA = () => {
   const [errorMessageContent, setErrorMessageContent] = useState("");
   const [errorMessageCause, setErrorMessageCause] = useState("");
   const [verificationCode, setVerificationCodeField] = useState(false);
-  const [verificationType, setVerificationType] = useState("")
+  const [verificationType, setVerificationType] = useState("");
+  const [onClickHandler, setOnClickHandler] = useState(null);
+
   const [data, setData] = useState();
-  console.log(data);
+  console.log(data?.verification_code.length);
+  console.log(onClickHandler);
+
+  const handleVerifyClick = () => {
+    verify(verificationType);
+  };
+
+  const verify = (mfa) => {
+    if (mfa === "phone") {
+      verifyPhoneOTP();
+    } else if (mfa === "email" && data?.verification_code.length === 6) {
+      verifyEmailOTP();
+    }
+  };
 
   const verifyEmailOTP = () => {
-    const requestOptions = {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        email: state.email,
-        otp: data.verification_code,
-      }),
-    };
-    fetch(
-      `https://sssp-378808.nw.r.appspot.com/api/very-email-otp/${state.email}/${data.verification_code}`,
-      requestOptions
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.message === "email verified") {
-          navigate("/");
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    if (data?.verification_code.length === 6) {
+      const requestOptions = {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+      };
+      fetch(
+        `https://sssp-378808.nw.r.appspot.com/api/verify-email-otp/${state.email}/${data.verification_code}`,
+        requestOptions
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          if (data.message === "email verified") {
+            login(data.access_token);
+            navigate("/");
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } else {
+      alert(data?.verification_code);
+    }
   };
 
   const verifyPhoneOTP = () => {
@@ -51,18 +68,15 @@ export const MFA = () => {
       headers: {
         "content-type": "application/json",
       },
-      body: JSON.stringify({
-        email: state.email,
-        otp: data.otp,
-      }),
     };
     fetch(
-      `https://sssp-378808.nw.r.appspot.com/api/verify-phone-otp/${state.phone_number}/${data.verification_code}`,
+      `https://sssp-378808.nw.r.appspot.com/api/verify-phone-otp/${state.phone_number}/${data.otp}`,
       requestOptions
     )
       .then((res) => res.json())
       .then((data) => {
         if (data.message === "phone number verified") {
+          login(data.access_token);
           navigate("/");
         }
       })
@@ -80,9 +94,7 @@ export const MFA = () => {
   };
 
   const phoneVerification = () => {
-    setVerificationCodeField(true);
-    setVerificationType("phone")
-
+    setVerificationType("phone");
     const requestOptions = {
       method: "POST",
       headers: {
@@ -110,10 +122,6 @@ export const MFA = () => {
           "Please enter the verification code sent to your phone number"
         ) {
           setVerificationCodeField(true);
-        } else if (data.access_token) {
-          sessionStorage.setItem("Citizen_ID", data.citizen_id);
-          login(data.access_token);
-          navigate("/");
         } else {
           setErrorMessageTitle("Invalid email or password");
           setErrorMessageContent(
@@ -135,8 +143,7 @@ export const MFA = () => {
   };
 
   const emailVerification = () => {
-    setVerificationCodeField(true);
-    setVerificationType("email")
+    setVerificationType("email");
     const requestOptions = {
       method: "POST",
       headers: {
@@ -179,7 +186,7 @@ export const MFA = () => {
             );
             setErrorMessageCause("Email confirmation");
             setErrorMessageFlag(true);
-          } else {
+          } else if (data.message === "OTP sent") {
             setVerificationCodeField(true);
           }
         })
@@ -229,49 +236,27 @@ export const MFA = () => {
               <Form>
                 <>
                   <Radio onClick={phoneVerification}>Phone</Radio>
-                  {verificationCode === true &&
-                    verificationType ===
-                      "phone" && (
-                        <>
-                          <p style={{ color: "#505a5f" }}>
-                            A verification code has been sent to the email
-                            linked to your account.
-                          </p>
-                          <InputField
-                            onChange={updateData}
-                            input={{
-                              name: "verification_code",
-                              required: true,
-                            }}
-                          >
-                            Verification code
-                          </InputField>
-                          <br></br>
-                          <Button onClick={verifyPhoneOTP}>Verify</Button>
-                        </>
-                      )}
                   <Radio onClick={emailVerification}>Email</Radio>
-                  {verificationCode === true &&
-                    verificationType ===
-                      "email" && (
-                        <>
-                          <p style={{ color: "#505a5f" }}>
-                            A verification code has been sent to the email
-                            linked to your account.
-                          </p>
-                          <InputField
-                            onChange={updateData}
-                            input={{
-                              name: "verification_code",
-                              required: true,
-                            }}
-                          >
-                            Verification code
-                          </InputField>
-                          <br></br>
-                          <Button onClick={verifyEmailOTP}>Verify</Button>
-                        </>
-                      )}
+
+                  {verificationCode === true && (
+                    <>
+                      <p style={{ color: "#505a5f" }}>
+                        A verification code has been sent to the phone number
+                        linked to your account.
+                      </p>
+                      <InputField
+                        onChange={updateData}
+                        input={{
+                          name: "verification_code",
+                          required: true,
+                        }}
+                      >
+                        Verification code
+                      </InputField>
+                      <br></br>
+                      <Button onClick={handleVerifyClick}>Verify</Button>
+                    </>
+                  )}
                 </>
               </Form>
             </Form.Group>
