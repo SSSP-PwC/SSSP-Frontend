@@ -147,7 +147,7 @@ export const MFA = () => {
         .then((data) => {
           setLoading(false);
 
-          if (data.message === "phone number verified") {
+          if (data.message === "Phone number verified") {
             login(data.access_token);
             navigate("/");
           }
