@@ -48,35 +48,45 @@ export const MFA = () => {
   };
 
   const verifyGoogleKey = () => {
+    setLoading(true);
     const requestOptions = {
       method: "POST",
       headers: {
         "content-type": "application/json",
       },
     };
+
     fetch(
       `https://sssp-378808.nw.r.appspot.com/api/google-auth-verify/${token}/${data?.verification_code}`,
       requestOptions
     )
       .then((res) => res.json())
       .then((data) => {
+        
         console.log(data);
+        if (data.message === "success") { 
         sessionStorage.setItem("Citizen_ID", data.citizen_id);
         login(data.access_token);
-        //navigate("/");
+        setLoading(false);
+        navigate("/");
+        }
       })
       .catch((error) => {
+        setLoading(false);
         console.error(error);
       });
   };
 
   const verifyEmailOTP = () => {
+    setLoading(true);
+
     const requestOptions = {
       method: "POST",
       headers: {
         "content-type": "application/json",
       },
     };
+
     if (data?.verification_code.length === 6) {
       fetch(
         `https://sssp-378808.nw.r.appspot.com/api/verify-email-otp/${state.email}/${data?.verification_code}`,
@@ -84,10 +94,13 @@ export const MFA = () => {
       )
         .then((res) => res.json())
         .then((data) => {
+          setLoading(false);
+
           if (data.message === "email verified") {
             login(data.access_token);
             navigate("/");
           } else {
+            setLoading(false);
           }
         })
         .catch((error) => {
@@ -97,6 +110,8 @@ export const MFA = () => {
   };
 
   const verifyPhoneOTP = () => {
+    setLoading(true);
+
     const requestOptions = {
       method: "GET",
       headers: {
@@ -109,23 +124,30 @@ export const MFA = () => {
     )
       .then((res) => res.json())
       .then((data) => {
+        setLoading(false);
         if (data.phone_number != undefined) {
           setPhoneNumber(data.phone_number);
         }
       });
     if (phoneNumber !== "") {
+      setLoading(true);
+
       fetch(
         `https://sssp-378808.nw.r.appspot.com/api/verify-phone-otp/${state.phone_number}/${data.verification_code}`,
         requestOptions
       )
         .then((res) => res.json())
         .then((data) => {
+          setLoading(false);
+
           if (data.message === "phone number verified") {
             login(data.access_token);
             navigate("/");
           }
         })
         .catch((error) => {
+          setLoading(false);
+
           console.error(error);
         });
     }
@@ -140,6 +162,7 @@ export const MFA = () => {
   };
 
   const phoneVerification = () => {
+    setLoading(true);
     setVerificationType("phone");
     const requestOptions = {
       method: "POST",
@@ -155,10 +178,14 @@ export const MFA = () => {
     fetch(`https://sssp-378808.nw.r.appspot.com/api/login`, requestOptions)
       .then((res) => res.json())
       .then((data) => {
+        setLoading(false);
+
         if (
           data.message ===
           "Email not confirmed. Please check your email for instructions."
         ) {
+          setLoading(false);
+
           setErrorMessageTitle("Email not confirmed");
           setErrorMessageContent("Please check your email for instructions.");
           setErrorMessageCause("Email confirmation");
@@ -169,6 +196,8 @@ export const MFA = () => {
         ) {
           setVerificationCodeField(true);
         } else {
+          setLoading(false);
+
           setErrorMessageTitle("Invalid email or password");
           setErrorMessageContent(
             "Please enter a valid email address and password."
@@ -178,6 +207,8 @@ export const MFA = () => {
         }
       })
       .catch((error) => {
+        setLoading(false);
+
         console.error(error);
         setErrorMessageTitle("Error");
         setErrorMessageContent(
@@ -189,6 +220,8 @@ export const MFA = () => {
   };
 
   const emailVerification = () => {
+    setLoading(true);
+
     setVerificationType("email");
     const requestOptions = {
       method: "POST",
@@ -202,11 +235,15 @@ export const MFA = () => {
       }),
     };
     if (state.email === "") {
+      setLoading(false);
+
       setErrorMessageTitle("Email address not provided");
       setErrorMessageContent("Please enter your email address.");
       setErrorMessageCause("Email address");
       setErrorMessageFlag(true);
     } else if (state.password === "") {
+      setLoading(false);
+
       setErrorMessageTitle("Password not provided");
       setErrorMessageContent("Please enter your password.");
       setErrorMessageCause("Password");
@@ -215,7 +252,11 @@ export const MFA = () => {
       fetch("https://sssp-378808.nw.r.appspot.com/api/login", requestOptions)
         .then((res) => res.json())
         .then((data) => {
+          setLoading(false);
+
           if (data.message === "Invalid email or password") {
+            setLoading(false);
+
             setErrorMessageTitle("Invalid email or password");
             setErrorMessageContent(
               "The email or password you entered is incorrect. Please try again."
@@ -226,6 +267,8 @@ export const MFA = () => {
             data.message ===
             "Email not confirmed. Please check your email for instructions."
           ) {
+            setLoading(false);
+
             setErrorMessageTitle("Email not confirmed");
             setErrorMessageContent(
               "Please check your email for instructions to confirm your email address."
@@ -233,10 +276,14 @@ export const MFA = () => {
             setErrorMessageCause("Email confirmation");
             setErrorMessageFlag(true);
           } else if (data.message === "OTP sent") {
+            setLoading(false);
+
             setVerificationCodeField(true);
           }
         })
         .catch((error) => {
+          setLoading(false);
+
           console.error(error);
           setErrorMessageTitle("Error");
           setErrorMessageContent(
@@ -248,6 +295,8 @@ export const MFA = () => {
     }
   };
   const googleAuthenticator = () => {
+    setLoading(true);
+
     setVerificationType("google");
     const requestOptions = {
       method: "POST",
@@ -261,11 +310,15 @@ export const MFA = () => {
       }),
     };
     if (state.email === "") {
+      setLoading(false);
+
       setErrorMessageTitle("Email address not provided");
       setErrorMessageContent("Please enter your email address.");
       setErrorMessageCause("Email address");
       setErrorMessageFlag(true);
     } else if (state.password === "") {
+      setLoading(false);
+
       setErrorMessageTitle("Password not provided");
       setErrorMessageContent("Please enter your password.");
       setErrorMessageCause("Password");
@@ -274,6 +327,8 @@ export const MFA = () => {
       fetch("https://sssp-378808.nw.r.appspot.com/api/login", requestOptions)
         .then((res) => res.json())
         .then((data) => {
+          setLoading(false);
+
           if (
             data.message ===
             "Please enter the following secret into the google authenticator app"
@@ -284,6 +339,7 @@ export const MFA = () => {
           }
         })
         .catch((error) => {
+          setLoading(false);
           console.error(error);
           setErrorMessageTitle("Error");
           setErrorMessageContent(
@@ -297,6 +353,8 @@ export const MFA = () => {
 
   return (
     <div className="container">
+                  <LoadingBox loading={loading}>
+
       <div
         className="form"
         style={{ marginTop: "20px", display: "inline-block" }}
@@ -316,7 +374,6 @@ export const MFA = () => {
           </>
         )}
         <div style={{ display: "inline-block" }}>
-          <LoadingBox loading={loading}>
             <div>
               <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
                 Multi-factor authentication
@@ -413,9 +470,9 @@ export const MFA = () => {
 
               <br></br>
             </div>{" "}
-          </LoadingBox>
         </div>
-      </div>
+      </div>          </LoadingBox>
+
     </div>
   );
 };
