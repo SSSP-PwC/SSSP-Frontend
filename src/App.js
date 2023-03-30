@@ -672,7 +672,7 @@ export default function App() {
             }
           />
           <Route
-            path="/List-Schemes"
+            path="/List-Applications"
             element={
               <>
                 <GlobalStyle />
@@ -1213,7 +1213,7 @@ export default function App() {
             }
           />
           <Route
-            path="/List-Schemes"
+            path="/List-Applications"
             element={
               <>
                 <GlobalStyle />

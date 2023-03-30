@@ -69,11 +69,11 @@ export const ListPortals = () => {
           <div>
             <ListSchemesBreadcrumb />{" "}
             <div style={{ float: "right" }}>
-              <Button onClick={handleClick}>Register your scheme</Button>
+              <Button onClick={handleClick}>Create a web application</Button>
             </div>
             <br></br>
             <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
-              Schemes
+              Applications
             </MainHeading>
             <Divider style={{ background: "black" }}></Divider>
             <br></br>
@@ -87,14 +87,14 @@ export const ListPortals = () => {
             <Table>
               <thead style={{ textAlign: "center" }}>
                 <tr>
-                  <th style={{ textAlign: "center" }}>Scheme</th>
+                  <th style={{ textAlign: "center" }}>Application List</th>
                 </tr>
               </thead>
               <tbody>
                 {(search ? filteredData : data).map((portal) => (
                   <tr key={portal.id} onClick={() => handleRowClick(portal)}>
                     <Link>
-                      <td style={{fontSize: "24px"}}>{portal.name}</td>
+                      <td style={{ fontSize: "24px" }}>{portal.name}</td>
                     </Link>
                   </tr>
                 ))}

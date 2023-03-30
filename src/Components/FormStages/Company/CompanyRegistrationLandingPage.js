@@ -1,14 +1,19 @@
 import React from "react";
 import { MainHeading } from "../../../globalStyles";
 import { Divider } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import { Button, InputField, ErrorSummary } from "govuk-react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Button} from "govuk-react";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 
 export const CompanyRegistrationLandingPage = () => {
   const navigate = useNavigate();
+  const { state } = useLocation();
+  console.log(state)
   const handleNextPage = () => {
-    navigate("/register-company-details");
+    navigate("/register-company-details", {
+        portal_creation_flag: state.portal_creation_flag
+      
+    });
   };
   const RegistrationFormBreadcrumb = () => {
     return (

@@ -24,16 +24,17 @@ export const AssociateContact = () => {
     navigate("/register-company-link-citizen", {
       state: {
         company: {
-          company_name: state.company_name,
-          company_registration_number: state.company_registration_number,
+          company_name: state.company.company_name,
+          company_registration_number: state.company.company_registration_number,
           company_address: {
-            address_line_1: state.company_address.address_line_1,
-            address_line_2: state.company_address.address_line_2,
-            postal_code: state.company_address.postal_code,
-            country: state.company_address.country,
-            locality: state.company_address.locality,
-            region: state.company_address.region,
+            address_line_1: state.company.company_address.address_line_1,
+            address_line_2: state.company.company_address.address_line_2,
+            postal_code: state.company.company_address.postal_code,
+            country: state.company.company_address.country,
+            locality: state.company.company_address.locality,
+            region: state.company.company_address.region,
           },
+          portal_creation_flag: state.portal_creation_flag,
           company_creation_journey: true,
         },
       },
@@ -54,6 +55,7 @@ export const AssociateContact = () => {
             locality: state.company_address.locality,
             region: state.company_address.region,
           },
+          portal_creation_flag: state.portal_creation_flag,
           company_creation_journey: true,
         },
       },

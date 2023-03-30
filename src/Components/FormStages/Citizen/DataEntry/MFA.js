@@ -97,6 +97,7 @@ export const MFA = () => {
 
           if (data.message === "email verified") {
             login(data.access_token);
+            sessionStorage.setItem("Citizen_ID", data.citizen_id)
             navigate("/");
           } else {
             setLoading(false);

@@ -1,5 +1,14 @@
 import { Divider } from "@mui/material";
-import { Button, ErrorText, InputField, Select } from "govuk-react";
+import {
+  Button,
+  ErrorText,
+  InputField,
+  Label,
+  Radio,
+  Select,
+  ErrorSummary,
+  LoadingBox,
+} from "govuk-react";
 import React, { useEffect, useState } from "react";
 import { MainHeading } from "../../../globalStyles";
 import { useNavigate } from "react-router-dom";
@@ -11,16 +20,46 @@ const RegisterPortal = () => {
   const [options, setOptions] = useState([]);
   const [selectedOption, setSelectedOption] = useState(0 + 1);
   const [portalExists, setPortalExists] = useState(false);
-
+  const [companyExists, setCompanyExists] = useState();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   useEffect(() => {
     fetch(`https://sssp-378808.nw.r.appspot.com/api/citizen/${id}/companies`)
       .then((response) => response.json())
-      .then((data) => setOptions(data));
+      .then((data) => {
+        if (data.message.includes("No companies found for this citizen.")) {
+          setCompanyExists(false);
+        } else {
+          setCompanyExists(true);
+          setOptions(data);
+        }
+      });
   }, [id]);
 
   const navigate = useNavigate();
   const hasWhiteSpace = (s) => {
     return /\s/.test(s);
+  };
+  const handleClick = (value) => {
+    if (value === "Yes") {
+      navigate("/register-company-landing", {
+        state: {
+          company: {
+            portal_creation_flag: true,
+          },
+        },
+      });
+    } else if (value === "No") {
+      setError(true);
+      setTimeout(() => {
+        setLoading(true);
+        setTimeout(() => {
+          setError(false);
+          setLoading(false);
+          navigate("/List-Applications");
+        }, 1000);
+      }, 3000);
+    }
   };
 
   const createPortal = async () => {
@@ -28,7 +67,6 @@ const RegisterPortal = () => {
       alert("URL cannot be processed");
     } else {
       try {
-        // Check if endpoint already exists
         const response = await fetch(
           `https://sssp-378808.nw.r.appspot.com/api/portals/${pageUrl}`
         );
@@ -44,21 +82,22 @@ const RegisterPortal = () => {
           setPortalExists(true);
           return;
         }
-
-        // Create new portal
       } catch (error) {
         console.log(error);
-        const response2 = await fetch("https://sssp-378808.nw.r.appspot.com/api/portal", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: pageTitle,
-            endpoint: pageUrl,
-            company_id: selectedOption,
-          }),
-        });
+        const response2 = await fetch(
+          "https://sssp-378808.nw.r.appspot.com/api/portal",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name: pageTitle,
+              endpoint: pageUrl,
+              company_id: selectedOption,
+            }),
+          }
+        );
         if (!response2.ok) {
         }
         const data2 = await response2.json();
@@ -76,74 +115,132 @@ const RegisterPortal = () => {
 
   return (
     <div className="container">
-      <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
-        Page Builder
-      </MainHeading>
-      <p style={{ color: "#505a5f" }}>
-        Use this service to build your own pages.
-      </p>
-      <Divider style={{ background: "black" }}></Divider>
-      <br></br>
-      <InputField
-        input={{
-          label: "Page Title",
-          value: pageTitle,
-          onChange: (e) => setPageTitle(e.target.value),
-        }}
-      >
-        Portal Title
-      </InputField>
-      <br></br>
-      {portalExists === true && (
-        <div>
-          <InputField
-            input={{
-              label: "Page URL",
-              value: pageUrl,
-              onChange: (e) => setPageUrl(e.target.value),
-            }}
-          >
-            {" "}
-            <ErrorText>Portal Endpoint already exists</ErrorText>
-            Portal Endpoint
-          </InputField>
-        </div>
-      )}
-      {portalExists === false && (
-        <div>
-          <InputField
-            input={{
-              label: "Page URL",
-              value: pageUrl,
-              onChange: (e) => setPageUrl(e.target.value),
-            }}
-          >
-            Portal Endpoint
-          </InputField>
-          <br></br>
+      <LoadingBox loading={loading}>
+        {companyExists === true ? (
+          <div>
+            <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
+              Register Portal
+            </MainHeading>
+            <p style={{ color: "#505a5f" }}>
+              Use this service to build your own web applications.
+            </p>
 
-          <Select
-            input={{
-              name: "group1",
-              onChange: (event) => {
-                setSelectedOption(event.target.value);
-              },
-            }}
-            label="Company"
-          >
-            {options.map((option, index) => (
-              <option value={index} key={index}>
-                {option.company_name}
-              </option>
-            ))}
-          </Select>
-        </div>
-      )}
+            <Divider style={{ background: "black" }}></Divider>
+            <br></br>
+            <p style={{ color: "#505a5f" }}>
+              Start by configuring basic details about the portal.
+            </p>
+            <br></br>
+            <InputField
+              input={{
+                label: "Page Title",
+                value: pageTitle,
+                onChange: (e) => setPageTitle(e.target.value),
+              }}
+            >
+              Portal Title
+              <p style={{ color: "#505a5f" }}>
+                This is a global title that uniquely identifies your web
+                application.
+              </p>
+            </InputField>
 
-      <br></br>
-      <Button onClick={() => createPortal()}>Create Portal</Button>
+            <br></br>
+            {portalExists === true && (
+              <div>
+                <InputField
+                  input={{
+                    label: "Page URL",
+                    value: pageUrl,
+                    onChange: (e) => setPageUrl(e.target.value),
+                  }}
+                >
+                  <ErrorText>Portal Endpoint already exists</ErrorText>
+                  Portal Endpoint
+                </InputField>
+              </div>
+            )}
+            {portalExists === false && (
+              <div>
+                <InputField
+                  input={{
+                    label: "Page URL",
+                    value: pageUrl,
+                    onChange: (e) => setPageUrl(e.target.value),
+                  }}
+                >
+                  Portal Endpoint{" "}
+                  <p style={{ color: "#505a5f" }}>
+                    This is the URL where your portal can be accessed.
+                  </p>
+                </InputField>
+                <br></br>
+                <Label style={{ fontSize: "20px" }}>
+                  Company
+                  <p style={{ color: "#505a5f" }}>
+                    Choose the company for which you are developing the web
+                    application.
+                  </p>
+                  <Select
+                    input={{
+                      name: "group1",
+                      onChange: (event) => {
+                        setSelectedOption(event.target.value);
+                      },
+                    }}
+                  >
+                    {options?.map((option, index) => (
+                      <option value={index} key={index}>
+                        {option.company_name}
+                      </option>
+                    ))}
+                  </Select>
+                </Label>
+              </div>
+            )}
 
-      <br></br>
+            <br></br>
+            <Button onClick={() => createPortal()}>Create Portal</Button>
+
+            <br></br>
+          </div>
+        ) : (
+          <div>
+            <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
+              No companies associated with citizen account
+            </MainHeading>
+            <Divider style={{ background: "black" }}></Divider>
+            <br></br>
+            <p style={{ color: "#505a5f" }}>
+              Would you like to associate a company with your account?
+            </p>
+            <br></br>
+            {error === true && (
+              <ErrorSummary
+                description={
+                  "To create a web application, you must associate a company record with your account."
+                }
+                errors={[
+                  {
+                    targetName: "description",
+                    text: "Company Record",
+                  },
+                ]}
+                heading={
+                  "Cannot proceed without assocating a company record to your citizen account"
+                }
+              />
+            )}
+            <br></br>
+            <Radio value="Yes" onClick={(e) => handleClick(e.target.value)}>
+              Yes
+            </Radio>
+            <Radio value="No" onClick={(e) => handleClick(e.target.value)}>
+              No
+            </Radio>{" "}
+          </div>
+        )}
+      </LoadingBox>
     </div>
   );
 };

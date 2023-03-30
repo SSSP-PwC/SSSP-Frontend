@@ -23,9 +23,9 @@ const LoggedInNavbar = () => {
           <Nav.Link href="/" >
             <span style={{ fontSize: "25px" }}><AiOutlineHome/></span> Home
           </Nav.Link>
-          <Nav.Link href="/List-Schemes">
+          <Nav.Link href="/List-Applications">
             <span style={{ fontSize: "25px" }}><AiOutlineForm/></span>
-            Schemes
+            List of Applications
           </Nav.Link>
         </Nav>
 
@@ -79,9 +79,9 @@ const LoggedOutNavbar = () => {
             <Nav.Link href="/" onClick={logout}>
               <span style={{ fontSize: "25px" }}><AiOutlineHome/></span> Home
             </Nav.Link>
-            <Nav.Link href="/List-Schemes">
+            <Nav.Link href="/List-Applications">
               <span style={{ fontSize: "25px" }}><AiOutlineForm/></span>
-              Schemes
+              List of Applications
             </Nav.Link>
           </Nav>
 

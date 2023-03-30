@@ -18,8 +18,7 @@ export const EnterCompanyDetails = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
 
-  console.log(state)
-
+  console.log(state);
 
   const [errorMessageFlag, setErrorMessageFlag] = useState(false);
   const [detailsReturned, setDetailsReturned] = useState(false);
@@ -56,16 +55,20 @@ export const EnterCompanyDetails = () => {
   const handleClick = () => {
     navigate("/register-company-associated-contact", {
       state: {
-        company_name: companyName,
-        company_registration_number: companyData.company_registration_number,
-        company_address: {
-        address_line_1: addressLine1,
-        address_line_2: addressLine2,
-        postal_code: postalCode,
-        country: country,
-        locality: locality,
-        region: region,
-        }
+        company: {
+          company_name: companyName,
+          company_registration_number: companyData.company_registration_number,
+          company_address: {
+            address_line_1: addressLine1,
+            address_line_2: addressLine2,
+            postal_code: postalCode,
+            country: country,
+            locality: locality,
+            region: region,
+          },            
+          portal_creation_flag: state.portal_creation_flag,
+
+        },
       },
     });
   };
@@ -87,7 +90,7 @@ export const EnterCompanyDetails = () => {
         const formattedAddress = formatAddress(
           data["registered_office_address"]
         );
-        setCompanyName(data.company_name)
+        setCompanyName(data.company_name);
         setAddressLine1(formattedAddress.address_line_1);
         setAddressLine2(formattedAddress.address_line_2);
         setPostalCode(formattedAddress.postal_code);
@@ -107,7 +110,9 @@ export const EnterCompanyDetails = () => {
     return (
       <Breadcrumb>
         <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
-        <Breadcrumb.Item href="/register-company-landing">Register Company</Breadcrumb.Item>
+        <Breadcrumb.Item href="/register-company-landing">
+          Register Company
+        </Breadcrumb.Item>
         <Breadcrumb.Item active>Company details</Breadcrumb.Item>
       </Breadcrumb>
     );
@@ -136,7 +141,7 @@ export const EnterCompanyDetails = () => {
         {detailsReturned === false && (
           <div style={{ display: "inline-block" }}>
             <LoadingBox loading={loading}>
-              <RegistrationFormBreadcrumb/>
+              <RegistrationFormBreadcrumb />
               <div>
                 <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
                   Enter your company details
@@ -180,10 +185,9 @@ export const EnterCompanyDetails = () => {
         {detailsReturned === true && (
           <div style={{ display: "inline-block" }}>
             <form style={{ display: "inline-block" }}>
-              <RegistrationFormBreadcrumb/>
+              <RegistrationFormBreadcrumb />
               <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
-                This is the correspondance address we will use 
-       
+                This is the correspondance address we will use
               </MainHeading>
               <p style={{ color: "#0B0C0C", fontSize: "12px" }}>
                 Check this address before continuing.
