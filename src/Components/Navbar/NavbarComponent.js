@@ -40,7 +40,7 @@ const LoggedInNavbar = () => {
                 Account Profile
               </NavDropdown.Item>
               <NavDropdown.Item href="/link-wallet">
-                Digital Wallet
+                Digital Services
               </NavDropdown.Item>
               <NavDropdown.Item href="/personal-profile">
                 Credential Management

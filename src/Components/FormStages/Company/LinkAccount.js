@@ -13,13 +13,11 @@ import {
 } from "govuk-react";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 
-
 export const LinkAccount = () => {
   const [emailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
 
   const { state } = useLocation();
-  
 
   const {
     register,
@@ -45,7 +43,8 @@ export const LinkAccount = () => {
   };
   const submit = async () => {
     setLoading(true);
-    const url = "https://sssp-378808.nw.r.appspot.com/api/link-citizen-to-company-checks";
+    const url =
+      "https://sssp-378808.nw.r.appspot.com/api/link-citizen-to-company-checks";
 
     const data = {
       email: emailAddress.email,
@@ -67,17 +66,20 @@ export const LinkAccount = () => {
         navigate("/register-company-summary", {
           state: {
             company: {
-            company_name: state.company.company_name,
-            company_registration_number: state.company.company_registration_number,
-            company_address: {
-              address_line_1: state.company.company_address.address_line_1,
-              address_line_2: state.company.company_address.address_line_2,
-              postal_code: state.company.company_address.postal_code,
-              country: state.company.company_address.country,
-              locality: state.company.company_address.locality,
-              region: state.company.company_address.region,
+              company_name: state.company.company_name,
+              company_registration_number:
+                state.company.company_registration_number,
+              company_address: {
+                address_line_1: state.company.company_address.address_line_1,
+                address_line_2: state.company.company_address.address_line_2,
+                postal_code: state.company.company_address.postal_code,
+                country: state.company.company_address.country,
+                locality: state.company.company_address.locality,
+                region: state.company.company_address.region,
+              },
             },
-          },
+            portal_creation_flag: state.portal_creation_flag,
+            company_creation_journey: state.company_creation_journey,
             contact_person: result,
           },
         });
@@ -91,8 +93,12 @@ export const LinkAccount = () => {
     return (
       <Breadcrumb>
         <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
-        <Breadcrumb.Item href="/register-company-landing">Register Company</Breadcrumb.Item>
-        <Breadcrumb.Item href="/register-company-details">Company details</Breadcrumb.Item>
+        <Breadcrumb.Item href="/register-company-landing">
+          Register Company
+        </Breadcrumb.Item>
+        <Breadcrumb.Item href="/register-company-details">
+          Company details
+        </Breadcrumb.Item>
         <Breadcrumb.Item active>Contact association</Breadcrumb.Item>
       </Breadcrumb>
     );
@@ -120,7 +126,7 @@ export const LinkAccount = () => {
         )}
 
         <form style={{ display: "inline-block" }}>
-          <RegistrationFormBreadcrumb/>
+          <RegistrationFormBreadcrumb />
           <LoadingBox loading={loading}>
             <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
               Link an existing citizen account
@@ -129,10 +135,8 @@ export const LinkAccount = () => {
             <br></br>
             <p style={{ color: "#505a5f" }}>Section 2 of 5</p>
             <Form.Group>
-              <Form.Label>
-                Please enter email address and password
-              </Form.Label>
-   
+              <Form.Label>Please enter email address and password</Form.Label>
+
               <InputField
                 onChange={updateData}
                 input={{

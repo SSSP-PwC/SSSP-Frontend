@@ -28,7 +28,6 @@ export const MFA = () => {
   const [verificationType, setVerificationType] = useState("google");
   const [renderToken, setRenderToken] = useState(false);
   const [token, setToken] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
   const [loading, setLoading] = useState(false);
 
   const [data, setData] = useState({});
@@ -68,6 +67,14 @@ export const MFA = () => {
           login(data.access_token);
           setLoading(false);
           navigate("/");
+        } else if (data.message === "Invalid OTP") {
+          setLoading(false);
+          setErrorMessageTitle("Invalid OTP");
+          setErrorMessageContent(
+            "Please check the OTP provided and try again."
+          );
+          setErrorMessageCause("OTP");
+          setErrorMessageFlag(true);
         }
       })
       .catch((error) => {
@@ -97,7 +104,7 @@ export const MFA = () => {
 
           if (data.message === "email verified") {
             login(data.access_token);
-            sessionStorage.setItem("Citizen_ID", data.citizen_id)
+            sessionStorage.setItem("Citizen_ID", data.citizen_id);
             navigate("/");
           } else {
             setLoading(false);
@@ -111,7 +118,7 @@ export const MFA = () => {
 
   const verifyPhoneOTP = () => {
     setLoading(true);
-  
+
     const requestOptionsOne = {
       method: "GET",
       headers: {
@@ -124,15 +131,13 @@ export const MFA = () => {
     )
       .then((res) => res.json())
       .then((response) => {
-
-  
         const requestOptionsTwo = {
           method: "POST",
           headers: {
             "content-type": "application/json",
           },
         };
-        
+
         fetch(
           `https://sssp-378808.nw.r.appspot.com/api/verify-phone-otp/${data?.verification_code}/${response.phone_number}`,
           requestOptionsTwo
@@ -140,21 +145,20 @@ export const MFA = () => {
           .then((res) => res.json())
           .then((response_two) => {
             setLoading(false);
-  
+
             if (response_two.message === "Phone number verified") {
               login(response_two.access_token);
-              sessionStorage.setItem("Citizen_ID", response_two.citizen_id)
+              sessionStorage.setItem("Citizen_ID", response_two.citizen_id);
               navigate("/");
             }
           })
           .catch((error) => {
             setLoading(false);
-  
+
             console.error(error);
           });
       });
   };
-  
 
   const updateData = (e) => {
     console.log(data);
@@ -298,8 +302,7 @@ export const MFA = () => {
     }
   };
   const googleAuthenticator = () => {
-    setLoading(true);
-
+    setLoading(false);
     setVerificationType("google");
     const requestOptions = {
       method: "POST",
@@ -313,15 +316,11 @@ export const MFA = () => {
       }),
     };
     if (state.email === "") {
-      setLoading(false);
-
       setErrorMessageTitle("Email address not provided");
       setErrorMessageContent("Please enter your email address.");
       setErrorMessageCause("Email address");
       setErrorMessageFlag(true);
     } else if (state.password === "") {
-      setLoading(false);
-
       setErrorMessageTitle("Password not provided");
       setErrorMessageContent("Please enter your password.");
       setErrorMessageCause("Password");
@@ -330,7 +329,6 @@ export const MFA = () => {
       fetch("https://sssp-378808.nw.r.appspot.com/api/login", requestOptions)
         .then((res) => res.json())
         .then((data) => {
-          setLoading(false);
           if (
             data.message ===
             "Please enter the following secret into the google authenticator app"
@@ -351,7 +349,6 @@ export const MFA = () => {
             )
               .then((res) => res.json())
               .then((data) => {
-                setLoading(false);
                 if (data.message === "token present") {
                   setVerificationCodeField(true);
                   setToken(data.token);
@@ -362,7 +359,6 @@ export const MFA = () => {
           }
         })
         .catch((error) => {
-          setLoading(false);
           console.error(error);
           setErrorMessageTitle("Error");
           setErrorMessageContent(
@@ -414,8 +410,10 @@ export const MFA = () => {
 
                 {verificationCode === true && renderToken === false && (
                   <>
+                    <br></br>
                     <p style={{ color: "#505a5f" }}>
-                      A verification code has been sent to the communication channel of preference.
+                      Please enter the one-time password (OTP) that has been
+                      generated for you{" "}
                     </p>
                     <InputField
                       onChange={updateData}
@@ -424,10 +422,10 @@ export const MFA = () => {
                         required: true,
                       }}
                     >
-                      Verification code
+                      One-Time Password (OTP)
                     </InputField>
                     <br></br>
-                    <Button onClick={handleVerifyClick}>Verify</Button>
+                    <Button onClick={handleVerifyClick}>Verify OTP</Button>
                   </>
                 )}
                 {verificationCode === true && renderToken === true && (

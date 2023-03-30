@@ -65,10 +65,9 @@ export const EnterCompanyDetails = () => {
             country: country,
             locality: locality,
             region: region,
-          },            
-          portal_creation_flag: state.portal_creation_flag,
-
+          },
         },
+        portal_creation_flag: state.portal_creation_flag,
       },
     });
   };

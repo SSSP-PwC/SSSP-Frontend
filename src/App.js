@@ -61,7 +61,6 @@ import RegisterPortal from "./Components/FormStages/Scheme/RegisterPortal";
 import PagePreview from "./Components/FormStages/Scheme/PagePreview";
 import PersonalProfile from "./Components/FormStages/Citizen/PersonalProfile";
 import EditDetails from "./Components/FormStages/Citizen/DataEntry/EditDetails";
-import Wallet from "./Components/FormStages/Citizen/Wallet";
 import CallBack from "./Components/FormStages/Citizen/Callback";
 import Account from "./Components/FormStages/Citizen/Account";
 import DisplayTransactions from "./Components/FormStages/Citizen/DisplayTransactions";
@@ -71,6 +70,7 @@ import { CreateOpenBankingAccount } from "./Components/FormStages/Citizen/Create
 import LinkWalletAccount from "./Components/FormStages/Citizen/Link-Account";
 import { EnterCitizenPhoneNumber } from "./Components/FormStages/Citizen/DataEntry/EnterCitizenPhoneNumber";
 import { MFA } from "./Components/FormStages/Citizen/DataEntry/MFA";
+import Services from "./Components/FormStages/Citizen/Services";
 
 const queryParameters = new URLSearchParams(window.location.search);
 console.log(queryParameters.get("consent"));
@@ -203,7 +203,7 @@ export default function App() {
           />
 
           <Route
-            path="/wallet"
+            path="/services"
             element={
               <>
                 <GlobalStyle />
@@ -219,7 +219,7 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
 
-                <Wallet />
+                <Services />
                 <Footer />
               </>
             }

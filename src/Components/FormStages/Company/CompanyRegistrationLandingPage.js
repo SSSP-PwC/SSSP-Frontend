@@ -2,17 +2,18 @@ import React from "react";
 import { MainHeading } from "../../../globalStyles";
 import { Divider } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Button} from "govuk-react";
+import { Button } from "govuk-react";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 
 export const CompanyRegistrationLandingPage = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
-  console.log(state)
+  console.log(state);
   const handleNextPage = () => {
     navigate("/register-company-details", {
-        portal_creation_flag: state.portal_creation_flag
-      
+      state: {
+        portal_creation_flag: state.portal_creation_flag,
+      },
     });
   };
   const RegistrationFormBreadcrumb = () => {
@@ -30,7 +31,7 @@ export const CompanyRegistrationLandingPage = () => {
         className="form"
         style={{ marginTop: "70px", display: "inline-block" }}
       >
-        <RegistrationFormBreadcrumb/>
+        <RegistrationFormBreadcrumb />
         <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
           Register your company
         </MainHeading>

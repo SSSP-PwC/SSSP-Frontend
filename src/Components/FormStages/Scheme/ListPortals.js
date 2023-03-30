@@ -50,7 +50,6 @@ export const ListPortals = () => {
   return (
     <div className="container">
       <br></br>
-
       {loaded === false && (
         <div
           style={{
@@ -68,9 +67,13 @@ export const ListPortals = () => {
         {loaded === true && (
           <div>
             <ListSchemesBreadcrumb />{" "}
-            <div style={{ float: "right" }}>
+            {sessionStorage.getItem("Citizen_ID") !== null && (
+               <div style={{ float: "right" }}>
               <Button onClick={handleClick}>Create a web application</Button>
             </div>
+            )}
+
+           
             <br></br>
             <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
               Applications

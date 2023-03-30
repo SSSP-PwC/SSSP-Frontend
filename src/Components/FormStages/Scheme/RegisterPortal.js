@@ -24,16 +24,20 @@ const RegisterPortal = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   useEffect(() => {
+    setLoading(true)
     fetch(`https://sssp-378808.nw.r.appspot.com/api/citizen/${id}/companies`)
       .then((response) => response.json())
       .then((data) => {
-        if (data.message.includes("No companies found for this citizen.")) {
+        if (data?.message?.includes("No companies found for this citizen.")) {
           setCompanyExists(false);
-        } else {
+          setLoading(false)
+        } else {          
+          setLoading(false)
           setCompanyExists(true);
           setOptions(data);
         }
       });
+
   }, [id]);
 
   const navigate = useNavigate();
@@ -44,9 +48,7 @@ const RegisterPortal = () => {
     if (value === "Yes") {
       navigate("/register-company-landing", {
         state: {
-          company: {
             portal_creation_flag: true,
-          },
         },
       });
     } else if (value === "No") {
@@ -116,7 +118,7 @@ const RegisterPortal = () => {
   return (
     <div className="container">
       <LoadingBox loading={loading}>
-        {companyExists === true ? (
+        {companyExists === true && (
           <div>
             <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
               Register Portal
@@ -204,7 +206,8 @@ const RegisterPortal = () => {
 
             <br></br>
           </div>
-        ) : (
+        )}
+        {companyExists === false && (
           <div>
             <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
               No companies associated with citizen account
@@ -214,7 +217,6 @@ const RegisterPortal = () => {
             <p style={{ color: "#505a5f" }}>
               Would you like to associate a company with your account?
             </p>
-            <br></br>
             {error === true && (
               <ErrorSummary
                 description={
@@ -237,7 +239,8 @@ const RegisterPortal = () => {
             </Radio>
             <Radio value="No" onClick={(e) => handleClick(e.target.value)}>
               No
-            </Radio>{" "}
+            </Radio>
+            <br></br>
           </div>
         )}
       </LoadingBox>

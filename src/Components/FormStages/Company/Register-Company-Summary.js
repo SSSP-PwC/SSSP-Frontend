@@ -54,7 +54,6 @@ export const RegisterCompanySummary = () => {
           region: state.company.company_address.region,
         },
       },
-
       contact_person: state.contact_person.citizen,
     };
 
@@ -74,7 +73,11 @@ export const RegisterCompanySummary = () => {
       if (result["message"] === "Company created successfully") {
         setLoading(false);
         setSuccessMessage(true);
+        if (state.portal_creation_flag === true) {
+          setTimeout(() => navigate('/Register-Portal'), 3000);
+        }
       }
+        
     } catch (error) {
       console.error(error);
     }
