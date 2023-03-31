@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from "react";
 
-import { Button, H3, H4, Heading, InputField } from "govuk-react";
+import {
+  Button,
+  ErrorSummary,
+  H3,
+  H4,
+  Heading,
+  InputField,
+  Panel,
+} from "govuk-react";
 import { Divider } from "@mui/material";
 import { useLocation } from "react-router-dom";
 
@@ -8,21 +16,20 @@ export default function EditDetails() {
   const [citizen, setCitizen] = useState([]);
   const [companyCount, setCompanyCount] = useState(0);
   const [loaded, setLoaded] = useState(false);
-  const [editing, setEditing] = useState(false);
+  const [detailsUpdated, setDetailsUpdated] = useState();
   const [data, setData] = useState([]);
   const id = sessionStorage.getItem("Citizen_ID");
-  console.log(citizen)
+  console.log(citizen);
   const { state } = useLocation();
-  console.log(state)
+  console.log(state);
   const [formValues, setFormValues] = useState({
     first_name: state.first_name,
     last_name: state.last_name,
     email: state.email,
-      address_line_1: state.address.address_line_1,
-      address_line_2: state.address.address_line_2,
-      postal_code: state.address.postal_code,
-      town_city: state.address.town_city
-    
+    address_line_1: state.address.address_line_1,
+    address_line_2: state.address.address_line_2,
+    postal_code: state.address.postal_code,
+    town_city: state.address.town_city,
   });
   const handleProfileUpdate = () => {
     const data = {
@@ -48,15 +55,17 @@ export default function EditDetails() {
         if (!response.ok) {
           throw new Error(response.statusText);
         }
-        setData(response)
-        console.log(response)
+        setData(response);
+        console.log(response);
         return response.json();
       })
       .then((data) => {
-        console.log("Profile updated successfully:", data);
+        if (data.message === "Citizen updated successfully") {
+          setDetailsUpdated(true);
+        }
       })
       .catch((error) => {
-        console.error("Error updating profile:", error);
+        setDetailsUpdated(false);
       });
   };
   const fetchCompany = () => {
@@ -67,9 +76,7 @@ export default function EditDetails() {
         }
         return response.json();
       })
-      .then((data) => {
-     
-      })
+      .then((data) => {})
       .catch((error) => console.log(error));
   };
 
@@ -96,9 +103,6 @@ export default function EditDetails() {
 
     fetchCitizen();
   }, []);
-  const toggleEditing = () => {
-    setEditing(!editing);
-  };
 
   return (
     <div className="container">
@@ -106,7 +110,23 @@ export default function EditDetails() {
         <div>Loading...</div>
       ) : (
         <div>
-          {editing === false && (
+          {detailsUpdated === true && (
+            <div
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+                margin: "50px",
+              }}
+            >
+              <div>
+                <Panel
+                  title="Details Updated Successfully"
+                  style={{ backgroundColor: "#00823B" }}
+                ></Panel>
+              </div>
+            </div>
+          )}
+          {detailsUpdated !== true && (
             <div>
               <br></br>
               <Heading>Account</Heading>
@@ -115,10 +135,16 @@ export default function EditDetails() {
               <H3 style={{ fontWeight: "normal" }}>
                 Hi, {citizen.first_name}.
               </H3>
+              {detailsUpdated === false && (
+                  <ErrorSummary
+                description="Please try again."
+                heading="An error occured when trying to update your details"
+              />
+
+              )}
               <br></br>
-              <br></br>
+            
               <H3>Edit Account Details</H3>
-              <br></br>
               <table
                 style={{
                   borderSpacing: 0,

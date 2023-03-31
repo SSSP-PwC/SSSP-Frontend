@@ -1,5 +1,5 @@
 import { Divider, ImageList, ImageListItem } from "@mui/material";
-import { Caption, Heading, Label, SearchBox } from "govuk-react";
+import { Caption, Heading, Label, SearchBox, Button } from "govuk-react";
 import React, { useEffect, useState } from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -8,7 +8,6 @@ import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 export default function Services() {
   const [selectedOption, setSelectedOption] = useState("");
@@ -28,48 +27,61 @@ export default function Services() {
     setValue(newValue);
   };
 
-  async function handleImageClick(id) {
+  async function handleButtonClick(id) {
     setSelectedOption(id);
-
+  
     const userResponse = await fetch(
       `https://sssp-378808.nw.r.appspot.com/api/citizen/${loggedInUserId}`
     );
     const userData = await userResponse.json();
     const email = userData.email;
-
-    const url = `https://sssp-378808.nw.r.appspot.com/api/wallet/auth/${email}/${id}`;
-    console.log(url);
-
-    const response = await fetch(url, {
+  
+    const authUrl = `https://sssp-378808.nw.r.appspot.com/api/wallet/auth/${email}/${id}`;
+    console.log(authUrl);
+  
+    const authResponse = await fetch(authUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
     });
-
-    const data = await response.json();
-    console.log(data);
-    setUrl(data.data.authorisationUrl);
-    setResponse(data);
-    setRedirect(true);
-
-    return data;
+  
+    if (authResponse.status === 404) {
+      const checkUserResponse = await fetch(`https://sssp-378808.nw.r.appspot.com/api/wallet/user_exists/${email}`);
+      const checkUserData = await checkUserResponse.json();
+  
+      if (!checkUserData.exists) {
+        const createUrl = "https://sssp-378808.nw.r.appspot.com/api/wallet/create_user";
+        const createOptions = {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json;charset=UTF-8",
+          },
+          body: JSON.stringify({ email: email, applicationUserId: loggedInUserId }),
+        };
+        const createResponse = await fetch(createUrl, createOptions);
+        const createData = await createResponse.json();
+        console.log(createData);
+        setResponse(createData);
+        setUrl(createData.data.authorisationUrl);
+        setRedirect(true);
+        return createData;
+      } else {
+        console.log("User already registered");
+        // Handle the case where the user is already registered
+        return null;
+      }
+    } else {
+      const authData = await authResponse.json();
+      console.log(authData);
+      setUrl(authData.data.authorisationUrl);
+      setResponse(authData);
+      setRedirect(true);
+      return authData;
+    }
   }
+  
 
-  async function registerUser() {
-    const url = `https://sssp-378808.nw.r.appspot.com/api/wallet/create_user/${userId}`;
-    const options = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json;charset=UTF-8",
-      },
-      body: JSON.stringify({ applicationUserId: userId }),
-    };
-    const response = await fetch(url, options);
-    const data = await response.json();
-    setResponse(data);
-    return data;
-  }
 
   useEffect(() => {
     async function fetchData() {
@@ -153,40 +165,48 @@ export default function Services() {
                     )
                     .map((option) => (
                       <Card key={option.id}>
-                        <div onClick={() => handleImageClick(option.id)}>
-                          <center>
-                            <CardMedia
-                              sx={{
-                                height: 120,
-                                width: 120,
-                              }}
-                              image={
-                                option.media.find((m) => m.type === "icon")
-                                  ?.source || option.media[0].source
-                              }
-                              title={option.name}
-                              style={{
-                                cursor: "pointer",
-                              }}
-                              onMouseOver={(e) =>
-                                (e.currentTarget.style.border =
-                                  "2px solid blue")
-                              }
-                              onMouseOut={(e) =>
-                                (e.currentTarget.style.border = "")
-                              }
-                            />
-                            <CardContent>
-                              <Typography
-                                gutterBottom
-                                variant="h5"
-                                component="div"
-                              >
-                                {option.name}
-                              </Typography>
-                            </CardContent>
-                          </center>
-                        </div>
+                        <center>
+                          <CardMedia
+                            sx={{
+                              height: 120,
+                              width: 120,
+                            }}
+                            image={
+                              option.media.find((m) => m.type === "icon")
+                                ?.source || option.media[0].source
+                            }
+                            title={option.name}
+                            style={{
+                              cursor: "pointer",
+                            }}
+                            onMouseOver={(e) =>
+                              (e.currentTarget.style.border = "2px solid blue")
+                            }
+                            onMouseOut={(e) =>
+                              (e.currentTarget.style.border = "")
+                            }
+                          />
+                          <CardContent sx={{ height: "200px", position: "relative" }}>
+                            <Typography
+                              gutterBottom
+                              variant="h5"
+                              component="div"
+                            >
+                              {option.name}
+                            </Typography>
+                            <Button
+                             style={{
+                              position: "absolute",
+                              bottom: "16px",
+                              left: "50%",
+                              padding: "5px",
+                              transform: "translateX(-50%)"}}
+                              onClick={() => handleButtonClick(option.id)}
+                            >
+                              Register
+                            </Button>
+                          </CardContent>
+                        </center>
                       </Card>
                     ))}
                 </div>
