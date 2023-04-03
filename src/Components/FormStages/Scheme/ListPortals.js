@@ -45,7 +45,7 @@ export const ListPortals = () => {
     navigate(`/${row.endpoint}/pages/${1}`);
   };
   const handleClick = () => {
-    navigate("/Register-Portal");
+    navigate("/portal-creator-landing-page");
   };
   return (
     <div className="container">

@@ -7,7 +7,9 @@ import HomeComponent from "../Components/Home/Home";
 export const HomePage = () => {
   return (
     <>
+
       <Content {...info} />
+      
       <HomeComponent />
       <About />
     </>
