@@ -15,7 +15,6 @@ import {
 import React, { useEffect, useState } from "react";
 import { MainHeading } from "../../../globalStyles";
 import { useNavigate } from "react-router-dom";
-import Fuse from "fuse.js";
 
 const EnterPortalDomain = () => {
   const [pageTitle, setPageTitle] = useState("");
@@ -28,6 +27,9 @@ const EnterPortalDomain = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [filteredOptions, setFilteredOptions] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const navigate = useNavigate();
 
   const handleSearchBoxChange = async (e) => {
     const searchTerm = e.target.value;
@@ -46,6 +48,13 @@ const EnterPortalDomain = () => {
       console.log(similarDomains);
       setFilteredOptions(similarDomains);
     }
+  };
+  const handleSelect = (domain) => {
+    navigate(`/portal-name`, {
+      state: {
+        domain: `https://sssp-qa.dj4eixkpal8an.amplifyapp.com/digital-services/portal/${domain}`
+      }
+    });
   };
 
   return (
@@ -87,7 +96,12 @@ const EnterPortalDomain = () => {
                         >
                           <a href="#">{option}</a>
                         </Typography>
-                        <Button style={{ float: "right" }}>Select</Button>
+                        <Button
+                          style={{ float: "right" }}
+                          onClick={() => handleSelect(index)}
+                        >
+                          Select
+                        </Button>
                       </CardContent>
                     </Card>
                   </div>
@@ -105,7 +119,7 @@ const EnterPortalDomain = () => {
                   value={pageUrl}
                   onChange={handleSearchBoxChange}
                 />
-                <SearchBox.Button />
+                <SearchBox.Button onClick={() => alert("H")} />
               </SearchBox>
               <br></br>
               <br></br>
@@ -130,9 +144,17 @@ const EnterPortalDomain = () => {
                           component="p1"
                           sx={{ wordWrap: "break-word" }}
                         >
-                          <a href="#">https://sssp-qa.dj4eixkpal8an.amplifyapp.com/digital-services/portal/{option}</a>
+                          <a href="#">
+                            https://sssp-qa.dj4eixkpal8an.amplifyapp.com/digital-services/portal/
+                            {option}
+                          </a>
                         </Typography>
-                        <Button style={{ float: "right" }}>Select</Button>
+                        <Button
+                          style={{ float: "right" }}
+                          onClick={() => handleSelect(option)}
+                        >
+                          Select
+                        </Button>
                       </CardContent>
                     </Card>
                   </div>

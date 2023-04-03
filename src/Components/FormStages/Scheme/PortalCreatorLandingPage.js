@@ -39,20 +39,25 @@ const PortalCreatorLandingPage = () => {
       });
   }, [id]);
 
+  const handleYes = () => {
+    navigate("/register-company-landing")
+  };
+  const handleNo = () => {
+    navigate("/")
+  };
+
   const navigate = useNavigate();
   const hasWhiteSpace = (s) => {
     return /\s/.test(s);
   };
   const handleClick = () => {
-    navigate("/portal-domain")
- 
+    navigate("/portal-domain");
   };
-
 
   return (
     <div>
       <LoadingBox loading={loading}>
-        {companyExists === true && (
+        {companyExists === true ? (
           <div>
             <br></br>
             <div className="container" style={{ padding: "30px" }}>
@@ -76,7 +81,18 @@ const PortalCreatorLandingPage = () => {
                 top: "0",
               }}
             />
-       </div>
+          </div>
+        ) : (
+          <div className="container" style={{ padding: "30px" }}>
+            <MainHeading>
+              You do not currently have a company associated with your account.
+            </MainHeading>
+            <p style={{ color: "#505a5f" }}>
+              Would you like to associate a company with your account?
+            </p>
+            <Radio onClick={handleYes}>Yes</Radio>
+            <Radio onClick={handleNo}>No</Radio>
+          </div>
         )}
       </LoadingBox>
     </div>
