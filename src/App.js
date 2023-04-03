@@ -57,7 +57,7 @@ import FormBuilder from "./Components/FormStages/Scheme/FormBuilder";
 import PageBuilder from "./Components/FormStages/Scheme/PageBuilder";
 import DynamicPage from "./Components/FormStages/Scheme/DynamicPage";
 import RenderForm from "./Components/FormStages/Scheme/Render-Form";
-import RegisterPortal from "./Components/FormStages/Scheme/RegisterPortal";
+import PortalCreatorLandingPage from "./Components/FormStages/Scheme/PortalCreatorLandingPage";
 import PagePreview from "./Components/FormStages/Scheme/PagePreview";
 import PersonalProfile from "./Components/FormStages/Citizen/PersonalProfile";
 import EditDetails from "./Components/FormStages/Citizen/DataEntry/EditDetails";
@@ -71,6 +71,7 @@ import LinkWalletAccount from "./Components/FormStages/Citizen/Link-Account";
 import { EnterCitizenPhoneNumber } from "./Components/FormStages/Citizen/DataEntry/EnterCitizenPhoneNumber";
 import { MFA } from "./Components/FormStages/Citizen/DataEntry/MFA";
 import Services from "./Components/FormStages/Citizen/Services";
+import EnterPortalDomain from "./Components/FormStages/Scheme/EnterPortalDomain";
 
 const queryParameters = new URLSearchParams(window.location.search);
 console.log(queryParameters.get("consent"));
@@ -262,6 +263,27 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <DisplayTransactions />
+                <Footer />
+              </>
+            }
+          />
+                    <Route
+            path="/portal-domain"
+            element={
+              <>
+                <GlobalStyle />
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                  <PhaseBanner level="POC">
+                    SSSP is currently a proof of concept{" "}
+                  </PhaseBanner>
+                </div>
+                <NavbarComponent />
+                <CookieConsent
+                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
+                >
+                  This website uses cookies to enhance the user experience.
+                </CookieConsent>
+                <EnterPortalDomain />
                 <Footer />
               </>
             }
@@ -1472,7 +1494,7 @@ export default function App() {
             }
           />
           <Route
-            path="/Register-Portal"
+            path="/portal-creator-landing-page"
             element={
               <>
                 <GlobalStyle />
@@ -1487,7 +1509,7 @@ export default function App() {
                 >
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
-                <RegisterPortal />
+                <PortalCreatorLandingPage />
                 <Footer />
               </>
             }
