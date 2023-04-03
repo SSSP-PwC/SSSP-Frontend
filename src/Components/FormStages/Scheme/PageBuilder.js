@@ -168,15 +168,12 @@ const PageBuilder = () => {
   const renderForm = () => {
     const fieldsToRender = [];
 
-    // Find the tab for the selected page
     const tab = tabs.find((tab) => tab.title === selectedPage);
 
-    // Render fields for the selected tab
     if (tab) {
       tab.fields.forEach((field, index) => {
         let formField = null;
 
-        // Render the field based on its type
         switch (field.type) {
           case "next-button":
           case "previous-button":

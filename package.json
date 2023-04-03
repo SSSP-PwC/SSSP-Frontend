@@ -17,6 +17,7 @@
     "currency-formatter": "^1.5.9",
     "dayjs": "^1.11.5",
     "framer-motion": "^9.0.2",
+    "fuse.js": "^6.6.2",
     "govuk-react": "^0.10.5",
     "http-proxy-middleware": "^2.0.6",
     "material-ui-image": "^3.3.2",
