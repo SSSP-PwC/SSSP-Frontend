@@ -72,6 +72,8 @@ import { EnterCitizenPhoneNumber } from "./Components/FormStages/Citizen/DataEnt
 import { MFA } from "./Components/FormStages/Citizen/DataEntry/MFA";
 import Services from "./Components/FormStages/Citizen/Services";
 import EnterPortalDomain from "./Components/FormStages/Scheme/EnterPortalDomain";
+import EnterPortalName from "./Components/FormStages/Scheme/EnterPortalName";
+import SiteHome from "./Components/FormStages/Scheme/SiteHome";
 
 const queryParameters = new URLSearchParams(window.location.search);
 console.log(queryParameters.get("consent"));
@@ -180,7 +182,7 @@ export default function App() {
             }
           />
 
-<Route
+          <Route
             path="/sign-in-mfa"
             element={
               <>
@@ -267,7 +269,7 @@ export default function App() {
               </>
             }
           />
-                    <Route
+          <Route
             path="/portal-domain"
             element={
               <>
@@ -284,6 +286,27 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <EnterPortalDomain />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/portal-name"
+            element={
+              <>
+                <GlobalStyle />
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                  <PhaseBanner level="POC">
+                    SSSP is currently a proof of concept{" "}
+                  </PhaseBanner>
+                </div>
+                <NavbarComponent />
+                <CookieConsent
+                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
+                >
+                  This website uses cookies to enhance the user experience.
+                </CookieConsent>
+                <EnterPortalName />
                 <Footer />
               </>
             }
@@ -353,7 +376,7 @@ export default function App() {
               </>
             }
           />
-              <Route
+          <Route
             path="/wallet/link-institution"
             element={
               <>
@@ -374,7 +397,7 @@ export default function App() {
               </>
             }
           />
-            <Route
+          <Route
             path="/register-citizen-phone-number"
             element={
               <>
@@ -1489,6 +1512,27 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <PageBuilder />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/site-home/https://sssp-qa.dj4eixkpal8an.amplifyapp.com/digital-services/portal/:domain"
+            element={
+              <>
+                <GlobalStyle />
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                  <PhaseBanner level="POC">
+                    SSSP is currently a proof of concept{" "}
+                  </PhaseBanner>
+                </div>
+                <NavbarComponent />
+                <CookieConsent
+                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
+                >
+                  This website uses cookies to enhance the user experience.
+                </CookieConsent>
+                <SiteHome />
                 <Footer />
               </>
             }
