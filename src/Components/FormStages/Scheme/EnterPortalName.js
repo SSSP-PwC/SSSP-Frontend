@@ -23,30 +23,38 @@ const EnterPortalName = () => {
   const [portalExists, setPortalExists] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-  const [filteredOptions, setFilteredOptions] = useState([]);
-
+  const [data, setData] = useState();
+  console.log(data);
   const navigate = useNavigate();
-
+  const updateData = (e) => {
+    setData({
+      ...data,
+      [e.target.name]: e.target.value,
+    });
+  };
+  const handleNext = () => {
+    
+  }
   return (
     <div className="container">
       <LoadingBox loading={loading}>
         <div>
           <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
-            Enter a name for the service
+            Give your site a name
           </MainHeading>
 
           <br></br>
-          <InputField
-            input={{
-              name: "service_name",
-              required: true,
-            }}
-          >
-            Service Name                       <p style={{ color: "#505a5f" }}>Section 2 of 5</p>
 
-          </InputField>
-          
+          <p style={{ color: "#505a5f" }}>
+              This is how your service will appear in the services page so it's important that people know what your site is about.
+            </p>
           <br></br>
+          <Button
+                style={{ marginBottom: "15px" }}
+                onClick={handleNext}
+              >
+                Continue
+              </Button>
         </div>
 
         {error === true && (

@@ -34,6 +34,7 @@ const PageBuilder = () => {
   const [fileData, setFileData] = useState(null);
   const [numberOfRadioButtons, setNumberOfRadioButtons] = useState(0);
   const [phoneNumber, setPhoneNumber] = useState();
+  const [successFlag, setSuccessFlag] = useState()
 
   const [tabs, setTabs] = useState([
     {
@@ -83,7 +84,7 @@ const PageBuilder = () => {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
-      console.log(data);
+      setSuccessFlag(true)
       return data;
     } catch (error) {
       console.log(error);

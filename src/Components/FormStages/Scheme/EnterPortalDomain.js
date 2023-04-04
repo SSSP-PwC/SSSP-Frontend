@@ -41,7 +41,7 @@ const EnterPortalDomain = () => {
     );
     if (searchTerm) {
       const response = await fetch(
-        `http://192.168.68.108:2000/api/domain-similar-match/${searchTerm}`
+        `https://sssp-378808.nw.r.appspot.com/api/domain-similar-match/${searchTerm}`
       );
       const data = await response.json();
       const similarDomains = data["Similar domains"];
@@ -50,7 +50,7 @@ const EnterPortalDomain = () => {
     }
   };
   const handleSelect = (domain) => {
-    navigate(`/portal-name`, {
+    navigate(`/site-home/https://sssp-qa.dj4eixkpal8an.amplifyapp.com/digital-services/portal/${domain}`, {
       state: {
         domain: `https://sssp-qa.dj4eixkpal8an.amplifyapp.com/digital-services/portal/${domain}`
       }
