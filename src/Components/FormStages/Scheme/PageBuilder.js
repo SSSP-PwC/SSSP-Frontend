@@ -34,6 +34,7 @@ const PageBuilder = () => {
   const [fileData, setFileData] = useState(null);
   const [numberOfRadioButtons, setNumberOfRadioButtons] = useState(0);
   const [phoneNumber, setPhoneNumber] = useState();
+  const [successFlag, setSuccessFlag] = useState();
 
   const [tabs, setTabs] = useState([
     {
@@ -83,7 +84,7 @@ const PageBuilder = () => {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
-      console.log(data);
+      setSuccessFlag(true);
       return data;
     } catch (error) {
       console.log(error);
@@ -168,15 +169,12 @@ const PageBuilder = () => {
   const renderForm = () => {
     const fieldsToRender = [];
 
-    // Find the tab for the selected page
     const tab = tabs.find((tab) => tab.title === selectedPage);
 
-    // Render fields for the selected tab
     if (tab) {
       tab.fields.forEach((field, index) => {
         let formField = null;
 
-        // Render the field based on its type
         switch (field.type) {
           case "next-button":
           case "previous-button":

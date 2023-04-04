@@ -9,12 +9,21 @@ import {
   HomeButton,
 } from "./HomeStyles";
 import { Heading } from "govuk-react";
+import { Divider } from "@mui/material";
 
 const Home = () => {
   return (
-    <HomeSection>
-      <Container>
-        <Heading>Introducing the Smart Societies Software Platform</Heading>
+    <>
+      <div style={{ padding: "50px" }}>
+        <Heading
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            display: "flex",
+          }}
+        >
+          What can the Smart Societies Software Platform do for me?
+        </Heading>
         <p>
           In today's fast-paced digital world, traditional credentials and
           financial transactions are no longer sufficient. That's why we're
@@ -37,8 +46,8 @@ const Home = () => {
           payments, send and receive money, and even earn rewards all from one
           convenient location.
         </p>
-      </Container>
-    </HomeSection>
+      </div>
+    </>
   );
 };
 
