@@ -42,7 +42,7 @@ export const ListPortals = () => {
   }, []);
 
   const handleRowClick = (row) => {
-    navigate(`/${row.endpoint}/pages/${1}`);
+    navigate(`/digital-services/portal/${row.endpoint}/pages/${1}`);
   };
   const handleClick = () => {
     navigate("/portal-creator-landing-page");
@@ -68,12 +68,10 @@ export const ListPortals = () => {
           <div>
             <ListSchemesBreadcrumb />{" "}
             {sessionStorage.getItem("Citizen_ID") !== null && (
-               <div style={{ float: "right" }}>
-              <Button onClick={handleClick}>Create a web application</Button>
-            </div>
+              <div style={{ float: "right" }}>
+                <Button onClick={handleClick}>Create a web application</Button>
+              </div>
             )}
-
-           
             <br></br>
             <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
               Applications

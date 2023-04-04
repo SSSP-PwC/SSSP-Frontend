@@ -136,14 +136,13 @@ export default function EditDetails() {
                 Hi, {citizen.first_name}.
               </H3>
               {detailsUpdated === false && (
-                  <ErrorSummary
-                description="Please try again."
-                heading="An error occured when trying to update your details"
-              />
-
+                <ErrorSummary
+                  description="Please try again."
+                  heading="An error occured when trying to update your details"
+                />
               )}
               <br></br>
-            
+
               <H3>Edit Account Details</H3>
               <table
                 style={{
