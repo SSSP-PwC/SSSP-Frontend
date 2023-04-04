@@ -65,7 +65,7 @@ const Sidebar = () => {
           style={{ height: "100%" }}
           sx={{
             "& .pro-sidebar-inner": {
-              bgcolor: `dark`,
+              bgcolor: "#212529",
             },
             "& .pro-icon-wrapper": {
               backgroundColor: "transparent !important",
@@ -101,7 +101,9 @@ const Sidebar = () => {
                       Site Builder
                     </Typography>
                     <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
-                      <MenuOutlinedIcon style={{color: colors.primary[900]}}/>
+                      <MenuOutlinedIcon
+                        style={{ color: colors.primary[900] }}
+                      />
                     </IconButton>
                   </Box>
                 )}
