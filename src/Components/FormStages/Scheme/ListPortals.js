@@ -8,6 +8,8 @@ import Breadcrumb from "react-bootstrap/Breadcrumb";
 import { BarLoader } from "react-spinners";
 import { Button, SearchBox } from "govuk-react";
 import DynamicPage from "./DynamicPage";
+import { display } from "@mui/system";
+
 
 export const ListPortals = () => {
   const navigate = useNavigate();
@@ -25,6 +27,29 @@ export const ListPortals = () => {
     setFilteredData(filtered);
     setSearch(searchValue);
   };
+
+  function PortalCard({ portal }){
+    return(
+      <div 
+        style={{
+          borderRadius: "10px",
+          backgroundColor: "#d9d9d9",
+          padding: "10px",
+          margin: "10px",
+          boxShadow: "0 2px 2px rgba(0, 0, 0, 0,1)",
+          width: "100px",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}>
+        <img src={process.env.PUBLIC_URL + '/img/city.png'} alt="Logo" style={{width: "50%", borderRadius: "10px 0 0 10px"}}
+            height="30"
+            className="d-inline-block align-top"
+          />
+        <h3 style={{marginTop:"10px"}}>Test</h3>
+      </div>
+    );
+  }
 
   function ListSchemesBreadcrumb() {
     return (
@@ -91,16 +116,12 @@ export const ListPortals = () => {
                   <th style={{ textAlign: "center" }}>Application List</th>
                 </tr>
               </thead>
-              <tbody>
-                {(search ? filteredData : data).map((portal) => (
-                  <tr key={portal.id} onClick={() => handleRowClick(portal)}>
-                    <Link>
-                      <td style={{ fontSize: "24px" }}>{portal.name}</td>
-                    </Link>
-                  </tr>
-                ))}
-              </tbody>
             </Table>
+            <div id="cards">
+            {(search ? filteredData : data).map((portal) => (
+              <PortalCard key={portal.id} portal={portal.name}/>
+            ))}
+            </div>
           </div>
         )}
       </div>
