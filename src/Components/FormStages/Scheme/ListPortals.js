@@ -9,6 +9,8 @@ import { BarLoader } from "react-spinners";
 import { Button, SearchBox } from "govuk-react";
 import DynamicPage from "./DynamicPage";
 import { display } from "@mui/system";
+import { object } from "prop-types";
+import { Portal } from "react-is";
 
 
 export const ListPortals = () => {
@@ -38,16 +40,19 @@ export const ListPortals = () => {
           margin: "10px",
           boxShadow: "0 2px 2px rgba(0, 0, 0, 0,1)",
           width: "100px",
+          height: "105px",
           display: "inline-block",
           textAlign: "center",
           flexDirection: "column",
           alignItems: "center",
+          maxWidth: "120px",
+          fontSize : "14px",
         }}>
         <img src={process.env.PUBLIC_URL + '/img/city.png'} alt="Logo" style={{width: "50%", borderRadius: "10px 0 0 10px"}}
             height="30"
             className="d-inline-block align-top"
           />
-        <h3 style={{marginTop:"10px"}}>Test</h3>
+        <p style={{marginTop:"10px", textAlign: "center", maxWidth: "100px", fontSize: "14px,"}}>{portal || "Undefined"}</p>
       </div>
     );
   }
@@ -118,7 +123,7 @@ export const ListPortals = () => {
                 </tr>
               </thead>
             </Table>
-            <div id="cards">
+            <div id="cards" style={{display: "flex", flexWrap: "wrap", justifyContent: "center", alignItems: "flex-start"}}>
             {(search ? filteredData : data).map((portal) => (
               <PortalCard key={portal.id} portal={portal.name}/>
             ))}
