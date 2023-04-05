@@ -38,7 +38,8 @@ export const ListPortals = () => {
           margin: "10px",
           boxShadow: "0 2px 2px rgba(0, 0, 0, 0,1)",
           width: "100px",
-          display: "flex",
+          display: "inline-block",
+          textAlign: "center",
           flexDirection: "column",
           alignItems: "center",
         }}>
