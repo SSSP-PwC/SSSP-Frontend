@@ -8,6 +8,10 @@ import Breadcrumb from "react-bootstrap/Breadcrumb";
 import { BarLoader } from "react-spinners";
 import { Button, SearchBox } from "govuk-react";
 import DynamicPage from "./DynamicPage";
+import { display } from "@mui/system";
+import { object } from "prop-types";
+import { Portal } from "react-is";
+
 
 export const ListPortals = () => {
   const navigate = useNavigate();
@@ -25,6 +29,37 @@ export const ListPortals = () => {
     setFilteredData(filtered);
     setSearch(searchValue);
   };
+
+  function PortalCard({ portal }){
+    const handleClick = () => {
+      handleRowClick(portal);
+    };
+    return(
+      <div 
+        style={{
+          borderRadius: "10px",
+          backgroundColor: "#d9d9d9",
+          padding: "10px",
+          margin: "10px",
+          boxShadow: "0 2px 2px rgba(0, 0, 0, 0,1)",
+          width: "100px",
+          height: "105px",
+          display: "inline-block",
+          textAlign: "center",
+          flexDirection: "column",
+          alignItems: "center",
+          maxWidth: "120px",
+          fontSize : "14px",
+        }}
+        onClick={handleClick}>
+        <img src={process.env.PUBLIC_URL + '/img/city.png'} alt="Logo" style={{width: "50%", borderRadius: "10px 0 0 10px"}}
+            height="30"
+            className="d-inline-block align-top"
+          />
+        <p style={{marginTop:"10px", textAlign: "center", maxWidth: "100px", fontSize: "14px,"}}>{portal.name || "Undefined"}</p>
+      </div>
+    );
+  }
 
   function ListSchemesBreadcrumb() {
     return (
@@ -91,16 +126,12 @@ export const ListPortals = () => {
                   <th style={{ textAlign: "center" }}>Application List</th>
                 </tr>
               </thead>
-              <tbody>
-                {(search ? filteredData : data).map((portal) => (
-                  <tr key={portal.id} onClick={() => handleRowClick(portal)}>
-                    <Link>
-                      <td style={{ fontSize: "24px" }}>{portal.name}</td>
-                    </Link>
-                  </tr>
-                ))}
-              </tbody>
             </Table>
+            <div id="cards" style={{display: "flex", flexWrap: "wrap", justifyContent: "center", alignItems: "flex-start"}}>
+            {(search ? filteredData : data).map((portal) => (
+              <PortalCard key={portal.id} portal={portal}/>
+            ))}
+            </div>
           </div>
         )}
       </div>

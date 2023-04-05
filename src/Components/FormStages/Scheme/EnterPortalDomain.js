@@ -46,14 +46,36 @@ const EnterPortalDomain = () => {
     }
   };
   const handleSelect = (domain) => {
-    navigate(
-      `/site-home/https://sssp-qa.dj4eixkpal8an.amplifyapp.com/digital-services/portal/${domain}`,
-      {
-        state: {
-          domain: `https://sssp-qa.dj4eixkpal8an.amplifyapp.com/digital-services/portal/${domain}`,
-        },
-      }
-    );
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        domain_name: domain,
+      }),
+    };
+    fetch(`https://sssp-378808.nw.r.appspot.com/api/register-domain`, requestOptions)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        if (data.message === "Domain name already exists") {
+          alert("Please select a different domain");
+        } else {
+          navigate(
+            `/site-home/https://sssp-qa.dj4eixkpal8an.amplifyapp.com/digital-services/portal/${domain}`,
+            {
+              state: {
+                domain: `${domain}`,
+              },
+            }
+          );
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.error(error);
+      });
   };
 
   return (
