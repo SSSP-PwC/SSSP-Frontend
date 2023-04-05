@@ -57,6 +57,7 @@ export const ListPortals = () => {
           alignItems: "center",
           maxWidth: "120px",
           fontSize : "14px",
+          cursor: "pointer",
         }}
         onClick={handleClick}>
         <img src={process.env.PUBLIC_URL + '/img/city.png'} alt="Logo" style={{width: "50%", borderRadius: "10px 0 0 10px"}}
