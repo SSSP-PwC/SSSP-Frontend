@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Sidebar from "./Sidebar";
 import "./SiteBuilder.css";
 import { Divider, ThemeProvider } from "@mui/material";
@@ -7,21 +7,23 @@ import Modal from "react-bootstrap/Modal";
 import { Button, Heading, InputField, LoadingBox, Select } from "govuk-react";
 import { Container, Form } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
+import ReactCrop from "react-image-crop";
+import "react-image-crop/dist/ReactCrop.css";
+
 
 function SiteHome() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
-  const [nameField, setNameField] = useState(true);
   const id = sessionStorage.getItem("Citizen_ID");
   const [portalExists, setPortalExists] = useState();
   const [selectedOption, setSelectedOption] = useState(0 + 1);
   const [loading, setLoading] = useState();
   const [modalShow, setModalShow] = useState(false);
+  const [imageUri, setImageURI] = useState({ icon: "" });
   const [selectedFile, setSelectedFile] = useState();
   const [title, setTitle] = useState("Upload your site icon here");
   const [label, setLabel] = useState("Click here to upload your icon");
-  console.log("Selected file", selectedFile);
-
+  console.log(imageUri);
   const [preview, setPreview] = useState();
   console.log(selectedFile);
 
@@ -33,9 +35,15 @@ function SiteHome() {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`https://sssp-378808.nw.r.appspot.com/api/citizen/${id}/companies`)
-      .then((response) => response.json())
-      .then((data) => setOptions(data));
+    const getCompanies = () => {
+      fetch(`https://sssp-378808.nw.r.appspot.com/api/citizen/${id}/companies`)
+        .then((response) => response.json())
+        .then((data) => setOptions(data));
+    };
+    const getImage = () => {
+      fetch(`ttps://sssp-378808.nw.r.appspot.com/api/`);
+    };
+    getCompanies();
     setLoading(false);
   }, [id]);
 
@@ -46,12 +54,53 @@ function SiteHome() {
   });
   const [imageIcon, setImageIcon] = useState();
 
+  const convertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      };
+      fileReader.onerror = (error) => {
+        reject(error);
+      };
+    });
+  };
+  const handleFileUpload = async (e) => {
+    const file = e;
+    const base64 = await convertToBase64(file);
+    
 
-  const setIcon = (image) => {
-    setImageIcon(image)
-    setModalShow(false)
+    setImageURI({ ...imageUri, icon: base64 });
+    console.log(imageUri.icon)
+  };
 
-  }
+  const setIcon = async (image) => {
+    const file = await convertToBase64(image);
+    console.log(file)
+    setImageIcon(image);
+    setLoading(true)
+    const requestOptions = {
+      method: "PUT",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        portal_endpoint: formValues.domain ,
+        data_uri: file,
+      })
+    };
+    fetch(
+      `https://sssp-378808.nw.r.appspot.com/api/upload-image`,
+      requestOptions
+    )
+    .then((res) => res.json())
+    .then((data) => {
+        setLoading(false)
+        console.log(data)
+    })    
+    setModalShow(false);
+  };
 
   const updateData = (event) => {
     const { name, value } = event.target;
@@ -64,61 +113,7 @@ function SiteHome() {
   const renderNameField = () => {
     setRenderAdditionalSiteNameFields(true);
   };
-  const hasWhiteSpace = (s) => {
-    return /\s/.test(s);
-  };
-  const nameSite = () => {
-    setRenderAdditionalSiteNameFields(true);
-  };
-  const nameSites = async () => {
-    if (hasWhiteSpace(formValues.domain) === true) {
-      alert("URL cannot be processed");
-    } else {
-      try {
-        const response = await fetch(
-          `https://sssp-378808.nw.r.appspot.com/api/portals/${formValues.domain}`
-        );
-        const data = await response.json();
 
-        if (!response.ok) {
-        }
-
-        const existingPortal =
-          data.endpoint.toUpperCase() === formValues.domain.toUpperCase();
-        if (existingPortal) {
-          setPortalExists(true);
-          return;
-        }
-      } catch (error) {
-        console.log(error);
-        const response2 = await fetch(
-          "https://sssp-378808.nw.r.appspot.com/api/portal",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              name: formValues.site_name,
-              endpoint: formValues.domain,
-              company_id: selectedOption,
-            }),
-          }
-        );
-        if (!response2.ok) {
-        }
-        const data2 = await response2.json();
-        console.log(data2);
-        navigate("/Page-Builder", {
-          state: {
-            portal_endpoint: formValues.domain,
-            portal_id: data2.id,
-          },
-        });
-        return data2.id;
-      }
-    }
-  };
 
   const visitSite = () => {
     window.open(`${formValues.domain}/pages/1`);
@@ -139,8 +134,11 @@ function SiteHome() {
     }
 
     const objectUrl = URL.createObjectURL(selectedFile);
+    console.log(selectedFile.type.split("/").pop());
+
     console.log(objectUrl);
     setPreview(objectUrl);
+
     setLabel(selectedFile.name);
     setTitle("Your image has been uploaded!");
 
@@ -360,7 +358,7 @@ function SiteHome() {
                   }}
                 >
                   <br></br>
-                  <Divider>Site name</Divider>
+                  <Divider>Site Details</Divider>
                   <br></br>
                   <Heading
                     style={{
@@ -372,7 +370,7 @@ function SiteHome() {
                       display: "flex",
                     }}
                   >
-                    Add a site name
+                    Add your site details
                   </Heading>
                   <br></br>
                   <p
@@ -399,7 +397,7 @@ function SiteHome() {
                   >
                     {renderAdditionalSiteNameFields === false ? (
                       <Button onClick={() => renderNameField()}>
-                        Name site
+                        Add site details
                       </Button>
                     ) : (
                       <Container>
@@ -432,12 +430,26 @@ function SiteHome() {
                           }}
                         >
                           <center>
+                            <p
+                              style={{
+                                color: "#505a5f",
+                                margin: "5px",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                display: "flex",
+                              }}
+                            >
+                              This is your site icon that will appear in the
+                              application list.
+                            </p>
+                            <br></br>
                             <Button onClick={() => setModalShow(true)}>
                               Upload Site Icon
                             </Button>
                             {imageIcon !== undefined ? (
                               <center>
                                 <p>Image Preview:</p>
+
                                 <img
                                   src={preview}
                                   style={{
