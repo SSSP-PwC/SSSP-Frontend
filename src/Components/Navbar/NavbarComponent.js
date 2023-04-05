@@ -45,6 +45,9 @@ const LoggedInNavbar = () => {
               <NavDropdown.Item href="/personal-profile">
                 Credential Management
               </NavDropdown.Item>
+              <NavDropdown.Item href="/register-company-landing">
+                Register Company
+              </NavDropdown.Item>
               <NavDropdown.Item href="/" onClick={logout}>
                 Sign Out
               </NavDropdown.Item>
