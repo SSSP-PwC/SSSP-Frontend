@@ -18,16 +18,12 @@ import { useNavigate } from "react-router-dom";
 
 const EnterPortalDomain = () => {
   const [pageTitle, setPageTitle] = useState("");
-  const id = sessionStorage.getItem("Citizen_ID");
   const [pageUrl, setPageUrl] = useState("");
-  const [options, setOptions] = useState([]);
-  const [selectedOption, setSelectedOption] = useState(0 + 1);
+
   const [portalExists, setPortalExists] = useState(false);
-  const [companyExists, setCompanyExists] = useState();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [filteredOptions, setFilteredOptions] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
 
   const navigate = useNavigate();
 
@@ -50,11 +46,14 @@ const EnterPortalDomain = () => {
     }
   };
   const handleSelect = (domain) => {
-    navigate(`/site-home/https://sssp-qa.dj4eixkpal8an.amplifyapp.com/digital-services/portal/${domain}`, {
-      state: {
-        domain: `https://sssp-qa.dj4eixkpal8an.amplifyapp.com/digital-services/portal/${domain}`
+    navigate(
+      `/site-home/https://sssp-qa.dj4eixkpal8an.amplifyapp.com/digital-services/portal/${domain}`,
+      {
+        state: {
+          domain: `https://sssp-qa.dj4eixkpal8an.amplifyapp.com/digital-services/portal/${domain}`,
+        },
       }
-    });
+    );
   };
 
   return (

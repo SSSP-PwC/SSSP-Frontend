@@ -12,7 +12,7 @@ export const CompanyRegistrationLandingPage = () => {
   const handleNextPage = () => {
     navigate("/register-company-details", {
       state: {
-        portal_creation_flag: state.portal_creation_flag,
+        portal_creation_flag: state?.portal_creation_flag,
       },
     });
   };
