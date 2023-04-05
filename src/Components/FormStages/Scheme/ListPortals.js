@@ -22,10 +22,16 @@ export const ListPortals = () => {
   const [filteredData, setFilteredData] = useState([]);
 
   const handleChange = (event) => {
-    const searchValue = event.target.value.toLowerCase();
-    const filtered = data.filter((portal) =>
-      portal.name.toLowerCase().includes(searchValue)
-    );
+    const searchValue = (event.target.value || "").toLowerCase();
+    let filtered;
+    if (data && data.length > 0){
+      filtered = data.filter((portal) =>
+      portal.name && portal.name.toLowerCase().includes(searchValue)
+      );
+    } else {
+      filtered = [];
+    }
+    
     setFilteredData(filtered);
     setSearch(searchValue);
   };
@@ -34,6 +40,7 @@ export const ListPortals = () => {
     const handleClick = () => {
       handleRowClick(portal);
     };
+    const portalName = portal.name ? portal.name.toLowerCase(): "";
     return(
       <div 
         style={{
@@ -56,7 +63,7 @@ export const ListPortals = () => {
             height="30"
             className="d-inline-block align-top"
           />
-        <p style={{marginTop:"10px", textAlign: "center", maxWidth: "100px", fontSize: "14px,"}}>{portal.name || "Undefined"}</p>
+        <p style={{marginTop:"10px", textAlign: "center", maxWidth: "100px", fontSize: "14px,"}}>{portalName || "Undefined"}</p>
       </div>
     );
   }
