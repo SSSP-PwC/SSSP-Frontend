@@ -31,6 +31,9 @@ export const ListPortals = () => {
   };
 
   function PortalCard({ portal }){
+    const handleClick = () => {
+      handleRowClick(portal);
+    };
     return(
       <div 
         style={{
@@ -47,12 +50,13 @@ export const ListPortals = () => {
           alignItems: "center",
           maxWidth: "120px",
           fontSize : "14px",
-        }}>
+        }}
+        onClick={handleClick}>
         <img src={process.env.PUBLIC_URL + '/img/city.png'} alt="Logo" style={{width: "50%", borderRadius: "10px 0 0 10px"}}
             height="30"
             className="d-inline-block align-top"
           />
-        <p style={{marginTop:"10px", textAlign: "center", maxWidth: "100px", fontSize: "14px,"}}>{portal || "Undefined"}</p>
+        <p style={{marginTop:"10px", textAlign: "center", maxWidth: "100px", fontSize: "14px,"}}>{portal.name || "Undefined"}</p>
       </div>
     );
   }
@@ -125,7 +129,7 @@ export const ListPortals = () => {
             </Table>
             <div id="cards" style={{display: "flex", flexWrap: "wrap", justifyContent: "center", alignItems: "flex-start"}}>
             {(search ? filteredData : data).map((portal) => (
-              <PortalCard key={portal.id} portal={portal.name}/>
+              <PortalCard key={portal.id} portal={portal}/>
             ))}
             </div>
           </div>
