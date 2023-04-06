@@ -19,10 +19,15 @@ export default function Services() {
 
   const [isStarClicked, setIsStarClicked] = useState(false);
   const [imageSrc, setImageSrc] = useState('https://upload.wikimedia.org/wikipedia/commons/4/49/Star_empty.svg')
-  const handleStarClick = () => {
-    setIsStarClicked(!isStarClicked);
-    setImageSrc(isStarClicked ? 'https://upload.wikimedia.org/wikipedia/commons/2/29/Gold_Star.svg': 'https://upload.wikimedia.org/wikipedia/commons/4/49/Star_empty.svg');
-  }
+  const handleStarClick = (id) => {
+    const newData = data.map((service) => {
+      if(service.id === id){
+        return { ...service, isStarClicked: !service.isStarClicked};
+      }
+      return service;
+    });
+    setData(newData);
+  };
 
   const [response, setResponse] = useState(undefined);
   const [url, setUrl] = useState(undefined);
@@ -35,19 +40,19 @@ export default function Services() {
     console.log(newValue);
     setValue(newValue);
   };
-  function ServiceIcon({ service }){
+  function ServiceIcon({ service, option, isStarClicked }){
     const handleClick = () => {
-      handleStarClick(service);
+      handleStarClick(service.id);
     };
     return(
       <div style={{textAlign: 'center',position: 'relative',display: 'inline-block', margin: "10px",}}>
       <div style={{backgroundColor: 'white', width: '120px', height: '120px', borderRadius: '10px', alignItems: 'center'}}>
        <img src={process.env.PUBLIC_URL + '/img/city.png'} alt="" style={{width: '80px', height: '80px', marginTop: '20px'}} />
        <div style={{position: 'absolute', top: '0', right: '0', width: '30px', height: '30px', background:''}}>
-       <img src={isStarClicked ? 'https://upload.wikimedia.org/wikipedia/commons/2/29/Gold_Star.svg': 'https://upload.wikimedia.org/wikipedia/commons/4/49/Star_empty.svg'} alt="" style={{width: '30px', height: '30px'}} onClick={handleClick} />
+       <img src={service.isStarClicked ? 'https://upload.wikimedia.org/wikipedia/commons/2/29/Gold_Star.svg': 'https://upload.wikimedia.org/wikipedia/commons/4/49/Star_empty.svg'} alt="" style={{width: '30px', height: '30px'}} onClick={handleClick} />
        </div>
       </div>
-      <p style={{color: 'white', marginTop: '10px'}}>{service.name}</p>
+      <p style={{color: 'black', marginTop: '10px', width: '120px', wordWrap: 'break-word'}}>{service.name}</p>
       </div>
     );
   }
@@ -188,16 +193,22 @@ export default function Services() {
                 <h3 style={{color: 'white', position: 'relative', top: '10px', left: '10px'}}>Favorites</h3>
                 </div>
                 <div style={{display: 'inline-block', marginTop: '20px'}}>
-                {data.slice(6,10).map(service =>(
+                {data.map(service =>(
                  service.isStarClicked && <ServiceIcon key={service.id} service = {service} iconUrl = {process.env.PUBLIC_URL + '/img/city.png'} />
+                ))}
+                {options.map((option) => (
+                  option.isStarClicked && <ServiceIcon key={option.id} service = {option} iconUrl = {process.env.PUBLIC_URL + '/img/city.png'} />
                 ))}
                 </div>
                 <div style={{backgroundColor: 'black', height: '50px', width: '100%', borderRadius: '10px'}}>
                 <h3 style={{color: 'white', position: 'relative', top: '10px', left: '10px'}}>Recently Visited</h3>
                 </div>
-                <div style={{display: 'inline-block', marginTop: '20px'}}>
-                {data.slice(6,10).map(service =>(
-                 !service.isStarClicked && <ServiceIcon key={service.id} service = {service} iconUrl = {process.env.PUBLIC_URL + '/img/city.png'} />
+                <div style={{display: 'flex', flexWrap: "wrap", margin: "-10px", marginTop: '20px'}}>
+                {data.slice(6,14).map(service =>(
+                 <ServiceIcon key={service.id} service = {service} iconUrl = {process.env.PUBLIC_URL + '/img/city.png'} />
+                ))}
+                {options.slice(3,9).map((option) => (
+                  <ServiceIcon key={option.id} service = {option} iconUrl = {process.env.PUBLIC_URL + '/img/city.png'} />
                 ))}
                 </div>
                 </div>
