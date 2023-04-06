@@ -12,15 +12,18 @@ import {
   FileUpload,
   Label,
   TopNav,
-  Footer,
   MultiChoice,
   Link,
+  H3,
+  LoadingBox,
 } from "govuk-react";
 
 import { useNavigate } from "react-router-dom";
 import PhoneInput from "react-phone-number-input";
 import ReCAPTCHA from "react-google-recaptcha";
 import { MainHeading } from "../../../globalStyles";
+import { NavbarComponent } from "../../Navbar/NavbarComponent";
+import Footer from "../../Footer/Footer";
 
 function DynamicPage() {
   const { pageId, endpoint } = useParams();
@@ -28,7 +31,7 @@ function DynamicPage() {
   const navigate = useNavigate();
   const [numberOfElements, setNumberOfElements] = useState(1);
   const [showForm, setShowForm] = useState(false);
-  const [activeTab, setActiveTab] = useState(0);
+  const [loading, setLoading] = useState(false);
   const [numPages, setNumPages] = useState(1);
   const [buttonIndex, setButtonIndex] = useState(0);
   const [fileData, setFileData] = useState(null);
@@ -55,12 +58,14 @@ function DynamicPage() {
   }, []);
 
   async function fetchData() {
+    setLoading(true);
     const response = await fetch(
       `https://sssp-378808.nw.r.appspot.com/api/portals/${endpoint}/pages/${pageId}`
     );
     const info = await response.json();
     console.log(info);
     setData(info.fields);
+    setLoading(false);
   }
 
   const nextPage = (event) => {
@@ -236,7 +241,6 @@ function DynamicPage() {
                     value: field.label,
                   }}
                 >
-                  {" "}
                   {field.label}
                 </Label>
                 <br></br>
@@ -245,7 +249,7 @@ function DynamicPage() {
             break;
           case "body":
             formField = (
-              <div key={index}>
+              <div key={index} style={{padding: "50px"}}>
                 <Label
                   input={{
                     type: "text",
@@ -289,20 +293,46 @@ function DynamicPage() {
             break;
           case "coming-soon":
             formField = (
-              <div style={{ height: "100vh", marginTop: "250px"}}>
-                
-                <MainHeading
+              <div>
+                <div
                   style={{
+                    height: "100vh",
+                    backgroundImage: `url("https://pbs.twimg.com/ext_tw_video_thumb/1274020389501485057/pu/img/VkWNp99xjlTc_Q5d.jpg:large")`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundSize: "cover",
+                    display: "flex",
+                    flexDirection: "column",
                     alignItems: "center",
                     justifyContent: "center",
-                    display: "flex",
-                  
+                    minHeight: "calc(100vh - 140px)",
                   }}
                 >
-                  Website
-                  <br />
-                  Coming Soon
-                </MainHeading>
+                  <Heading
+                    style={{
+                      alignItems: "center",
+                      justifyContent: "center",
+                      display: "flex",
+                      color: "white",
+                    }}
+                  >
+                    Site Coming Soon!
+                  </Heading>
+                  <img
+                    src={process.env.PUBLIC_URL + "/img/AnimatedLogo.gif"}
+                    style={{ maxWidth: "350px", maxHeight: "300px" }}
+                  />
+                  <br></br>
+                  <br></br>
+
+                  <H3 style={{ color: "white", fontWeight: "normal" }}>
+                    This site is currently under development.
+                  </H3>
+                  <H3 style={{ color: "white", fontWeight: "normal" }}>
+                    Please check back later.
+                  </H3>
+
+                  <br></br>
+                </div>
               </div>
             );
             break;
@@ -387,15 +417,22 @@ function DynamicPage() {
           fieldsToRender.push(formField);
         }
       });
-
+    {
+      console.log(fieldsToRender.length === 0);
+      console.log(fieldsToRender);
+    }
     return (
-      <div className="container">
-        <form style={{ overflowWrap: "break-word" }}>{fieldsToRender}</form>
+      <div>
+        <LoadingBox loading={loading}>{fieldsToRender}</LoadingBox>
       </div>
     );
   };
 
-  return <div>{renderForm()}</div>;
+  return (
+    <div style={{ overflowWrap: "break-word", height: "100vh" }}>
+      {renderForm()}
+    </div>
+  );
 }
 
 export default DynamicPage;

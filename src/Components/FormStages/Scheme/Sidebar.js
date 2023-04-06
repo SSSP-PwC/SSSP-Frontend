@@ -31,13 +31,14 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
   );
 };
 
-const Sidebar = () => {
+const Sidebar = ({ link }) => {
   const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState();
   const citizen_id = sessionStorage.getItem("Citizen_ID");
+  console.log(selected);
 
   const [citizen, setCitizen] = useState();
 
@@ -78,7 +79,17 @@ const Sidebar = () => {
             },
           }}
         >
-          <ProSidebar collapsed={isCollapsed}>
+          <ProSidebar
+            collapsed={isCollapsed}
+            style={{
+              backgroundColor: "#212529",
+              border: "none",
+              boxShadow: "0 0 10px rgba(0,0,0,0.3)",
+              borderRadius: "20px",
+              overflow: "hidden",
+              margin: "3px",
+            }}
+          >
             <Menu iconShape="square">
               <MenuItem
                 onClick={() => setIsCollapsed(!isCollapsed)}
@@ -109,17 +120,10 @@ const Sidebar = () => {
               {!isCollapsed && (
                 <Box mb="25px">
                   <Box textAlign="center">
-                    <Typography variant="h2" sx={{ m: "10px 0 0 0" }}>
-                      <Heading
-                        style={{
-                          fontSize: "20px",
-                          fontWeight: "normal",
-                          color: colors.primary[900],
-                        }}
-                      >
-                        {citizen?.first_name} {citizen?.last_name}
-                      </Heading>
-                    </Typography>
+                    <Typography
+                      variant="h2"
+                      sx={{ m: "10px 0 0 0" }}
+                    ></Typography>
                   </Box>
                 </Box>
               )}
@@ -148,8 +152,8 @@ const Sidebar = () => {
                   Pages
                 </Typography>
                 <Item
-                  title="See Pages"
-                  to="/form"
+                  title="Create Pages"
+                  to={`/page-builder-interface/?domain=${link}`}
                   icon={<AutoStoriesIcon />}
                   selected={selected}
                   setSelected={setSelected}

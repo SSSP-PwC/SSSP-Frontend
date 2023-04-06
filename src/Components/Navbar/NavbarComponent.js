@@ -8,7 +8,19 @@ import { MdOutlineLogin } from "react-icons/md";
 
 const LoggedInNavbar = () => {
   return (
-    <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+    <Navbar
+      collapseOnSelect
+      expand="lg"
+      bg="dark"
+      variant="dark"
+      style={{
+        backgroundColor: "#212529",
+        border: "none",
+        boxShadow: "0 0 10px rgba(0,0,0,0.3)",
+        borderRadius: "10px",
+        margin: "3px",
+      }}
+    >
       <Container>
         <Navbar.Brand href="/">
           <img
@@ -71,7 +83,19 @@ const LoggedInNavbar = () => {
 
 const LoggedOutNavbar = () => {
   return (
-    <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+    <Navbar
+      collapseOnSelect
+      expand="lg"
+      bg="dark"
+      variant="dark"
+      style={{
+        backgroundColor: "#212529",
+        border: "none",
+        boxShadow: "0 0 10px rgba(0,0,0,0.3)",
+        borderRadius: "10px",
+        margin: "3px",
+      }}
+    >
       <Container>
         <Navbar.Brand href="/">
           <img
