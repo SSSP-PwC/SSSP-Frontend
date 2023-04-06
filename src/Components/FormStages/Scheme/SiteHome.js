@@ -10,7 +10,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import ReactCrop from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 
-
 function SiteHome() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
@@ -23,10 +22,9 @@ function SiteHome() {
   const [selectedFile, setSelectedFile] = useState();
   const [title, setTitle] = useState("Upload your site icon here");
   const [label, setLabel] = useState("Click here to upload your icon");
-  console.log(imageUri);
   const [preview, setPreview] = useState();
-  console.log(selectedFile);
-
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
   const [renderAdditionalSiteNameFields, setRenderAdditionalSiteNameFields] =
     useState(false);
   const [options, setOptions] = useState();
@@ -48,7 +46,7 @@ function SiteHome() {
   }, [id]);
 
   const [formValues, setFormValues] = useState({
-    domain: state.domain,
+    domain: urlParams.get('domain'),
     site_name: "",
     company_id: options,
   });
@@ -69,36 +67,60 @@ function SiteHome() {
   const handleFileUpload = async (e) => {
     const file = e;
     const base64 = await convertToBase64(file);
-    
-
     setImageURI({ ...imageUri, icon: base64 });
-    console.log(imageUri.icon)
   };
 
   const setIcon = async (image) => {
-    const file = await convertToBase64(image);
-    console.log(file)
-    setImageIcon(image);
-    setLoading(true)
-    const requestOptions = {
-      method: "PUT",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        portal_endpoint: formValues.domain ,
-        data_uri: file,
-      })
-    };
-    fetch(
-      `https://sssp-378808.nw.r.appspot.com/api/upload-image`,
-      requestOptions
-    )
-    .then((res) => res.json())
-    .then((data) => {
-        setLoading(false)
-        console.log(data)
-    })    
+    if (image === undefined) {
+      setImageIcon(undefined);
+      setPreview(undefined);
+      setSelectedFile(undefined);
+      setLabel("Click here to upload your icon");
+      setLoading(true);
+      const requestOptions = {
+        method: "PUT",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          portal_endpoint: formValues.domain,
+          data_uri: "No Image Provided",
+        }),
+      };
+      fetch(
+        `https://sssp-378808.nw.r.appspot.com/api/upload-image`,
+        requestOptions
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          setLoading(false);
+          console.log(data);
+        });
+    } else {
+      const file = await convertToBase64(image);
+      setImageIcon(image);
+      setLoading(true);
+      const requestOptions = {
+        method: "PUT",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          portal_endpoint: formValues.domain,
+          data_uri: file,
+        }),
+      };
+
+      fetch(
+        `https://sssp-378808.nw.r.appspot.com/api/upload-image`,
+        requestOptions
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          setLoading(false);
+          console.log(data);
+        });
+    }
     setModalShow(false);
   };
 
@@ -108,15 +130,13 @@ function SiteHome() {
       ...formValues,
       [name]: value,
     });
-    console.log(formValues);
   };
   const renderNameField = () => {
     setRenderAdditionalSiteNameFields(true);
   };
 
-
   const visitSite = () => {
-    window.open(`${formValues.domain}/pages/1`);
+    window.open(`/digital-services/portal/${formValues.domain}/pages/1`);
   };
   const onSelectFile = (e) => {
     if (!e.target.files || e.target.files.length === 0) {
@@ -230,7 +250,7 @@ function SiteHome() {
               className="screen"
               style={{ display: "flex", position: "relative" }}
             >
-              <Sidebar isSidebar={isSidebar} />
+              <Sidebar isSidebar={isSidebar} link = {formValues.domain}/>
 
               <Container style={{ padding: "20px" }}>
                 <Heading
@@ -403,10 +423,10 @@ function SiteHome() {
                       <Container>
                         <InputField
                           input={{
-                            name: "domain",
+                            name: "site_name",
                             required: true,
-                            //value: formValues.domain,
-                            //onChange: updateData,
+                            value: formValues.site_name,
+                            onChange: updateData,
                           }}
                         >
                           <div
@@ -443,11 +463,21 @@ function SiteHome() {
                               application list.
                             </p>
                             <br></br>
-                            <Button onClick={() => setModalShow(true)}>
-                              Upload Site Icon
-                            </Button>
+                            {imageIcon === undefined && (
+                              <Button onClick={() => setModalShow(true)}>
+                                Upload Site Icon
+                              </Button>
+                            )}
+
                             {imageIcon !== undefined ? (
                               <center>
+                                <Button onClick={() => setModalShow(true)}>
+                                  Change
+                                </Button>
+                                <br></br>
+                                <Button onClick={() => setIcon(undefined)}>
+                                  Remove
+                                </Button>
                                 <p>Image Preview:</p>
 
                                 <img

@@ -1,19 +1,15 @@
 import React, { useState } from "react";
 
-// ICONS
-import * as FaIcons from "react-icons/fa"; //Now i get access to all the icons
+import * as FaIcons from "react-icons/fa";
 import * as AiIcons from "react-icons/ai";
 
 import { IconContext } from "react-icons";
 
-// ROUTING
 
 import { Link } from "react-router-dom";
 
-// DATA FILE
 import { SidenavData } from "./SidenavData";
 
-// STYLES
 import "./SideNav.css";
 
 export default function Sidenav() {
@@ -24,7 +20,6 @@ export default function Sidenav() {
   return (
     <>
       <IconContext.Provider value={{ color: "#FFF" }}>
-        {/* All the icons now are white */}
         <div className="navbar">
           <Link to="#" className="menu-bars">
             <FaIcons.FaBars onClick={showSidebar} />
@@ -38,16 +33,7 @@ export default function Sidenav() {
               </Link>
             </li>
 
-            {SidenavData.map((item, index) => {
-              return (
-                <li key={index} className={item.cName}>
-                  <Link to={item.path}>
-                    {item.icon}
-                    <span>{item.title}</span>
-                  </Link>
-                </li>
-              );
-            })}
+           
           </ul>
         </nav>
       </IconContext.Provider>

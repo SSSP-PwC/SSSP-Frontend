@@ -63,7 +63,7 @@ const EnterPortalDomain = () => {
           alert("Please select a different domain");
         } else {
           navigate(
-            `/site-home/https://sssp-qa.dj4eixkpal8an.amplifyapp.com/digital-services/portal/${domain}`,
+            `/site-home/https://sssp-qa.dj4eixkpal8an.amplifyapp.com/digital-services/portal/?domain=${domain}`,
             {
               state: {
                 domain: `${domain}`,

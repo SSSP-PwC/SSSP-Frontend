@@ -1,17 +1,14 @@
 import React, { useState } from 'react';
 
 function TemplatePage() {
-  // Define state for storing user data
   const [pageElements, setPageElements] = useState([]);
   const [formFields, setFormFields] = useState([]);
 
-  // Function to add a new element to the page
   const addElement = (elementType) => {
     const newElement = { type: elementType, id: Date.now() };
     setPageElements([...pageElements, newElement]);
   };
 
-  // Function to remove an element from the page
   const removeElement = (elementId) => {
     const updatedElements = pageElements.filter(
       (element) => element.id !== elementId
@@ -19,13 +16,11 @@ function TemplatePage() {
     setPageElements(updatedElements);
   };
 
-  // Function to add a new form field
   const addFormField = (fieldType) => {
     const newField = { type: fieldType, id: Date.now() };
     setFormFields([...formFields, newField]);
   };
 
-  // Function to remove a form field
   const removeFormField = (fieldId) => {
     const updatedFields = formFields.filter((field) => field.id !== fieldId);
     setFormFields(updatedFields);

@@ -74,6 +74,7 @@ import Services from "./Components/FormStages/Citizen/Services";
 import EnterPortalDomain from "./Components/FormStages/Scheme/EnterPortalDomain";
 import EnterPortalName from "./Components/FormStages/Scheme/EnterPortalName";
 import SiteHome from "./Components/FormStages/Scheme/SiteHome";
+import InteractivePageBuilderInterface from "./Components/FormStages/Scheme/InteractivePageBuilderInterface";
 
 const queryParameters = new URLSearchParams(window.location.search);
 console.log(queryParameters.get("consent"));
@@ -122,6 +123,26 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <EnterCompanyDetails />
+                <Footer />
+              </>
+            }
+          />
+               <Route
+            path="/page-builder-interface/"
+            element={
+              <>
+                <GlobalStyle />
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                  <PhaseBanner level="POC">
+                    SSSP is currently a proof of concept{" "}
+                  </PhaseBanner>
+                </div>
+                <CookieConsent
+                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
+                >
+                  This website uses cookies to enhance the user experience.
+                </CookieConsent>
+                <InteractivePageBuilderInterface />
                 <Footer />
               </>
             }
@@ -1520,7 +1541,7 @@ export default function App() {
             }
           />
           <Route
-            path="/site-home/https://sssp-qa.dj4eixkpal8an.amplifyapp.com/digital-services/portal/:domain"
+            path="/site-home/https://sssp-qa.dj4eixkpal8an.amplifyapp.com/digital-services/portal/"
             element={
               <>
                 <GlobalStyle />
