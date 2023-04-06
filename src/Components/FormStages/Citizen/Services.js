@@ -142,6 +142,7 @@ export default function Services() {
                   aria-label="scrollable auto tabs example"
                   textColor="black"
                 >
+                  <Tab label="For You"/>
                   <Tab label="Subscribed Services" />
                   <Tab label="Available Services" />
                   <Tab label="See All" />
@@ -149,6 +150,79 @@ export default function Services() {
               </Box>
               <br></br>
               {value === 0 && (
+                <div
+                style={{
+                  backgroundColor: '#d9d9d9', 
+                  padding: '10px',
+                }}
+              >
+                <div style={{backgroundColor: 'black', height: '50px', width: '100%', borderRadius: '10px'}}>
+                <h3 style={{color: 'white', position: 'relative', top: '10px', left: '10px'}}>Favorites</h3>
+                </div>
+                <div style={{display: 'inline-block', marginTop: '20px'}}>
+                <div style={{textAlign: 'center',position: 'relative',display: 'inline-block'}}>
+                <div style={{backgroundColor: 'white', width: '120px', height: '120px', borderRadius: '10px', alignItems: 'center'}}>
+                 <img src={process.env.PUBLIC_URL + '/img/city.png'} alt="" style={{width: '80px', height: '80px', marginTop: '20px'}} />
+                 <div style={{position: 'absolute', top: '0', right: '0', width: '30px', height: '30px', background:''}}>
+                 <img src="https://upload.wikimedia.org/wikipedia/commons/2/29/Gold_Star.svg" alt="" style={{width: '30px', height: '30px'}} />
+                 </div>
+                </div>
+                <p style={{color: 'white', marginTop: '10px'}}>Application 1</p>
+                </div>
+                <div style={{textAlign: 'center', position: 'relative', display: 'inline-block', marginLeft: '20px'}}>
+                <div style={{backgroundColor: 'white', width: '120px', height: '120px', borderRadius: '10px', alignItems: 'center'}}>
+                 <img src={process.env.PUBLIC_URL + '/img/city.png'} alt="" style={{width: '80px', height: '80px', marginTop: '20px'}} />
+                 <div style={{position: 'absolute', top: '0', right: '0', width: '30px', height: '30px', background:''}}>
+                 <img src="https://upload.wikimedia.org/wikipedia/commons/2/29/Gold_Star.svg" alt="" style={{width: '30px', height: '30px'}} />
+                 </div>
+                </div>
+                <p style={{color: 'white', marginTop: '10px'}}>Application 2</p>
+                </div>
+                </div>
+                <div style={{backgroundColor: 'black', height: '50px', width: '100%', borderRadius: '10px'}}>
+                <h3 style={{color: 'white', position: 'relative', top: '10px', left: '10px'}}>Recently Visited</h3>
+                </div>
+                <div style={{display: 'inline-block', marginTop: '20px'}}>
+                <div style={{textAlign: 'center',position: 'relative',display: 'inline-block'}}>
+                <div style={{backgroundColor: 'white', width: '120px', height: '120px', borderRadius: '10px', alignItems: 'center'}}>
+                 <img src={process.env.PUBLIC_URL + '/img/city.png'} alt="" style={{width: '80px', height: '80px', marginTop: '20px'}} />
+                 <div style={{position: 'absolute', top: '0', right: '0', width: '30px', height: '30px', background:''}}>
+                 <img src="https://upload.wikimedia.org/wikipedia/commons/2/29/Gold_Star.svg" alt="" style={{width: '30px', height: '30px'}} />
+                 </div>
+                </div>
+                <p style={{color: 'white', marginTop: '10px'}}>Application 1</p>
+                </div>
+                <div style={{textAlign: 'center', position: 'relative', display: 'inline-block', marginLeft: '20px'}}>
+                <div style={{backgroundColor: 'white', width: '120px', height: '120px', borderRadius: '10px', alignItems: 'center'}}>
+                 <img src={process.env.PUBLIC_URL + '/img/city.png'} alt="" style={{width: '80px', height: '80px', marginTop: '20px'}} />
+                 <div style={{position: 'absolute', top: '0', right: '0', width: '30px', height: '30px', background:''}}>
+                 <img src="https://upload.wikimedia.org/wikipedia/commons/2/29/Gold_Star.svg" alt="" style={{width: '30px', height: '30px'}} />
+                 </div>
+                </div>
+                <p style={{color: 'white', marginTop: '10px'}}>Application 2</p>
+                </div>
+                <div style={{textAlign: 'center', position: 'relative', display: 'inline-block', marginLeft: '20px'}}>
+                <div style={{backgroundColor: 'white', width: '120px', height: '120px', borderRadius: '10px', alignItems: 'center'}}>
+                 <img src={process.env.PUBLIC_URL + '/img/city.png'} alt="" style={{width: '80px', height: '80px', marginTop: '20px'}} />
+                 <div style={{position: 'absolute', top: '0', right: '0', width: '30px', height: '30px', background:''}}>
+                 <img src="https://upload.wikimedia.org/wikipedia/commons/4/49/Star_empty.svg" alt="" style={{width: '30px', height: '30px'}} />
+                 </div>
+                </div>
+                <p style={{color: 'white', marginTop: '10px'}}>Application 3</p>
+                </div>
+                <div style={{textAlign: 'center', position: 'relative', display: 'inline-block', marginLeft: '20px'}}>
+                <div style={{backgroundColor: 'white', width: '120px', height: '120px', borderRadius: '10px', alignItems: 'center'}}>
+                 <img src={process.env.PUBLIC_URL + '/img/city.png'} alt="" style={{width: '80px', height: '80px', marginTop: '20px'}} />
+                 <div style={{position: 'absolute', top: '0', right: '0', width: '30px', height: '30px', background:''}}>
+                 <img src="https://upload.wikimedia.org/wikipedia/commons/4/49/Star_empty.svg" alt="" style={{width: '30px', height: '30px'}} />
+                 </div>
+                </div>
+                <p style={{color: 'white', marginTop: '10px'}}>Application 4</p>
+                </div>
+                </div>
+                </div>
+              )}
+              {value === 1 && (
                 <div
                   style={{
                     display: "grid",
