@@ -6,8 +6,7 @@ import { tokens } from "./theme";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import { useMediaQuery } from "@mui/material";
 
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-
+import AutoStoriesIcon from "@mui/icons-material/AutoStories";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 
 import { DetailsOutlined } from "@mui/icons-material";
@@ -34,7 +33,6 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
 
 const Sidebar = () => {
   const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
-  console.log(isSmallScreen);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -50,7 +48,6 @@ const Sidebar = () => {
         `https://sssp-378808.nw.r.appspot.com/api/${citizen_id}`
       );
       const data = await response.json();
-      console.log(data);
       setCitizen(data);
     }
     fetchCitizen();
@@ -153,7 +150,7 @@ const Sidebar = () => {
                 <Item
                   title="See Pages"
                   to="/form"
-                  icon={<PersonOutlinedIcon />}
+                  icon={<AutoStoriesIcon />}
                   selected={selected}
                   setSelected={setSelected}
                 />

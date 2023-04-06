@@ -40,7 +40,6 @@ export const ListPortals = () => {
     const handleClick = () => {
       handleRowClick(portal);
     };
-    const portalName = portal.name ? portal.name.toLowerCase(): "";
     return(
       <div 
         style={{
@@ -57,14 +56,12 @@ export const ListPortals = () => {
           alignItems: "center",
           maxWidth: "120px",
           fontSize : "14px",
-          cursor: "pointer",
         }}
         onClick={handleClick}>
         <img src={process.env.PUBLIC_URL + '/img/city.png'} alt="Logo" style={{width: "50%", borderRadius: "10px 0 0 10px"}}
             height="30"
             className="d-inline-block align-top"
           />
-        <p style={{marginTop:"10px", textAlign: "center", maxWidth: "100px", fontSize: "14px,"}}>{portalName || "Undefined"}</p>
       </div>
     );
   }
