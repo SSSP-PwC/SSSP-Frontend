@@ -60,7 +60,7 @@ function DynamicPage() {
   async function fetchData() {
     setLoading(true);
     const response = await fetch(
-      `http://192.168.68.108:2000/api/portals/${endpoint}/pages/${pageId}`
+      `https://sssp-378808.nw.r.appspot.com/api/portals/${endpoint}/pages/${pageId}`
     );
     const info = await response.json();
     console.log(info);
@@ -241,7 +241,6 @@ function DynamicPage() {
                     value: field.label,
                   }}
                 >
-                  {" "}
                   {field.label}
                 </Label>
                 <br></br>
