@@ -35,6 +35,7 @@ import { RegisterSchemeLandingPage } from "./Components/FormStages/Scheme/Regist
 import { SchemeTitle } from "./Components/FormStages/Scheme/Scheme-Title";
 import { RegisterNewService } from "./Components/FormStages/Scheme/RegisterService"
 import { RegisterExternalService } from "./Components/FormStages/Scheme/RegisterExternal";
+import { IframeComponent } from "./Components/FormStages/Scheme/IframeTest";
 import { SchemeDescription } from "./Components/FormStages/Scheme/Scheme-Description";
 import { SchemeDates } from "./Components/FormStages/Scheme/Scheme-Dates";
 import { SchemeObjectives } from "./Components/FormStages/Scheme/Scheme-Objectives";
@@ -183,6 +184,14 @@ export default function App() {
             element={
               <>
                 <RegisterNewService />
+              </>
+            }
+          />
+          <Route
+            path="/integrated"
+            element={
+              <>
+                <IframeComponent />
               </>
             }
           />
