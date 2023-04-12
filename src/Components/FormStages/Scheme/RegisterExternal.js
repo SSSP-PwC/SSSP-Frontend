@@ -130,7 +130,7 @@ export const RegisterExternalService = () => {
             marginBottom: "15px",
           }}>
       <Label style={{ fontWeight: "bold" }}>Category:</Label>
-      <Select id="company-select" value={selectedCompany} onChange={handleCompanySelect} style={{ position: "absolute", left: "20%" }} >
+      <Select id="company-select" value={selectedCompany} onChange={handleCompanySelect} style={{ position: "absolute", left: "20%", width: "30%"}} >
         <option value="">-- Please select --</option>
         <option value="company1">Finance</option>
         <option value="company2">Utility</option>
@@ -171,7 +171,7 @@ export const RegisterExternalService = () => {
             marginBottom: "15px",
           }}>
       <Label style={{ fontWeight: "bold" }}>Company:</Label>
-      <Select id="company-select" value={selectedCompany} onChange={handleCompanySelect} style={{ position: "absolute", left: "20%" }} >
+      <Select id="company-select" value={selectedCompany} onChange={handleCompanySelect} style={{ position: "absolute", left: "20%", width: "30%" }} >
         <option value="">-- Please select --</option>
         <option value="company1">Company 1</option>
         <option value="company2">Company 2</option>
