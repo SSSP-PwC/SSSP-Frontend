@@ -160,6 +160,9 @@ export default function Services() {
                 <SearchBox.Input placeholder="Enter keywords to search SSSP Digital Services" />
                 <SearchBox.Button />
               </SearchBox>
+              <a href="/register-service">
+             <Button style={{marginTop: '20px'}}>Register New Service</Button>
+             </a>
               <br></br>
               <Box
                 sx={{
@@ -185,7 +188,7 @@ export default function Services() {
               {value === 0 && (
                 <div
                 style={{
-                  backgroundColor: '#d9d9d9', 
+                  backgroundColor: '#528AAE', 
                   padding: '10px',
                 }}
               >

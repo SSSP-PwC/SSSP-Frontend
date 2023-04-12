@@ -33,6 +33,8 @@ import { ListPortals } from "./Components/FormStages/Scheme/ListPortals";
 import { GrantApplication } from "./Components/FormStages/Scheme/GrantApplication";
 import { RegisterSchemeLandingPage } from "./Components/FormStages/Scheme/Register-Scheme-Landing-Page";
 import { SchemeTitle } from "./Components/FormStages/Scheme/Scheme-Title";
+import { RegisterNewService } from "./Components/FormStages/Scheme/RegisterService"
+import { RegisterExternalService } from "./Components/FormStages/Scheme/RegisterExternal";
 import { SchemeDescription } from "./Components/FormStages/Scheme/Scheme-Description";
 import { SchemeDates } from "./Components/FormStages/Scheme/Scheme-Dates";
 import { SchemeObjectives } from "./Components/FormStages/Scheme/Scheme-Objectives";
@@ -75,6 +77,7 @@ import EnterPortalDomain from "./Components/FormStages/Scheme/EnterPortalDomain"
 import EnterPortalName from "./Components/FormStages/Scheme/EnterPortalName";
 import SiteHome from "./Components/FormStages/Scheme/SiteHome";
 import InteractivePageBuilderInterface from "./Components/FormStages/Scheme/InteractivePageBuilderInterface";
+import { ServiceSent } from "./Components/FormStages/Scheme/ServiceAppSent";
 
 const queryParameters = new URLSearchParams(window.location.search);
 console.log(queryParameters.get("consent"));
@@ -172,6 +175,30 @@ export default function App() {
 
                 <AssociateContact />
                 <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/register-service"
+            element={
+              <>
+                <RegisterNewService />
+              </>
+            }
+          />
+          <Route
+            path="/register-sent"
+            element={
+              <>
+                <ServiceSent />
+              </>
+            }
+          />
+          <Route
+            path="/register-external"
+            element={
+              <>
+                <RegisterExternalService />
               </>
             }
           />
