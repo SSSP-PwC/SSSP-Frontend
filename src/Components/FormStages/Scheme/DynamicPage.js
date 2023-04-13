@@ -104,39 +104,10 @@ function DynamicPage() {
     data &&
       data.map((field, index) => {
         switch (field.type) {
-          case "next-button":
+    
+          case "Text Field":
             formField = (
-              <div key={index}>
-                <Button onClick={nextPage} required={field.required}>
-                  {field.label}
-                </Button>
-                <br></br>
-              </div>
-            );
-            break;
-          case "previous-button":
-            formField = (
-              <div key={index}>
-                <Button onClick={previousPage} required={field.required}>
-                  {field.label}
-                </Button>
-                <br></br>
-              </div>
-            );
-            break;
-          case "submit-button":
-            formField = (
-              <div key={index}>
-                <Button onClick={submit} required={field.required}>
-                  {field.label}
-                </Button>
-                <br></br>
-              </div>
-            );
-            break;
-          case "textfield":
-            formField = (
-              <div key={index}>
+              <div key={index} >
                 <label style={{ textAlign: "center" }}>{field.name}</label>
 
                 <br />
@@ -151,7 +122,7 @@ function DynamicPage() {
               </div>
             );
             break;
-          case "email":
+          case "Email":
             formField = (
               <div key={index}>
                 <label style={{ textAlign: "center" }}>{field.name}</label>
@@ -168,7 +139,7 @@ function DynamicPage() {
             );
             break;
 
-          case "password":
+          case "Password":
             formField = (
               <div key={index}>
                 <label style={{ textAlign: "center" }}>{field.name}</label>
@@ -185,7 +156,7 @@ function DynamicPage() {
             );
             break;
 
-          case "number":
+          case "Number":
             formField = (
               <div key={index}>
                 <label style={{ textAlign: "center" }}>{field.name}</label>
@@ -201,7 +172,22 @@ function DynamicPage() {
               </div>
             );
             break;
-          case "checkbox":
+            case "Button":
+              formField = (
+                <div key={index} >
+                  <br />
+                  <Button
+                    input={{
+                      type: field.type,
+                      name: field.label,
+                      required: field.required,
+                    }}
+                  >{field.label}</Button>
+                  <br></br>
+                </div>
+              );
+              break;
+          case "Check box":
             formField = (
               <div key={index}>
                 <Checkbox name={field.label} required={field.required} />
@@ -210,7 +196,7 @@ function DynamicPage() {
               </div>
             );
             break;
-          case "textarea":
+          case "Text":
             formField = (
               <div key={index}>
                 <label style={{ textAlign: "center" }}>{field.name}</label>
@@ -224,15 +210,14 @@ function DynamicPage() {
               </div>
             );
             break;
-          case "file":
+          case "File Upload":
             formField = (
               <div key={index}>
-                {fileData && <img src={fileData} alt="uploaded file" />}
                 <br></br>
               </div>
             );
             break;
-          case "label":
+          case "Label":
             formField = (
               <div key={index}>
                 <Label
@@ -247,7 +232,7 @@ function DynamicPage() {
               </div>
             );
             break;
-          case "body":
+          case "Body":
             formField = (
               <div key={index} style={{padding: "50px"}}>
                 <Label
@@ -262,7 +247,7 @@ function DynamicPage() {
               </div>
             );
             break;
-          case "heading":
+          case "Header":
             formField = (
               <div key={index}>
                 <Heading
@@ -277,7 +262,7 @@ function DynamicPage() {
               </div>
             );
             break;
-          case "navbar":
+          case "Navbar":
             formField = (
               <div key={index}>
                 <TopNav
@@ -336,7 +321,7 @@ function DynamicPage() {
               </div>
             );
             break;
-          case "footer":
+          case "Footer":
             formField = (
               <div key={index}>
                 <Footer
@@ -356,14 +341,14 @@ function DynamicPage() {
               </div>
             );
             break;
-          case "multichoice":
+          case "Multiple choice":
             formField = (
               <div key={index}>
                 <MultiChoice label={field.name}></MultiChoice>
               </div>
             );
             break;
-          case "dropdown":
+          case "Drop-down":
             formField = (
               <div key={index}>
                 <Select id="page-select">
@@ -372,7 +357,7 @@ function DynamicPage() {
               </div>
             );
             break;
-          case "website_url":
+          case "Website URL":
             formField = (
               <div key={index}>
                 <Link href={`${field.name}`}>
@@ -389,28 +374,29 @@ function DynamicPage() {
               </div>
             );
             break;
-          case "phonenumber":
+          case "Phone number":
             formField = (
               <div key={index}>
                 <PhoneInput
                   placeholder={field.name}
-                  value={phoneNumber}
-                  onChange={setPhoneNumber}
+                  //value={phoneNumber}
+                  //onChange={setPhoneNumber}
                 />
                 <br></br>
               </div>
             );
             break;
 
-          case "captcha":
+          case "Captcha":
             formField = (
-              <div key={index}>
+              <div key={index} >
                 <ReCAPTCHA
                   sitekey={"6LeiNAclAAAAAImMXqIfk2YOFJF99SD6UVUAqyvd"}
                 />
                 <br></br>
               </div>
             );
+            default:
             break;
         }
         if (formField) {
