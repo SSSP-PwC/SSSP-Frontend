@@ -4,41 +4,189 @@ import "./SiteBuilder.css";
 import { Divider, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 import Modal from "react-bootstrap/Modal";
-import { Button, Heading, InputField, LoadingBox, Select } from "govuk-react";
+import {
+  Button,
+  Checkbox,
+  Footer,
+  H3,
+  Heading,
+  InputField,
+  Label,
+  LoadingBox,
+  MultiChoice,
+  Select,
+  TextArea,
+  TopNav,
+} from "govuk-react";
 import { Container, Form } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
+import { Box, IconButton, Typography, useTheme } from "@mui/material";
+import { tokens } from "./theme";
+import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
+import { Link } from "react-router-dom";
+import AutoStoriesIcon from "@mui/icons-material/AutoStories";
+import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import ReactCrop from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
+import { DataContext } from "./Sidebar";
+import React, { useContext } from "react";
+import { useMediaQuery } from "@mui/material";
 
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import { IoIosCreate } from "react-icons/io";
 import { MdOutlineLogin } from "react-icons/md";
+import {
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  TextField,
+} from "@mui/material";
+import { DetailsOutlined } from "@mui/icons-material";
+import "react-pro-sidebar/dist/css/styles.css";
+import { SearchBox } from "govuk-react";
+import { AddCircleOutlineOutlined } from "@mui/icons-material";
+import ReCAPTCHA from "react-google-recaptcha";
+import PhoneInput from "react-phone-input-2";
+import { HexColorPicker } from "react-colorful";
 
-function InteractivePageBuilderInterface() {
+function InteractivePageBuilderInterface({ link, mode }) {
   const [theme, colorMode] = useMode();
-  const [isSidebar, setIsSidebar] = useState(true);
   const id = sessionStorage.getItem("Citizen_ID");
-  const [portalExists, setPortalExists] = useState();
-  const [selectedOption, setSelectedOption] = useState(0 + 1);
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
   const [loading, setLoading] = useState();
-  const [modalShow, setModalShow] = useState(false);
-  const [imageUri, setImageURI] = useState({ icon: "" });
+  const [color, setColors] = useState("#bf4040");
   const [selectedFile, setSelectedFile] = useState();
   const [title, setTitle] = useState("Upload your site icon here");
   const [label, setLabel] = useState("Click here to upload your icon");
   const [preview, setPreview] = useState();
   const [sidebar, setSideBar] = useState(false);
-
+  const [numberOfElements, setNumberOfElements] = useState(1);
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
-  const [renderAdditionalSiteNameFields, setRenderAdditionalSiteNameFields] =
-    useState(false);
-  const [options, setOptions] = useState();
-  const { state } = useLocation();
-  const navigate = useNavigate();
 
+  const [options, setOptions] = useState();
+
+  const isSmallScreen = false;
+  const colors = tokens(theme.palette.mode);
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  const [searchText, setSearchText] = useState("");
+  const [selected, setSelected] = useState(undefined);
+  const [data, setData] = useState(selected);
+  const [page, setPage] = useState([
+    {
+      fields: [
+        {
+          type: "Navbar",
+          label: "Hello World",
+          name: "",
+          captcha_key: "",
+          required: false,
+        },
+
+        {
+          type: "Header",
+          label: "Hello World",
+          name: "",
+          captcha_key: "",
+          required: false,
+        },
+      ],
+    },
+  ]);
+
+  const citizen_id = sessionStorage.getItem("Citizen_ID");
+  console.log(page);
+
+  const [citizen, setCitizen] = useState();
+  const handleAddField = (input_value) => {
+    setSelected(input_value);
+    const currentPage = page[0];
+    const currentPageFields = currentPage.fields ? [...currentPage.fields] : [];
+
+    setNumberOfElements((prevState) => prevState + 1);
+
+    const newField = {
+      id: numberOfElements + 1,
+      label: `Field ${numberOfElements + 1}`,
+      type: input_value,
+      name: input_value,
+      captcha_key: "",
+      required: false,
+    };
+
+    currentPageFields.push(newField);
+
+    const newPage = [{ ...currentPage, fields: currentPageFields }];
+    setPage(newPage);
+  };
+
+  const componentList = [
+    { name: "Header", icon: <AddCircleOutlineOutlined /> },
+    { name: "Button", icon: <AddCircleOutlineOutlined /> },
+    { name: "Input", icon: <AddCircleOutlineOutlined /> },
+    { name: "Image", icon: <AddCircleOutlineOutlined /> },
+    { name: "Navbar", icon: <AddCircleOutlineOutlined /> },
+    { name: "Footer", icon: <AddCircleOutlineOutlined /> },
+    { name: "", icon: <AddCircleOutlineOutlined /> },
+
+    { name: "File Upload", icon: <AddCircleOutlineOutlined /> },
+    { name: "Checkbox", icon: <AddCircleOutlineOutlined /> },
+    { name: "Captcha", icon: <AddCircleOutlineOutlined /> },
+    { name: "Text area", icon: <AddCircleOutlineOutlined /> },
+    { name: "Label", icon: <AddCircleOutlineOutlined /> },
+    { name: "Multi choice", icon: <AddCircleOutlineOutlined /> },
+    { name: "Phone number", icon: <AddCircleOutlineOutlined /> },
+  ];
+
+  const filteredComponents = componentList.filter((component) =>
+    component.name.toLowerCase().includes(searchText.toLowerCase())
+  );
+  const Item = ({ title, to, icon, subMenuItems }) => {
+    const [isSubMenuOpen, setIsSubMenuOpen] = useState(false);
+
+    const handleItemClick = () => {
+      setIsSubMenuOpen((prevIsSubMenuOpen) => !prevIsSubMenuOpen);
+    };
+
+    return (
+      <>
+        <MenuItem onClick={handleItemClick} icon={icon}>
+          <Typography>{title}</Typography>
+          <Link to={to} />
+        </MenuItem>
+        {subMenuItems && to && isSubMenuOpen && (
+          <Menu iconShape="square" subMenu>
+            {subMenuItems.map((item, index) => (
+              <MenuItem key={index} style={{ paddingLeft: "1rem" }}>
+                <Link to={item.to}>
+                  <Typography>{item.name}</Typography>
+                </Link>
+              </MenuItem>
+            ))}
+          </Menu>
+        )}
+      </>
+    );
+  };
+
+  useEffect(() => {
+    setIsCollapsed(isSmallScreen);
+    async function fetchCitizen() {
+      const response = await fetch(
+        `https://sssp-378808.nw.r.appspot.com/api/${citizen_id}`
+      );
+      const data = await response.json();
+      setCitizen(data);
+      console.log(selected);
+    }
+    fetchCitizen();
+  }, [isSmallScreen]);
   useEffect(() => {
     setLoading(true);
     const getCompanies = () => {
@@ -58,19 +206,76 @@ function InteractivePageBuilderInterface() {
     site_name: "",
     company_id: options,
   });
+  const createPage = async (pageData) => {
+    try {
+      const response = await fetch(
+        "http://172.20.10.2:2000/api/add-page-elements",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            endpoint: formValues.domain,
+            fields: pageData,
+          }),
+        }
+      );
 
-  const visitSite = () => {
-    window.open(`/digital-services/portal/${formValues.domain}/pages/1`);
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
   };
-  const onSelectFile = (e) => {
-    if (!e.target.files || e.target.files.length === 0) {
-      setSelectedFile(undefined);
+
+  const submit = async () => {
+    console.log("IN");
+    for (let i = 0; i < 1; i++) {
+      console.log("HERE");
+      const pageFields = page[i].fields;
+      const fieldsData = [];
+
+      for (let j = 0; j < pageFields.length; j++) {
+        const fieldData = {
+          id: 3,
+          props: {
+            name: pageFields[j].name,
+            label: pageFields[j].label,
+            type: pageFields[j].type,
+            required: pageFields[j].required,
+          },
+        };
+
+        fieldsData.push(fieldData);
+      }
+
+      const pageData = {
+        fields: fieldsData,
+      };
+      console.log(fieldsData);
+
+      await createPage(pageData);
+    }
+  };
+  const handleRemoveField = (index) => {
+    const currentPage = page[0];
+    if (!currentPage) {
+      console.error(`Tab ${0} is not defined`);
       return;
     }
-
-    setSelectedFile(e.target.files[0]);
+    const currentPageFields = [...currentPage.fields];
+    currentPageFields.splice(index, 1);
+    const newPages = [...page];
+    newPages[0] = {
+      ...currentPage,
+      fields: currentPageFields,
+    };
+    setPage(newPages);
   };
-
   useEffect(() => {
     if (!selectedFile) {
       setPreview(undefined);
@@ -88,6 +293,327 @@ function InteractivePageBuilderInterface() {
 
     return () => URL.revokeObjectURL(objectUrl);
   }, [selectedFile]);
+
+  const RenderForm = () => {
+    const fieldsToRender = [];
+
+    const tab = page;
+
+    if (tab) {
+      tab[0].fields.forEach((field, index) => {
+        let formField = null;
+
+        switch (field.type) {
+          case "Text Field":
+            formField = (
+              <div key={index}>
+                <label style={{ textAlign: "center" }}>{field.name}</label>
+
+                <br />
+                <InputField
+                  input={{
+                    type: field.type,
+                    name: field.label,
+                    required: field.required,
+                  }}
+                />
+                <br></br>
+              </div>
+            );
+            break;
+          case "Email":
+            formField = (
+              <div key={index}>
+                <label style={{ textAlign: "center" }}>{field.name}</label>
+                <br />
+                <InputField
+                  input={{
+                    type: field.type,
+                    name: field.label,
+                    required: field.required,
+                  }}
+                />
+                <br></br>
+              </div>
+            );
+            break;
+
+          case "Password":
+            formField = (
+              <div key={index}>
+                <label style={{ textAlign: "center" }}>{field.name}</label>
+                <br />
+                <InputField
+                  input={{
+                    type: field.type,
+                    name: field.name,
+                    required: field.required,
+                  }}
+                />
+                <br></br>
+              </div>
+            );
+            break;
+
+          case "Number":
+            formField = (
+              <div key={index}>
+                <label style={{ textAlign: "center" }}>{field.name}</label>
+                <br />
+                <InputField
+                  input={{
+                    type: field.type,
+                    name: field.label,
+                    required: field.required,
+                  }}
+                />
+                <br></br>
+              </div>
+            );
+            break;
+          case "Button":
+            formField = (
+              <div key={index}>
+                <br />
+                <Button
+                  input={{
+                    type: field.type,
+                    name: field.label,
+                    required: field.required,
+                  }}
+                >
+                  {field.label}
+                </Button>
+                <br></br>
+              </div>
+            );
+            break;
+          case "Check box":
+            formField = (
+              <div key={index}>
+                <Checkbox name={field.label} required={field.required} />
+                <label style={{ textAlign: "center" }}>{field.name}</label>
+                <br></br>
+              </div>
+            );
+            break;
+          case "Text":
+            formField = (
+              <div key={index}>
+                <label style={{ textAlign: "center" }}>{field.name}</label>
+                <br />
+                <TextArea
+                  name={field.label}
+                  required={field.required}
+                  multiline
+                />
+                <br></br>
+              </div>
+            );
+            break;
+          case "File Upload":
+            formField = (
+              <div key={index}>
+                <br></br>
+              </div>
+            );
+            break;
+          case "Label":
+            formField = (
+              <div key={index}>
+                <Label
+                  input={{
+                    type: "text",
+                    value: field.label,
+                  }}
+                >
+                  {field.label}
+                </Label>
+                <br></br>
+              </div>
+            );
+            break;
+          case "Body":
+            formField = (
+              <div key={index} style={{ padding: "50px" }}>
+                <Label
+                  input={{
+                    type: "text",
+                    value: field.label,
+                  }}
+                >
+                  {field.label}
+                </Label>
+                <br></br>
+              </div>
+            );
+            break;
+          case "Header":
+            formField = (
+              <div key={index}>
+                <Heading
+                  size="LARGE"
+                  input={{
+                    type: "text",
+                  }}
+                >
+                  {field.label}
+                </Heading>
+                <br></br>
+              </div>
+            );
+            break;
+          case "Navbar":
+            formField = (
+              <div key={index}>
+                <TopNav
+                  company={
+                    <TopNav.Anchor href="https://example.com" target="new">
+                      {field.label}
+                    </TopNav.Anchor>
+                  }
+                />
+                <br></br>
+              </div>
+            );
+            break;
+          case "coming-soon":
+            formField = (
+              <div>
+                <div
+                  style={{
+                    height: "100vh",
+                    backgroundImage: `url("https://pbs.twimg.com/ext_tw_video_thumb/1274020389501485057/pu/img/VkWNp99xjlTc_Q5d.jpg:large")`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundSize: "cover",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    minHeight: "calc(100vh - 140px)",
+                  }}
+                >
+                  <Heading
+                    style={{
+                      alignItems: "center",
+                      justifyContent: "center",
+                      display: "flex",
+                      color: "white",
+                    }}
+                  >
+                    Site Coming Soon!
+                  </Heading>
+                  <img
+                    src={process.env.PUBLIC_URL + "/img/AnimatedLogo.gif"}
+                    style={{ maxWidth: "350px", maxHeight: "300px" }}
+                  />
+                  <br></br>
+                  <br></br>
+
+                  <H3 style={{ color: "white", fontWeight: "normal" }}>
+                    This site is currently under development.
+                  </H3>
+                  <H3 style={{ color: "white", fontWeight: "normal" }}>
+                    Please check back later.
+                  </H3>
+
+                  <br></br>
+                </div>
+              </div>
+            );
+            break;
+          case "Footer":
+            formField = (
+              <div key={index}>
+                <Footer
+                  licence={
+                    <span>
+                      All content is available under the{" "}
+                      <styled
+                        href="https://creativecommons.org/licenses/by/4.0/"
+                        rel="license"
+                      >
+                        Creative Commons Attribution 4.0 International Licence{" "}
+                      </styled>
+                      , except where otherwise stated
+                    </span>
+                  }
+                />
+              </div>
+            );
+            break;
+          case "Multiple choice":
+            formField = (
+              <div key={index}>
+                <MultiChoice label={field.name}></MultiChoice>
+              </div>
+            );
+            break;
+          case "Drop-down":
+            formField = (
+              <div key={index}>
+                <Select id="page-select">
+                  <option value="">{field.name}</option>)
+                </Select>
+              </div>
+            );
+            break;
+          case "Website URL":
+            formField = (
+              <div key={index}>
+                <Link href={`${field.name}`}>
+                  <Label
+                    input={{
+                      type: "text",
+                      value: field.name,
+                    }}
+                  >
+                    {field.name}
+                  </Label>
+                </Link>
+                <br></br>
+              </div>
+            );
+            break;
+          case "Phone number":
+            formField = (
+              <div key={index}>
+                <PhoneInput
+                  placeholder={field.name}
+                  //value={phoneNumber}
+                  //onChange={setPhoneNumber}
+                />
+                <br></br>
+              </div>
+            );
+            break;
+
+          case "Captcha":
+            formField = (
+              <div key={index}>
+                <ReCAPTCHA
+                  sitekey={"6LeiNAclAAAAAImMXqIfk2YOFJF99SD6UVUAqyvd"}
+                />
+                <br></br>
+              </div>
+            );
+          default:
+            break;
+        }
+
+        if (formField) {
+          fieldsToRender.push(formField);
+        }
+      });
+    }
+
+    return (
+      <div className="container">
+        <form style={{ overflowWrap: "break-word" }}>{fieldsToRender}</form>
+      </div>
+    );
+  };
+
   const PageBuilderNavbar = () => {
     return (
       <Navbar
@@ -100,7 +626,6 @@ function InteractivePageBuilderInterface() {
           border: "none",
           boxShadow: "0 0 10px rgba(0,0,0,0.3)",
           borderRadius: "10px",
-          overflow: "hidden",
           margin: "3px",
         }}
       >
@@ -161,6 +686,54 @@ function InteractivePageBuilderInterface() {
   return (
     <div>
       <PageBuilderNavbar />
+      <Modal show={true} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Component Configuration</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Divider>Label Details</Divider>
+              <br></br>
+              <center>
+                <Label>Label Name:</Label>
+                <InputField />
+              </center>
+            </Form.Group>
+            <Divider>Component Adjustments</Divider>
+            <br></br>
+            <center>
+              <Label>Label Colour:</Label>
+
+              <HexColorPicker color={color} onChange={setColors} />
+            </center>
+            <br></br>
+            <br></br>
+            <Form.Group
+              className="mb-3"
+              style={{
+                justifyContent: "space-between",
+                alignItems: "center",
+                display: "flex",
+                marginLeft: "50px",
+                marginRight: "50px",
+              }}
+            >
+              <InputField style={{ maxWidth: "100px", float: "left" }}>
+                <center>Width (px)</center>
+              </InputField>
+
+              <InputField style={{ maxWidth: "100px", float: "right" }}>
+                <center>Height (px)</center>
+              </InputField>
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={handleClose}>Close</Button>
+          <Button onClick={handleClose}>Save Changes</Button>
+        </Modal.Footer>
+      </Modal>
       <LoadingBox loading={loading}>
         <ColorModeContext.Provider value={colorMode}>
           <ThemeProvider theme={theme}>
@@ -168,24 +741,191 @@ function InteractivePageBuilderInterface() {
               className="screen"
               style={{ display: "flex", position: "relative" }}
             >
-                {sidebar === true && (
-  <ColorModeContext.Provider value={colorMode}>
-  <ThemeProvider theme={theme}>
-    <div
-      className="screen"
-      style={{ display: "flex", position: "relative" }}
-    >
-      <Sidebar isSidebar={isSidebar} link={formValues.domain} />
-    </div>{" "}
-  </ThemeProvider>
-</ColorModeContext.Provider>
-                )}
-            
+              {isSmallScreen === true ? (
+                <div></div>
+              ) : (
+                <div>
+                  <Box
+                    style={{ height: "100%" }}
+                    sx={{
+                      "& .pro-sidebar-inner": {
+                        bgcolor: "#212529",
+                      },
+                      "& .pro-icon-wrapper": {
+                        backgroundColor: "transparent !important",
+                      },
+                      "& .pro-inner-item": {
+                        padding: "5px 35px 5px 20px !important",
+                      },
+                      "& .pro-inner-item:hover": {
+                        color: "#868dfb !important",
+                      },
+                      "& .pro-menu-item.active": {
+                        color: "#6870fa !important",
+                      },
+                    }}
+                  >
+                    <ProSidebar
+                      collapsed={isCollapsed}
+                      style={{
+                        backgroundColor: "#212529",
+                        border: "none",
+                        boxShadow: "0 0 10px rgba(0,0,0,0.3)",
+                        borderRadius: "20px",
+                        overflow: "hidden",
+                        margin: "3px",
+                        marginTop: "0px",
+                      }}
+                    >
+                      <Menu iconShape="square">
+                        <MenuItem
+                          onClick={() => setIsCollapsed(!isCollapsed)}
+                          icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
+                          style={{
+                            margin: "10px 0 20px 0",
+                          }}
+                        >
+                          {!isCollapsed && (
+                            <Box
+                              display="flex"
+                              justifyContent="space-between"
+                              alignItems="center"
+                              ml="15px"
+                            >
+                              <Typography
+                                variant="h3"
+                                color={colors.primary[900]}
+                              >
+                                Site Builder
+                              </Typography>
+                              <IconButton
+                                onClick={() => setIsCollapsed(!isCollapsed)}
+                              >
+                                <MenuOutlinedIcon
+                                  style={{ color: colors.primary[900] }}
+                                />
+                              </IconButton>
+                            </Box>
+                          )}
+                        </MenuItem>
+
+                        {!isCollapsed && (
+                          <Box mb="25px">
+                            <Box textAlign="center">
+                              <Typography
+                                variant="h2"
+                                sx={{ m: "10px 0 0 0" }}
+                              ></Typography>
+                            </Box>
+                          </Box>
+                        )}
+                        {mode === "Site Home" && (
+                          <Box paddingLeft={isCollapsed ? undefined : "10%"}>
+                            <Item
+                              title="My Home"
+                              to="/site-home"
+                              icon={<DetailsOutlined />}
+                              selected={selected}
+                              setSelected={setSelected}
+                            />
+
+                            <Typography
+                              variant="h6"
+                              sx={{ m: "15px 0 5px 20px" }}
+                            >
+                              Details
+                            </Typography>
+                            <Item
+                              title="Site Details"
+                              to="/team"
+                              icon={<DetailsOutlined />}
+                              selected={selected}
+                              setSelected={setSelected}
+                            />
+
+                            <Typography
+                              variant="h6"
+                              sx={{ m: "15px 0 5px 20px" }}
+                            >
+                              Pages
+                            </Typography>
+                            <Item
+                              title="Create Pages"
+                              to={`/page-builder-interface/?domain=${link}`}
+                              icon={<AutoStoriesIcon />}
+                              selected={selected}
+                              setSelected={setSelected}
+                            />
+                          </Box>
+                        )}
+                        {!isCollapsed && mode !== "Site Home" && (
+                          <Box>
+                            <div style={{ margin: "20px" }}>
+                              <SearchBox
+                                value={searchText}
+                                onChange={(event) =>
+                                  setSearchText(event.target.value)
+                                }
+                                fullWidth
+                                sx={{ mb: 2 }}
+                              >
+                                <SearchBox.Input placeholder="Search element" />
+                                <SearchBox.Button />
+                              </SearchBox>
+
+                              <List style={{ color: "white" }}>
+                                {filteredComponents.map((component) => (
+                                  <ListItem
+                                    button
+                                    key={component.name}
+                                    selected={selected === component.name}
+                                    onClick={() =>
+                                      handleAddField(component.name)
+                                    }
+                                  >
+                                    <ListItemIcon style={{ color: "white" }}>
+                                      {component.icon}
+                                    </ListItemIcon>
+                                    <ListItemText primary={component.name} />
+                                  </ListItem>
+                                ))}
+                              </List>
+                            </div>
+                          </Box>
+                        )}
+
+                        {isCollapsed && mode !== "Site Home" && (
+                          <Box>
+                            <div style={{ margin: "20px" }}>
+                              <List style={{ color: "white" }}>
+                                {filteredComponents.map((component) => (
+                                  <ListItem
+                                    button
+                                    key={component.name}
+                                    selected={selected === component.name}
+                                    onClick={() => setSelected(component.name)}
+                                  >
+                                    <ListItemIcon style={{ color: "white" }}>
+                                      {component.icon}
+                                    </ListItemIcon>
+                                    <ListItemText primary={component.name} />
+                                  </ListItem>
+                                ))}
+                              </List>
+                            </div>
+                          </Box>
+                        )}
+                      </Menu>
+                    </ProSidebar>
+                  </Box>
+                </div>
+              )}
+
               <Container style={{ padding: "20px" }}>
                 <Heading
                   style={{
                     fontWeight: "lighter",
-                    fontSize: "35px",
+                    fontSize: "40px",
                     justifyContent: "center",
                     alignItems: "center",
                     display: "flex",
@@ -208,16 +948,14 @@ function InteractivePageBuilderInterface() {
                   Start creating your first website now.
                 </p>
                 <br></br>
-                <Container>
-                  <div
-                    style={{
-                      float: "right",
-                    }}
-                  ></div>
-                  <br></br>
-                </Container>
-                <br></br>
-                <br></br>
+                <Button style={{ float: "right" }} onClick={handleRemoveField}>
+                  Preview site
+                </Button>
+
+                <Button onClick={submit}>Launch site</Button>
+                <div>
+                  <RenderForm />
+                </div>
               </Container>
             </div>
           </ThemeProvider>
@@ -227,5 +965,4 @@ function InteractivePageBuilderInterface() {
     </div>
   );
 }
-
 export default InteractivePageBuilderInterface;
