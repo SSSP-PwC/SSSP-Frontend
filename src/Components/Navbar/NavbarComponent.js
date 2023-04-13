@@ -150,6 +150,9 @@ const LoggedOutNavbar = () => {
               <NavDropdown.Item href="/sign-in-citizen">
                 Citizen
               </NavDropdown.Item>
+              <NavDropdown.Item href="/moderate-services">
+                Admin
+              </NavDropdown.Item>
             </NavDropdown>
           </Nav>
         </Navbar.Collapse>
