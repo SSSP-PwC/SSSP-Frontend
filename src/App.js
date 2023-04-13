@@ -75,6 +75,7 @@ import EnterPortalDomain from "./Components/FormStages/Scheme/EnterPortalDomain"
 import EnterPortalName from "./Components/FormStages/Scheme/EnterPortalName";
 import SiteHome from "./Components/FormStages/Scheme/SiteHome";
 import InteractivePageBuilderInterface from "./Components/FormStages/Scheme/InteractivePageBuilderInterface";
+import Sidebar from "./Components/FormStages/Scheme/Sidebar";
 
 const queryParameters = new URLSearchParams(window.location.search);
 console.log(queryParameters.get("consent"));
@@ -127,7 +128,7 @@ export default function App() {
               </>
             }
           />
-               <Route
+          <Route
             path="/page-builder-interface/"
             element={
               <>
@@ -1540,6 +1541,7 @@ export default function App() {
               </>
             }
           />
+
           <Route
             path="/site-home/https://sssp-qa.dj4eixkpal8an.amplifyapp.com/digital-services/portal/"
             element={

@@ -65,7 +65,7 @@ export const CitizenRegistrationSummary = () => {
       setLoading(false);
       setAccountCreated(true);
 
-      if (state.company.company_creation_journey === true) {
+      if (state?.company?.company_creation_journey === true) {
         const url =
           "https://sssp-378808.nw.r.appspot.com/api/link-citizen-to-company-checks";
 
