@@ -37,6 +37,7 @@ import { RegisterNewService } from "./Components/FormStages/Scheme/RegisterServi
 import { RegisterExternalService } from "./Components/FormStages/Scheme/RegisterExternal";
 import { IframeComponent } from "./Components/FormStages/Scheme/IframeTest";
 import { SchemeDescription } from "./Components/FormStages/Scheme/Scheme-Description";
+import { ModerateServices } from "./Components/FormStages/Admin/ModerateServices";
 import { SchemeDates } from "./Components/FormStages/Scheme/Scheme-Dates";
 import { SchemeObjectives } from "./Components/FormStages/Scheme/Scheme-Objectives";
 import { SchemeEligibilityCriteria } from "./Components/FormStages/Scheme/Scheme-Eligibility-Criteria";
@@ -201,6 +202,27 @@ export default function App() {
               <>
                 <ServiceSent />
               </>
+            }
+          />
+          <Route
+            path="/moderate-services"
+            element={
+              <>
+              <GlobalStyle />
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <PhaseBanner level="POC">
+                  SSSP is currently a proof of concept{" "}
+                </PhaseBanner>
+              </div>
+              <NavbarComponent />
+              <CookieConsent
+                buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
+              >
+                This website uses cookies to enhance the user experience.
+              </CookieConsent>
+              <ModerateServices />
+              <Footer />
+            </>
             }
           />
           <Route

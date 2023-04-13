@@ -26,10 +26,10 @@ export const ServiceSent = () => {
   };
 
   return (
-    <div className="container">
+    <div className="container" >
       <div
         className="form"
-        style={{ marginTop: "70px", display: "inline-block" }}
+        style={{ marginTop: "70px", display: "inline-block", color: "30D5C8" }}
       >
         <RegistrationFormBreadcrumb />
         <MainHeading style={{ color: "#0B0C0C", fontWeight: "bold" }}>
