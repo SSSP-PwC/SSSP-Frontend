@@ -73,35 +73,35 @@ export const ModerateServices = () => {
                     <td><button style={{backgroundColor: 'green', color: 'white', borderRadius: '4px'}}>Approve</button><button style={{backgroundColor: 'red', marginLeft: '10px', color: 'white', borderRadius: '4px'}}>Deny</button></td>
                 </tr>
                 <tr style={{backgroundColor: '#fff'}}>
-                    <td>Grants Application</td>
-                    <td>Finance</td>
+                    <td>GP Appointments</td>
+                    <td>Health</td>
                     <td>PwC</td>
                     <td>mathew.steele@pwc.com</td>
                     <td><button style={{backgroundColor: 'green', color: 'white', borderRadius: '4px'}}>Approve</button><button style={{backgroundColor: 'red', marginLeft: '10px', color: 'white', borderRadius: '4px'}}>Deny</button></td>
                 </tr>
                 <tr style={{backgroundColor: '#f2f2f2'}}>
-                    <td>Grants Application</td>
-                    <td>Finance</td>
+                    <td>Council Services</td>
+                    <td>Utility</td>
                     <td>PwC</td>
                     <td>mathew.steele@pwc.com</td>
                     <td><button style={{backgroundColor: 'green', color: 'white', borderRadius: '4px'}}>Approve</button><button style={{backgroundColor: 'red', marginLeft: '10px', color: 'white', borderRadius: '4px'}}>Deny</button></td>
                 </tr>
                 <tr style={{backgroundColor: '#fff'}}>
-                    <td>Grants Application</td>
-                    <td>Finance</td>
+                    <td>MOT Appointments</td>
+                    <td>Utility</td>
                     <td>PwC</td>
                     <td>mathew.steele@pwc.com</td>
                     <td><button style={{backgroundColor: 'green', color: 'white', borderRadius: '4px'}}>Approve</button><button style={{backgroundColor: 'red', marginLeft: '10px', color: 'white', borderRadius: '4px'}}>Deny</button></td>
                 </tr>
                 <tr style={{backgroundColor: '#f2f2f2'}}>
-                    <td>Grants Application</td>
-                    <td>Finance</td>
+                    <td>Restaurant Reservations</td>
+                    <td>Hospitality</td>
                     <td>PwC</td>
                     <td>mathew.steele@pwc.com</td>
                     <td><button style={{backgroundColor: 'green', color: 'white', borderRadius: '4px'}}>Approve</button><button style={{backgroundColor: 'red', marginLeft: '10px', color: 'white', borderRadius: '4px'}}>Deny</button></td>
                 </tr>
                 <tr style={{backgroundColor: '#fff'}}>
-                    <td>Grants Application</td>
+                    <td>Investment Oppurtunities</td>
                     <td>Finance</td>
                     <td>PwC</td>
                     <td>mathew.steele@pwc.com</td>
