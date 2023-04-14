@@ -25,7 +25,15 @@ export const ModerateServices = () => {
     const pendingItems = data.filter(item => item.status === 'pending');
     const approvedItems = data.filter(item => item.status === 'approved');
     const deniedItems = data.filter(item => item.status === 'denied');
-
+    const filteredItems = pendingItems.filter(
+        (item) => item.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    const filteredItems2 = approvedItems.filter(
+        (item) => item.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    const filteredItems3 = deniedItems.filter(
+        (item) => item.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
     const rowStyle = {
         backgroundColor: '#f2f2f2',
     };
@@ -104,7 +112,7 @@ export const ModerateServices = () => {
                 </tr>
                 </thead>
                <tbody>
-                {pendingItems.map((item, index) => {
+                {filteredItems.map((item, index) => {
                     if(category === 'All' || item.category === category){
                         return(
                             <tr key={index} style={index%2 === 0 ? rowStyle : alternateRowStyle}>
@@ -157,7 +165,7 @@ export const ModerateServices = () => {
             </tr>
             </thead>
            <tbody>
-           {approvedItems.map((item, index) => {
+           {filteredItems2.map((item, index) => {
                     if(category === 'All' || item.category === category){
                         return(
                             <tr key={index} style={index%2 === 0 ? rowStyle : alternateRowStyle}>
@@ -210,7 +218,7 @@ export const ModerateServices = () => {
             </tr>
             </thead>
            <tbody>
-           {deniedItems.map((item, index) => {
+           {filteredItems3.map((item, index) => {
                     if(category === 'All' || item.category === category){
                         return(
                             <tr key={index} style={index%2 === 0 ? rowStyle : alternateRowStyle}>
