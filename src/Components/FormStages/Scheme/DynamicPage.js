@@ -104,10 +104,9 @@ function DynamicPage() {
     data &&
       data.map((field, index) => {
         switch (field.type) {
-    
           case "Text Field":
             formField = (
-              <div key={index} >
+              <div key={index}>
                 <label style={{ textAlign: "center" }}>{field.name}</label>
 
                 <br />
@@ -172,21 +171,27 @@ function DynamicPage() {
               </div>
             );
             break;
-            case "Button":
-              formField = (
-                <div key={index} >
-                  <br />
-                  <Button
-                    input={{
-                      type: field.type,
-                      name: field.label,
-                      required: field.required,
-                    }}
-                  >{field.label}</Button>
-                  <br></br>
-                </div>
-              );
-              break;
+          case "Button":
+            formField = (
+              <div key={index}>
+                <br />
+                <Button
+                  style={{
+                    width: field.config.width + "px",
+                    height: field.config.height + "px",
+                  }}
+                  input={{
+                    type: field.type,
+                    name: field.label,
+                    required: field.required,
+                  }}
+                >
+                  {field.config.label_name}
+                </Button>
+                <br></br>
+              </div>
+            );
+            break;
           case "Check box":
             formField = (
               <div key={index}>
@@ -234,7 +239,7 @@ function DynamicPage() {
             break;
           case "Body":
             formField = (
-              <div key={index} style={{padding: "50px"}}>
+              <div key={index} style={{ padding: "50px" }}>
                 <Label
                   input={{
                     type: "text",
@@ -267,8 +272,8 @@ function DynamicPage() {
               <div key={index}>
                 <TopNav
                   company={
-                    <TopNav.Anchor href="https://example.com" target="new">
-                      {field.label}
+                    <TopNav.Anchor target="new">
+                      {field.config.label_name}
                     </TopNav.Anchor>
                   }
                 />
@@ -386,17 +391,25 @@ function DynamicPage() {
               </div>
             );
             break;
+          case "Page Break":
+            formField = (
+              <div key={index}>
+                <Divider style={{ backgroundColor: "black" }}></Divider>
+                <br></br>
+              </div>
+            );
+            break;
 
           case "Captcha":
             formField = (
-              <div key={index} >
+              <div key={index}>
                 <ReCAPTCHA
                   sitekey={"6LeiNAclAAAAAImMXqIfk2YOFJF99SD6UVUAqyvd"}
                 />
                 <br></br>
               </div>
             );
-            default:
+          default:
             break;
         }
         if (formField) {
