@@ -74,7 +74,7 @@ export const ModerateServices = () => {
         <div>
             <h3>Pending Service Requests</h3>
             <div style={{ paddingLeft: '10px', paddingRight: '10px', backgroundColor: '#528AAE'}}>
-            <h4 style={{color: 'white', paddingBottom: '10px'}}>6 Pending Approvals</h4>
+            <h4 style={{color: 'white', paddingBottom: '10px'}}>Pending Approvals: {pendingItems.length}</h4>
             </div>
             <div>
             <div style={{backgroundColor: '#D8D8D8'}}>
@@ -82,9 +82,10 @@ export const ModerateServices = () => {
                 Filter By Category:
                 <select value={category} onChange={handleCategoryChange}>
                     <option value={"All"}>All</option>
-                    <option value={"Category A"}>Category A</option>
-                    <option value={"Category B"}>Category B</option>
-                    <option value={"Category C"}>Category C</option>
+                    <option value={"Finance"}>Finance</option>
+                    <option value={"Health"}>Health</option>
+                    <option value={"Utility"}>Utility</option>
+                    <option value={"Hospitality"}>Hospitality</option>
                 </select>
             </label>
             <label style={{marginLeft: '5px'}}>
@@ -103,18 +104,22 @@ export const ModerateServices = () => {
                 </tr>
                 </thead>
                <tbody>
-                {pendingItems.map((item, index) => (
-                    <tr key={index} style={index%2 === 0 ? rowStyle : alternateRowStyle}>
-                        <td>{item.name}</td>
-                        <td>{item.category}</td>
-                        <td>{item.company}</td>
-                        <td>{item.submittedBy}</td>
-                        <td><button onClick={() => handleApprove(item.name)} style={{backgroundColor: 'green', color: 'white', borderRadius: '4px'}}>Approve</button><button onClick={() => handleDeny(item.name)} style={{backgroundColor: 'red', marginLeft: '10px', color: 'white', borderRadius: '4px'}}>Deny</button></td>
-                    </tr>
-                ))}
-                <tr>
-
-                </tr>
+                {pendingItems.map((item, index) => {
+                    if(category === 'All' || item.category === category){
+                        return(
+                            <tr key={index} style={index%2 === 0 ? rowStyle : alternateRowStyle}>
+                            <td>{item.name}</td>
+                            <td>{item.category}</td>
+                            <td>{item.company}</td>
+                            <td>{item.submittedBy}</td>
+                            <td><button onClick={() => handleApprove(item.name)} style={{backgroundColor: 'green', color: 'white', borderRadius: '4px'}}>Approve</button><button onClick={() => handleDeny(item.name)} style={{backgroundColor: 'red', marginLeft: '10px', color: 'white', borderRadius: '4px'}}>Deny</button></td>
+                        </tr>  
+                        )
+                    } else {
+                        return null;
+                    }
+                
+})}
                </tbody>
             
             </table>
@@ -129,11 +134,12 @@ export const ModerateServices = () => {
         <label>
             Filter By Category:
             <select value={category} onChange={handleCategoryChange}>
-                <option value={"All"}>All</option>
-                <option value={"Category A"}>Category A</option>
-                <option value={"Category B"}>Category B</option>
-                <option value={"Category C"}>Category C</option>
-            </select>
+                    <option value={"All"}>All</option>
+                    <option value={"Finance"}>Finance</option>
+                    <option value={"Health"}>Health</option>
+                    <option value={"Utility"}>Utility</option>
+                    <option value={"Hospitality"}>Hospitality</option>
+                </select>
         </label>
         <label style={{marginLeft: '5px'}}>
             Search:
@@ -151,18 +157,22 @@ export const ModerateServices = () => {
             </tr>
             </thead>
            <tbody>
-            {approvedItems.map((item, index) => (
-                <tr key={index} style={index%2 === 0 ? rowStyle : alternateRowStyle}>
-                    <td>{item.name}</td>
-                    <td>{item.category}</td>
-                    <td>{item.company}</td>
-                    <td>{item.submittedBy}</td>
-                    <td style={{color: 'green'}}>Approved</td>
-                </tr>
-            ))}
-            <tr>
-
-            </tr>
+           {approvedItems.map((item, index) => {
+                    if(category === 'All' || item.category === category){
+                        return(
+                            <tr key={index} style={index%2 === 0 ? rowStyle : alternateRowStyle}>
+                            <td>{item.name}</td>
+                            <td>{item.category}</td>
+                            <td>{item.company}</td>
+                            <td>{item.submittedBy}</td>
+                            <td style={{color: 'green'}}>Approved</td>
+                        </tr>  
+                        )
+                    } else {
+                        return null;
+                    }
+                
+})}
            </tbody>
         
         </table>
@@ -177,11 +187,12 @@ export const ModerateServices = () => {
         <label>
             Filter By Category:
             <select value={category} onChange={handleCategoryChange}>
-                <option value={"All"}>All</option>
-                <option value={"Category A"}>Category A</option>
-                <option value={"Category B"}>Category B</option>
-                <option value={"Category C"}>Category C</option>
-            </select>
+                    <option value={"All"}>All</option>
+                    <option value={"Finance"}>Finance</option>
+                    <option value={"Health"}>Health</option>
+                    <option value={"Utility"}>Utility</option>
+                    <option value={"Hospitality"}>Hospitality</option>
+                </select>
         </label>
         <label style={{marginLeft: '5px'}}>
             Search:
@@ -199,15 +210,22 @@ export const ModerateServices = () => {
             </tr>
             </thead>
            <tbody>
-            {deniedItems.map((item, index) => (
-                <tr key={index} style={index%2 === 0 ? rowStyle : alternateRowStyle}>
-                    <td>{item.name}</td>
-                    <td>{item.category}</td>
-                    <td>{item.company}</td>
-                    <td>{item.submittedBy}</td>
-                    <td style={{color: 'red'}}>Denied</td>
-                </tr>
-            ))}
+           {deniedItems.map((item, index) => {
+                    if(category === 'All' || item.category === category){
+                        return(
+                            <tr key={index} style={index%2 === 0 ? rowStyle : alternateRowStyle}>
+                            <td>{item.name}</td>
+                            <td>{item.category}</td>
+                            <td>{item.company}</td>
+                            <td>{item.submittedBy}</td>
+                            <td style={{color: 'red'}}>Denied</td>
+                        </tr>  
+                        )
+                    } else {
+                        return null;
+                    }
+                
+})}
             <tr>
 
             </tr>
