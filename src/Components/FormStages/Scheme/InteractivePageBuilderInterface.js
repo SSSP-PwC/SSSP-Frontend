@@ -1,6 +1,4 @@
 import { useEffect, useState, useRef } from "react";
-import Sidebar from "./Sidebar";
-import "./SiteBuilder.css";
 import { Divider, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 import Modal from "react-bootstrap/Modal";
@@ -19,16 +17,13 @@ import {
   TopNav,
 } from "govuk-react";
 import { Container, Form } from "react-bootstrap";
-import { useLocation, useNavigate } from "react-router-dom";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { tokens } from "./theme";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
 import { Link } from "react-router-dom";
 import AutoStoriesIcon from "@mui/icons-material/AutoStories";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import ReactCrop from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
-import { DataContext } from "./Sidebar";
 import React, { useContext } from "react";
 import { useMediaQuery } from "@mui/material";
 
@@ -65,9 +60,11 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const [label, setLabel] = useState("Click here to upload your icon");
   const [preview, setPreview] = useState();
   const [sidebar, setSideBar] = useState(false);
-  const [numberOfElements, setNumberOfElements] = useState(1);
+  const [numberOfElements, setNumberOfElements] = useState(0);
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
+
+  const [formData, setFormData] = useState("");
 
   const [options, setOptions] = useState();
 
@@ -80,50 +77,63 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const [data, setData] = useState(selected);
   const [page, setPage] = useState([
     {
-      fields: [
-        {
-          type: "Navbar",
-          label: "Hello World",
-          name: "",
-          captcha_key: "",
-          required: false,
-        },
-
-        {
-          type: "Header",
-          label: "Hello World",
-          name: "",
-          captcha_key: "",
-          required: false,
-        },
-      ],
+      fields: [{}],
     },
   ]);
 
   const citizen_id = sessionStorage.getItem("Citizen_ID");
-  console.log(page);
+  console.log(formData);
+  const updateData = (event, property, fieldIndex) => {
+    const currentPage = page[0];
+    const currentPageFields = currentPage.fields ? [...currentPage.fields] : [];
+    const field = currentPageFields[fieldIndex];
+    const updatedField = {
+      ...field,
+      config: {
+        ...field.config,
+        [property]: event.target.value,
+      },
+    };
+    currentPageFields[fieldIndex] = updatedField;
+    const newPage = [{ ...currentPage, fields: currentPageFields }];
+    setPage(newPage);
+
+    const newFormData = { ...formData };
+    newFormData[numberOfElements] = updatedField;
+    setFormData(newFormData);
+  };
+
+  const resetConfiguration = () => {
+    setFormData({});
+
+    console.log(formData);
+  };
 
   const [citizen, setCitizen] = useState();
+
   const handleAddField = (input_value) => {
     setSelected(input_value);
     const currentPage = page[0];
     const currentPageFields = currentPage.fields ? [...currentPage.fields] : [];
-
     setNumberOfElements((prevState) => prevState + 1);
 
     const newField = {
-      id: numberOfElements + 1,
       label: `Field ${numberOfElements + 1}`,
       type: input_value,
       name: input_value,
       captcha_key: "",
       required: false,
+      config: {
+        label_name: "",
+        color: "#000000",
+        width: "",
+        height: "",
+      },
     };
-
     currentPageFields.push(newField);
-
     const newPage = [{ ...currentPage, fields: currentPageFields }];
     setPage(newPage);
+    setShow(true);
   };
 
   const componentList = [
@@ -133,8 +143,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
     { name: "Image", icon: <AddCircleOutlineOutlined /> },
     { name: "Navbar", icon: <AddCircleOutlineOutlined /> },
     { name: "Footer", icon: <AddCircleOutlineOutlined /> },
-    { name: "", icon: <AddCircleOutlineOutlined /> },
-
     { name: "File Upload", icon: <AddCircleOutlineOutlined /> },
     { name: "Checkbox", icon: <AddCircleOutlineOutlined /> },
     { name: "Captcha", icon: <AddCircleOutlineOutlined /> },
@@ -142,6 +150,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
     { name: "Label", icon: <AddCircleOutlineOutlined /> },
     { name: "Multi choice", icon: <AddCircleOutlineOutlined /> },
     { name: "Phone number", icon: <AddCircleOutlineOutlined /> },
+    { name: "Page Break", icon: <AddCircleOutlineOutlined /> },
   ];
 
   const filteredComponents = componentList.filter((component) =>
@@ -207,17 +216,26 @@ function InteractivePageBuilderInterface({ link, mode }) {
     company_id: options,
   });
   const createPage = async (pageData) => {
+    console.log(formData);
+    console.log(
+      JSON.stringify({
+        id: pageData.id,
+        endpoint: formValues.domain,
+        fields: formData,
+      })
+    );
     try {
       const response = await fetch(
-        "http://172.20.10.2:2000/api/add-page-elements",
+        "http://192.168.68.119:2000/api/add-page-elements",
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
+            id: 1,
             endpoint: formValues.domain,
-            fields: pageData,
+            fields: formData,
           }),
         }
       );
@@ -233,9 +251,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
   };
 
   const submit = async () => {
-    console.log("IN");
     for (let i = 0; i < 1; i++) {
-      console.log("HERE");
       const pageFields = page[i].fields;
       const fieldsData = [];
 
@@ -293,6 +309,22 @@ function InteractivePageBuilderInterface({ link, mode }) {
 
     return () => URL.revokeObjectURL(objectUrl);
   }, [selectedFile]);
+  const handleColorChange = (color) => {
+    if (typeof color === "string") {
+      setFormData({
+        ...formData,
+        color: color,
+      });
+    } else if (color && color.target) {
+      const { value } = color.target;
+      setFormData({
+        ...formData,
+        color: value,
+      });
+    } else {
+      console.error("Invalid color event:", color);
+    }
+  };
 
   const RenderForm = () => {
     const fieldsToRender = [];
@@ -307,10 +339,17 @@ function InteractivePageBuilderInterface({ link, mode }) {
           case "Text Field":
             formField = (
               <div key={index}>
-                <label style={{ textAlign: "center" }}>{field.name}</label>
+                <label style={{ textAlign: "center" }}>
+                  {" "}
+                  {field.config.label_name}
+                </label>
 
                 <br />
                 <InputField
+                  style={{
+                    width: field.config.width + "px",
+                    height: field.config.height + "px",
+                  }}
                   input={{
                     type: field.type,
                     name: field.label,
@@ -324,9 +363,37 @@ function InteractivePageBuilderInterface({ link, mode }) {
           case "Email":
             formField = (
               <div key={index}>
-                <label style={{ textAlign: "center" }}>{field.name}</label>
+                <label style={{ textAlign: "center" }}>
+                  {field.config.label_name}
+                </label>
                 <br />
                 <InputField
+                  style={{
+                    width: field.config.width + "px",
+                    height: field.config.height + "px",
+                  }}
+                  input={{
+                    type: field.type,
+                    name: field.label,
+                    required: field.required,
+                  }}
+                />
+                <br></br>
+              </div>
+            );
+            break;
+          case "Text area":
+            formField = (
+              <div key={index}>
+                <label style={{ textAlign: "center" }}>
+                  {field.config.label_name}
+                </label>
+                <br />
+                <TextArea
+                  style={{
+                    width: field.config.width + "px",
+                    height: field.config.height + "px",
+                  }}
                   input={{
                     type: field.type,
                     name: field.label,
@@ -341,9 +408,16 @@ function InteractivePageBuilderInterface({ link, mode }) {
           case "Password":
             formField = (
               <div key={index}>
-                <label style={{ textAlign: "center" }}>{field.name}</label>
+                <label style={{ textAlign: "center" }}>
+                  {" "}
+                  {field.config.label_name}
+                </label>
                 <br />
                 <InputField
+                  style={{
+                    width: field.config.width + "px",
+                    height: field.config.height + "px",
+                  }}
                   input={{
                     type: field.type,
                     name: field.name,
@@ -358,9 +432,16 @@ function InteractivePageBuilderInterface({ link, mode }) {
           case "Number":
             formField = (
               <div key={index}>
-                <label style={{ textAlign: "center" }}>{field.name}</label>
+                <label style={{ textAlign: "center" }}>
+                  {" "}
+                  {field.config.label_name}
+                </label>
                 <br />
                 <InputField
+                  style={{
+                    width: field.config.width + "px",
+                    height: field.config.height + "px",
+                  }}
                   input={{
                     type: field.type,
                     name: field.label,
@@ -376,13 +457,17 @@ function InteractivePageBuilderInterface({ link, mode }) {
               <div key={index}>
                 <br />
                 <Button
+                  style={{
+                    width: field.config.width + "px",
+                    height: field.config.height + "px",
+                  }}
                   input={{
                     type: field.type,
                     name: field.label,
                     required: field.required,
                   }}
                 >
-                  {field.label}
+                  {field.config.label_name}
                 </Button>
                 <br></br>
               </div>
@@ -427,7 +512,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     value: field.label,
                   }}
                 >
-                  {field.label}
+                  {field.config.label_name}
                 </Label>
                 <br></br>
               </div>
@@ -442,7 +527,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     value: field.label,
                   }}
                 >
-                  {field.label}
+                  {field.config.label_name}
                 </Label>
                 <br></br>
               </div>
@@ -457,7 +542,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     type: "text",
                   }}
                 >
-                  {field.label}
+                  {field.config.label_name}
                 </Heading>
                 <br></br>
               </div>
@@ -467,9 +552,15 @@ function InteractivePageBuilderInterface({ link, mode }) {
             formField = (
               <div key={index}>
                 <TopNav
+                  style={{
+                    color: field.color,
+                    width: field.config.width + "px",
+                    height: field.config.height + "px",
+                    backgroundColor: formData.color,
+                  }}
                   company={
-                    <TopNav.Anchor href="https://example.com" target="new">
-                      {field.label}
+                    <TopNav.Anchor target="new">
+                      {field.config.label_name}
                     </TopNav.Anchor>
                   }
                 />
@@ -542,10 +633,10 @@ function InteractivePageBuilderInterface({ link, mode }) {
               </div>
             );
             break;
-          case "Multiple choice":
+          case "Multi choice":
             formField = (
               <div key={index}>
-                <MultiChoice label={field.name}></MultiChoice>
+                <MultiChoice label={field.config.label_name}></MultiChoice>
               </div>
             );
             break;
@@ -553,7 +644,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
             formField = (
               <div key={index}>
                 <Select id="page-select">
-                  <option value="">{field.name}</option>)
+                  <option value=""> {field.config.label_name}</option>
                 </Select>
               </div>
             );
@@ -568,7 +659,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       value: field.name,
                     }}
                   >
-                    {field.name}
+                    {field.config.label_name}
                   </Label>
                 </Link>
                 <br></br>
@@ -583,6 +674,14 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   //value={phoneNumber}
                   //onChange={setPhoneNumber}
                 />
+                <br></br>
+              </div>
+            );
+            break;
+          case "Page Break":
+            formField = (
+              <div key={index}>
+                <Divider style={{ backgroundColor: "black" }}></Divider>
                 <br></br>
               </div>
             );
@@ -686,18 +785,25 @@ function InteractivePageBuilderInterface({ link, mode }) {
   return (
     <div>
       <PageBuilderNavbar />
-      <Modal show={true} onHide={handleClose}>
-        <Modal.Header closeButton>
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton onClick={resetConfiguration}>
           <Modal.Title>Component Configuration</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+            <Form.Group className="mb-3">
               <Divider>Label Details</Divider>
               <br></br>
               <center>
                 <Label>Label Name:</Label>
-                <InputField />
+                <InputField
+                  onChange={(event) =>
+                    updateData(event, "label_name", numberOfElements)
+                  }
+                  input={{
+                    name: "label_name",
+                  }}
+                />
               </center>
             </Form.Group>
             <Divider>Component Adjustments</Divider>
@@ -705,7 +811,10 @@ function InteractivePageBuilderInterface({ link, mode }) {
             <center>
               <Label>Label Colour:</Label>
 
-              <HexColorPicker color={color} onChange={setColors} />
+              <HexColorPicker
+                color={formData.color}
+                onChange={handleColorChange}
+              />
             </center>
             <br></br>
             <br></br>
@@ -719,18 +828,31 @@ function InteractivePageBuilderInterface({ link, mode }) {
                 marginRight: "50px",
               }}
             >
-              <InputField style={{ maxWidth: "100px", float: "left" }}>
+              <InputField
+                style={{ maxWidth: "100px", float: "left" }}
+                onChange={(e) => updateData(e, "width", numberOfElements)}
+                input={{
+                  name: "width",
+                  required: true,
+                }}
+              >
                 <center>Width (px)</center>
               </InputField>
 
-              <InputField style={{ maxWidth: "100px", float: "right" }}>
+              <InputField
+                style={{ maxWidth: "100px", float: "right" }}
+                onChange={(e) => updateData(e, "height", numberOfElements)}
+                input={{
+                  name: "height",
+                  required: true,
+                }}
+              >
                 <center>Height (px)</center>
               </InputField>
             </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={handleClose}>Close</Button>
           <Button onClick={handleClose}>Save Changes</Button>
         </Modal.Footer>
       </Modal>
