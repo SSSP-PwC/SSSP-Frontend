@@ -3,14 +3,14 @@ import Sidebar from "./Sidebar";
 import "./SiteBuilder.css";
 import { Divider, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
-import Modal from "react-bootstrap/Modal";
+import Modal from 'react-bootstrap/Modal';
 import { Button, Heading, InputField, LoadingBox, Select } from "govuk-react";
 import { Container, Form } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
-import ReactCrop from "react-image-crop";
-import "react-image-crop/dist/ReactCrop.css";
+
 
 function SiteHome() {
+
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
   const id = sessionStorage.getItem("Citizen_ID");
@@ -250,7 +250,7 @@ function SiteHome() {
               className="screen"
               style={{ display: "flex", position: "relative" }}
             >
-              <Sidebar isSidebar={isSidebar} link = {formValues.domain}/>
+              <Sidebar isSidebar={isSidebar} link = {formValues.domain} mode = "Site Home"/>
 
               <Container style={{ padding: "20px" }}>
                 <Heading
