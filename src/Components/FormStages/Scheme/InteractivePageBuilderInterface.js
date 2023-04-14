@@ -118,7 +118,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
     setNumberOfElements((prevState) => prevState + 1);
 
     const newField = {
-      
       label: `Field ${numberOfElements + 1}`,
       type: input_value,
       name: input_value,
@@ -340,10 +339,17 @@ function InteractivePageBuilderInterface({ link, mode }) {
           case "Text Field":
             formField = (
               <div key={index}>
-                <label style={{ textAlign: "center" }}>{field.name}</label>
+                <label style={{ textAlign: "center" }}>
+                  {" "}
+                  {field.config.label_name}
+                </label>
 
                 <br />
                 <InputField
+                  style={{
+                    width: field.config.width + "px",
+                    height: field.config.height + "px",
+                  }}
                   input={{
                     type: field.type,
                     name: field.label,
@@ -357,9 +363,37 @@ function InteractivePageBuilderInterface({ link, mode }) {
           case "Email":
             formField = (
               <div key={index}>
-                <label style={{ textAlign: "center" }}>{field.name}</label>
+                <label style={{ textAlign: "center" }}>
+                  {field.config.label_name}
+                </label>
                 <br />
                 <InputField
+                  style={{
+                    width: field.config.width + "px",
+                    height: field.config.height + "px",
+                  }}
+                  input={{
+                    type: field.type,
+                    name: field.label,
+                    required: field.required,
+                  }}
+                />
+                <br></br>
+              </div>
+            );
+            break;
+          case "Text area":
+            formField = (
+              <div key={index}>
+                <label style={{ textAlign: "center" }}>
+                  {field.config.label_name}
+                </label>
+                <br />
+                <TextArea
+                  style={{
+                    width: field.config.width + "px",
+                    height: field.config.height + "px",
+                  }}
                   input={{
                     type: field.type,
                     name: field.label,
@@ -374,9 +408,16 @@ function InteractivePageBuilderInterface({ link, mode }) {
           case "Password":
             formField = (
               <div key={index}>
-                <label style={{ textAlign: "center" }}>{field.name}</label>
+                <label style={{ textAlign: "center" }}>
+                  {" "}
+                  {field.config.label_name}
+                </label>
                 <br />
                 <InputField
+                  style={{
+                    width: field.config.width + "px",
+                    height: field.config.height + "px",
+                  }}
                   input={{
                     type: field.type,
                     name: field.name,
@@ -391,9 +432,16 @@ function InteractivePageBuilderInterface({ link, mode }) {
           case "Number":
             formField = (
               <div key={index}>
-                <label style={{ textAlign: "center" }}>{field.name}</label>
+                <label style={{ textAlign: "center" }}>
+                  {" "}
+                  {field.config.label_name}
+                </label>
                 <br />
                 <InputField
+                  style={{
+                    width: field.config.width + "px",
+                    height: field.config.height + "px",
+                  }}
                   input={{
                     type: field.type,
                     name: field.label,
@@ -464,7 +512,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     value: field.label,
                   }}
                 >
-                  {field.label}
+                  {field.config.label_name}
                 </Label>
                 <br></br>
               </div>
@@ -479,7 +527,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     value: field.label,
                   }}
                 >
-                  {field.label}
+                  {field.config.label_name}
                 </Label>
                 <br></br>
               </div>
@@ -494,7 +542,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     type: "text",
                   }}
                 >
-                  {field.label}
+                  {field.config.label_name}
                 </Heading>
                 <br></br>
               </div>
@@ -585,10 +633,10 @@ function InteractivePageBuilderInterface({ link, mode }) {
               </div>
             );
             break;
-          case "Multiple choice":
+          case "Multi choice":
             formField = (
               <div key={index}>
-                <MultiChoice label={field.name}></MultiChoice>
+                <MultiChoice label={field.config.label_name}></MultiChoice>
               </div>
             );
             break;
@@ -596,7 +644,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
             formField = (
               <div key={index}>
                 <Select id="page-select">
-                  <option value="">{field.name}</option>)
+                  <option value=""> {field.config.label_name}</option>
                 </Select>
               </div>
             );
@@ -611,7 +659,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       value: field.name,
                     }}
                   >
-                    {field.name}
+                    {field.config.label_name}
                   </Label>
                 </Link>
                 <br></br>
