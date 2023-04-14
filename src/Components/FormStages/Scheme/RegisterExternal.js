@@ -24,6 +24,7 @@ export const RegisterExternalService = () => {
   const [image, setImage] = useState(null);
   const [value, setValue] = useState("");
   const [isFocused, setIsFocused] = useState(false);
+  const [textInput, setTextInput] = useState('');
 
   const [selectedCompany, setSelectedCompany] = useState("");
 

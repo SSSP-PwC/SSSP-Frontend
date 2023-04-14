@@ -6,11 +6,57 @@ import { Button, Label } from "govuk-react";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import { useState } from "react";
 import { Category } from "@mui/icons-material";
+import { name } from "vfile-message";
+import { color } from "framer-motion";
 
 export const ModerateServices = () => {
     const [activeTab, setActiveTab] = useState("tab1");
-    const [categoory, setCategory] = useState('All');
+    const [category, setCategory] = useState('All');
     const [searchTerm, setSearchTerm] = useState('');
+    const [data, setData] = useState([
+        {name: 'Grants Application', category: 'Finance', company: 'PwC', submittedBy: 'mathew.steele@pwc.com', status: 'pending'},
+        {name: 'GP Appointments', category: 'Health',company: 'PwC', submittedBy: 'mathew.steele@pwc.com', status: 'pending'},
+        {name: 'Council Services', category: 'Utility', company: 'PwC', submittedBy: 'mathew.steele@pwc.com', status: 'pending'},
+        {name: 'MOT Appointments', category: 'Utility', company: 'PwC', submittedBy: 'mathew.steele@pwc.com', status: 'pending'},
+        {name: 'Restaurant Reservations', category: 'Hospitality', company: 'PwC', submittedBy: 'mathew.steele@pwc.com', status: 'pending'},
+        {name: 'Investment Oppurtunities', category: 'Finance', company: 'PwC', submittedBy: 'mathew.steele@pwc.com', status: 'pending'},
+    ]);
+
+    const pendingItems = data.filter(item => item.status === 'pending');
+    const approvedItems = data.filter(item => item.status === 'approved');
+    const deniedItems = data.filter(item => item.status === 'denied');
+    const filteredItems = pendingItems.filter(
+        (item) => item.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    const filteredItems2 = approvedItems.filter(
+        (item) => item.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    const filteredItems3 = deniedItems.filter(
+        (item) => item.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    const rowStyle = {
+        backgroundColor: '#f2f2f2',
+    };
+
+    const handleApprove = (name) => {
+        const index = data.findIndex(item => item.name === name);
+        if (index !== -1 && data[index].status === "pending"){
+            data[index].status = "approved";
+            setData([...data]);
+        }
+    }
+
+    const handleDeny = (name) => {
+        const index = data.findIndex(item => item.name === name);
+        if (index !== -1 && data[index].status === "pending"){
+            data[index].status = "denied";
+            setData([...data]);
+        }
+    }
+
+    const alternateRowStyle = {
+        backgroundColor: '#fff',
+    };
 
     const handleCategoryChange = (event) => {
         setCategory(event.target.value);
@@ -36,17 +82,18 @@ export const ModerateServices = () => {
         <div>
             <h3>Pending Service Requests</h3>
             <div style={{ paddingLeft: '10px', paddingRight: '10px', backgroundColor: '#528AAE'}}>
-            <h4 style={{color: 'white', paddingBottom: '10px'}}>6 Pending Approvals</h4>
+            <h4 style={{color: 'white', paddingBottom: '10px'}}>Pending Approvals: {pendingItems.length}</h4>
             </div>
             <div>
             <div style={{backgroundColor: '#D8D8D8'}}>
             <label>
                 Filter By Category:
-                <select value={categoory} onChange={handleCategoryChange}>
+                <select value={category} onChange={handleCategoryChange}>
                     <option value={"All"}>All</option>
-                    <option value={"Category A"}>Category A</option>
-                    <option value={"Category B"}>Category B</option>
-                    <option value={"Category C"}>Category C</option>
+                    <option value={"Finance"}>Finance</option>
+                    <option value={"Health"}>Health</option>
+                    <option value={"Utility"}>Utility</option>
+                    <option value={"Hospitality"}>Hospitality</option>
                 </select>
             </label>
             <label style={{marginLeft: '5px'}}>
@@ -65,48 +112,22 @@ export const ModerateServices = () => {
                 </tr>
                 </thead>
                <tbody>
-                <tr style={{backgroundColor: '#f2f2f2'}}>
-                    <td>Grants Application</td>
-                    <td>Finance</td>
-                    <td>PwC</td>
-                    <td>mathew.steele@pwc.com</td>
-                    <td><button style={{backgroundColor: 'green', color: 'white', borderRadius: '4px'}}>Approve</button><button style={{backgroundColor: 'red', marginLeft: '10px', color: 'white', borderRadius: '4px'}}>Deny</button></td>
-                </tr>
-                <tr style={{backgroundColor: '#fff'}}>
-                    <td>GP Appointments</td>
-                    <td>Health</td>
-                    <td>PwC</td>
-                    <td>mathew.steele@pwc.com</td>
-                    <td><button style={{backgroundColor: 'green', color: 'white', borderRadius: '4px'}}>Approve</button><button style={{backgroundColor: 'red', marginLeft: '10px', color: 'white', borderRadius: '4px'}}>Deny</button></td>
-                </tr>
-                <tr style={{backgroundColor: '#f2f2f2'}}>
-                    <td>Council Services</td>
-                    <td>Utility</td>
-                    <td>PwC</td>
-                    <td>mathew.steele@pwc.com</td>
-                    <td><button style={{backgroundColor: 'green', color: 'white', borderRadius: '4px'}}>Approve</button><button style={{backgroundColor: 'red', marginLeft: '10px', color: 'white', borderRadius: '4px'}}>Deny</button></td>
-                </tr>
-                <tr style={{backgroundColor: '#fff'}}>
-                    <td>MOT Appointments</td>
-                    <td>Utility</td>
-                    <td>PwC</td>
-                    <td>mathew.steele@pwc.com</td>
-                    <td><button style={{backgroundColor: 'green', color: 'white', borderRadius: '4px'}}>Approve</button><button style={{backgroundColor: 'red', marginLeft: '10px', color: 'white', borderRadius: '4px'}}>Deny</button></td>
-                </tr>
-                <tr style={{backgroundColor: '#f2f2f2'}}>
-                    <td>Restaurant Reservations</td>
-                    <td>Hospitality</td>
-                    <td>PwC</td>
-                    <td>mathew.steele@pwc.com</td>
-                    <td><button style={{backgroundColor: 'green', color: 'white', borderRadius: '4px'}}>Approve</button><button style={{backgroundColor: 'red', marginLeft: '10px', color: 'white', borderRadius: '4px'}}>Deny</button></td>
-                </tr>
-                <tr style={{backgroundColor: '#fff'}}>
-                    <td>Investment Oppurtunities</td>
-                    <td>Finance</td>
-                    <td>PwC</td>
-                    <td>mathew.steele@pwc.com</td>
-                    <td><button style={{backgroundColor: 'green', color: 'white', borderRadius: '4px'}}>Approve</button><button style={{backgroundColor: 'red', marginLeft: '10px', color: 'white', borderRadius: '4px'}}>Deny</button></td>
-                </tr>
+                {filteredItems.map((item, index) => {
+                    if(category === 'All' || item.category === category){
+                        return(
+                            <tr key={index} style={index%2 === 0 ? rowStyle : alternateRowStyle}>
+                            <td>{item.name}</td>
+                            <td>{item.category}</td>
+                            <td>{item.company}</td>
+                            <td>{item.submittedBy}</td>
+                            <td><button onClick={() => handleApprove(item.name)} style={{backgroundColor: 'green', color: 'white', borderRadius: '4px'}}>Approve</button><button onClick={() => handleDeny(item.name)} style={{backgroundColor: 'red', marginLeft: '10px', color: 'white', borderRadius: '4px'}}>Deny</button></td>
+                        </tr>  
+                        )
+                    } else {
+                        return null;
+                    }
+                
+})}
                </tbody>
             
             </table>
@@ -114,10 +135,113 @@ export const ModerateServices = () => {
         </div>
     )}
     {activeTab === "tab2" && (
-        <div>Content for tab 2</div>
+        <div>
+        <h3>Approved Service Requests</h3>
+        <div>
+        <div style={{backgroundColor: '#D8D8D8'}}>
+        <label>
+            Filter By Category:
+            <select value={category} onChange={handleCategoryChange}>
+                    <option value={"All"}>All</option>
+                    <option value={"Finance"}>Finance</option>
+                    <option value={"Health"}>Health</option>
+                    <option value={"Utility"}>Utility</option>
+                    <option value={"Hospitality"}>Hospitality</option>
+                </select>
+        </label>
+        <label style={{marginLeft: '5px'}}>
+            Search:
+            <input type="text" value={searchTerm} onChange={handleSearchChange} />
+        </label>
+        </div>
+        <table style={{ border: '1px solid black', width: '100%', borderCollapse: 'collapse'}}>
+            <thead>
+            <tr>
+                <th>Service Name</th>
+                <th>Category</th>
+                <th>Company</th>
+                <th>Submitted by</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+           <tbody>
+           {filteredItems2.map((item, index) => {
+                    if(category === 'All' || item.category === category){
+                        return(
+                            <tr key={index} style={index%2 === 0 ? rowStyle : alternateRowStyle}>
+                            <td>{item.name}</td>
+                            <td>{item.category}</td>
+                            <td>{item.company}</td>
+                            <td>{item.submittedBy}</td>
+                            <td style={{color: 'green'}}>Approved</td>
+                        </tr>  
+                        )
+                    } else {
+                        return null;
+                    }
+                
+})}
+           </tbody>
+        
+        </table>
+        </div>
+    </div>
     )}
     {activeTab === "tab3" && (
-        <div>Content for tab 3</div>
+        <div>
+        <h3>Denied Service Requests</h3>
+        <div>
+        <div style={{backgroundColor: '#D8D8D8'}}>
+        <label>
+            Filter By Category:
+            <select value={category} onChange={handleCategoryChange}>
+                    <option value={"All"}>All</option>
+                    <option value={"Finance"}>Finance</option>
+                    <option value={"Health"}>Health</option>
+                    <option value={"Utility"}>Utility</option>
+                    <option value={"Hospitality"}>Hospitality</option>
+                </select>
+        </label>
+        <label style={{marginLeft: '5px'}}>
+            Search:
+            <input type="text" value={searchTerm} onChange={handleSearchChange} />
+        </label>
+        </div>
+        <table style={{ border: '1px solid black', width: '100%', borderCollapse: 'collapse'}}>
+            <thead>
+            <tr>
+                <th>Service Name</th>
+                <th>Category</th>
+                <th>Company</th>
+                <th>Submitted by</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+           <tbody>
+           {filteredItems3.map((item, index) => {
+                    if(category === 'All' || item.category === category){
+                        return(
+                            <tr key={index} style={index%2 === 0 ? rowStyle : alternateRowStyle}>
+                            <td>{item.name}</td>
+                            <td>{item.category}</td>
+                            <td>{item.company}</td>
+                            <td>{item.submittedBy}</td>
+                            <td style={{color: 'red'}}>Denied</td>
+                        </tr>  
+                        )
+                    } else {
+                        return null;
+                    }
+                
+})}
+            <tr>
+
+            </tr>
+           </tbody>
+        
+        </table>
+        </div>
+    </div>
     )}
     </div>
     </div>
