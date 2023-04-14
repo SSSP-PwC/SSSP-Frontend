@@ -9,8 +9,34 @@ import { Category } from "@mui/icons-material";
 
 export const ModerateServices = () => {
     const [activeTab, setActiveTab] = useState("tab1");
-    const [categoory, setCategory] = useState('All');
+    const [category, setCategory] = useState('All');
     const [searchTerm, setSearchTerm] = useState('');
+    const [data, setData] = useState([
+        {name: 'Grants Application', category: 'Finance', company: 'PwC', submittedBy: 'mathew.steele@pwc.com', status: 'pending'},
+        {name: 'GP Appointments', category: 'Health',company: 'PwC', submittedBy: 'mathew.steele@pwc.com', status: 'pending'},
+        {name: 'Council Services', category: 'Utility', company: 'PwC', submittedBy: 'mathew.steele@pwc.com', status: 'pending'},
+        {name: 'MOT Appointments', category: 'Utility', company: 'PwC', submittedBy: 'mathew.steele@pwc.com', status: 'pending'},
+        {name: 'Restaurant Reservations', category: 'Hospitality', company: 'PwC', submittedBy: 'mathew.steele@pwc.com', status: 'pending'},
+        {name: 'Investment Oppurtunities', category: 'Finance', company: 'PwC', submittedBy: 'mathew.steele@pwc.com', status: 'pending'},
+    ]);
+
+    const pendingItems = data.filter(item => item.status === 'pending');
+
+    const rowStyle = {
+        backgroundColor: '#f2f2f2',
+    };
+
+    const handleApprove = (id) => {
+        const index = data.findIndex(item => item.id === id);
+        if (index !== -1 && data[index].status === "pending"){
+            data[index].status = "approved";
+            setData({ data });
+        }
+    }
+
+    const alternateRowStyle = {
+        backgroundColor: '#fff',
+    };
 
     const handleCategoryChange = (event) => {
         setCategory(event.target.value);
@@ -42,7 +68,7 @@ export const ModerateServices = () => {
             <div style={{backgroundColor: '#D8D8D8'}}>
             <label>
                 Filter By Category:
-                <select value={categoory} onChange={handleCategoryChange}>
+                <select value={category} onChange={handleCategoryChange}>
                     <option value={"All"}>All</option>
                     <option value={"Category A"}>Category A</option>
                     <option value={"Category B"}>Category B</option>
@@ -65,47 +91,17 @@ export const ModerateServices = () => {
                 </tr>
                 </thead>
                <tbody>
-                <tr style={{backgroundColor: '#f2f2f2'}}>
-                    <td>Grants Application</td>
-                    <td>Finance</td>
-                    <td>PwC</td>
-                    <td>mathew.steele@pwc.com</td>
-                    <td><button style={{backgroundColor: 'green', color: 'white', borderRadius: '4px'}}>Approve</button><button style={{backgroundColor: 'red', marginLeft: '10px', color: 'white', borderRadius: '4px'}}>Deny</button></td>
-                </tr>
-                <tr style={{backgroundColor: '#fff'}}>
-                    <td>GP Appointments</td>
-                    <td>Health</td>
-                    <td>PwC</td>
-                    <td>mathew.steele@pwc.com</td>
-                    <td><button style={{backgroundColor: 'green', color: 'white', borderRadius: '4px'}}>Approve</button><button style={{backgroundColor: 'red', marginLeft: '10px', color: 'white', borderRadius: '4px'}}>Deny</button></td>
-                </tr>
-                <tr style={{backgroundColor: '#f2f2f2'}}>
-                    <td>Council Services</td>
-                    <td>Utility</td>
-                    <td>PwC</td>
-                    <td>mathew.steele@pwc.com</td>
-                    <td><button style={{backgroundColor: 'green', color: 'white', borderRadius: '4px'}}>Approve</button><button style={{backgroundColor: 'red', marginLeft: '10px', color: 'white', borderRadius: '4px'}}>Deny</button></td>
-                </tr>
-                <tr style={{backgroundColor: '#fff'}}>
-                    <td>MOT Appointments</td>
-                    <td>Utility</td>
-                    <td>PwC</td>
-                    <td>mathew.steele@pwc.com</td>
-                    <td><button style={{backgroundColor: 'green', color: 'white', borderRadius: '4px'}}>Approve</button><button style={{backgroundColor: 'red', marginLeft: '10px', color: 'white', borderRadius: '4px'}}>Deny</button></td>
-                </tr>
-                <tr style={{backgroundColor: '#f2f2f2'}}>
-                    <td>Restaurant Reservations</td>
-                    <td>Hospitality</td>
-                    <td>PwC</td>
-                    <td>mathew.steele@pwc.com</td>
-                    <td><button style={{backgroundColor: 'green', color: 'white', borderRadius: '4px'}}>Approve</button><button style={{backgroundColor: 'red', marginLeft: '10px', color: 'white', borderRadius: '4px'}}>Deny</button></td>
-                </tr>
-                <tr style={{backgroundColor: '#fff'}}>
-                    <td>Investment Oppurtunities</td>
-                    <td>Finance</td>
-                    <td>PwC</td>
-                    <td>mathew.steele@pwc.com</td>
-                    <td><button style={{backgroundColor: 'green', color: 'white', borderRadius: '4px'}}>Approve</button><button style={{backgroundColor: 'red', marginLeft: '10px', color: 'white', borderRadius: '4px'}}>Deny</button></td>
+                {pendingItems.map((item, index) => (
+                    <tr key={index} style={index%2 === 0 ? rowStyle : alternateRowStyle}>
+                        <td>{item.name}</td>
+                        <td>{item.category}</td>
+                        <td>{item.company}</td>
+                        <td>{item.submittedBy}</td>
+                        <td><button onClick={() => handleApprove(item.id)} style={{backgroundColor: 'green', color: 'white', borderRadius: '4px'}}>Approve</button><button style={{backgroundColor: 'red', marginLeft: '10px', color: 'white', borderRadius: '4px'}}>Deny</button></td>
+                    </tr>
+                ))}
+                <tr>
+
                 </tr>
                </tbody>
             
