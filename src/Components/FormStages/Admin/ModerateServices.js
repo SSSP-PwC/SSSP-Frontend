@@ -6,6 +6,8 @@ import { Button, Label } from "govuk-react";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import { useState } from "react";
 import { Category } from "@mui/icons-material";
+import { name } from "vfile-message";
+import { color } from "framer-motion";
 
 export const ModerateServices = () => {
     const [activeTab, setActiveTab] = useState("tab1");
@@ -21,16 +23,26 @@ export const ModerateServices = () => {
     ]);
 
     const pendingItems = data.filter(item => item.status === 'pending');
+    const approvedItems = data.filter(item => item.status === 'approved');
+    const deniedItems = data.filter(item => item.status === 'denied');
 
     const rowStyle = {
         backgroundColor: '#f2f2f2',
     };
 
-    const handleApprove = (id) => {
-        const index = data.findIndex(item => item.id === id);
+    const handleApprove = (name) => {
+        const index = data.findIndex(item => item.name === name);
         if (index !== -1 && data[index].status === "pending"){
             data[index].status = "approved";
-            setData({ data });
+            setData([...data]);
+        }
+    }
+
+    const handleDeny = (name) => {
+        const index = data.findIndex(item => item.name === name);
+        if (index !== -1 && data[index].status === "pending"){
+            data[index].status = "denied";
+            setData([...data]);
         }
     }
 
@@ -97,7 +109,7 @@ export const ModerateServices = () => {
                         <td>{item.category}</td>
                         <td>{item.company}</td>
                         <td>{item.submittedBy}</td>
-                        <td><button onClick={() => handleApprove(item.id)} style={{backgroundColor: 'green', color: 'white', borderRadius: '4px'}}>Approve</button><button style={{backgroundColor: 'red', marginLeft: '10px', color: 'white', borderRadius: '4px'}}>Deny</button></td>
+                        <td><button onClick={() => handleApprove(item.name)} style={{backgroundColor: 'green', color: 'white', borderRadius: '4px'}}>Approve</button><button onClick={() => handleDeny(item.name)} style={{backgroundColor: 'red', marginLeft: '10px', color: 'white', borderRadius: '4px'}}>Deny</button></td>
                     </tr>
                 ))}
                 <tr>
@@ -110,10 +122,100 @@ export const ModerateServices = () => {
         </div>
     )}
     {activeTab === "tab2" && (
-        <div>Content for tab 2</div>
+        <div>
+        <h3>Approved Service Requests</h3>
+        <div>
+        <div style={{backgroundColor: '#D8D8D8'}}>
+        <label>
+            Filter By Category:
+            <select value={category} onChange={handleCategoryChange}>
+                <option value={"All"}>All</option>
+                <option value={"Category A"}>Category A</option>
+                <option value={"Category B"}>Category B</option>
+                <option value={"Category C"}>Category C</option>
+            </select>
+        </label>
+        <label style={{marginLeft: '5px'}}>
+            Search:
+            <input type="text" value={searchTerm} onChange={handleSearchChange} />
+        </label>
+        </div>
+        <table style={{ border: '1px solid black', width: '100%', borderCollapse: 'collapse'}}>
+            <thead>
+            <tr>
+                <th>Service Name</th>
+                <th>Category</th>
+                <th>Company</th>
+                <th>Submitted by</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+           <tbody>
+            {approvedItems.map((item, index) => (
+                <tr key={index} style={index%2 === 0 ? rowStyle : alternateRowStyle}>
+                    <td>{item.name}</td>
+                    <td>{item.category}</td>
+                    <td>{item.company}</td>
+                    <td>{item.submittedBy}</td>
+                    <td style={{color: 'green'}}>Approved</td>
+                </tr>
+            ))}
+            <tr>
+
+            </tr>
+           </tbody>
+        
+        </table>
+        </div>
+    </div>
     )}
     {activeTab === "tab3" && (
-        <div>Content for tab 3</div>
+        <div>
+        <h3>Denied Service Requests</h3>
+        <div>
+        <div style={{backgroundColor: '#D8D8D8'}}>
+        <label>
+            Filter By Category:
+            <select value={category} onChange={handleCategoryChange}>
+                <option value={"All"}>All</option>
+                <option value={"Category A"}>Category A</option>
+                <option value={"Category B"}>Category B</option>
+                <option value={"Category C"}>Category C</option>
+            </select>
+        </label>
+        <label style={{marginLeft: '5px'}}>
+            Search:
+            <input type="text" value={searchTerm} onChange={handleSearchChange} />
+        </label>
+        </div>
+        <table style={{ border: '1px solid black', width: '100%', borderCollapse: 'collapse'}}>
+            <thead>
+            <tr>
+                <th>Service Name</th>
+                <th>Category</th>
+                <th>Company</th>
+                <th>Submitted by</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+           <tbody>
+            {deniedItems.map((item, index) => (
+                <tr key={index} style={index%2 === 0 ? rowStyle : alternateRowStyle}>
+                    <td>{item.name}</td>
+                    <td>{item.category}</td>
+                    <td>{item.company}</td>
+                    <td>{item.submittedBy}</td>
+                    <td style={{color: 'red'}}>Denied</td>
+                </tr>
+            ))}
+            <tr>
+
+            </tr>
+           </tbody>
+        
+        </table>
+        </div>
+    </div>
     )}
     </div>
     </div>
