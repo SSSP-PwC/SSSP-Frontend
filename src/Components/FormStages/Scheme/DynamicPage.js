@@ -60,7 +60,7 @@ function DynamicPage() {
   async function fetchData() {
     setLoading(true);
     const response = await fetch(
-      `https://sssp-378808.nw.r.appspot.com/api/portals/${endpoint}/pages/${pageId}`
+      `http://192.168.68.119:2000/api/portals/${endpoint}/pages/${pageId}`
     );
     const info = await response.json();
     console.log(info);
@@ -103,7 +103,7 @@ function DynamicPage() {
     let formField = null;
     data &&
       data.map((field, index) => {
-        switch (field.type) {
+        switch (field.config?.type) {
           case "Text Field":
             formField = (
               <div key={index}>
@@ -112,9 +112,9 @@ function DynamicPage() {
                 <br />
                 <InputField
                   input={{
-                    type: field.type,
-                    name: field.label,
-                    required: field.required,
+                    type: field.config.type,
+                    name: field.config.label,
+                    required: field.config.required,
                   }}
                 />
                 <br></br>
@@ -124,13 +124,15 @@ function DynamicPage() {
           case "Email":
             formField = (
               <div key={index}>
-                <label style={{ textAlign: "center" }}>{field.name}</label>
+                <label style={{ textAlign: "center" }}>
+                  {field.config.name}
+                </label>
                 <br />
                 <InputField
                   input={{
-                    type: field.type,
-                    name: field.label,
-                    required: field.required,
+                    type: field.config.type,
+                    name: field.config.label,
+                    required: field.config.required,
                   }}
                 />
                 <br></br>
@@ -141,13 +143,15 @@ function DynamicPage() {
           case "Password":
             formField = (
               <div key={index}>
-                <label style={{ textAlign: "center" }}>{field.name}</label>
+                <label style={{ textAlign: "center" }}>
+                  {field.config.name}
+                </label>
                 <br />
                 <InputField
                   input={{
-                    type: field.type,
-                    name: field.name,
-                    required: field.required,
+                    type: field.config.type,
+                    name: field.config.name,
+                    required: field.config.required,
                   }}
                 />
                 <br></br>
@@ -158,13 +162,15 @@ function DynamicPage() {
           case "Number":
             formField = (
               <div key={index}>
-                <label style={{ textAlign: "center" }}>{field.name}</label>
+                <label style={{ textAlign: "center" }}>
+                  {field.config.name}
+                </label>
                 <br />
                 <InputField
                   input={{
-                    type: field.type,
-                    name: field.label,
-                    required: field.required,
+                    type: field.config.type,
+                    name: field.config.label,
+                    required: field.config.required,
                   }}
                 />
                 <br></br>
@@ -181,9 +187,9 @@ function DynamicPage() {
                     height: field.config.height + "px",
                   }}
                   input={{
-                    type: field.type,
-                    name: field.label,
-                    required: field.required,
+                    type: field.config.type,
+                    name: field.config.label,
+                    required: field.config.required,
                   }}
                 >
                   {field.config.label_name}
@@ -195,8 +201,10 @@ function DynamicPage() {
           case "Check box":
             formField = (
               <div key={index}>
-                <Checkbox name={field.label} required={field.required} />
-                <label style={{ textAlign: "center" }}>{field.name}</label>
+                <Checkbox name={field.label} required={field.config.required} />
+                <label style={{ textAlign: "center" }}>
+                  {field.config.name}
+                </label>
                 <br></br>
               </div>
             );
@@ -204,7 +212,9 @@ function DynamicPage() {
           case "Text":
             formField = (
               <div key={index}>
-                <label style={{ textAlign: "center" }}>{field.name}</label>
+                <label style={{ textAlign: "center" }}>
+                  {field.config.name}
+                </label>
                 <br />
                 <TextArea
                   name={field.label}
@@ -228,10 +238,10 @@ function DynamicPage() {
                 <Label
                   input={{
                     type: "text",
-                    value: field.label,
+                    value: field.config.label,
                   }}
                 >
-                  {field.label}
+                  {field.config.label}
                 </Label>
                 <br></br>
               </div>
@@ -243,10 +253,10 @@ function DynamicPage() {
                 <Label
                   input={{
                     type: "text",
-                    value: field.label,
+                    value: field.config.label,
                   }}
                 >
-                  {field.label}
+                  {field.config.label}
                 </Label>
                 <br></br>
               </div>
@@ -261,7 +271,7 @@ function DynamicPage() {
                     type: "text",
                   }}
                 >
-                  {field.label}
+                  {field.config.label}
                 </Heading>
                 <br></br>
               </div>
@@ -273,7 +283,7 @@ function DynamicPage() {
                 <TopNav
                   company={
                     <TopNav.Anchor target="new">
-                      {field.config.label_name}
+                      {field.config.label}
                     </TopNav.Anchor>
                   }
                 />

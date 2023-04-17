@@ -63,6 +63,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const [numberOfElements, setNumberOfElements] = useState(0);
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
+  const [pageCounter, setPageCounter] = useState(2);
 
   const [formData, setFormData] = useState("");
 
@@ -71,6 +72,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const isSmallScreen = false;
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [labelValue, setLabelValue] = useState([]);
 
   const [searchText, setSearchText] = useState("");
   const [selected, setSelected] = useState(undefined);
@@ -98,8 +100,16 @@ function InteractivePageBuilderInterface({ link, mode }) {
     const newPage = [{ ...currentPage, fields: currentPageFields }];
     setPage(newPage);
 
+    if (property === "label") {
+      setLabelValue((prevValues) => {
+        const newValues = [...prevValues];
+        newValues[fieldIndex] = event.target.value;
+        return newValues;
+      });
+    }
+
     const newFormData = { ...formData };
-    newFormData[numberOfElements] = updatedField;
+    newFormData[field.name] = updatedField;
     setFormData(newFormData);
   };
 
@@ -107,6 +117,9 @@ function InteractivePageBuilderInterface({ link, mode }) {
     setFormData({});
 
     console.log(formData);
+  };
+  const handlePageBreakClick = () => {
+    setPageCounter(pageCounter + 1);
   };
 
   const [citizen, setCitizen] = useState();
@@ -118,13 +131,10 @@ function InteractivePageBuilderInterface({ link, mode }) {
     setNumberOfElements((prevState) => prevState + 1);
 
     const newField = {
-      label: `Field ${numberOfElements + 1}`,
       type: input_value,
       name: input_value,
-      captcha_key: "",
-      required: false,
       config: {
-        label_name: "",
+        label: "",
         color: "#000000",
         width: "",
         height: "",
@@ -133,7 +143,13 @@ function InteractivePageBuilderInterface({ link, mode }) {
     currentPageFields.push(newField);
     const newPage = [{ ...currentPage, fields: currentPageFields }];
     setPage(newPage);
-    setShow(true);
+
+    setLabelValue((prevValues) => [...prevValues, ""]);
+    if (input_value === "Page Break") {
+      handlePageBreakClick();
+    } else {
+      setShow(true);
+    }
   };
 
   const componentList = [
@@ -216,26 +232,16 @@ function InteractivePageBuilderInterface({ link, mode }) {
     company_id: options,
   });
   const createPage = async (pageData) => {
-    console.log(formData);
-    console.log(
-      JSON.stringify({
-        id: pageData.id,
-        endpoint: formValues.domain,
-        fields: formData,
-      })
-    );
     try {
       const response = await fetch(
-        "http://192.168.68.119:2000/api/add-page-elements",
+        `http://192.168.68.119:2000/api/add-page-elements/${formValues.domain}/${pageCounter}`,
         {
-          method: "PUT",
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            id: 1,
-            endpoint: formValues.domain,
-            fields: formData,
+            fields: pageData.fields,
           }),
         }
       );
@@ -251,32 +257,35 @@ function InteractivePageBuilderInterface({ link, mode }) {
   };
 
   const submit = async () => {
-    for (let i = 0; i < 1; i++) {
-      const pageFields = page[i].fields;
-      const fieldsData = [];
-
-      for (let j = 0; j < pageFields.length; j++) {
-        const fieldData = {
-          id: 3,
-          props: {
-            name: pageFields[j].name,
-            label: pageFields[j].label,
-            type: pageFields[j].type,
-            required: pageFields[j].required,
-          },
+    let pages = [];
+    let currentPage = { fields: [] };
+  
+    page[0].fields.forEach((field, index) => {
+      if (field.type === "Page Break") {
+        pages.push(currentPage);
+        currentPage = { fields: [] };
+      } else {
+        const props = {
+          name: field.name,
+          label: labelValue[index],
+          type: field.type,
+          required: field.required,
         };
-
-        fieldsData.push(fieldData);
+        currentPage.fields.push({ props });
       }
-
+    });
+  
+    pages.push(currentPage);
+  
+    for (let i = 0; i < pages.length; i++) {
       const pageData = {
-        fields: fieldsData,
+        fields: pages[i].fields,
       };
-      console.log(fieldsData);
-
+      console.log(pageData);
       await createPage(pageData);
     }
   };
+  
   const handleRemoveField = (index) => {
     const currentPage = page[0];
     if (!currentPage) {
@@ -341,7 +350,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
               <div key={index}>
                 <label style={{ textAlign: "center" }}>
                   {" "}
-                  {field.config.label_name}
+                  {field.config.label}
                 </label>
 
                 <br />
@@ -364,7 +373,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
             formField = (
               <div key={index}>
                 <label style={{ textAlign: "center" }}>
-                  {field.config.label_name}
+                  {field.config.label}
                 </label>
                 <br />
                 <InputField
@@ -386,7 +395,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
             formField = (
               <div key={index}>
                 <label style={{ textAlign: "center" }}>
-                  {field.config.label_name}
+                  {field.config.label}
                 </label>
                 <br />
                 <TextArea
@@ -410,7 +419,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
               <div key={index}>
                 <label style={{ textAlign: "center" }}>
                   {" "}
-                  {field.config.label_name}
+                  {field.config.label}
                 </label>
                 <br />
                 <InputField
@@ -434,7 +443,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
               <div key={index}>
                 <label style={{ textAlign: "center" }}>
                   {" "}
-                  {field.config.label_name}
+                  {field.config.label}
                 </label>
                 <br />
                 <InputField
@@ -467,7 +476,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     required: field.required,
                   }}
                 >
-                  {field.config.label_name}
+                  {field.config.label}
                 </Button>
                 <br></br>
               </div>
@@ -512,7 +521,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     value: field.label,
                   }}
                 >
-                  {field.config.label_name}
+                  {field.config.label}
                 </Label>
                 <br></br>
               </div>
@@ -527,7 +536,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     value: field.label,
                   }}
                 >
-                  {field.config.label_name}
+                  {field.config.label}
                 </Label>
                 <br></br>
               </div>
@@ -542,7 +551,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     type: "text",
                   }}
                 >
-                  {field.config.label_name}
+                  {field.config.label}
                 </Heading>
                 <br></br>
               </div>
@@ -560,7 +569,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   }}
                   company={
                     <TopNav.Anchor target="new">
-                      {field.config.label_name}
+                      {field.config.label}
                     </TopNav.Anchor>
                   }
                 />
@@ -636,7 +645,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
           case "Multi choice":
             formField = (
               <div key={index}>
-                <MultiChoice label={field.config.label_name}></MultiChoice>
+                <MultiChoice label={field.config.label}></MultiChoice>
               </div>
             );
             break;
@@ -644,7 +653,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
             formField = (
               <div key={index}>
                 <Select id="page-select">
-                  <option value=""> {field.config.label_name}</option>
+                  <option value=""> {field.config.label}</option>
                 </Select>
               </div>
             );
@@ -659,7 +668,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       value: field.name,
                     }}
                   >
-                    {field.config.label_name}
+                    {field.config.label}
                   </Label>
                 </Link>
                 <br></br>
@@ -680,8 +689,8 @@ function InteractivePageBuilderInterface({ link, mode }) {
             break;
           case "Page Break":
             formField = (
-              <div key={index}>
-                <Divider style={{ backgroundColor: "black" }}></Divider>
+              <div key={index} onClick={handlePageBreakClick}>
+                <Divider></Divider>
                 <br></br>
               </div>
             );
@@ -798,10 +807,10 @@ function InteractivePageBuilderInterface({ link, mode }) {
                 <Label>Label Name:</Label>
                 <InputField
                   onChange={(event) =>
-                    updateData(event, "label_name", numberOfElements)
+                    updateData(event, "label", numberOfElements)
                   }
                   input={{
-                    name: "label_name",
+                    name: "label",
                   }}
                 />
               </center>
