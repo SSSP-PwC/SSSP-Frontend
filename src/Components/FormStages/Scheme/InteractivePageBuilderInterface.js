@@ -97,7 +97,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
   ]);
 
   const [isEditing ,setIsEditing] = useState(false);
-  const [text, setText] = useState('');
+  const [text, setText] = useState('Hello');
   const [showButtons, setShowButtons] = useState(false);
   const inputRef = useRef(null);
 
@@ -111,7 +111,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
 
   const handleElementClick = () => {
     setIsEditing(true);
-    setText(labelValue);
   }
 
   const handleClickOutside = (event) => {
@@ -122,7 +121,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
 
   const handleTextChange = (event) => {
     setText(event.target.value);
-    setLabelValue(text);
   };
 
 
@@ -583,7 +581,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       required: field.required,
                     }}
                   >
-                    {labelValue[index]}
+                    {text}
                   </Button>
                   {showButtons && <IoIosCreate onClick={handleElementClick}/>}
                   <br></br>
@@ -1255,4 +1253,3 @@ function InteractivePageBuilderInterface({ link, mode }) {
   );
 }
 export default InteractivePageBuilderInterface;
-
