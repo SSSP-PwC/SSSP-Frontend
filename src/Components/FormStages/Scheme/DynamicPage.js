@@ -16,6 +16,7 @@ import {
   Link,
   H3,
   LoadingBox,
+  Footer,
 } from "govuk-react";
 
 import { useNavigate } from "react-router-dom";
@@ -23,7 +24,6 @@ import PhoneInput from "react-phone-number-input";
 import ReCAPTCHA from "react-google-recaptcha";
 import { MainHeading } from "../../../globalStyles";
 import { NavbarComponent } from "../../Navbar/NavbarComponent";
-import Footer from "../../Footer/Footer";
 
 function DynamicPage() {
   const { pageId, endpoint } = useParams();
@@ -103,18 +103,18 @@ function DynamicPage() {
     let formField = null;
     data &&
       data.map((field, index) => {
-        switch (field.type) {
+        switch (field.config?.type) {
           case "Text Field":
             formField = (
-              <div key={index}>
+              <div key={index} style={{ padding: "10px" }}>
                 <label style={{ textAlign: "center" }}>{field.name}</label>
 
                 <br />
                 <InputField
                   input={{
-                    type: field.type,
-                    name: field.label,
-                    required: field.required,
+                    type: field.config.type,
+                    name: field.config.label,
+                    required: field.config.required,
                   }}
                 />
                 <br></br>
@@ -123,14 +123,16 @@ function DynamicPage() {
             break;
           case "Email":
             formField = (
-              <div key={index}>
-                <label style={{ textAlign: "center" }}>{field.name}</label>
+              <div key={index} style={{ padding: "10px" }}>
+                <label style={{ textAlign: "center" }}>
+                  {field.config.name}
+                </label>
                 <br />
                 <InputField
                   input={{
-                    type: field.type,
-                    name: field.label,
-                    required: field.required,
+                    type: field.config.type,
+                    name: field.config.label,
+                    required: field.config.required,
                   }}
                 />
                 <br></br>
@@ -140,14 +142,16 @@ function DynamicPage() {
 
           case "Password":
             formField = (
-              <div key={index}>
-                <label style={{ textAlign: "center" }}>{field.name}</label>
+              <div key={index} style={{ padding: "10px" }}>
+                <label style={{ textAlign: "center" }}>
+                  {field.config.name}
+                </label>
                 <br />
                 <InputField
                   input={{
-                    type: field.type,
-                    name: field.name,
-                    required: field.required,
+                    type: field.config.type,
+                    name: field.config.name,
+                    required: field.config.required,
                   }}
                 />
                 <br></br>
@@ -157,14 +161,16 @@ function DynamicPage() {
 
           case "Number":
             formField = (
-              <div key={index}>
-                <label style={{ textAlign: "center" }}>{field.name}</label>
+              <div key={index} style={{ padding: "10px" }}>
+                <label style={{ textAlign: "center" }}>
+                  {field.config.name}
+                </label>
                 <br />
                 <InputField
                   input={{
-                    type: field.type,
-                    name: field.label,
-                    required: field.required,
+                    type: field.config.type,
+                    name: field.config.label,
+                    required: field.config.required,
                   }}
                 />
                 <br></br>
@@ -173,7 +179,7 @@ function DynamicPage() {
             break;
           case "Button":
             formField = (
-              <div key={index}>
+              <div key={index} style={{ padding: "10px" }}>
                 <br />
                 <Button
                   style={{
@@ -181,12 +187,12 @@ function DynamicPage() {
                     height: field.config.height + "px",
                   }}
                   input={{
-                    type: field.type,
-                    name: field.label,
-                    required: field.required,
+                    type: field.config.type,
+                    name: field.config.label,
+                    required: field.config.required,
                   }}
                 >
-                  {field.config.label_name}
+                  {field.config.label}
                 </Button>
                 <br></br>
               </div>
@@ -194,9 +200,11 @@ function DynamicPage() {
             break;
           case "Check box":
             formField = (
-              <div key={index}>
-                <Checkbox name={field.label} required={field.required} />
-                <label style={{ textAlign: "center" }}>{field.name}</label>
+              <div key={index} style={{ padding: "10px" }}>
+                <Checkbox name={field.label} required={field.config.required} />
+                <label style={{ textAlign: "center" }}>
+                  {field.config.name}
+                </label>
                 <br></br>
               </div>
             );
@@ -204,7 +212,9 @@ function DynamicPage() {
           case "Text":
             formField = (
               <div key={index}>
-                <label style={{ textAlign: "center" }}>{field.name}</label>
+                <label style={{ textAlign: "center" }}>
+                  {field.config.name}
+                </label>
                 <br />
                 <TextArea
                   name={field.label}
@@ -224,14 +234,14 @@ function DynamicPage() {
             break;
           case "Label":
             formField = (
-              <div key={index}>
+              <div key={index} style={{ padding: "10px" }}>
                 <Label
                   input={{
                     type: "text",
-                    value: field.label,
+                    value: field.config.label,
                   }}
                 >
-                  {field.label}
+                  {field.config.label}
                 </Label>
                 <br></br>
               </div>
@@ -239,14 +249,14 @@ function DynamicPage() {
             break;
           case "Body":
             formField = (
-              <div key={index} style={{ padding: "50px" }}>
+              <div key={index} style={{ padding: "10px" }}>
                 <Label
                   input={{
                     type: "text",
-                    value: field.label,
+                    value: field.config.label,
                   }}
                 >
-                  {field.label}
+                  {field.config.label}
                 </Label>
                 <br></br>
               </div>
@@ -254,14 +264,14 @@ function DynamicPage() {
             break;
           case "Header":
             formField = (
-              <div key={index}>
+              <div key={index} style={{ padding: "10px" }}>
                 <Heading
                   size="LARGE"
                   input={{
                     type: "text",
                   }}
                 >
-                  {field.label}
+                  {field.config.label}
                 </Heading>
                 <br></br>
               </div>
@@ -273,7 +283,7 @@ function DynamicPage() {
                 <TopNav
                   company={
                     <TopNav.Anchor target="new">
-                      {field.config.label_name}
+                      {field.config.label}
                     </TopNav.Anchor>
                   }
                 />
@@ -402,7 +412,7 @@ function DynamicPage() {
 
           case "Captcha":
             formField = (
-              <div key={index}>
+              <div key={index}  style={{ padding: "10px" }}>
                 <ReCAPTCHA
                   sitekey={"6LeiNAclAAAAAImMXqIfk2YOFJF99SD6UVUAqyvd"}
                 />
