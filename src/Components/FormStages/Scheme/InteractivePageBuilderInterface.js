@@ -49,6 +49,7 @@ import { HexColorPicker } from "react-colorful";
 
 function InteractivePageBuilderInterface({ link, mode }) {
   const [theme, colorMode] = useMode();
+  const [selectedValue, setSelectedValue] = useState('Home Page');
   const id = sessionStorage.getItem("Citizen_ID");
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -60,6 +61,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const [label, setLabel] = useState("Click here to upload your icon");
   const [preview, setPreview] = useState();
   const [sidebar, setSideBar] = useState(false);
+  const [showForm, setShowForm] = useState(false);
   const [numberOfElements, setNumberOfElements] = useState(0);
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
@@ -121,6 +123,10 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const handlePageBreakClick = () => {
     setPageCounter(pageCounter + 1);
   };
+
+  const handleChange = (event) => {
+    setSelectedValue(event.target.value);
+  }
 
   const [citizen, setCitizen] = useState();
 
@@ -333,9 +339,40 @@ function InteractivePageBuilderInterface({ link, mode }) {
   };
 
   const RenderForm = () => {
+    const backgroundImage = "https://images.robertharding.com/preview/RF/MI/HORIZONTAL/1174-4517.jpg";
     const fieldsToRender = [];
 
     const tab = page;
+    if(selectedValue === 'Home Page'){
+      fieldsToRender.push(
+        <div key="background" style={{backgroundImage: "url(" + backgroundImage + ")", 
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        padding: '0',
+        width: "100%",
+        height: "400px"
+        }}
+        >
+          <h1 style={{color: 'white', marginLeft: '20px', paddingTop:'20px'}}>Your Site Title</h1>
+          <div style={{textAlign: 'center', alignItems: 'center'}}>
+            <p style={{fontSize: '60px', fontWeight: 'bold', color: 'white', marginTop: '80px'}}>Page Builder</p>
+          </div>
+          <a href={backgroundImage} target="_blank" rel="noopener norefferer">
+            <img src={backgroundImage} alt="bkg" style={{display: "none"}}/>
+          </a>
+        </div>
+      );
+  
+      fieldsToRender.push(
+        <div key= "content" style={{width: '100%', height: '400px', backgroundColor: 'white'}}>
+          <div style={{textAlign: 'center', alignItems: 'center'}}>
+            <p style={{fontSize: '35px', fontWeight: 'bold'}}>Add Your Content</p>
+            <p>Lorem ipsum dolor sit amet, saepe viderer noluisse ex sit, vel ut utinam appareat partiendo. Dicant consectetuer id pro. Ex nec autem percipit convenire, dicam omnium sensibus eos in. Ne forensibus appellantur eos,
+               tantas mediocritatem at ius. Ex pro prima illud nominavi, ea audire temporibus neglegentur eos, nostrud eligendi pro in.</p>
+          </div>
+        </div>
+      )
+    }
 
     if (tab) {
       tab[0].fields.forEach((field, index) => {
@@ -576,7 +613,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
             break;
           case "coming-soon":
             formField = (
-              <div>
                 <div
                   style={{
                     height: "100vh",
@@ -588,6 +624,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     alignItems: "center",
                     justifyContent: "center",
                     minHeight: "calc(100vh - 140px)",
+                    width: '100%'
                   }}
                 >
                   <Heading
@@ -616,7 +653,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
 
                   <br></br>
                 </div>
-              </div>
             );
             break;
           case "Footer":
@@ -758,7 +794,12 @@ function InteractivePageBuilderInterface({ link, mode }) {
                 Add element
               </Nav.Link>
             </Nav>
-
+            <select id="temp" value={selectedValue} onChange={handleChange} style={{marginRight: '10px'}}>
+            <option value="Home Page">Home Page</option>
+              <option value="blank">Blank</option>
+            </select>
+            <button onClick={submit} style={{borderRadius: '4px', backgroundColor:'#528AAE', color: 'white', padding: '4px'}}>Publish</button>
+            <button onClick={showPortal} style={{borderRadius: '4px', backgroundColor:'#528AAE', color: 'white', padding: '4px', marginLeft: '10px'}}>Preview</button>
             <Nav>
               <NavDropdown
                 title={
@@ -1052,39 +1093,8 @@ function InteractivePageBuilderInterface({ link, mode }) {
                 </div>
               )}
 
-              <Container style={{ padding: "20px" }}>
-                <Heading
-                  style={{
-                    fontWeight: "lighter",
-                    fontSize: "40px",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    display: "flex",
-                    margin: "0px",
-                  }}
-                >
-                  Page Builder
-                </Heading>
-                <br></br>
-
-                <p
-                  style={{
-                    color: "#505a5f",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    display: "flex",
-                    margin: "10px",
-                  }}
-                >
-                  Start creating your first website now.
-                </p>
-                <br></br>
-                <Button style={{ float: "right" }} onClick={handleRemoveField}>
-                  Preview site
-                </Button>
-
-                <Button onClick={submit}>Launch site</Button>
-                <div>
+              <Container style={{ padding: "20px", backgroundColor: '#d3d3d3'}}>
+                <div style={{height: '800px', width: '100%', backgroundColor: 'white'}}>
                   <RenderForm />
                 </div>
               </Container>
