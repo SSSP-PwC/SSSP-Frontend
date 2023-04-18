@@ -96,6 +96,45 @@ function InteractivePageBuilderInterface({ link, mode }) {
     },
   ]);
 
+  const [isEditing ,setIsEditing] = useState(false);
+  const [text, setText] = useState('Hello');
+  const [showButtons, setShowButtons] = useState(false);
+  const inputRef = useRef(null);
+
+  const handleMouseEnter = () => {
+    setShowButtons(true);
+  }
+
+  const handleMouseLeave = () => {
+    setShowButtons(false);
+  }
+
+  const handleElementClick = () => {
+    setIsEditing(true);
+  }
+
+  const handleClickOutside = (event) => {
+    if (inputRef.current && !inputRef.current.contains(event.target)){
+      setIsEditing(false);
+    }
+  }
+
+  const handleTextChange = (event) => {
+    setText(event.target.value);
+  };
+
+
+  const handleTextSave = () => {
+    console.log('Saving new text: ' + {text})
+  }
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   const citizen_id = sessionStorage.getItem("Citizen_ID");
   console.log(formData);
   const updateData = (event, property, fieldIndex) => {
@@ -523,23 +562,32 @@ function InteractivePageBuilderInterface({ link, mode }) {
             break;
           case "Button":
             formField = (
-              <div key={index}>
-                <br />
-                <Button
-                  style={{
-                    width: field.config.width + "px",
-                    height: field.config.height + "px",
-                  }}
-                  input={{
-                    type: field.type,
-                    name: field.label,
-                    required: field.required,
-                  }}
-                >
-                  {field.config.label}
-                </Button>
-                <br></br>
-              </div>
+              <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+                {isEditing ?(
+                  <div ref={inputRef}>
+                  <input autoFocus="autoFocus" type="text" value={text} onChange={handleTextChange}/>
+                  </div>
+                ) : (
+                  <div key={index}>
+                  <br />
+                  <Button
+                    style={{
+                      width: field.config.width + "px",
+                      height: field.config.height + "px",
+                    }}
+                    input={{
+                      type: field.type,
+                      name: field.label,
+                      required: field.required,
+                    }}
+                  >
+                    {text}
+                  </Button>
+                  {showButtons && <IoIosCreate onClick={handleElementClick}/>}
+                  <br></br>
+                </div>
+                )}
+                </div>
             );
             break;
           case "Check box":
