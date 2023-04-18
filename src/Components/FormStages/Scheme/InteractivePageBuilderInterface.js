@@ -98,42 +98,41 @@ function InteractivePageBuilderInterface({ link, mode }) {
     },
   ]);
 
-  const [isEditing ,setIsEditing] = useState(false);
-  const [text, setText] = useState('Hello');
+  const [isEditing, setIsEditing] = useState(false);
+  const [text, setText] = useState("Hello");
   const [showButtons, setShowButtons] = useState(false);
   const inputRef = useRef(null);
 
   const handleMouseEnter = () => {
     setShowButtons(true);
-  }
+  };
 
   const handleMouseLeave = () => {
     setShowButtons(false);
-  }
+  };
 
   const handleElementClick = () => {
     setIsEditing(true);
-  }
+  };
 
   const handleClickOutside = (event) => {
-    if (inputRef.current && !inputRef.current.contains(event.target)){
+    if (inputRef.current && !inputRef.current.contains(event.target)) {
       setIsEditing(false);
     }
-  }
+  };
 
   const handleTextChange = (event) => {
     setText(event.target.value);
   };
 
-
   const handleTextSave = () => {
-    console.log('Saving new text: ' + {text})
-  }
+    console.log("Saving new text: " + { text });
+  };
 
   useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -183,6 +182,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const [citizen, setCitizen] = useState();
 
   const handleAddField = (input_value) => {
+    setButtonConfiguration("")
     setSelected(input_value);
     const currentPage = page[0];
     const currentPageFields = currentPage.fields ? [...currentPage.fields] : [];
@@ -236,11 +236,11 @@ function InteractivePageBuilderInterface({ link, mode }) {
 
   const imageComponent = [
     { name: "File Upload", icon: <AddCircleOutlineOutlined /> },
-    { name: "Image", icon: <AddCircleOutlineOutlined /> }
+    { name: "Image", icon: <AddCircleOutlineOutlined /> },
   ];
   const phoneNumberComponent = [
-    { name: "Phone number", icon: <AddCircleOutlineOutlined /> }
-  ]
+    { name: "Phone number", icon: <AddCircleOutlineOutlined /> },
+  ];
 
   const componentList = [
     { name: "Header", icon: <AddCircleOutlineOutlined /> },
@@ -622,32 +622,42 @@ function InteractivePageBuilderInterface({ link, mode }) {
             break;
           case "Button":
             formField = (
-              <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-                {isEditing ?(
+              <div
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+              >
+                {isEditing ? (
                   <div ref={inputRef}>
-                  <input autoFocus="autoFocus" type="text" value={text} onChange={handleTextChange}/>
+                    <input
+                      autoFocus="autoFocus"
+                      type="text"
+                      value={text}
+                      onChange={handleTextChange}
+                    />
                   </div>
                 ) : (
                   <div key={index}>
-                  <br />
-                  <Button
-                    style={{
-                      width: field.config.width + "px",
-                      height: field.config.height + "px",
-                    }}
-                    input={{
-                      type: field.type,
-                      name: field.label,
-                      required: field.required,
-                    }}
-                  >
-                    {text}
-                  </Button>
-                  {showButtons && <IoIosCreate onClick={handleElementClick}/>}
-                  <br></br>
-                </div>
+                    <br />
+                    <Button
+                      style={{
+                        width: field.config.width + "px",
+                        height: field.config.height + "px",
+                      }}
+                      input={{
+                        type: field.type,
+                        name: field.label,
+                        required: field.required,
+                      }}
+                    >
+                      {text}
+                    </Button>
+                    {showButtons && (
+                      <IoIosCreate onClick={handleElementClick} />
+                    )}
+                    <br></br>
+                  </div>
                 )}
-                </div>
+              </div>
             );
             break;
           case "Check box":
@@ -676,7 +686,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
           case "File Upload":
             formField = (
               <div key={index}>
-                <input type = "file"/>
+                <input type="file" />
                 <br></br>
               </div>
             );
@@ -1095,6 +1105,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     <Label>This will navigate to page: {pageCounter + 1}</Label>
                   </div>
                 )}
+
               </Form.Group>
             )}
           </Form>
