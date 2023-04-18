@@ -41,6 +41,7 @@ import {
   TextField,
 } from "@mui/material";
 import {
+  ArrowDropDownCircleOutlined,
   CropLandscapeOutlined,
   DetailsOutlined,
   LabelImportantOutlined,
@@ -60,7 +61,7 @@ import { HexColorPicker } from "react-colorful";
 
 function InteractivePageBuilderInterface({ link, mode }) {
   const [theme, colorMode] = useMode();
-  const [selectedValue, setSelectedValue] = useState('Blank');
+  const [selectedValue, setSelectedValue] = useState("Blank");
   const id = sessionStorage.getItem("Citizen_ID");
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -86,6 +87,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [labelValue, setLabelValue] = useState([]);
+  const [buttonConfiguration, setButtonConfiguration] = useState(false);
 
   const [searchText, setSearchText] = useState("");
   const [selected, setSelected] = useState(undefined);
@@ -137,7 +139,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
 
   const handleChange = (event) => {
     setSelectedValue(event.target.value);
-  }
+  };
 
   const [citizen, setCitizen] = useState();
 
@@ -164,6 +166,9 @@ function InteractivePageBuilderInterface({ link, mode }) {
     setLabelValue((prevValues) => [...prevValues, ""]);
     if (input_value === "Page Break") {
       handlePageBreakClick();
+    } else if (input_value === "Button") {
+      setButtonConfiguration(true);
+      setShow(true);
     } else {
       setShow(true);
     }
@@ -182,15 +187,21 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const footerComponent = [{ name: "Footer", icon: <BiDockBottom /> }];
 
   const multichoiceComponent = [
-    { name: "Multi choice", icon: <AddCircleOutlineOutlined /> },
+    { name: "Multi choice", icon: <ArrowDropDownCircleOutlined /> },
   ];
 
   const pageBreakComponent = [
     { name: "Page Break", icon: <AddCircleOutlineOutlined /> },
   ];
-  const captchaComponent = [
-    { name: "Captcha", icon: <SmartToyOutlined /> }
+  const captchaComponent = [{ name: "Captcha", icon: <SmartToyOutlined /> }];
+
+  const imageComponent = [
+    { name: "File Upload", icon: <AddCircleOutlineOutlined /> },
+    { name: "Image", icon: <AddCircleOutlineOutlined /> }
   ];
+  const phoneNumberComponent = [
+    { name: "Phone number", icon: <AddCircleOutlineOutlined /> }
+  ]
 
   const componentList = [
     { name: "Header", icon: <AddCircleOutlineOutlined /> },
@@ -305,14 +316,35 @@ function InteractivePageBuilderInterface({ link, mode }) {
     });
 
     pages.push(currentPage);
+    console.log(pages.length);
 
-    for (let i = 0; i < pages.length; i++) {
-      const pageData = {
-        fields: pages[i].fields,
-      };
-      console.log(pageData);
-      await createPage(pageData);
-    }
+    const requests = pages.map(async (pageData, index) => {
+      index += 1;
+      try {
+        const response = await fetch(
+          `https://sssp-378808.nw.r.appspot.com/api/add-page-elements/${formValues.domain}/${index}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              fields: pageData.fields,
+            }),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.log(error);
+      }
+    });
+
+    await Promise.all(requests);
   };
 
   const handleRemoveField = (index) => {
@@ -365,39 +397,67 @@ function InteractivePageBuilderInterface({ link, mode }) {
   };
 
   const RenderForm = () => {
-    const backgroundImage = "https://images.robertharding.com/preview/RF/MI/HORIZONTAL/1174-4517.jpg";
+    const backgroundImage =
+      "https://images.robertharding.com/preview/RF/MI/HORIZONTAL/1174-4517.jpg";
     const fieldsToRender = [];
 
     const tab = page;
-    if(selectedValue === 'Home Page'){
+    if (selectedValue === "Home Page") {
       fieldsToRender.push(
-        <div key="background" style={{backgroundImage: "url(" + backgroundImage + ")", 
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        padding: '0',
-        width: "100%",
-        height: "400px"
-        }}
+        <div
+          key="background"
+          style={{
+            backgroundImage: "url(" + backgroundImage + ")",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            padding: "0",
+            width: "100%",
+            height: "400px",
+          }}
         >
-          <h1 style={{color: 'white', marginLeft: '20px', paddingTop:'20px'}}>Your Site Title</h1>
-          <div style={{textAlign: 'center', alignItems: 'center'}}>
-            <p style={{fontSize: '60px', fontWeight: 'bold', color: 'white', marginTop: '80px'}}>Page Builder</p>
+          <h1
+            style={{ color: "white", marginLeft: "20px", paddingTop: "20px" }}
+          >
+            Your Site Title
+          </h1>
+          <div style={{ textAlign: "center", alignItems: "center" }}>
+            <p
+              style={{
+                fontSize: "60px",
+                fontWeight: "bold",
+                color: "white",
+                marginTop: "80px",
+              }}
+            >
+              Page Builder
+            </p>
           </div>
           <a href={backgroundImage} target="_blank" rel="noopener norefferer">
-            <img src={backgroundImage} alt="bkg" style={{display: "none"}}/>
+            <img src={backgroundImage} alt="bkg" style={{ display: "none" }} />
           </a>
         </div>
       );
-  
+
       fieldsToRender.push(
-        <div key= "content" style={{width: '100%', height: '400px', backgroundColor: 'white'}}>
-          <div style={{textAlign: 'center', alignItems: 'center'}}>
-            <p style={{fontSize: '35px', fontWeight: 'bold'}}>Add Your Content</p>
-            <p>Lorem ipsum dolor sit amet, saepe viderer noluisse ex sit, vel ut utinam appareat partiendo. Dicant consectetuer id pro. Ex nec autem percipit convenire, dicam omnium sensibus eos in. Ne forensibus appellantur eos,
-               tantas mediocritatem at ius. Ex pro prima illud nominavi, ea audire temporibus neglegentur eos, nostrud eligendi pro in.</p>
+        <div
+          key="content"
+          style={{ width: "100%", height: "400px", backgroundColor: "white" }}
+        >
+          <div style={{ textAlign: "center", alignItems: "center" }}>
+            <p style={{ fontSize: "35px", fontWeight: "bold" }}>
+              Add Your Content
+            </p>
+            <p>
+              Lorem ipsum dolor sit amet, saepe viderer noluisse ex sit, vel ut
+              utinam appareat partiendo. Dicant consectetuer id pro. Ex nec
+              autem percipit convenire, dicam omnium sensibus eos in. Ne
+              forensibus appellantur eos, tantas mediocritatem at ius. Ex pro
+              prima illud nominavi, ea audire temporibus neglegentur eos,
+              nostrud eligendi pro in.
+            </p>
           </div>
         </div>
-      )
+      );
     }
 
     if (tab) {
@@ -568,6 +628,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
           case "File Upload":
             formField = (
               <div key={index}>
+                <input type = "file"/>
                 <br></br>
               </div>
             );
@@ -639,46 +700,46 @@ function InteractivePageBuilderInterface({ link, mode }) {
             break;
           case "coming-soon":
             formField = (
-                <div
+              <div
+                style={{
+                  height: "100vh",
+                  backgroundImage: `url("https://pbs.twimg.com/ext_tw_video_thumb/1274020389501485057/pu/img/VkWNp99xjlTc_Q5d.jpg:large")`,
+                  backgroundRepeat: "no-repeat",
+                  backgroundSize: "cover",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  minHeight: "calc(100vh - 140px)",
+                  width: "100%",
+                }}
+              >
+                <Heading
                   style={{
-                    height: "100vh",
-                    backgroundImage: `url("https://pbs.twimg.com/ext_tw_video_thumb/1274020389501485057/pu/img/VkWNp99xjlTc_Q5d.jpg:large")`,
-                    backgroundRepeat: "no-repeat",
-                    backgroundSize: "cover",
-                    display: "flex",
-                    flexDirection: "column",
                     alignItems: "center",
                     justifyContent: "center",
-                    minHeight: "calc(100vh - 140px)",
-                    width: '100%'
+                    display: "flex",
+                    color: "white",
                   }}
                 >
-                  <Heading
-                    style={{
-                      alignItems: "center",
-                      justifyContent: "center",
-                      display: "flex",
-                      color: "white",
-                    }}
-                  >
-                    Site Coming Soon!
-                  </Heading>
-                  <img
-                    src={process.env.PUBLIC_URL + "/img/AnimatedLogo.gif"}
-                    style={{ maxWidth: "350px", maxHeight: "300px" }}
-                  />
-                  <br></br>
-                  <br></br>
+                  Site Coming Soon!
+                </Heading>
+                <img
+                  src={process.env.PUBLIC_URL + "/img/AnimatedLogo.gif"}
+                  style={{ maxWidth: "350px", maxHeight: "300px" }}
+                />
+                <br></br>
+                <br></br>
 
-                  <H3 style={{ color: "white", fontWeight: "normal" }}>
-                    This site is currently under development.
-                  </H3>
-                  <H3 style={{ color: "white", fontWeight: "normal" }}>
-                    Please check back later.
-                  </H3>
+                <H3 style={{ color: "white", fontWeight: "normal" }}>
+                  This site is currently under development.
+                </H3>
+                <H3 style={{ color: "white", fontWeight: "normal" }}>
+                  Please check back later.
+                </H3>
 
-                  <br></br>
-                </div>
+                <br></br>
+              </div>
             );
             break;
           case "Footer":
@@ -749,7 +810,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
           case "Page Break":
             formField = (
               <div key={index} onClick={handlePageBreakClick}>
-                <Divider></Divider>
+                <Divider style={{ backgroundColor: "black" }}></Divider>
                 <br></br>
               </div>
             );
@@ -807,7 +868,8 @@ function InteractivePageBuilderInterface({ link, mode }) {
             />
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-          <Navbar.Collapse id="responsive-navbar-nav"><option value="blank">Blank</option>
+          <Navbar.Collapse id="responsive-navbar-nav">
+            <option value="blank">Blank</option>
             <Nav className="me-auto">
               <Nav.Link
                 onClick={() => {
@@ -820,12 +882,38 @@ function InteractivePageBuilderInterface({ link, mode }) {
                 Add element
               </Nav.Link>
             </Nav>
-            <select id="temp" value={selectedValue} onChange={handleChange} style={{marginRight: '10px'}}>
-            <option value="blank">Blank</option><option value="blank">Blank</option>
-            <option value="Home Page">Home Page</option>
+            <select
+              id="temp"
+              value={selectedValue}
+              onChange={handleChange}
+              style={{ marginRight: "10px" }}
+            >
+              <option value="blank">Blank</option>
+              <option value="blank">Blank</option>
+              <option value="Home Page">Home Page</option>
             </select>
-            <button onClick={submit} style={{borderRadius: '4px', backgroundColor:'#528AAE', color: 'white', padding: '4px'}}>Publish</button>
-            <button  style={{borderRadius: '4px', backgroundColor:'#528AAE', color: 'white', padding: '4px', marginLeft: '10px'}}>Preview</button>
+            <button
+              onClick={submit}
+              style={{
+                borderRadius: "4px",
+                backgroundColor: "#528AAE",
+                color: "white",
+                padding: "4px",
+              }}
+            >
+              Publish
+            </button>
+            <button
+              style={{
+                borderRadius: "4px",
+                backgroundColor: "#528AAE",
+                color: "white",
+                padding: "4px",
+                marginLeft: "10px",
+              }}
+            >
+              Preview
+            </button>
             <Nav>
               <NavDropdown
                 title={
@@ -923,6 +1011,44 @@ function InteractivePageBuilderInterface({ link, mode }) {
                 <center>Height (px)</center>
               </InputField>
             </Form.Group>
+            {buttonConfiguration === true && (
+              <Form.Group className="mb-3">
+                <Divider>Button Configuration</Divider>
+                <br></br>
+                <Select
+                  style={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                    display: "flex",
+                    maxWidth: "1200px",
+                  }}
+                  value={selectedValue}
+                  onChange={handleChange}
+                  label="Select Button Click Event"
+                >
+                  {console.log(selectedValue)}
+                  <option>Next Page</option>
+                  <option>Previous Page</option>
+                  <option>Custom Routing</option>
+
+                  <option>Submit Contents</option>
+                </Select>
+                {selectedValue === "Next Page" && (
+                  <div
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                      display: "flex",
+                    }}
+                  >
+                    <br></br>
+                    <br></br>
+                    <br></br>
+                    <Label>This will navigate to page: {pageCounter + 1}</Label>
+                  </div>
+                )}
+              </Form.Group>
+            )}
           </Form>
         </Modal.Body>
         <Modal.Footer>
@@ -1088,12 +1214,31 @@ function InteractivePageBuilderInterface({ link, mode }) {
                                   </ListItem>
                                 ))}
                               </SubMenu>
-
                               <SubMenu
                                 style={{ color: "white" }}
                                 title="Text Category"
                               >
                                 {textComponents.map((component) => (
+                                  <ListItem
+                                    button
+                                    key={component.name}
+                                    selected={selected === component.name}
+                                    onClick={() =>
+                                      handleAddField(component.name)
+                                    }
+                                  >
+                                    <ListItemIcon style={{ color: "white" }}>
+                                      {component.icon}
+                                    </ListItemIcon>
+                                    <ListItemText primary={component.name} />
+                                  </ListItem>
+                                ))}
+                              </SubMenu>
+                              <SubMenu
+                                style={{ color: "white" }}
+                                title="Image Category"
+                              >
+                                {imageComponent.map((component) => (
                                   <ListItem
                                     button
                                     key={component.name}
@@ -1160,6 +1305,41 @@ function InteractivePageBuilderInterface({ link, mode }) {
                                   </ListItem>
                                 ))}
                               </List>
+
+                              <List style={{ color: "white" }}>
+                                {multichoiceComponent.map((component) => (
+                                  <ListItem
+                                    button
+                                    key={component.name}
+                                    selected={selected === component.name}
+                                    onClick={() =>
+                                      handleAddField(component.name)
+                                    }
+                                  >
+                                    <ListItemIcon style={{ color: "white" }}>
+                                      {component.icon}
+                                    </ListItemIcon>
+                                    <ListItemText primary={component.name} />
+                                  </ListItem>
+                                ))}
+                              </List>
+                              <List style={{ color: "white" }}>
+                                {pageBreakComponent.map((component) => (
+                                  <ListItem
+                                    button
+                                    key={component.name}
+                                    selected={selected === component.name}
+                                    onClick={() =>
+                                      handleAddField(component.name)
+                                    }
+                                  >
+                                    <ListItemIcon style={{ color: "white" }}>
+                                      {component.icon}
+                                    </ListItemIcon>
+                                    <ListItemText primary={component.name} />
+                                  </ListItem>
+                                ))}
+                              </List>
                             </div>
                           </Box>
                         )}
@@ -1191,8 +1371,16 @@ function InteractivePageBuilderInterface({ link, mode }) {
                 </div>
               )}
 
-              <Container style={{ padding: "20px", backgroundColor: '#d3d3d3'}}>
-                <div style={{height: '800px', width: '100%', backgroundColor: 'white'}}>
+              <Container
+                style={{ padding: "20px", backgroundColor: "#d3d3d3" }}
+              >
+                <div
+                  style={{
+                    height: "800px",
+                    width: "100%",
+                    backgroundColor: "white",
+                  }}
+                >
                   <RenderForm />
                 </div>
               </Container>
@@ -1205,4 +1393,3 @@ function InteractivePageBuilderInterface({ link, mode }) {
   );
 }
 export default InteractivePageBuilderInterface;
-
