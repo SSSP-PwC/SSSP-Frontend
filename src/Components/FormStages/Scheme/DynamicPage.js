@@ -16,6 +16,7 @@ import {
   Link,
   H3,
   LoadingBox,
+  Footer,
 } from "govuk-react";
 
 import { useNavigate } from "react-router-dom";
@@ -23,7 +24,6 @@ import PhoneInput from "react-phone-number-input";
 import ReCAPTCHA from "react-google-recaptcha";
 import { MainHeading } from "../../../globalStyles";
 import { NavbarComponent } from "../../Navbar/NavbarComponent";
-import Footer from "../../Footer/Footer";
 
 function DynamicPage() {
   const { pageId, endpoint } = useParams();
@@ -60,7 +60,7 @@ function DynamicPage() {
   async function fetchData() {
     setLoading(true);
     const response = await fetch(
-      `http://192.168.68.119:2000/api/portals/${endpoint}/pages/${pageId}`
+      `https://sssp-378808.nw.r.appspot.com/api/portals/${endpoint}/pages/${pageId}`
     );
     const info = await response.json();
     console.log(info);
@@ -106,7 +106,7 @@ function DynamicPage() {
         switch (field.config?.type) {
           case "Text Field":
             formField = (
-              <div key={index}>
+              <div key={index} style={{ padding: "10px" }}>
                 <label style={{ textAlign: "center" }}>{field.name}</label>
 
                 <br />
@@ -123,7 +123,7 @@ function DynamicPage() {
             break;
           case "Email":
             formField = (
-              <div key={index}>
+              <div key={index} style={{ padding: "10px" }}>
                 <label style={{ textAlign: "center" }}>
                   {field.config.name}
                 </label>
@@ -142,7 +142,7 @@ function DynamicPage() {
 
           case "Password":
             formField = (
-              <div key={index}>
+              <div key={index} style={{ padding: "10px" }}>
                 <label style={{ textAlign: "center" }}>
                   {field.config.name}
                 </label>
@@ -161,7 +161,7 @@ function DynamicPage() {
 
           case "Number":
             formField = (
-              <div key={index}>
+              <div key={index} style={{ padding: "10px" }}>
                 <label style={{ textAlign: "center" }}>
                   {field.config.name}
                 </label>
@@ -179,7 +179,7 @@ function DynamicPage() {
             break;
           case "Button":
             formField = (
-              <div key={index}>
+              <div key={index} style={{ padding: "10px" }}>
                 <br />
                 <Button
                   style={{
@@ -192,7 +192,7 @@ function DynamicPage() {
                     required: field.config.required,
                   }}
                 >
-                  {field.config.label_name}
+                  {field.config.label}
                 </Button>
                 <br></br>
               </div>
@@ -200,7 +200,7 @@ function DynamicPage() {
             break;
           case "Check box":
             formField = (
-              <div key={index}>
+              <div key={index} style={{ padding: "10px" }}>
                 <Checkbox name={field.label} required={field.config.required} />
                 <label style={{ textAlign: "center" }}>
                   {field.config.name}
@@ -234,7 +234,7 @@ function DynamicPage() {
             break;
           case "Label":
             formField = (
-              <div key={index}>
+              <div key={index} style={{ padding: "10px" }}>
                 <Label
                   input={{
                     type: "text",
@@ -249,7 +249,7 @@ function DynamicPage() {
             break;
           case "Body":
             formField = (
-              <div key={index} style={{ padding: "50px" }}>
+              <div key={index} style={{ padding: "10px" }}>
                 <Label
                   input={{
                     type: "text",
@@ -264,7 +264,7 @@ function DynamicPage() {
             break;
           case "Header":
             formField = (
-              <div key={index}>
+              <div key={index} style={{ padding: "10px" }}>
                 <Heading
                   size="LARGE"
                   input={{
@@ -412,7 +412,7 @@ function DynamicPage() {
 
           case "Captcha":
             formField = (
-              <div key={index}>
+              <div key={index}  style={{ padding: "10px" }}>
                 <ReCAPTCHA
                   sitekey={"6LeiNAclAAAAAImMXqIfk2YOFJF99SD6UVUAqyvd"}
                 />

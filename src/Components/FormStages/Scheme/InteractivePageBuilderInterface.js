@@ -19,7 +19,7 @@ import {
 import { Container, Form } from "react-bootstrap";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { tokens } from "./theme";
-import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
+import { ProSidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import { Link } from "react-router-dom";
 import AutoStoriesIcon from "@mui/icons-material/AutoStories";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
@@ -63,7 +63,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const [numberOfElements, setNumberOfElements] = useState(0);
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
-  const [pageCounter, setPageCounter] = useState(2);
+  const [pageCounter, setPageCounter] = useState(1);
 
   const [formData, setFormData] = useState("");
 
@@ -152,10 +152,18 @@ function InteractivePageBuilderInterface({ link, mode }) {
     }
   };
 
+  const buttonComponents = [
+    { name: "Button", icon: <AddCircleOutlineOutlined /> },
+  ];
+
+  const componentCategories = [
+    { name: "Input Category", icon: <AddCircleOutlineOutlined /> },
+  ];
+
   const componentList = [
     { name: "Header", icon: <AddCircleOutlineOutlined /> },
     { name: "Button", icon: <AddCircleOutlineOutlined /> },
-    { name: "Input", icon: <AddCircleOutlineOutlined /> },
+    { name: "Body", icon: <AddCircleOutlineOutlined /> },
     { name: "Image", icon: <AddCircleOutlineOutlined /> },
     { name: "Navbar", icon: <AddCircleOutlineOutlined /> },
     { name: "Footer", icon: <AddCircleOutlineOutlined /> },
@@ -169,7 +177,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
     { name: "Page Break", icon: <AddCircleOutlineOutlined /> },
   ];
 
-  const filteredComponents = componentList.filter((component) =>
+  const filteredComponents = componentCategories.filter((component) =>
     component.name.toLowerCase().includes(searchText.toLowerCase())
   );
   const Item = ({ title, to, icon, subMenuItems }) => {
@@ -185,17 +193,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
           <Typography>{title}</Typography>
           <Link to={to} />
         </MenuItem>
-        {subMenuItems && to && isSubMenuOpen && (
-          <Menu iconShape="square" subMenu>
-            {subMenuItems.map((item, index) => (
-              <MenuItem key={index} style={{ paddingLeft: "1rem" }}>
-                <Link to={item.to}>
-                  <Typography>{item.name}</Typography>
-                </Link>
-              </MenuItem>
-            ))}
-          </Menu>
-        )}
       </>
     );
   };
@@ -234,7 +231,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const createPage = async (pageData) => {
     try {
       const response = await fetch(
-        `http://192.168.68.119:2000/api/add-page-elements/${formValues.domain}/${pageCounter}`,
+        `https://sssp-378808.nw.r.appspot.com/api/add-page-elements/${formValues.domain}/${pageCounter}`,
         {
           method: "POST",
           headers: {
@@ -259,7 +256,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const submit = async () => {
     let pages = [];
     let currentPage = { fields: [] };
-  
+
     page[0].fields.forEach((field, index) => {
       if (field.type === "Page Break") {
         pages.push(currentPage);
@@ -274,9 +271,9 @@ function InteractivePageBuilderInterface({ link, mode }) {
         currentPage.fields.push({ props });
       }
     });
-  
+
     pages.push(currentPage);
-  
+
     for (let i = 0; i < pages.length; i++) {
       const pageData = {
         fields: pages[i].fields,
@@ -285,7 +282,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
       await createPage(pageData);
     }
   };
-  
+
   const handleRemoveField = (index) => {
     const currentPage = page[0];
     if (!currentPage) {
@@ -529,11 +526,11 @@ function InteractivePageBuilderInterface({ link, mode }) {
             break;
           case "Body":
             formField = (
-              <div key={index} style={{ padding: "50px" }}>
+              <div key={index}>
                 <Label
                   input={{
                     type: "text",
-                    value: field.label,
+                    value: field.config.label,
                   }}
                 >
                   {field.config.label}
@@ -1003,9 +1000,12 @@ function InteractivePageBuilderInterface({ link, mode }) {
                                 <SearchBox.Input placeholder="Search element" />
                                 <SearchBox.Button />
                               </SearchBox>
-
-                              <List style={{ color: "white" }}>
-                                {filteredComponents.map((component) => (
+                              <br></br>
+                              <SubMenu
+                                style={{ color: "white" }}
+                                title="Button"
+                              >
+                                {buttonComponents.map((component) => (
                                   <ListItem
                                     button
                                     key={component.name}
@@ -1020,7 +1020,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                                     <ListItemText primary={component.name} />
                                   </ListItem>
                                 ))}
-                              </List>
+                              </SubMenu>
                             </div>
                           </Box>
                         )}
@@ -1028,7 +1028,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         {isCollapsed && mode !== "Site Home" && (
                           <Box>
                             <div style={{ margin: "20px" }}>
-                              <List style={{ color: "white" }}>
+                              <SubMenu style={{ color: "white" }} title="HHH">
                                 {filteredComponents.map((component) => (
                                   <ListItem
                                     button
@@ -1042,7 +1042,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                                     <ListItemText primary={component.name} />
                                   </ListItem>
                                 ))}
-                              </List>
+                              </SubMenu>
                             </div>
                           </Box>
                         )}
