@@ -26,7 +26,8 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import "react-image-crop/dist/ReactCrop.css";
 import React, { useContext } from "react";
 import { useMediaQuery } from "@mui/material";
-
+import { TbLayoutNavbar } from "react-icons/tb";
+import { BiDockBottom } from "react-icons/bi";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
@@ -39,7 +40,17 @@ import {
   ListItemText,
   TextField,
 } from "@mui/material";
-import { DetailsOutlined } from "@mui/icons-material";
+import {
+  CropLandscapeOutlined,
+  DetailsOutlined,
+  LabelImportantOutlined,
+  SmartButtonOutlined,
+  SmartToyOutlined,
+  TitleOutlined,
+  WebAssetOutlined,
+  WebOutlined,
+  WysiwygOutlined,
+} from "@mui/icons-material";
 import "react-pro-sidebar/dist/css/styles.css";
 import { SearchBox } from "govuk-react";
 import { AddCircleOutlineOutlined } from "@mui/icons-material";
@@ -158,12 +169,27 @@ function InteractivePageBuilderInterface({ link, mode }) {
     }
   };
 
-  const buttonComponents = [
-    { name: "Button", icon: <AddCircleOutlineOutlined /> },
+  const buttonComponents = [{ name: "Button", icon: <SmartButtonOutlined /> }];
+
+  const textComponents = [
+    { name: "Header", icon: <TitleOutlined /> },
+    { name: "Body", icon: <WysiwygOutlined /> },
+    { name: "Text area", icon: <CropLandscapeOutlined /> },
+    { name: "Label", icon: <LabelImportantOutlined /> },
   ];
 
-  const componentCategories = [
-    { name: "Input Category", icon: <AddCircleOutlineOutlined /> },
+  const navbarComponent = [{ name: "Navbar", icon: <TbLayoutNavbar /> }];
+  const footerComponent = [{ name: "Footer", icon: <BiDockBottom /> }];
+
+  const multichoiceComponent = [
+    { name: "Multi choice", icon: <AddCircleOutlineOutlined /> },
+  ];
+
+  const pageBreakComponent = [
+    { name: "Page Break", icon: <AddCircleOutlineOutlined /> },
+  ];
+  const captchaComponent = [
+    { name: "Captcha", icon: <SmartToyOutlined /> }
   ];
 
   const componentList = [
@@ -183,7 +209,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
     { name: "Page Break", icon: <AddCircleOutlineOutlined /> },
   ];
 
-  const filteredComponents = componentCategories.filter((component) =>
+  const filteredComponents = componentList.filter((component) =>
     component.name.toLowerCase().includes(searchText.toLowerCase())
   );
   const Item = ({ title, to, icon, subMenuItems }) => {
@@ -1044,7 +1070,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                               <br></br>
                               <SubMenu
                                 style={{ color: "white" }}
-                                title="Button"
+                                title="Button Category"
                               >
                                 {buttonComponents.map((component) => (
                                   <ListItem
@@ -1062,6 +1088,78 @@ function InteractivePageBuilderInterface({ link, mode }) {
                                   </ListItem>
                                 ))}
                               </SubMenu>
+
+                              <SubMenu
+                                style={{ color: "white" }}
+                                title="Text Category"
+                              >
+                                {textComponents.map((component) => (
+                                  <ListItem
+                                    button
+                                    key={component.name}
+                                    selected={selected === component.name}
+                                    onClick={() =>
+                                      handleAddField(component.name)
+                                    }
+                                  >
+                                    <ListItemIcon style={{ color: "white" }}>
+                                      {component.icon}
+                                    </ListItemIcon>
+                                    <ListItemText primary={component.name} />
+                                  </ListItem>
+                                ))}
+                              </SubMenu>
+                              <List style={{ color: "white" }}>
+                                {navbarComponent.map((component) => (
+                                  <ListItem
+                                    button
+                                    key={component.name}
+                                    selected={selected === component.name}
+                                    onClick={() =>
+                                      handleAddField(component.name)
+                                    }
+                                  >
+                                    <ListItemIcon style={{ color: "white" }}>
+                                      {component.icon}
+                                    </ListItemIcon>
+                                    <ListItemText primary={component.name} />
+                                  </ListItem>
+                                ))}
+                              </List>
+                              <List style={{ color: "white" }}>
+                                {footerComponent.map((component) => (
+                                  <ListItem
+                                    button
+                                    key={component.name}
+                                    selected={selected === component.name}
+                                    onClick={() =>
+                                      handleAddField(component.name)
+                                    }
+                                  >
+                                    <ListItemIcon style={{ color: "white" }}>
+                                      {component.icon}
+                                    </ListItemIcon>
+                                    <ListItemText primary={component.name} />
+                                  </ListItem>
+                                ))}
+                              </List>
+                              <List style={{ color: "white" }}>
+                                {captchaComponent.map((component) => (
+                                  <ListItem
+                                    button
+                                    key={component.name}
+                                    selected={selected === component.name}
+                                    onClick={() =>
+                                      handleAddField(component.name)
+                                    }
+                                  >
+                                    <ListItemIcon style={{ color: "white" }}>
+                                      {component.icon}
+                                    </ListItemIcon>
+                                    <ListItemText primary={component.name} />
+                                  </ListItem>
+                                ))}
+                              </List>
                             </div>
                           </Box>
                         )}
@@ -1107,3 +1205,4 @@ function InteractivePageBuilderInterface({ link, mode }) {
   );
 }
 export default InteractivePageBuilderInterface;
+
