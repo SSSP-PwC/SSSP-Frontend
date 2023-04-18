@@ -60,7 +60,7 @@ import { HexColorPicker } from "react-colorful";
 
 function InteractivePageBuilderInterface({ link, mode }) {
   const [theme, colorMode] = useMode();
-  const [selectedValue, setSelectedValue] = useState('Home Page');
+  const [selectedValue, setSelectedValue] = useState('Blank');
   const id = sessionStorage.getItem("Citizen_ID");
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -807,7 +807,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
             />
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-          <Navbar.Collapse id="responsive-navbar-nav">
+          <Navbar.Collapse id="responsive-navbar-nav"><option value="blank">Blank</option>
             <Nav className="me-auto">
               <Nav.Link
                 onClick={() => {
@@ -821,11 +821,11 @@ function InteractivePageBuilderInterface({ link, mode }) {
               </Nav.Link>
             </Nav>
             <select id="temp" value={selectedValue} onChange={handleChange} style={{marginRight: '10px'}}>
+            <option value="blank">Blank</option><option value="blank">Blank</option>
             <option value="Home Page">Home Page</option>
-              <option value="blank">Blank</option>
             </select>
             <button onClick={submit} style={{borderRadius: '4px', backgroundColor:'#528AAE', color: 'white', padding: '4px'}}>Publish</button>
-            <button onClick={showPortal} style={{borderRadius: '4px', backgroundColor:'#528AAE', color: 'white', padding: '4px', marginLeft: '10px'}}>Preview</button>
+            <button  style={{borderRadius: '4px', backgroundColor:'#528AAE', color: 'white', padding: '4px', marginLeft: '10px'}}>Preview</button>
             <Nav>
               <NavDropdown
                 title={
