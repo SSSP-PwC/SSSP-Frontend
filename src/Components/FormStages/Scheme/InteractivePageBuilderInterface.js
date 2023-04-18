@@ -19,7 +19,7 @@ import {
 import { Container, Form } from "react-bootstrap";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { tokens } from "./theme";
-import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
+import { ProSidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import { Link } from "react-router-dom";
 import AutoStoriesIcon from "@mui/icons-material/AutoStories";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
@@ -63,6 +63,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const [numberOfElements, setNumberOfElements] = useState(0);
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
+  const [pageCounter, setPageCounter] = useState(1);
 
   const [formData, setFormData] = useState("");
 
@@ -71,6 +72,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const isSmallScreen = false;
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [labelValue, setLabelValue] = useState([]);
 
   const [searchText, setSearchText] = useState("");
   const [selected, setSelected] = useState(undefined);
@@ -98,8 +100,16 @@ function InteractivePageBuilderInterface({ link, mode }) {
     const newPage = [{ ...currentPage, fields: currentPageFields }];
     setPage(newPage);
 
+    if (property === "label") {
+      setLabelValue((prevValues) => {
+        const newValues = [...prevValues];
+        newValues[fieldIndex] = event.target.value;
+        return newValues;
+      });
+    }
+
     const newFormData = { ...formData };
-    newFormData[numberOfElements] = updatedField;
+    newFormData[field.name] = updatedField;
     setFormData(newFormData);
   };
 
@@ -107,6 +117,9 @@ function InteractivePageBuilderInterface({ link, mode }) {
     setFormData({});
 
     console.log(formData);
+  };
+  const handlePageBreakClick = () => {
+    setPageCounter(pageCounter + 1);
   };
 
   const [citizen, setCitizen] = useState();
@@ -118,13 +131,10 @@ function InteractivePageBuilderInterface({ link, mode }) {
     setNumberOfElements((prevState) => prevState + 1);
 
     const newField = {
-      label: `Field ${numberOfElements + 1}`,
       type: input_value,
       name: input_value,
-      captcha_key: "",
-      required: false,
       config: {
-        label_name: "",
+        label: "",
         color: "#000000",
         width: "",
         height: "",
@@ -133,13 +143,27 @@ function InteractivePageBuilderInterface({ link, mode }) {
     currentPageFields.push(newField);
     const newPage = [{ ...currentPage, fields: currentPageFields }];
     setPage(newPage);
-    setShow(true);
+
+    setLabelValue((prevValues) => [...prevValues, ""]);
+    if (input_value === "Page Break") {
+      handlePageBreakClick();
+    } else {
+      setShow(true);
+    }
   };
+
+  const buttonComponents = [
+    { name: "Button", icon: <AddCircleOutlineOutlined /> },
+  ];
+
+  const componentCategories = [
+    { name: "Input Category", icon: <AddCircleOutlineOutlined /> },
+  ];
 
   const componentList = [
     { name: "Header", icon: <AddCircleOutlineOutlined /> },
     { name: "Button", icon: <AddCircleOutlineOutlined /> },
-    { name: "Input", icon: <AddCircleOutlineOutlined /> },
+    { name: "Body", icon: <AddCircleOutlineOutlined /> },
     { name: "Image", icon: <AddCircleOutlineOutlined /> },
     { name: "Navbar", icon: <AddCircleOutlineOutlined /> },
     { name: "Footer", icon: <AddCircleOutlineOutlined /> },
@@ -153,7 +177,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
     { name: "Page Break", icon: <AddCircleOutlineOutlined /> },
   ];
 
-  const filteredComponents = componentList.filter((component) =>
+  const filteredComponents = componentCategories.filter((component) =>
     component.name.toLowerCase().includes(searchText.toLowerCase())
   );
   const Item = ({ title, to, icon, subMenuItems }) => {
@@ -169,17 +193,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
           <Typography>{title}</Typography>
           <Link to={to} />
         </MenuItem>
-        {subMenuItems && to && isSubMenuOpen && (
-          <Menu iconShape="square" subMenu>
-            {subMenuItems.map((item, index) => (
-              <MenuItem key={index} style={{ paddingLeft: "1rem" }}>
-                <Link to={item.to}>
-                  <Typography>{item.name}</Typography>
-                </Link>
-              </MenuItem>
-            ))}
-          </Menu>
-        )}
       </>
     );
   };
@@ -216,26 +229,16 @@ function InteractivePageBuilderInterface({ link, mode }) {
     company_id: options,
   });
   const createPage = async (pageData) => {
-    console.log(formData);
-    console.log(
-      JSON.stringify({
-        id: pageData.id,
-        endpoint: formValues.domain,
-        fields: formData,
-      })
-    );
     try {
       const response = await fetch(
-        "http://192.168.68.119:2000/api/add-page-elements",
+        `https://sssp-378808.nw.r.appspot.com/api/add-page-elements/${formValues.domain}/${pageCounter}`,
         {
-          method: "PUT",
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            id: 1,
-            endpoint: formValues.domain,
-            fields: formData,
+            fields: pageData.fields,
           }),
         }
       );
@@ -251,32 +254,35 @@ function InteractivePageBuilderInterface({ link, mode }) {
   };
 
   const submit = async () => {
-    for (let i = 0; i < 1; i++) {
-      const pageFields = page[i].fields;
-      const fieldsData = [];
+    let pages = [];
+    let currentPage = { fields: [] };
 
-      for (let j = 0; j < pageFields.length; j++) {
-        const fieldData = {
-          id: 3,
-          props: {
-            name: pageFields[j].name,
-            label: pageFields[j].label,
-            type: pageFields[j].type,
-            required: pageFields[j].required,
-          },
+    page[0].fields.forEach((field, index) => {
+      if (field.type === "Page Break") {
+        pages.push(currentPage);
+        currentPage = { fields: [] };
+      } else {
+        const props = {
+          name: field.name,
+          label: labelValue[index],
+          type: field.type,
+          required: field.required,
         };
-
-        fieldsData.push(fieldData);
+        currentPage.fields.push({ props });
       }
+    });
 
+    pages.push(currentPage);
+
+    for (let i = 0; i < pages.length; i++) {
       const pageData = {
-        fields: fieldsData,
+        fields: pages[i].fields,
       };
-      console.log(fieldsData);
-
+      console.log(pageData);
       await createPage(pageData);
     }
   };
+
   const handleRemoveField = (index) => {
     const currentPage = page[0];
     if (!currentPage) {
@@ -341,7 +347,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
               <div key={index}>
                 <label style={{ textAlign: "center" }}>
                   {" "}
-                  {field.config.label_name}
+                  {field.config.label}
                 </label>
 
                 <br />
@@ -364,7 +370,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
             formField = (
               <div key={index}>
                 <label style={{ textAlign: "center" }}>
-                  {field.config.label_name}
+                  {field.config.label}
                 </label>
                 <br />
                 <InputField
@@ -386,7 +392,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
             formField = (
               <div key={index}>
                 <label style={{ textAlign: "center" }}>
-                  {field.config.label_name}
+                  {field.config.label}
                 </label>
                 <br />
                 <TextArea
@@ -410,7 +416,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
               <div key={index}>
                 <label style={{ textAlign: "center" }}>
                   {" "}
-                  {field.config.label_name}
+                  {field.config.label}
                 </label>
                 <br />
                 <InputField
@@ -434,7 +440,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
               <div key={index}>
                 <label style={{ textAlign: "center" }}>
                   {" "}
-                  {field.config.label_name}
+                  {field.config.label}
                 </label>
                 <br />
                 <InputField
@@ -467,7 +473,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     required: field.required,
                   }}
                 >
-                  {field.config.label_name}
+                  {field.config.label}
                 </Button>
                 <br></br>
               </div>
@@ -512,7 +518,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     value: field.label,
                   }}
                 >
-                  {field.config.label_name}
+                  {field.config.label}
                 </Label>
                 <br></br>
               </div>
@@ -520,14 +526,14 @@ function InteractivePageBuilderInterface({ link, mode }) {
             break;
           case "Body":
             formField = (
-              <div key={index} style={{ padding: "50px" }}>
+              <div key={index}>
                 <Label
                   input={{
                     type: "text",
-                    value: field.label,
+                    value: field.config.label,
                   }}
                 >
-                  {field.config.label_name}
+                  {field.config.label}
                 </Label>
                 <br></br>
               </div>
@@ -542,7 +548,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     type: "text",
                   }}
                 >
-                  {field.config.label_name}
+                  {field.config.label}
                 </Heading>
                 <br></br>
               </div>
@@ -560,7 +566,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   }}
                   company={
                     <TopNav.Anchor target="new">
-                      {field.config.label_name}
+                      {field.config.label}
                     </TopNav.Anchor>
                   }
                 />
@@ -636,7 +642,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
           case "Multi choice":
             formField = (
               <div key={index}>
-                <MultiChoice label={field.config.label_name}></MultiChoice>
+                <MultiChoice label={field.config.label}></MultiChoice>
               </div>
             );
             break;
@@ -644,7 +650,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
             formField = (
               <div key={index}>
                 <Select id="page-select">
-                  <option value=""> {field.config.label_name}</option>
+                  <option value=""> {field.config.label}</option>
                 </Select>
               </div>
             );
@@ -659,7 +665,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       value: field.name,
                     }}
                   >
-                    {field.config.label_name}
+                    {field.config.label}
                   </Label>
                 </Link>
                 <br></br>
@@ -680,8 +686,8 @@ function InteractivePageBuilderInterface({ link, mode }) {
             break;
           case "Page Break":
             formField = (
-              <div key={index}>
-                <Divider style={{ backgroundColor: "black" }}></Divider>
+              <div key={index} onClick={handlePageBreakClick}>
+                <Divider></Divider>
                 <br></br>
               </div>
             );
@@ -798,10 +804,10 @@ function InteractivePageBuilderInterface({ link, mode }) {
                 <Label>Label Name:</Label>
                 <InputField
                   onChange={(event) =>
-                    updateData(event, "label_name", numberOfElements)
+                    updateData(event, "label", numberOfElements)
                   }
                   input={{
-                    name: "label_name",
+                    name: "label",
                   }}
                 />
               </center>
@@ -994,9 +1000,12 @@ function InteractivePageBuilderInterface({ link, mode }) {
                                 <SearchBox.Input placeholder="Search element" />
                                 <SearchBox.Button />
                               </SearchBox>
-
-                              <List style={{ color: "white" }}>
-                                {filteredComponents.map((component) => (
+                              <br></br>
+                              <SubMenu
+                                style={{ color: "white" }}
+                                title="Button"
+                              >
+                                {buttonComponents.map((component) => (
                                   <ListItem
                                     button
                                     key={component.name}
@@ -1011,7 +1020,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                                     <ListItemText primary={component.name} />
                                   </ListItem>
                                 ))}
-                              </List>
+                              </SubMenu>
                             </div>
                           </Box>
                         )}
@@ -1019,7 +1028,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         {isCollapsed && mode !== "Site Home" && (
                           <Box>
                             <div style={{ margin: "20px" }}>
-                              <List style={{ color: "white" }}>
+                              <SubMenu style={{ color: "white" }} title="HHH">
                                 {filteredComponents.map((component) => (
                                   <ListItem
                                     button
@@ -1033,7 +1042,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                                     <ListItemText primary={component.name} />
                                   </ListItem>
                                 ))}
-                              </List>
+                              </SubMenu>
                             </div>
                           </Box>
                         )}
