@@ -98,7 +98,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
     },
   ]);
 
-  const [isEditing ,setIsEditing] = useState(false);
+  const [isEditing ,setIsEditing] = useState([]);
   const [text, setText] = useState('Hello');
   const [showButtons, setShowButtons] = useState(false);
   const inputRef = useRef(null);
@@ -111,34 +111,39 @@ function InteractivePageBuilderInterface({ link, mode }) {
     setShowButtons(false);
   }
 
-  const handleElementClick = () => {
-    setIsEditing(true);
+  const handleElementClick = (index) => {
+    setIsEditing((prevValues) => {
+      const newValues = [...prevValues];
+      newValues[index] = true;
+      console.log(newValues);
+      return newValues;
+    });
+    setText(labelValue[index]);
   }
 
-  const handleClickOutside = (event) => {
-    if (inputRef.current && !inputRef.current.contains(event.target)){
-      setIsEditing(false);
-    }
+  const handleClickOutside = (index) => {
+      setIsEditing((prevValues) => {
+        const newValues = [...prevValues];
+        newValues[index] = false;
+        return newValues;
+      });
   }
 
-  const handleTextChange = (event) => {
+  const handleTextChange = (event, index) => {
     setText(event.target.value);
+    setLabelValue((prevValues) => {
+      const newValues = [...prevValues];
+      newValues[index] = event.target.value;
+      return newValues;
+    });
   };
 
-
   const handleTextSave = () => {
-    console.log('Saving new text: ' + {text})
+
   }
 
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
 
   const citizen_id = sessionStorage.getItem("Citizen_ID");
-  console.log(formData);
   const updateData = (event, property, fieldIndex) => {
     const currentPage = page[0];
     const currentPageFields = currentPage.fields ? [...currentPage.fields] : [];
@@ -161,7 +166,13 @@ function InteractivePageBuilderInterface({ link, mode }) {
         return newValues;
       });
     }
-
+    if (property === "editing"){
+      setIsEditing((prevValues) =>{
+      const newValues = [...prevValues];
+      newValues[fieldIndex] = false;
+      return newValues;
+    })
+    } 
     const newFormData = { ...formData };
     newFormData[field.name] = updatedField;
     setFormData(newFormData);
@@ -169,8 +180,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
 
   const resetConfiguration = () => {
     setFormData({});
-
-    console.log(formData);
   };
   const handlePageBreakClick = () => {
     setPageCounter(pageCounter + 1);
@@ -191,8 +200,10 @@ function InteractivePageBuilderInterface({ link, mode }) {
     const newField = {
       type: input_value,
       name: input_value,
+      editing: false,
       config: {
         label: "",
+        editing: false,
         color: "#000000",
         width: "",
         height: "",
@@ -201,8 +212,8 @@ function InteractivePageBuilderInterface({ link, mode }) {
     currentPageFields.push(newField);
     const newPage = [{ ...currentPage, fields: currentPageFields }];
     setPage(newPage);
-
     setLabelValue((prevValues) => [...prevValues, ""]);
+    setIsEditing((prevValues) => [...prevValues, false]);
     if (input_value === "Page Break") {
       handlePageBreakClick();
     } else if (input_value === "Button") {
@@ -212,7 +223,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
       setShow(true);
     }
   };
-
   const buttonComponents = [{ name: "Button", icon: <SmartButtonOutlined /> }];
 
   const textComponents = [
@@ -287,7 +297,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
       );
       const data = await response.json();
       setCitizen(data);
-      console.log(selected);
     }
     fetchCitizen();
   }, [isSmallScreen]);
@@ -347,6 +356,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
         const props = {
           name: field.name,
           label: labelValue[index],
+          editing: isEditing[index],
           type: field.type,
           required: field.required,
         };
@@ -355,7 +365,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
     });
 
     pages.push(currentPage);
-    console.log(pages.length);
 
     const requests = pages.map(async (pageData, index) => {
       index += 1;
@@ -408,9 +417,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
     }
 
     const objectUrl = URL.createObjectURL(selectedFile);
-    console.log(selectedFile.type.split("/").pop());
-
-    console.log(objectUrl);
     setPreview(objectUrl);
 
     setLabel(selectedFile.name);
@@ -622,10 +628,13 @@ function InteractivePageBuilderInterface({ link, mode }) {
             break;
           case "Button":
             formField = (
-              <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-                {isEditing ?(
-                  <div ref={inputRef}>
-                  <input autoFocus="autoFocus" type="text" value={text} onChange={handleTextChange}/>
+              <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} style={{display: 'block'}}>
+                {isEditing[index] ?(
+                  <div ref={inputRef} style={{height: '100px', backgroundColor: '#f8f8f8'}}>
+                  <h3 style={{marginTop: '10px'}}>Edit Button</h3>
+                  <label htmlFor="buttontext">Button Text:</label>
+                  <input id="buttontext" autoFocus="autoFocus" type="text" value={text} onChange={(event) => handleTextChange(event, index)}/>
+                  <button onClick={() => handleClickOutside(index)}>Close</button>
                   </div>
                 ) : (
                   <div key={index}>
@@ -641,9 +650,9 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       required: field.required,
                     }}
                   >
-                    {text}
+                    {labelValue[index]}
                   </Button>
-                  {showButtons && <IoIosCreate onClick={handleElementClick}/>}
+                  {showButtons && <IoIosCreate onClick={() => handleElementClick(index)}/>}
                   <br></br>
                 </div>
                 )}
@@ -1074,7 +1083,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   onChange={handleChange}
                   label="Select Button Click Event"
                 >
-                  {console.log(selectedValue)}
                   <option>Next Page</option>
                   <option>Previous Page</option>
                   <option>Custom Routing</option>
