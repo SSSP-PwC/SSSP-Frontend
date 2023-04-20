@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { Divider, ThemeProvider } from "@mui/material";
+import { Divider, Switch, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 import Modal from "react-bootstrap/Modal";
 import {
@@ -12,6 +12,7 @@ import {
   Label,
   LoadingBox,
   MultiChoice,
+  Radio,
   Select,
   TextArea,
   TopNav,
@@ -44,12 +45,13 @@ import {
   ArrowDropDownCircleOutlined,
   CropLandscapeOutlined,
   DetailsOutlined,
+  DynamicFormOutlined,
   LabelImportantOutlined,
+  RadioButtonChecked,
   SmartButtonOutlined,
   SmartToyOutlined,
   TitleOutlined,
-  WebAssetOutlined,
-  WebOutlined,
+  ToggleOnOutlined,
   WysiwygOutlined,
 } from "@mui/icons-material";
 import "react-pro-sidebar/dist/css/styles.css";
@@ -61,6 +63,8 @@ import { HexColorPicker } from "react-colorful";
 
 function InteractivePageBuilderInterface({ link, mode }) {
   const [theme, colorMode] = useMode();
+  const [buttonLink, setButtonLink] = useState();
+
   const [selectedValue, setSelectedValue] = useState("Blank");
   const id = sessionStorage.getItem("Citizen_ID");
   const [show, setShow] = useState(false);
@@ -80,6 +84,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const [pageCounter, setPageCounter] = useState(1);
   const [numDeletes, setNumDeletes] = useState(0);
   const [deleteIndex, setDeleteIndex] = useState(0);
+  const [checked, setChecked] = useState(false);
 
   const [formData, setFormData] = useState("");
 
@@ -90,36 +95,38 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [labelValue, setLabelValue] = useState([]);
   const [buttonConfiguration, setButtonConfiguration] = useState(false);
+  const [configuration, setConfiguration] = useState("");
 
   const [searchText, setSearchText] = useState("");
   const [selected, setSelected] = useState(undefined);
   const [data, setData] = useState(selected);
   const [page, setPage] = useState([
     {
+      id: 1,
       fields: [{}],
     },
   ]);
 
-  const [isEditing ,setIsEditing] = useState([]);
-  const [text, setText] = useState('Hello');
+  const [isEditing, setIsEditing] = useState([]);
+  const [text, setText] = useState("Hello");
   const [showButtons, setShowButtons] = useState([]);
   const inputRef = useRef(null);
 
   const handleMouseEnter = (index) => {
     setShowButtons((prevValues) => {
-      const newValues = [...prevValues];  
+      const newValues = [...prevValues];
       newValues[index] = true;
       return newValues;
     });
-  }
+  };
 
   const handleMouseLeave = (index) => {
     setShowButtons((prevValues) => {
-      const newValues = [...prevValues];  
+      const newValues = [...prevValues];
       newValues[index] = false;
       return newValues;
     });
-  }
+  };
 
   const handleElementClick = (index) => {
     setIsEditing((prevValues) => {
@@ -128,15 +135,15 @@ function InteractivePageBuilderInterface({ link, mode }) {
       return newValues;
     });
     setText(labelValue[index]);
-  }
+  };
 
   const handleClickOutside = (index) => {
-      setIsEditing((prevValues) => {
-        const newValues = [...prevValues];
-        newValues[index] = false;
-        return newValues;
-      });
-  }
+    setIsEditing((prevValues) => {
+      const newValues = [...prevValues];
+      newValues[index] = false;
+      return newValues;
+    });
+  };
 
   const handleTextChange = (event, index) => {
     setText(event.target.value);
@@ -147,9 +154,11 @@ function InteractivePageBuilderInterface({ link, mode }) {
     });
   };
 
-  const handleTextSave = () => {
 
-  }
+  const handleSwitch = (checked) => {
+    setChecked(checked);
+  };
+
 
 
   const citizen_id = sessionStorage.getItem("Citizen_ID");
@@ -175,13 +184,13 @@ function InteractivePageBuilderInterface({ link, mode }) {
         return newValues;
       });
     }
-    if (property === "editing"){
-      setIsEditing((prevValues) =>{
-      const newValues = [...prevValues];
-      newValues[fieldIndex] = false;
-      return newValues;
-    })
-    } 
+    if (property === "editing") {
+      setIsEditing((prevValues) => {
+        const newValues = [...prevValues];
+        newValues[fieldIndex] = false;
+        return newValues;
+      });
+    }
     const newFormData = { ...formData };
     newFormData[field.name] = updatedField;
     setFormData(newFormData);
@@ -201,6 +210,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const [citizen, setCitizen] = useState();
 
   const handleAddField = (input_value) => {
+    setConfiguration("");
     setSelected(input_value);
     const currentPage = page[0];
     const currentPageFields = currentPage.fields ? [...currentPage.fields] : [];
@@ -225,14 +235,32 @@ function InteractivePageBuilderInterface({ link, mode }) {
     setIsEditing((prevValues) => [...prevValues, false]);
     if (input_value === "Page Break") {
       handlePageBreakClick();
-    } else if (input_value === "Button") {
-      setButtonConfiguration(true);
+    } else if (
+      input_value === "Raised Button" ||
+      input_value === "Radio Button" ||
+      input_value === "Toggle Switch"
+    ) {
+      setConfiguration("Button");
       setShow(true);
+    } else if (input_value === "Body") {
+      setConfiguration("Body");
+      setShow(true);
+    } else if (
+      input_value === "Single Stage Sign Up Form" ||
+      input_value === "Single Stage Contact Us Form" ||
+      input_value === "Single Stage Application Form" ||
+      input_value === "Multi Stage Sign Up Form"
+    ) {
+      setShow(false);
     } else {
       setShow(true);
     }
   };
-  const buttonComponents = [{ name: "Button", icon: <SmartButtonOutlined /> }];
+  const buttonComponents = [
+    { name: "Raised Button", icon: <SmartButtonOutlined /> },
+    { name: "Radio Button", icon: <RadioButtonChecked /> },
+    { name: "Toggle Switch", icon: <ToggleOnOutlined /> },
+  ];
 
   const textComponents = [
     { name: "Header", icon: <TitleOutlined /> },
@@ -255,11 +283,32 @@ function InteractivePageBuilderInterface({ link, mode }) {
 
   const imageComponent = [
     { name: "File Upload", icon: <AddCircleOutlineOutlined /> },
-    { name: "Image", icon: <AddCircleOutlineOutlined /> }
+    { name: "Image", icon: <AddCircleOutlineOutlined /> },
   ];
   const phoneNumberComponent = [
-    { name: "Phone number", icon: <AddCircleOutlineOutlined /> }
-  ]
+    { name: "Phone number", icon: <AddCircleOutlineOutlined /> },
+  ];
+
+  const singleStageFormsComponent = [
+    {
+      name: "Single Stage Sign Up Form",
+      icon: <DynamicFormOutlined />,
+    },
+    {
+      name: "Single Stage Contact Us Form",
+      icon: <DynamicFormOutlined />,
+    },
+    {
+      name: "Single Stage Application Form",
+      icon: <DynamicFormOutlined />,
+    },
+  ];
+  const multiStageFormsComponent = [
+    {
+      name: "Multi Stage Sign Up Form",
+      icon: <DynamicFormOutlined />,
+    },
+  ];
 
   const componentList = [
     { name: "Header", icon: <AddCircleOutlineOutlined /> },
@@ -463,7 +512,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
       "https://images.robertharding.com/preview/RF/MI/HORIZONTAL/1174-4517.jpg";
     const fieldsToRender = [];
 
-    const tab = page;
     if (selectedValue === "Home Page") {
       fieldsToRender.push(
         <div
@@ -522,11 +570,318 @@ function InteractivePageBuilderInterface({ link, mode }) {
       );
     }
 
-    if (tab) {
-      tab[0].fields.forEach((field, index) => {
+    if (page) {
+      page[0].fields.forEach((field, index) => {
         let formField = null;
 
         switch (field.type) {
+          case "Single Stage Sign Up Form":
+            formField = (
+              <div key={index}>
+                <TopNav
+                  style={{
+                    color: field.color,
+                    width: field.config.width + "px",
+                    height: field.config.height + "px",
+                    backgroundColor: formData.color,
+                  }}
+                  company={<TopNav.Anchor>ABC Grants</TopNav.Anchor>}
+                />
+                <br></br>
+                <center>
+                  <Heading>Register your details</Heading>
+                  <br></br>
+
+                  <InputField
+                    input={{ type: "email" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter First Name
+                  </InputField>
+                  <br></br>
+                  <InputField
+                    input={{ type: "email" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter Last Name
+                  </InputField>
+                  <br></br>
+                  <InputField
+                    input={{ type: "" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter Address Line 1
+                  </InputField>
+                  <br></br>
+                  <InputField
+                    input={{ type: "email" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter Email Address
+                  </InputField>
+                  <br></br>
+                  <InputField
+                    input={{ type: "password" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter a Password
+                  </InputField>
+                  <br></br>
+                  <InputField
+                    input={{ type: "password" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Confirm Password
+                  </InputField>
+                  <br></br>
+                  <Button>Submit</Button>
+                </center>
+                <Footer
+                  licence={
+                    <span>
+                      All content is available under the{" "}
+                      <styled
+                        href="https://creativecommons.org/licenses/by/4.0/"
+                        rel="license"
+                      >
+                        Creative Commons Attribution 4.0 International Licence{" "}
+                      </styled>
+                      , except where otherwise stated
+                    </span>
+                  }
+                />
+                <br></br>
+              </div>
+            );
+            break;
+
+          case "Single Stage Contact Us Form":
+            formField = (
+              <div key={index}>
+                <TopNav
+                  style={{
+                    color: field.color,
+                    width: field.config.width + "px",
+                    height: field.config.height + "px",
+                    backgroundColor: formData.color,
+                  }}
+                  company={<TopNav.Anchor>ABC Grants</TopNav.Anchor>}
+                />
+                <br></br>
+                <center>
+                  <Heading>Contact Us</Heading>
+
+                  <img
+                    style={{ maxWidth: "300px" }}
+                    src="https://www.westyorks-ca.gov.uk/media/6198/contact-us-1908763_1920-copy111.png?width=794&height=227&mode=max"
+                  />
+                  <br></br>
+                  <br></br>
+                  <br></br>
+                  <InputField
+                    input={{ type: "email" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter Full Name
+                  </InputField>
+                  <br></br>
+
+                  <InputField
+                    input={{ type: "email" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter Email Address
+                  </InputField>
+                  <br></br>
+
+                  <TextArea
+                    style={{
+                      maxWidth: "930px",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      display: "flex",
+                    }}
+                  >
+                    Message
+                  </TextArea>
+                  <br></br>
+
+                  <Button>Submit</Button>
+                </center>
+                <Footer
+                  licence={
+                    <span>
+                      All content is available under the{" "}
+                      <styled
+                        href="https://creativecommons.org/licenses/by/4.0/"
+                        rel="license"
+                      >
+                        Creative Commons Attribution 4.0 International Licence{" "}
+                      </styled>
+                      , except where otherwise stated
+                    </span>
+                  }
+                />
+                <br></br>
+              </div>
+            );
+            break;
+
+          case "Single Stage Application Form":
+            formField = (
+              <div key={index}>
+                <TopNav
+                  style={{
+                    color: field.color,
+                    width: field.config.width + "px",
+                    height: field.config.height + "px",
+                    backgroundColor: formData.color,
+                  }}
+                  company={<TopNav.Anchor>ABC Grants</TopNav.Anchor>}
+                />
+                <br></br>
+                <center>
+                  <Heading>Application Form</Heading>
+
+                  <img
+                    style={{ maxWidth: "300px" }}
+                    src="https://www.westyorks-ca.gov.uk/media/6198/contact-us-1908763_1920-copy111.png?width=794&height=227&mode=max"
+                  />
+                  <br></br>
+                  <br></br>
+                  <br></br>
+                  <InputField
+                    input={{ type: "email" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter Full Name
+                  </InputField>
+                  <br></br>
+
+                  <InputField
+                    input={{ type: "email" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter Email Address
+                  </InputField>
+                  <br></br>
+
+                  <TextArea
+                    style={{
+                      maxWidth: "930px",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      display: "flex",
+                    }}
+                  >
+                    Message
+                  </TextArea>
+                  <br></br>
+
+                  <Button>Submit</Button>
+                </center>
+                <Footer
+                  licence={
+                    <span>
+                      All content is available under the{" "}
+                      <styled
+                        href="https://creativecommons.org/licenses/by/4.0/"
+                        rel="license"
+                      >
+                        Creative Commons Attribution 4.0 International Licence{" "}
+                      </styled>
+                      , except where otherwise stated
+                    </span>
+                  }
+                />
+                <br></br>
+              </div>
+            );
+            break;
+          case "Multi Stage Sign Up Form":
+            formField = (
+              <div key={index}>
+                <TopNav
+                  style={{
+                    color: field.color,
+                    width: field.config.width + "px",
+                    height: field.config.height + "px",
+                    backgroundColor: formData.color,
+                  }}
+                  company={<TopNav.Anchor>ABC Grants</TopNav.Anchor>}
+                />
+                <br></br>
+                <center>
+                  <Heading>Register your details</Heading>
+                  <br></br>
+
+                  <InputField
+                    input={{ type: "email" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter First Name
+                  </InputField>
+                  <br></br>
+                  <InputField
+                    input={{ type: "email" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter Last Name
+                  </InputField>
+                  <br></br>
+                  <div key={index} onClick={handlePageBreakClick}>
+                    <Divider style={{ color: "black" }}>Page Break</Divider>
+                    <br></br>
+                  </div>
+                  <InputField
+                    input={{ type: "" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter Address Line 1
+                  </InputField>
+                  <br></br>
+
+                  <InputField
+                    input={{ type: "email" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter Email Address
+                  </InputField>
+                  <br></br>
+                  <InputField
+                    input={{ type: "password" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter a Password
+                  </InputField>
+                  <br></br>
+                  <InputField
+                    input={{ type: "password" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Confirm Password
+                  </InputField>
+                  <br></br>
+                  <Button>Submit</Button>
+                </center>
+                <Footer
+                  licence={
+                    <span>
+                      All content is available under the{" "}
+                      <styled
+                        href="https://creativecommons.org/licenses/by/4.0/"
+                        rel="license"
+                      >
+                        Creative Commons Attribution 4.0 International Licence{" "}
+                      </styled>
+                      , except where otherwise stated
+                    </span>
+                  }
+                />
+                <br></br>
+              </div>
+            );
+            break;
           case "Text Field":
             formField = (
               <div key={index}>
@@ -576,38 +931,175 @@ function InteractivePageBuilderInterface({ link, mode }) {
           case "Text area":
             formField = (
               <div onMouseLeave={() => handleMouseLeave(index)}>
-                {isEditing[index] ?(
-                  <div ref={inputRef} style={{position: "relative", display:"inline-block", borderRadius: '8px', overflow: 'hidden', boxShadow: '0 0 10px rgba(0, 0, 0, 0.2', transition: 'transform 0.3s ease-in-out', marginTop: '10px'}}>
-                  <h3 style={{padding: '10px', paddingBottom: '5px'}}>Edit Text Area</h3>
-                  <label htmlFor="areatext" style={{color:'#888', fontStyle:'italic', paddingLeft: '5px'}}>Text</label>
-                  <input style={{display: 'block', marginBottom: '40px', paddingLeft: '5px', paddingRight: '5px'}} id="areatext" autoFocus="autoFocus" type="text" value={text} onChange={(event) => handleTextChange(event, index)}/>
-                  <button style={{backgroundColor: 'blueviolet',color: 'white', borderRadius: '4px', display: 'block', position: 'absolute', bottom: '5px', right: '10px'}} onClick={() => handleClickOutside(index)}>Save Changes</button>
-                  <button style={{backgroundColor: 'red',color: 'white', borderRadius: '4px', display: 'block', position: 'absolute', bottom: '5px', left: '10px'}} onClick={() => handleRemoveField(index)}>Delete</button>
+                {isEditing[index] ? (
+                  <div
+                    ref={inputRef}
+                    style={{
+                      position: "relative",
+                      display: "inline-block",
+                      borderRadius: "8px",
+                      overflow: "hidden",
+                      boxShadow: "0 0 10px rgba(0, 0, 0, 0.2",
+                      transition: "transform 0.3s ease-in-out",
+                      marginTop: "10px",
+                    }}
+                  >
+                    <h3 style={{ padding: "10px", paddingBottom: "5px" }}>
+                      Edit Text Area
+                    </h3>
+                    <label
+                      htmlFor="areatext"
+                      style={{
+                        color: "#888",
+                        fontStyle: "italic",
+                        paddingLeft: "5px",
+                      }}
+                    >
+                      Text
+                    </label>
+                    <input
+                      style={{
+                        display: "block",
+                        marginBottom: "40px",
+                        paddingLeft: "5px",
+                        paddingRight: "5px",
+                      }}
+                      id="areatext"
+                      autoFocus="autoFocus"
+                      type="text"
+                      value={text}
+                      onChange={(event) => handleTextChange(event, index)}
+                    />
+                    <button
+                      style={{
+                        backgroundColor: "blueviolet",
+                        color: "white",
+                        borderRadius: "4px",
+                        display: "block",
+                        position: "absolute",
+                        bottom: "5px",
+                        right: "10px",
+                      }}
+                      onClick={() => handleClickOutside(index)}
+                    >
+                      Save Changes
+                    </button>
+                    <button
+                      style={{
+                        backgroundColor: "red",
+                        color: "white",
+                        borderRadius: "4px",
+                        display: "block",
+                        position: "absolute",
+                        bottom: "5px",
+                        left: "10px",
+                      }}
+                      onClick={() => handleRemoveField(index)}
+                    >
+                      Delete
+                    </button>
                   </div>
                 ) : (
-                  <div key={index} >
-                  <label  onMouseEnter={() => handleMouseEnter(index)} style={{ textAlign: "center "}}>
-                    {labelValue[index]}
-                  </label>
-                  <br />
-                  <textarea
-                  style={{
-                    width: field.config.width + "px",
-                    height: field.config.height + "px",
-                  }}
-                  input={{
-                    type: field.type,
-                    name: field.label,
-                    required: field.required,
-                  }}
-                  />
-                  {showButtons[index] && <IoIosCreate onClick={() => handleElementClick(index)}/>}
-                  <br></br>
-                </div>
+                  <div key={index}>
+                    <label
+                      onMouseEnter={() => handleMouseEnter(index)}
+                      style={{ textAlign: "center " }}
+                    >
+                      {labelValue[index]}
+                    </label>
+                    <br />
+                    <textarea
+                      style={{
+                        width: field.config.width + "px",
+                        height: field.config.height + "px",
+                      }}
+                      input={{
+                        type: field.type,
+                        name: field.label,
+                        required: field.required,
+                      }}
+                    />
+                    {showButtons[index] && (
+                      <IoIosCreate onClick={() => handleElementClick(index)} />
+                    )}
+                    <br></br>
+                  </div>
                 )}
-                </div>
+              </div>
             );
             break;
+            
+            case "Radio Button":
+              formField = (
+                <div key={index}>
+                  <Radio
+                    style={{
+                      width: field.config.width + "px",
+                      height: field.config.height + "px",
+                    }}
+                  >
+                    {field.config.label}
+                  </Radio>
+                  <br />
+  
+                  <br></br>
+                </div>
+              );
+              break;
+
+              case "Toggle Switch":
+                formField = (
+                  <div key={index}>
+                    <Switch onChange={handleSwitch} checked={checked} />
+    
+                    <br />
+    
+                    <br></br>
+                  </div>
+                );
+                break;
+                case "Raised Button":
+                  formField = (
+                    <div
+                      onMouseEnter={handleMouseEnter}
+                      onMouseLeave={handleMouseLeave}
+                    >
+                      {isEditing ? (
+                        <div ref={inputRef}>
+                          <input
+                            autoFocus="autoFocus"
+                            type="text"
+                            value={text}
+                            onChange={handleTextChange}
+                          />
+                        </div>
+                      ) : (
+                        <div key={index}>
+                          <br />
+                          <Link to={buttonLink}>
+                            <Button
+                              style={{
+                                width: field.config.width + "px",
+                                height: field.config.height + "px",
+                              }}
+                              input={{
+                                type: field.type,
+                                name: field.label,
+                                required: field.required,
+                              }}
+                            >
+                              {text}
+                            </Button>
+                          </Link>
+                          {showButtons && (
+                            <IoIosCreate onClick={handleElementClick} />
+                          )}
+                          <br></br>
+                        </div>
+                      )}
+                    </div>
+                  );
+                  break;
 
           case "Password":
             formField = (
@@ -659,36 +1151,98 @@ function InteractivePageBuilderInterface({ link, mode }) {
           case "Button":
             formField = (
               <div onMouseLeave={() => handleMouseLeave(index)}>
-                {isEditing[index] ?(
-                  <div ref={inputRef} style={{position: "relative", display:"inline-block", borderRadius: '8px', overflow: 'hidden', boxShadow: '0 0 10px rgba(0, 0, 0, 0.2', transition: 'transform 0.3s ease-in-out', marginTop: '10px'}}>
-                  <h3 style={{padding: '10px', paddingBottom: '5px'}}>Edit Button</h3>
-                  <label htmlFor="buttontext" style={{color:'#888', fontStyle:'italic', paddingLeft: '5px'}}>Text</label>
-                  <input style={{display: 'block', marginBottom: '40px', paddingLeft: '5px', paddingRight: '5px'}} id="buttontext" autoFocus="autoFocus" type="text" value={text} onChange={(event) => handleTextChange(event, index)}/>
-                  <button style={{backgroundColor: 'blueviolet',color: 'white', borderRadius: '4px', display: 'block', position: 'absolute', bottom: '5px', right: '10px'}} onClick={() => handleClickOutside(index)}>Save Changes</button>
-                  <button style={{backgroundColor: 'red',color: 'white', borderRadius: '4px', display: 'block', position: 'absolute', bottom: '5px', left: '10px'}} onClick={() => handleRemoveField(index)}>Delete</button>
-                  </div>
-                ) : (
-                  <div key={index} >
-                  <br />
-                  <Button
-                    onMouseEnter={() => handleMouseEnter(index)}
+                {isEditing[index] ? (
+                  <div
+                    ref={inputRef}
                     style={{
-                      width: field.config.width + "px",
-                      height: field.config.height + "px",
-                    }}
-                    input={{
-                      type: field.type,
-                      name: field.label,
-                      required: field.required,
+                      position: "relative",
+                      display: "inline-block",
+                      borderRadius: "8px",
+                      overflow: "hidden",
+                      boxShadow: "0 0 10px rgba(0, 0, 0, 0.2",
+                      transition: "transform 0.3s ease-in-out",
+                      marginTop: "10px",
                     }}
                   >
-                    {labelValue[index]}
-                  </Button>
-                  {showButtons[index] && <IoIosCreate onClick={() => handleElementClick(index)}/>}
-                  <br></br>
-                </div>
+                    <h3 style={{ padding: "10px", paddingBottom: "5px" }}>
+                      Edit Button
+                    </h3>
+                    <label
+                      htmlFor="buttontext"
+                      style={{
+                        color: "#888",
+                        fontStyle: "italic",
+                        paddingLeft: "5px",
+                      }}
+                    >
+                      Text
+                    </label>
+                    <input
+                      style={{
+                        display: "block",
+                        marginBottom: "40px",
+                        paddingLeft: "5px",
+                        paddingRight: "5px",
+                      }}
+                      id="buttontext"
+                      autoFocus="autoFocus"
+                      type="text"
+                      value={text}
+                      onChange={(event) => handleTextChange(event, index)}
+                    />
+                    <button
+                      style={{
+                        backgroundColor: "blueviolet",
+                        color: "white",
+                        borderRadius: "4px",
+                        display: "block",
+                        position: "absolute",
+                        bottom: "5px",
+                        right: "10px",
+                      }}
+                      onClick={() => handleClickOutside(index)}
+                    >
+                      Save Changes
+                    </button>
+                    <button
+                      style={{
+                        backgroundColor: "red",
+                        color: "white",
+                        borderRadius: "4px",
+                        display: "block",
+                        position: "absolute",
+                        bottom: "5px",
+                        left: "10px",
+                      }}
+                      onClick={() => handleRemoveField(index)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                ) : (
+                  <div key={index}>
+                    <br />
+                    <Button
+                      onMouseEnter={() => handleMouseEnter(index)}
+                      style={{
+                        width: field.config.width + "px",
+                        height: field.config.height + "px",
+                      }}
+                      input={{
+                        type: field.type,
+                        name: field.label,
+                        required: field.required,
+                      }}
+                    >
+                      {labelValue[index]}
+                    </Button>
+                    {showButtons[index] && (
+                      <IoIosCreate onClick={() => handleElementClick(index)} />
+                    )}
+                    <br></br>
+                  </div>
                 )}
-                </div>
+              </div>
             );
             break;
           case "Check box":
@@ -717,7 +1271,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
           case "File Upload":
             formField = (
               <div key={index}>
-                <input type = "file"/>
+                <input type="file" />
                 <br></br>
               </div>
             );
@@ -725,124 +1279,373 @@ function InteractivePageBuilderInterface({ link, mode }) {
           case "Label":
             formField = (
               <div onMouseLeave={() => handleMouseLeave(index)}>
-              {isEditing[index] ?(
-                <div ref={inputRef} style={{position: "relative", display:"inline-block", borderRadius: '8px', overflow: 'hidden', boxShadow: '0 0 10px rgba(0, 0, 0, 0.2', transition: 'transform 0.3s ease-in-out', marginTop: '10px'}}>
-                <h3 style={{padding: '10px', paddingBottom: '5px'}}>Edit Label</h3>
-                <label htmlFor="labeltext" style={{color:'#888', fontStyle:'italic', paddingLeft: '5px'}}>Text</label>
-                <input style={{display: 'block', marginBottom: '40px', paddingLeft: '5px', paddingRight: '5px'}} id="labeltext" autoFocus="autoFocus" type="text" value={text} onChange={(event) => handleTextChange(event, index)}/>
-                <button style={{backgroundColor: 'blueviolet',color: 'white', borderRadius: '4px', display: 'block', position: 'absolute', bottom: '5px', right: '10px'}} onClick={() => handleClickOutside(index)}>Save Changes</button>
-                <button style={{backgroundColor: 'red',color: 'white', borderRadius: '4px', display: 'block', position: 'absolute', bottom: '5px', left: '10px'}} onClick={() => handleRemoveField(index)}>Delete</button>
-                </div>
-              ) : (
-                <div key={index}>
-                <Label
-                onMouseEnter={() => handleMouseEnter(index)}
-                input={{
-                  type: "text",
-                  value: field.label,
-                }}
-                >
-                  {labelValue[index]}
-                </Label>
-                {showButtons[index] && <IoIosCreate onClick={() => handleElementClick(index)}/>}
-                <br></br>
-              </div>
-            )}
-              </div>
-          );
-            break;
-          case "Body":
-              formField = (
-                <div onMouseLeave={() => handleMouseLeave(index)}>
-                {isEditing[index] ?(
-                  <div ref={inputRef} style={{position: "relative", display:"inline-block", borderRadius: '8px', overflow: 'hidden', boxShadow: '0 0 10px rgba(0, 0, 0, 0.2', transition: 'transform 0.3s ease-in-out', marginTop: '10px'}}>
-                  <h3 style={{padding: '10px', paddingBottom: '5px'}}>Edit Body</h3>
-                  <label htmlFor="headingtext" style={{color:'#888', fontStyle:'italic', paddingLeft: '5px'}}>Text</label>
-                  <input style={{display: 'block', minHeight: '80px', marginBottom: '40px', paddingLeft: '5px', paddingRight: '5px'}} id="buttontext" autoFocus="autoFocus" type="text" value={text} onChange={(event) => handleTextChange(event, index)}/>
-                  <button style={{backgroundColor: 'blueviolet',color: 'white', borderRadius: '4px', display: 'block', position: 'absolute', bottom: '5px', right: '10px'}} onClick={() => handleClickOutside(index)}>Save Changes</button>
-                  <button style={{backgroundColor: 'red',color: 'white', borderRadius: '4px', display: 'block', position: 'absolute', bottom: '5px', left: '10px'}} onClick={() => handleRemoveField(index)}>Delete</button>
+                {isEditing[index] ? (
+                  <div
+                    ref={inputRef}
+                    style={{
+                      position: "relative",
+                      display: "inline-block",
+                      borderRadius: "8px",
+                      overflow: "hidden",
+                      boxShadow: "0 0 10px rgba(0, 0, 0, 0.2",
+                      transition: "transform 0.3s ease-in-out",
+                      marginTop: "10px",
+                    }}
+                  >
+                    <h3 style={{ padding: "10px", paddingBottom: "5px" }}>
+                      Edit Label
+                    </h3>
+                    <label
+                      htmlFor="labeltext"
+                      style={{
+                        color: "#888",
+                        fontStyle: "italic",
+                        paddingLeft: "5px",
+                      }}
+                    >
+                      Text
+                    </label>
+                    <input
+                      style={{
+                        display: "block",
+                        marginBottom: "40px",
+                        paddingLeft: "5px",
+                        paddingRight: "5px",
+                      }}
+                      id="labeltext"
+                      autoFocus="autoFocus"
+                      type="text"
+                      value={text}
+                      onChange={(event) => handleTextChange(event, index)}
+                    />
+                    <button
+                      style={{
+                        backgroundColor: "blueviolet",
+                        color: "white",
+                        borderRadius: "4px",
+                        display: "block",
+                        position: "absolute",
+                        bottom: "5px",
+                        right: "10px",
+                      }}
+                      onClick={() => handleClickOutside(index)}
+                    >
+                      Save Changes
+                    </button>
+                    <button
+                      style={{
+                        backgroundColor: "red",
+                        color: "white",
+                        borderRadius: "4px",
+                        display: "block",
+                        position: "absolute",
+                        bottom: "5px",
+                        left: "10px",
+                      }}
+                      onClick={() => handleRemoveField(index)}
+                    >
+                      Delete
+                    </button>
                   </div>
                 ) : (
                   <div key={index}>
-                  <label
-                  onMouseEnter={() => handleMouseEnter(index)}
-                  input={{
-                    type: "text",
-                    value: field.config.label,
-                  }}
-                  >
-                    {labelValue[index]}
-                  </label>
-                  {showButtons[index] && <IoIosCreate onClick={() => handleElementClick(index)}/>}
-                  <br></br>
-                </div>
-              )}
+                    <Label
+                      onMouseEnter={() => handleMouseEnter(index)}
+                      input={{
+                        type: "text",
+                        value: field.label,
+                      }}
+                    >
+                      {labelValue[index]}
+                    </Label>
+                    {showButtons[index] && (
+                      <IoIosCreate onClick={() => handleElementClick(index)} />
+                    )}
+                    <br></br>
+                  </div>
+                )}
               </div>
-          );
+            );
+            break;
+          case "Body":
+            formField = (
+              <div onMouseLeave={() => handleMouseLeave(index)}>
+                {isEditing[index] ? (
+                  <div
+                    ref={inputRef}
+                    style={{
+                      position: "relative",
+                      display: "inline-block",
+                      borderRadius: "8px",
+                      overflow: "hidden",
+                      boxShadow: "0 0 10px rgba(0, 0, 0, 0.2",
+                      transition: "transform 0.3s ease-in-out",
+                      marginTop: "10px",
+                    }}
+                  >
+                    <h3 style={{ padding: "10px", paddingBottom: "5px" }}>
+                      Edit Body
+                    </h3>
+                    <label
+                      htmlFor="headingtext"
+                      style={{
+                        color: "#888",
+                        fontStyle: "italic",
+                        paddingLeft: "5px",
+                      }}
+                    >
+                      Text
+                    </label>
+                    <input
+                      style={{
+                        display: "block",
+                        minHeight: "80px",
+                        marginBottom: "40px",
+                        paddingLeft: "5px",
+                        paddingRight: "5px",
+                      }}
+                      id="buttontext"
+                      autoFocus="autoFocus"
+                      type="text"
+                      value={text}
+                      onChange={(event) => handleTextChange(event, index)}
+                    />
+                    <button
+                      style={{
+                        backgroundColor: "blueviolet",
+                        color: "white",
+                        borderRadius: "4px",
+                        display: "block",
+                        position: "absolute",
+                        bottom: "5px",
+                        right: "10px",
+                      }}
+                      onClick={() => handleClickOutside(index)}
+                    >
+                      Save Changes
+                    </button>
+                    <button
+                      style={{
+                        backgroundColor: "red",
+                        color: "white",
+                        borderRadius: "4px",
+                        display: "block",
+                        position: "absolute",
+                        bottom: "5px",
+                        left: "10px",
+                      }}
+                      onClick={() => handleRemoveField(index)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                ) : (
+                  <div key={index}>
+                    <label
+                      onMouseEnter={() => handleMouseEnter(index)}
+                      input={{
+                        type: "text",
+                        value: field.config.label,
+                      }}
+                    >
+                      {labelValue[index]}
+                    </label>
+                    {showButtons[index] && (
+                      <IoIosCreate onClick={() => handleElementClick(index)} />
+                    )}
+                    <br></br>
+                  </div>
+                )}
+              </div>
+            );
             break;
           case "Header":
             formField = (
               <div onMouseLeave={() => handleMouseLeave(index)}>
-              {isEditing[index] ?(
-                <div ref={inputRef} style={{position: "relative", display:"inline-block", borderRadius: '8px', overflow: 'hidden', boxShadow: '0 0 10px rgba(0, 0, 0, 0.2', transition: 'transform 0.3s ease-in-out', marginTop: '10px'}}>
-                <h3 style={{padding: '10px', paddingBottom: '5px'}}>Edit Heading</h3>
-                <label htmlFor="headingtext" style={{color:'#888', fontStyle:'italic', paddingLeft: '5px'}}>Text</label>
-                <input style={{display: 'block', marginBottom: '40px', paddingLeft: '5px', paddingRight: '5px'}} id="headingtext" autoFocus="autoFocus" type="text" value={text} onChange={(event) => handleTextChange(event, index)}/>
-                <button style={{backgroundColor: 'blueviolet',color: 'white', borderRadius: '4px', display: 'block', position: 'absolute', bottom: '5px', right: '10px'}} onClick={() => handleClickOutside(index)}>Save Changes</button>
-                <button style={{backgroundColor: 'red',color: 'white', borderRadius: '4px', display: 'block', position: 'absolute', bottom: '5px', left: '10px'}} onClick={() => handleRemoveField(index)}>Delete</button>
-                </div>
-              ) : (
-                <div key={index}>
-                <Heading
-                  onMouseEnter={() => handleMouseEnter(index)}
-                  size="LARGE"
-                  style={{display: 'block'}}
-                  input={{
-                    type: "text",
-                  }}
-                >
-                  {labelValue[index]}
-                </Heading>
-                {showButtons[index] && <IoIosCreate onClick={() => handleElementClick(index)}/>}
-                <br></br>
+                {isEditing[index] ? (
+                  <div
+                    ref={inputRef}
+                    style={{
+                      position: "relative",
+                      display: "inline-block",
+                      borderRadius: "8px",
+                      overflow: "hidden",
+                      boxShadow: "0 0 10px rgba(0, 0, 0, 0.2",
+                      transition: "transform 0.3s ease-in-out",
+                      marginTop: "10px",
+                    }}
+                  >
+                    <h3 style={{ padding: "10px", paddingBottom: "5px" }}>
+                      Edit Heading
+                    </h3>
+                    <label
+                      htmlFor="headingtext"
+                      style={{
+                        color: "#888",
+                        fontStyle: "italic",
+                        paddingLeft: "5px",
+                      }}
+                    >
+                      Text
+                    </label>
+                    <input
+                      style={{
+                        display: "block",
+                        marginBottom: "40px",
+                        paddingLeft: "5px",
+                        paddingRight: "5px",
+                      }}
+                      id="headingtext"
+                      autoFocus="autoFocus"
+                      type="text"
+                      value={text}
+                      onChange={(event) => handleTextChange(event, index)}
+                    />
+                    <button
+                      style={{
+                        backgroundColor: "blueviolet",
+                        color: "white",
+                        borderRadius: "4px",
+                        display: "block",
+                        position: "absolute",
+                        bottom: "5px",
+                        right: "10px",
+                      }}
+                      onClick={() => handleClickOutside(index)}
+                    >
+                      Save Changes
+                    </button>
+                    <button
+                      style={{
+                        backgroundColor: "red",
+                        color: "white",
+                        borderRadius: "4px",
+                        display: "block",
+                        position: "absolute",
+                        bottom: "5px",
+                        left: "10px",
+                      }}
+                      onClick={() => handleRemoveField(index)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                ) : (
+                  <div key={index}>
+                    <Heading
+                      onMouseEnter={() => handleMouseEnter(index)}
+                      size="LARGE"
+                      style={{ display: "block" }}
+                      input={{
+                        type: "text",
+                      }}
+                    >
+                      {labelValue[index]}
+                    </Heading>
+                    {showButtons[index] && (
+                      <IoIosCreate onClick={() => handleElementClick(index)} />
+                    )}
+                    <br></br>
+                  </div>
+                )}
               </div>
-            )}
-              </div>
-          );
+            );
             break;
           case "Navbar":
             formField = (
               <div onMouseLeave={() => handleMouseLeave(index)}>
-              {isEditing[index] ?(
-                <div ref={inputRef} style={{position: "relative", display:"inline-block", borderRadius: '8px', overflow: 'hidden', boxShadow: '0 0 10px rgba(0, 0, 0, 0.2', transition: 'transform 0.3s ease-in-out', marginTop: '10px'}}>
-                <h3 style={{padding: '10px', paddingBottom: '5px'}}>Edit Navbar</h3>
-                <label htmlFor="labeltext" style={{color:'#888', fontStyle:'italic', paddingLeft: '5px'}}>Text</label>
-                <input style={{display: 'block', marginBottom: '40px', paddingLeft: '5px', paddingRight: '5px'}} id="labeltext" autoFocus="autoFocus" type="text" value={text} onChange={(event) => handleTextChange(event, index)}/>
-                <button style={{backgroundColor: 'blueviolet',color: 'white', borderRadius: '4px', display: 'block', position: 'absolute', bottom: '5px', right: '10px'}} onClick={() => handleClickOutside(index)}>Save Changes</button>
-                <button style={{backgroundColor: 'red',color: 'white', borderRadius: '4px', display: 'block', position: 'absolute', bottom: '5px', left: '10px'}} onClick={() => handleRemoveField(index)}>Delete</button>
-                </div>
-              ) : (
-                <div key={index}>
-                <TopNav
-                  style={{
-                    color: field.color,
-                    width: field.config.width + "px",
-                    height: field.config.height + "px",
-                    backgroundColor: formData.color,
-                  }}
-                  onMouseEnter={() => handleMouseEnter(index)}
-                  company={
-                    <TopNav.Anchor target="new">
-                      {labelValue[index]}
-                    </TopNav.Anchor>
-                  }
-                />
-                {showButtons[index] && <IoIosCreate onClick={() => handleElementClick(index)}/>}
-                <br></br>
+                {isEditing[index] ? (
+                  <div
+                    ref={inputRef}
+                    style={{
+                      position: "relative",
+                      display: "inline-block",
+                      borderRadius: "8px",
+                      overflow: "hidden",
+                      boxShadow: "0 0 10px rgba(0, 0, 0, 0.2",
+                      transition: "transform 0.3s ease-in-out",
+                      marginTop: "10px",
+                    }}
+                  >
+                    <h3 style={{ padding: "10px", paddingBottom: "5px" }}>
+                      Edit Navbar
+                    </h3>
+                    <label
+                      htmlFor="labeltext"
+                      style={{
+                        color: "#888",
+                        fontStyle: "italic",
+                        paddingLeft: "5px",
+                      }}
+                    >
+                      Text
+                    </label>
+                    <input
+                      style={{
+                        display: "block",
+                        marginBottom: "40px",
+                        paddingLeft: "5px",
+                        paddingRight: "5px",
+                      }}
+                      id="labeltext"
+                      autoFocus="autoFocus"
+                      type="text"
+                      value={text}
+                      onChange={(event) => handleTextChange(event, index)}
+                    />
+                    <button
+                      style={{
+                        backgroundColor: "blueviolet",
+                        color: "white",
+                        borderRadius: "4px",
+                        display: "block",
+                        position: "absolute",
+                        bottom: "5px",
+                        right: "10px",
+                      }}
+                      onClick={() => handleClickOutside(index)}
+                    >
+                      Save Changes
+                    </button>
+                    <button
+                      style={{
+                        backgroundColor: "red",
+                        color: "white",
+                        borderRadius: "4px",
+                        display: "block",
+                        position: "absolute",
+                        bottom: "5px",
+                        left: "10px",
+                      }}
+                      onClick={() => handleRemoveField(index)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                ) : (
+                  <div key={index}>
+                    <TopNav
+                      style={{
+                        color: field.color,
+                        width: field.config.width + "px",
+                        height: field.config.height + "px",
+                        backgroundColor: formData.color,
+                      }}
+                      onMouseEnter={() => handleMouseEnter(index)}
+                      company={
+                        <TopNav.Anchor target="new">
+                          {labelValue[index]}
+                        </TopNav.Anchor>
+                      }
+                    />
+                    {showButtons[index] && (
+                      <IoIosCreate onClick={() => handleElementClick(index)} />
+                    )}
+                    <br></br>
+                  </div>
+                )}
               </div>
-            )}
-              </div>
-          );
+            );
             break;
           case "coming-soon":
             formField = (
@@ -891,36 +1694,98 @@ function InteractivePageBuilderInterface({ link, mode }) {
           case "Footer":
             formField = (
               <div onMouseLeave={() => handleMouseLeave(index)}>
-              {isEditing[index] ?(
-                <div ref={inputRef} style={{position: "relative", display:"inline-block", borderRadius: '8px', overflow: 'hidden', boxShadow: '0 0 10px rgba(0, 0, 0, 0.2', transition: 'transform 0.3s ease-in-out', marginTop: '10px'}}>
-                <h3 style={{padding: '10px', paddingBottom: '5px'}}>Edit Label</h3>
-                <label htmlFor="labeltext" style={{color:'#888', fontStyle:'italic', paddingLeft: '5px'}}>Text</label>
-                <input style={{display: 'block', marginBottom: '40px', paddingLeft: '5px', paddingRight: '5px'}} id="labeltext" autoFocus="autoFocus" type="text" value={text} onChange={(event) => handleTextChange(event, index)}/>
-                <button style={{backgroundColor: 'blueviolet',color: 'white', borderRadius: '4px', display: 'block', position: 'absolute', bottom: '5px', right: '10px'}} onClick={() => handleClickOutside(index)}>Save Changes</button>
-                <button style={{backgroundColor: 'red',color: 'white', borderRadius: '4px', display: 'block', position: 'absolute', bottom: '5px', left: '10px'}} onClick={() => handleRemoveField(index)}>Delete</button>
-                </div>
-              ) : (
-                <div key={index}>
-                 <Footer
-                  licence={
-                    <span onMouseEnter={() => handleMouseEnter(index)}>
-                      All content is available under the{" "}
-                      <styled
-                        href="https://creativecommons.org/licenses/by/4.0/"
-                        rel="license"
-                      >
-                        {labelValue[index]}
-                      </styled>
-                      , except where otherwise stated
-                    </span>
-                  }
-                />
-                 {showButtons[index] && <IoIosCreate onClick={() => handleElementClick(index)}/>}
+                {isEditing[index] ? (
+                  <div
+                    ref={inputRef}
+                    style={{
+                      position: "relative",
+                      display: "inline-block",
+                      borderRadius: "8px",
+                      overflow: "hidden",
+                      boxShadow: "0 0 10px rgba(0, 0, 0, 0.2",
+                      transition: "transform 0.3s ease-in-out",
+                      marginTop: "10px",
+                    }}
+                  >
+                    <h3 style={{ padding: "10px", paddingBottom: "5px" }}>
+                      Edit Label
+                    </h3>
+                    <label
+                      htmlFor="labeltext"
+                      style={{
+                        color: "#888",
+                        fontStyle: "italic",
+                        paddingLeft: "5px",
+                      }}
+                    >
+                      Text
+                    </label>
+                    <input
+                      style={{
+                        display: "block",
+                        marginBottom: "40px",
+                        paddingLeft: "5px",
+                        paddingRight: "5px",
+                      }}
+                      id="labeltext"
+                      autoFocus="autoFocus"
+                      type="text"
+                      value={text}
+                      onChange={(event) => handleTextChange(event, index)}
+                    />
+                    <button
+                      style={{
+                        backgroundColor: "blueviolet",
+                        color: "white",
+                        borderRadius: "4px",
+                        display: "block",
+                        position: "absolute",
+                        bottom: "5px",
+                        right: "10px",
+                      }}
+                      onClick={() => handleClickOutside(index)}
+                    >
+                      Save Changes
+                    </button>
+                    <button
+                      style={{
+                        backgroundColor: "red",
+                        color: "white",
+                        borderRadius: "4px",
+                        display: "block",
+                        position: "absolute",
+                        bottom: "5px",
+                        left: "10px",
+                      }}
+                      onClick={() => handleRemoveField(index)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                ) : (
+                  <div key={index}>
+                    <Footer
+                      licence={
+                        <span onMouseEnter={() => handleMouseEnter(index)}>
+                          All content is available under the{" "}
+                          <styled
+                            href="https://creativecommons.org/licenses/by/4.0/"
+                            rel="license"
+                          >
+                            {labelValue[index]}
+                          </styled>
+                          , except where otherwise stated
+                        </span>
+                      }
+                    />
+                    {showButtons[index] && (
+                      <IoIosCreate onClick={() => handleElementClick(index)} />
+                    )}
+                  </div>
+                )}
               </div>
-            )}
-              </div>
-          );
-            
+            );
+
             break;
           case "Multi choice":
             formField = (
@@ -1113,18 +1978,41 @@ function InteractivePageBuilderInterface({ link, mode }) {
         <Modal.Body>
           <Form>
             <Form.Group className="mb-3">
-              <Divider>Label Details</Divider>
+              <Divider>General Details</Divider>
               <br></br>
               <center>
-                <Label>Label Name:</Label>
-                <InputField
-                  onChange={(event) =>
-                    updateData(event, "label", numberOfElements)
-                  }
-                  input={{
-                    name: "label",
-                  }}
-                />
+                {configuration === "Body" ? (
+                  <div>
+                    <TextArea
+                      style={{
+                        alignItems: "center",
+                        justifyContent: "center",
+                        display: "flex",
+                      }}
+                      onChange={(event) =>
+                        updateData(event, "label", numberOfElements)
+                      }
+                      input={{
+                        name: "label",
+                      }}
+                    >
+                      Body Content
+                    </TextArea>
+                  </div>
+                ) : (
+                  <div>
+                    {" "}
+                    <Label>Label Name:</Label>
+                    <InputField
+                      onChange={(event) =>
+                        updateData(event, "label", numberOfElements)
+                      }
+                      input={{
+                        name: "label",
+                      }}
+                    />
+                  </div>
+                )}
               </center>
             </Form.Group>
             <Divider>Component Adjustments</Divider>
@@ -1171,7 +2059,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                 <center>Height (px)</center>
               </InputField>
             </Form.Group>
-            {buttonConfiguration === true && (
+            {configuration === "Button" && (
               <Form.Group className="mb-3">
                 <Divider>Button Configuration</Divider>
                 <br></br>
@@ -1189,7 +2077,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   <option>Next Page</option>
                   <option>Previous Page</option>
                   <option>Custom Routing</option>
-
                   <option>Submit Contents</option>
                 </Select>
                 {selectedValue === "Next Page" && (
@@ -1225,8 +2112,9 @@ function InteractivePageBuilderInterface({ link, mode }) {
                 <div></div>
               ) : (
                 <div>
+
                   <Box
-                    style={{ height: "100%" }}
+                    style={{float: "left", padding: "20px"}}
                     sx={{
                       "& .pro-sidebar-inner": {
                         bgcolor: "#212529",
@@ -1353,6 +2241,58 @@ function InteractivePageBuilderInterface({ link, mode }) {
                                 <SearchBox.Button />
                               </SearchBox>
                               <br></br>
+
+                              <SubMenu
+                                style={{ color: "white" }}
+                                title="Templates"
+                              >
+                                <SubMenu
+                                  style={{ color: "white" }}
+                                  title="Single Stage Forms"
+                                >
+                                  {singleStageFormsComponent.map(
+                                    (component) => (
+                                      <ListItem
+                                        button
+                                        key={component.name}
+                                        selected={selected === component.name}
+                                        onClick={() =>
+                                          handleAddField(component.name)
+                                        }
+                                      >
+                                        <ListItemIcon
+                                          style={{ color: "white" }}
+                                        >
+                                          {component.icon}
+                                        </ListItemIcon>
+                                        <ListItemText
+                                          primary={component.name}
+                                        />
+                                      </ListItem>
+                                    )
+                                  )}
+                                </SubMenu>
+                                <SubMenu
+                                  style={{ color: "white" }}
+                                  title="Multi Stage Forms"
+                                >
+                                  {multiStageFormsComponent.map((component) => (
+                                    <ListItem
+                                      button
+                                      key={component.name}
+                                      selected={selected === component.name}
+                                      onClick={() =>
+                                        handleAddField(component.name)
+                                      }
+                                    >
+                                      <ListItemIcon style={{ color: "white" }}>
+                                        {component.icon}
+                                      </ListItemIcon>
+                                      <ListItemText primary={component.name} />
+                                    </ListItem>
+                                  ))}
+                                </SubMenu>
+                              </SubMenu>
                               <SubMenu
                                 style={{ color: "white" }}
                                 title="Button Category"
@@ -1529,20 +2469,194 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   </Box>
                 </div>
               )}
-
-              <Container
-                style={{ padding: "20px", backgroundColor: "#d3d3d3" }}
-              >
-                <div
+              {page[0].fields.length > 1 ? (
+                <Container
                   style={{
-                    height: "800px",
-                    width: "100%",
-                    backgroundColor: "white",
+                    backgroundColor: "#212529",
+                    border: "none",
+                    boxShadow: "0 0 10px rgba(0,0,0,0.3)",
+                    borderRadius: "25px",
+                    overflow: "hidden",
+                    padding: "20px",
+                    marginTop: "30px",
                   }}
                 >
-                  <RenderForm />
-                </div>
-              </Container>
+                  <div
+                    style={{
+                      backgroundColor: "white",
+                    }}
+                  >
+                    <RenderForm />
+                  </div>
+                </Container>
+              ) : (
+                <Container>
+                  <br></br>
+                  <br></br>
+                  <br></br>
+                  <br></br>
+                  <br></br>
+                  <br></br>
+                  <br></br>
+                  <br></br>
+                  <Heading>Start adding elements to get started.</Heading>
+                </Container>
+              )}
+              <Box
+                style={{ height: "100%", float: "right", padding: "20px" }}
+                sx={{
+                  "& .pro-sidebar-inner": {
+                    bgcolor: "#212529",
+                  },
+                  "& .pro-icon-wrapper": {
+                    backgroundColor: "transparent !important",
+                  },
+                  "& .pro-inner-item": {
+                    padding: "5px 35px 5px 20px !important",
+                  },
+                  "& .pro-inner-item:hover": {
+                    color: "#868dfb !important",
+                  },
+                  "& .pro-menu-item.active": {
+                    color: "#6870fa !important",
+                  },
+                }}
+              >
+                <ProSidebar
+                  collapsed={isCollapsed}
+                  style={{
+                    backgroundColor: "#212529",
+                    border: "none",
+                    boxShadow: "0 0 10px rgba(0,0,0,0.3)",
+                    borderRadius: "20px",
+                    overflow: "hidden",
+                    margin: "3px",
+                    marginTop: "0px",
+                  }}
+                >
+                  <Menu iconShape="square">
+                    <MenuItem
+                      onClick={() => setIsCollapsed(!isCollapsed)}
+                      icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
+                      style={{
+                        margin: "10px 0 20px 0",
+                      }}
+                    >
+                      {!isCollapsed && (
+                        <Box
+                          display="flex"
+                          justifyContent="space-between"
+                          alignItems="center"
+                          ml="15px"
+                        >
+                          <Typography variant="h3" color={colors.primary[900]}>
+                            Connect Data
+                          </Typography>
+                          <IconButton
+                            onClick={() => setIsCollapsed(!isCollapsed)}
+                          >
+                            <MenuOutlinedIcon
+                              style={{ color: colors.primary[900] }}
+                            />
+                          </IconButton>
+                        </Box>
+                      )}
+                    </MenuItem>
+
+                    {!isCollapsed && (
+                      <Box mb="25px">
+                        <Box textAlign="center">
+                          <Typography
+                            variant="h2"
+                            sx={{ m: "10px 0 0 0" }}
+                          ></Typography>
+                        </Box>
+                      </Box>
+                    )}
+                    {mode === "Site Home" && (
+                      <Box paddingLeft={isCollapsed ? undefined : "10%"}>
+                        <Item
+                          title="My Home"
+                          to="/site-home"
+                          icon={<DetailsOutlined />}
+                          selected={selected}
+                          setSelected={setSelected}
+                        />
+
+                        <Typography variant="h6" sx={{ m: "15px 0 5px 20px" }}>
+                          Details
+                        </Typography>
+                        <Item
+                          title="Site Details"
+                          to="/team"
+                          icon={<DetailsOutlined />}
+                          selected={selected}
+                          setSelected={setSelected}
+                        />
+
+                        <Typography variant="h6" sx={{ m: "15px 0 5px 20px" }}>
+                          Pages
+                        </Typography>
+                        <Item
+                          title="Create Pages"
+                          to={`/page-builder-interface/?domain=${link}`}
+                          icon={<AutoStoriesIcon />}
+                          selected={selected}
+                          setSelected={setSelected}
+                        />
+                      </Box>
+                    )}
+                    {!isCollapsed && mode !== "Site Home" && (
+                      <Box>
+                        <div style={{ margin: "20px" }}>
+                          <SearchBox
+                            value={searchText}
+                            onChange={(event) =>
+                              setSearchText(event.target.value)
+                            }
+                            fullWidth
+                            sx={{ mb: 2 }}
+                          >
+                            <SearchBox.Input placeholder="Search element" />
+                            <SearchBox.Button />
+                          </SearchBox>
+                          <br></br>
+
+                          <SubMenu style={{ color: "white" }} title="Data">
+                            <SubMenu
+                              style={{ color: "white" }}
+                              title="Data"
+                            >
+                              </SubMenu>
+                           </SubMenu>
+                        </div>
+                      </Box>
+                    )}
+
+                    {isCollapsed && mode !== "Site Home" && (
+                      <Box>
+                        <div style={{ margin: "20px" }}>
+                          <SubMenu style={{ color: "white" }} title="HHH">
+                            {filteredComponents.map((component) => (
+                              <ListItem
+                                button
+                                key={component.name}
+                                selected={selected === component.name}
+                                onClick={() => setSelected(component.name)}
+                              >
+                                <ListItemIcon style={{ color: "white" }}>
+                                  {component.icon}
+                                </ListItemIcon>
+                                <ListItemText primary={component.name} />
+                              </ListItem>
+                            ))}
+                          </SubMenu>
+                        </div>
+                      </Box>
+                    )}
+                  </Menu>
+                </ProSidebar>
+              </Box>
             </div>
           </ThemeProvider>
         </ColorModeContext.Provider>
@@ -1551,4 +2665,5 @@ function InteractivePageBuilderInterface({ link, mode }) {
     </div>
   );
 }
+
 export default InteractivePageBuilderInterface;
