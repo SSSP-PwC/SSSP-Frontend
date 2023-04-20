@@ -104,17 +104,255 @@ function DynamicPage() {
     data &&
       data.map((field, index) => {
         switch (field.config?.type) {
+          case "Single Stage Sign Up Form":
+            formField = (
+              <div key={index}>
+                <TopNav
+                  style={{
+                    color: field.color,
+                    width: field.config.width + "px",
+                    height: field.config.height + "px",
+                    backgroundColor: formData.color,
+                  }}
+                  company={<TopNav.Anchor>ABC Grants</TopNav.Anchor>}
+                />
+                <br></br>
+                <center>
+                  <Heading>Register your details</Heading>
+                  <br></br>
+
+                  <InputField
+                    input={{ type: "email" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter First Name
+                  </InputField>
+                  <br></br>
+                  <InputField
+                    input={{ type: "email" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter Last Name
+                  </InputField>
+                  <br></br>
+                  <InputField
+                    input={{ type: "" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter Address Line 1
+                  </InputField>
+                  <br></br>
+                  <InputField
+                    input={{ type: "email" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter Email Address
+                  </InputField>
+                  <br></br>
+                  <InputField
+                    input={{ type: "password" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter a Password
+                  </InputField>
+                  <br></br>
+                  <InputField
+                    input={{ type: "password" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Confirm Password
+                  </InputField>
+                  <br></br>
+                  <Button>Submit</Button>
+                </center>
+                <Footer
+                  licence={
+                    <span>
+                      All content is available under the{" "}
+                      <styled
+                        href="https://creativecommons.org/licenses/by/4.0/"
+                        rel="license"
+                      >
+                        Creative Commons Attribution 4.0 International Licence{" "}
+                      </styled>
+                      , except where otherwise stated
+                    </span>
+                  }
+                />
+                <br></br>
+              </div>
+            );
+            break;
+          case "Single Stage Contact Us Form":
+            formField = (
+              <div key={index}>
+                <TopNav
+                  style={{
+                    color: field.color,
+                    width: field.config.width + "px",
+                    height: field.config.height + "px",
+                    backgroundColor: formData.color,
+                  }}
+                  company={<TopNav.Anchor>ABC Grants</TopNav.Anchor>}
+                />
+                <br></br>
+                <center>
+                  <Heading>Contact Us</Heading>
+
+                  <img
+                    style={{ maxWidth: "300px" }}
+                    src="https://www.westyorks-ca.gov.uk/media/6198/contact-us-1908763_1920-copy111.png?width=794&height=227&mode=max"
+                  />
+                  <br></br>
+                  <br></br>
+                  <br></br>
+                  <InputField
+                    input={{ type: "email" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter Full Name
+                  </InputField>
+                  <br></br>
+
+                  <InputField
+                    input={{ type: "email" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter Email Address
+                  </InputField>
+                  <br></br>
+
+                  <TextArea
+                    style={{
+                      maxWidth: "930px",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      display: "flex",
+                    }}
+                  >
+                    Message
+                  </TextArea>
+                  <br></br>
+
+                  <Button>Submit</Button>
+                </center>
+                <Footer
+                  licence={
+                    <span>
+                      All content is available under the{" "}
+                      <styled
+                        href="https://creativecommons.org/licenses/by/4.0/"
+                        rel="license"
+                      >
+                        Creative Commons Attribution 4.0 International Licence{" "}
+                      </styled>
+                      , except where otherwise stated
+                    </span>
+                  }
+                />
+                <br></br>
+              </div>
+            );
+            break;
+          case "Multi Stage Sign Up Form":
+            formField = (
+              <div key={index}>
+                <TopNav
+                  style={{
+                    color: field.color,
+                    width: field.config.width + "px",
+                    height: field.config.height + "px",
+                    backgroundColor: formData.color,
+                  }}
+                  company={<TopNav.Anchor>ABC Grants</TopNav.Anchor>}
+                />
+                <br></br>
+                <center>
+                  <Heading>Register your details</Heading>
+                  <br></br>
+
+                  <InputField
+                    input={{ type: "email" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter First Name
+                  </InputField>
+                  <br></br>
+                  <InputField
+                    input={{ type: "email" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter Last Name
+                  </InputField>
+                  <br></br>
+
+                  <InputField
+                    input={{ type: "" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter Address Line 1
+                  </InputField>
+                  <br></br>
+
+                  <InputField
+                    input={{ type: "email" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter Email Address
+                  </InputField>
+                  <br></br>
+                  <InputField
+                    input={{ type: "password" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter a Password
+                  </InputField>
+                  <br></br>
+                  <InputField
+                    input={{ type: "password" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Confirm Password
+                  </InputField>
+                  <br></br>
+                  <Button>Submit</Button>
+                </center>
+                <Footer
+                  licence={
+                    <span>
+                      All content is available under the{" "}
+                      <styled
+                        href="https://creativecommons.org/licenses/by/4.0/"
+                        rel="license"
+                      >
+                        Creative Commons Attribution 4.0 International Licence{" "}
+                      </styled>
+                      , except where otherwise stated
+                    </span>
+                  }
+                />
+                <br></br>
+              </div>
+            );
+            break;
           case "Text Field":
             formField = (
-              <div key={index} style={{ padding: "10px" }}>
-                <label style={{ textAlign: "center" }}>{field.name}</label>
+              <div key={index}>
+                <label style={{ textAlign: "center" }}>
+                  {" "}
+                  {field.config.label}
+                </label>
 
                 <br />
                 <InputField
+                  style={{
+                    width: field.config.width + "px",
+                    height: field.config.height + "px",
+                  }}
                   input={{
-                    type: field.config.type,
-                    name: field.config.label,
-                    required: field.config.required,
+                    type: field.type,
+                    name: field.label,
+                    required: field.required,
                   }}
                 />
                 <br></br>
@@ -123,16 +361,42 @@ function DynamicPage() {
             break;
           case "Email":
             formField = (
-              <div key={index} style={{ padding: "10px" }}>
+              <div key={index}>
                 <label style={{ textAlign: "center" }}>
-                  {field.config.name}
+                  {field.config.label}
                 </label>
                 <br />
                 <InputField
+                  style={{
+                    width: field.config.width + "px",
+                    height: field.config.height + "px",
+                  }}
                   input={{
-                    type: field.config.type,
-                    name: field.config.label,
-                    required: field.config.required,
+                    type: field.type,
+                    name: field.label,
+                    required: field.required,
+                  }}
+                />
+                <br></br>
+              </div>
+            );
+            break;
+          case "Text area":
+            formField = (
+              <div key={index}>
+                <label style={{ textAlign: "center" }}>
+                  {field.config.label}
+                </label>
+                <br />
+                <TextArea
+                  style={{
+                    width: field.config.width + "px",
+                    height: field.config.height + "px",
+                  }}
+                  input={{
+                    type: field.type,
+                    name: field.label,
+                    required: field.required,
                   }}
                 />
                 <br></br>
@@ -142,16 +406,21 @@ function DynamicPage() {
 
           case "Password":
             formField = (
-              <div key={index} style={{ padding: "10px" }}>
+              <div key={index}>
                 <label style={{ textAlign: "center" }}>
-                  {field.config.name}
+                  {" "}
+                  {field.config.label}
                 </label>
                 <br />
                 <InputField
+                  style={{
+                    width: field.config.width + "px",
+                    height: field.config.height + "px",
+                  }}
                   input={{
-                    type: field.config.type,
-                    name: field.config.name,
-                    required: field.config.required,
+                    type: field.type,
+                    name: field.name,
+                    required: field.required,
                   }}
                 />
                 <br></br>
@@ -161,50 +430,33 @@ function DynamicPage() {
 
           case "Number":
             formField = (
-              <div key={index} style={{ padding: "10px" }}>
+              <div key={index}>
                 <label style={{ textAlign: "center" }}>
-                  {field.config.name}
+                  {" "}
+                  {field.config.label}
                 </label>
                 <br />
                 <InputField
+                  style={{
+                    width: field.config.width + "px",
+                    height: field.config.height + "px",
+                  }}
                   input={{
-                    type: field.config.type,
-                    name: field.config.label,
-                    required: field.config.required,
+                    type: field.type,
+                    name: field.label,
+                    required: field.required,
                   }}
                 />
                 <br></br>
               </div>
             );
             break;
-          case "Button":
-            formField = (
-              <div key={index} style={{ padding: "10px" }}>
-                <br />
-                <Button
-                  style={{
-                    width: field.config.width + "px",
-                    height: field.config.height + "px",
-                  }}
-                  input={{
-                    type: field.config.type,
-                    name: field.config.label,
-                    required: field.config.required,
-                  }}
-                >
-                  {field.config.label}
-                </Button>
-                <br></br>
-              </div>
-            );
-            break;
+
           case "Check box":
             formField = (
-              <div key={index} style={{ padding: "10px" }}>
-                <Checkbox name={field.label} required={field.config.required} />
-                <label style={{ textAlign: "center" }}>
-                  {field.config.name}
-                </label>
+              <div key={index}>
+                <Checkbox name={field.label} required={field.required} />
+                <label style={{ textAlign: "center" }}>{field.name}</label>
                 <br></br>
               </div>
             );
@@ -212,9 +464,7 @@ function DynamicPage() {
           case "Text":
             formField = (
               <div key={index}>
-                <label style={{ textAlign: "center" }}>
-                  {field.config.name}
-                </label>
+                <label style={{ textAlign: "center" }}>{field.name}</label>
                 <br />
                 <TextArea
                   name={field.label}
@@ -228,17 +478,26 @@ function DynamicPage() {
           case "File Upload":
             formField = (
               <div key={index}>
+                <input type="file" />
+                <br></br>
+              </div>
+            );
+            break;
+          case "Image":
+            formField = (
+              <div key={index}>
+                <input type="file" />
                 <br></br>
               </div>
             );
             break;
           case "Label":
             formField = (
-              <div key={index} style={{ padding: "10px" }}>
+              <div key={index}>
                 <Label
                   input={{
                     type: "text",
-                    value: field.config.label,
+                    value: field.label,
                   }}
                 >
                   {field.config.label}
@@ -249,22 +508,22 @@ function DynamicPage() {
             break;
           case "Body":
             formField = (
-              <div key={index} style={{ padding: "10px" }}>
-                <Label
+              <div key={index}>
+                <body
                   input={{
                     type: "text",
                     value: field.config.label,
                   }}
                 >
                   {field.config.label}
-                </Label>
+                </body>
                 <br></br>
               </div>
             );
             break;
           case "Header":
             formField = (
-              <div key={index} style={{ padding: "10px" }}>
+              <div key={index}>
                 <Heading
                   size="LARGE"
                   input={{
@@ -281,6 +540,12 @@ function DynamicPage() {
             formField = (
               <div key={index}>
                 <TopNav
+                  style={{
+                    color: field.color,
+                    width: field.config.width + "px",
+                    height: field.config.height + "px",
+                    backgroundColor: formData.color,
+                  }}
                   company={
                     <TopNav.Anchor target="new">
                       {field.config.label}
@@ -293,46 +558,45 @@ function DynamicPage() {
             break;
           case "coming-soon":
             formField = (
-              <div>
-                <div
+              <div
+                style={{
+                  height: "100vh",
+                  backgroundImage: `url("https://pbs.twimg.com/ext_tw_video_thumb/1274020389501485057/pu/img/VkWNp99xjlTc_Q5d.jpg:large")`,
+                  backgroundRepeat: "no-repeat",
+                  backgroundSize: "cover",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  minHeight: "calc(100vh - 140px)",
+                  width: "100%",
+                }}
+              >
+                <Heading
                   style={{
-                    height: "100vh",
-                    backgroundImage: `url("https://pbs.twimg.com/ext_tw_video_thumb/1274020389501485057/pu/img/VkWNp99xjlTc_Q5d.jpg:large")`,
-                    backgroundRepeat: "no-repeat",
-                    backgroundSize: "cover",
-                    display: "flex",
-                    flexDirection: "column",
                     alignItems: "center",
                     justifyContent: "center",
-                    minHeight: "calc(100vh - 140px)",
+                    display: "flex",
+                    color: "white",
                   }}
                 >
-                  <Heading
-                    style={{
-                      alignItems: "center",
-                      justifyContent: "center",
-                      display: "flex",
-                      color: "white",
-                    }}
-                  >
-                    Site Coming Soon!
-                  </Heading>
-                  <img
-                    src={process.env.PUBLIC_URL + "/img/AnimatedLogo.gif"}
-                    style={{ maxWidth: "350px", maxHeight: "300px" }}
-                  />
-                  <br></br>
-                  <br></br>
+                  Site Coming Soon!
+                </Heading>
+                <img
+                  src={process.env.PUBLIC_URL + "/img/AnimatedLogo.gif"}
+                  style={{ maxWidth: "350px", maxHeight: "300px" }}
+                />
+                <br></br>
+                <br></br>
 
-                  <H3 style={{ color: "white", fontWeight: "normal" }}>
-                    This site is currently under development.
-                  </H3>
-                  <H3 style={{ color: "white", fontWeight: "normal" }}>
-                    Please check back later.
-                  </H3>
+                <H3 style={{ color: "white", fontWeight: "normal" }}>
+                  This site is currently under development.
+                </H3>
+                <H3 style={{ color: "white", fontWeight: "normal" }}>
+                  Please check back later.
+                </H3>
 
-                  <br></br>
-                </div>
+                <br></br>
               </div>
             );
             break;
@@ -356,10 +620,10 @@ function DynamicPage() {
               </div>
             );
             break;
-          case "Multiple choice":
+          case "Multi choice":
             formField = (
               <div key={index}>
-                <MultiChoice label={field.name}></MultiChoice>
+                <MultiChoice label={field.config.label}></MultiChoice>
               </div>
             );
             break;
@@ -367,7 +631,7 @@ function DynamicPage() {
             formField = (
               <div key={index}>
                 <Select id="page-select">
-                  <option value="">{field.name}</option>)
+                  <option value=""> {field.config.label}</option>
                 </Select>
               </div>
             );
@@ -382,7 +646,7 @@ function DynamicPage() {
                       value: field.name,
                     }}
                   >
-                    {field.name}
+                    {field.config.label}
                   </Label>
                 </Link>
                 <br></br>
@@ -401,18 +665,10 @@ function DynamicPage() {
               </div>
             );
             break;
-          case "Page Break":
-            formField = (
-              <div key={index}>
-                <Divider style={{ backgroundColor: "black" }}></Divider>
-                <br></br>
-              </div>
-            );
-            break;
 
           case "Captcha":
             formField = (
-              <div key={index}  style={{ padding: "10px" }}>
+              <div key={index}>
                 <ReCAPTCHA
                   sitekey={"6LeiNAclAAAAAImMXqIfk2YOFJF99SD6UVUAqyvd"}
                 />
