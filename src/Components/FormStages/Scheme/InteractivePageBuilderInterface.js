@@ -100,18 +100,29 @@ function InteractivePageBuilderInterface({ link, mode }) {
 
   const [isEditing ,setIsEditing] = useState([]);
   const [text, setText] = useState('Hello');
-  const [showButtons, setShowButtons] = useState(false);
+  const [showButtons, setShowButtons] = useState([]);
   const inputRef = useRef(null);
 
-  const handleMouseEnter = () => {
-    setShowButtons(true);
+  const handleMouseEnter = (index) => {
+    setShowButtons((prevValues) => {
+      const newValues = [...prevValues];  
+      newValues[index] = true;
+      console.log(newValues[index]);
+      return newValues;
+    });
   }
 
-  const handleMouseLeave = () => {
-    setShowButtons(false);
+  const handleMouseLeave = (index) => {
+    setShowButtons((prevValues) => {
+      const newValues = [...prevValues];  
+      newValues[index] = false;
+      console.log(newValues[index]);
+      return newValues;
+    });
   }
 
   const handleElementClick = (index) => {
+    console.log("d");
     setIsEditing((prevValues) => {
       const newValues = [...prevValues];
       newValues[index] = true;
@@ -628,18 +639,19 @@ function InteractivePageBuilderInterface({ link, mode }) {
             break;
           case "Button":
             formField = (
-              <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} style={{display: 'block'}}>
+              <div onMouseLeave={() => handleMouseLeave(index)}>
                 {isEditing[index] ?(
-                  <div ref={inputRef} style={{height: '100px', backgroundColor: '#f8f8f8'}}>
-                  <h3 style={{marginTop: '10px'}}>Edit Button</h3>
-                  <label htmlFor="buttontext">Button Text:</label>
-                  <input id="buttontext" autoFocus="autoFocus" type="text" value={text} onChange={(event) => handleTextChange(event, index)}/>
-                  <button onClick={() => handleClickOutside(index)}>Close</button>
+                  <div ref={inputRef} style={{position: "relative", display:"inline-block", borderRadius: '8px', overflow: 'hidden', boxShadow: '0 0 10px rgba(0, 0, 0, 0.2', transition: 'transform 0.3s ease-in-out', marginTop: '10px'}}>
+                  <h3 style={{padding: '10px', paddingBottom: '5px'}}>Edit Button</h3>
+                  <label htmlFor="buttontext" style={{color:'#888', fontStyle:'italic', paddingLeft: '5px'}}>Text</label>
+                  <input style={{display: 'block', marginBottom: '40px', paddingLeft: '5px', paddingRight: '5px'}} id="buttontext" autoFocus="autoFocus" type="text" value={text} onChange={(event) => handleTextChange(event, index)}/>
+                  <button style={{backgroundColor: 'blueviolet',color: 'white', borderRadius: '4px', display: 'block', position: 'absolute', bottom: '5px', right: '10px'}} onClick={() => handleClickOutside(index)}>Save Changes</button>
                   </div>
                 ) : (
-                  <div key={index}>
+                  <div key={index} >
                   <br />
                   <Button
+                    onMouseEnter={() => handleMouseEnter(index)}
                     style={{
                       width: field.config.width + "px",
                       height: field.config.height + "px",
@@ -652,7 +664,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   >
                     {labelValue[index]}
                   </Button>
-                  {showButtons && <IoIosCreate onClick={() => handleElementClick(index)}/>}
+                  {showButtons[index] && <IoIosCreate onClick={() => handleElementClick(index)}/>}
                   <br></br>
                 </div>
                 )}
