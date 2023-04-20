@@ -12,6 +12,7 @@ import {
   Label,
   LoadingBox,
   MultiChoice,
+  Radio,
   Select,
   TextArea,
   TopNav,
@@ -33,21 +34,20 @@ import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import { IoIosCreate } from "react-icons/io";
 import { MdOutlineLogin } from "react-icons/md";
-import {
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  TextField,
-} from "@mui/material";
+import { List, ListItem, ListItemIcon, ListItemText } from "@mui/material";
+import Switch from "react-switch";
+
 import {
   ArrowDropDownCircleOutlined,
   CropLandscapeOutlined,
   DetailsOutlined,
+  DynamicFormOutlined,
   LabelImportantOutlined,
+  RadioButtonChecked,
   SmartButtonOutlined,
   SmartToyOutlined,
   TitleOutlined,
+  ToggleOnOutlined,
   WebAssetOutlined,
   WebOutlined,
   WysiwygOutlined,
@@ -66,7 +66,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  const [loading, setLoading] = useState();
+  const [loading, setLoading] = useState(false);
   const [color, setColors] = useState("#bf4040");
   const [selectedFile, setSelectedFile] = useState();
   const [title, setTitle] = useState("Upload your site icon here");
@@ -78,62 +78,64 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   const [pageCounter, setPageCounter] = useState(1);
-
+  const [buttonLink, setButtonLink] = useState();
   const [formData, setFormData] = useState("");
-
   const [options, setOptions] = useState();
-
   const isSmallScreen = false;
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [labelValue, setLabelValue] = useState([]);
-  const [buttonConfiguration, setButtonConfiguration] = useState(false);
-
+  const [configuration, setConfiguration] = useState("");
+  const [checked, setChecked] = useState(false);
+  const [currentPageIndex, setCurrentPageIndex] = useState(0);
+  const [numberOfPages, setNumberOfPages] = useState(1);
   const [searchText, setSearchText] = useState("");
-  const [selected, setSelected] = useState(undefined);
+  const [selected, setSelected] = useState("");
   const [data, setData] = useState(selected);
+  const [selectedPage, setSelectedPage] = useState("");
+
   const [page, setPage] = useState([
     {
+      id: 1,
       fields: [{}],
     },
   ]);
 
-  const [isEditing ,setIsEditing] = useState(false);
-  const [text, setText] = useState('Hello');
+  const [isEditing, setIsEditing] = useState(false);
+  const [text, setText] = useState();
   const [showButtons, setShowButtons] = useState(false);
   const inputRef = useRef(null);
 
   const handleMouseEnter = () => {
     setShowButtons(true);
-  }
+  };
 
   const handleMouseLeave = () => {
     setShowButtons(false);
-  }
+  };
 
   const handleElementClick = () => {
     setIsEditing(true);
-  }
+  };
 
   const handleClickOutside = (event) => {
-    if (inputRef.current && !inputRef.current.contains(event.target)){
+    if (inputRef.current && !inputRef.current.contains(event.target)) {
       setIsEditing(false);
     }
-  }
+  };
 
   const handleTextChange = (event) => {
     setText(event.target.value);
   };
 
-
-  const handleTextSave = () => {
-    console.log('Saving new text: ' + {text})
-  }
+  const handleSwitch = (checked) => {
+    setChecked(checked);
+  };
 
   useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -158,6 +160,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
       setLabelValue((prevValues) => {
         const newValues = [...prevValues];
         newValues[fieldIndex] = event.target.value;
+        setText(newValues);
         return newValues;
       });
     }
@@ -175,6 +178,10 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const handlePageBreakClick = () => {
     setPageCounter(pageCounter + 1);
   };
+  const handlePageSelect = (event) => {
+    setSelectedPage(event.target.value);
+    console.log(selectedPage);
+  };
 
   const handleChange = (event) => {
     setSelectedValue(event.target.value);
@@ -183,6 +190,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const [citizen, setCitizen] = useState();
 
   const handleAddField = (input_value) => {
+    setConfiguration("");
     setSelected(input_value);
     const currentPage = page[0];
     const currentPageFields = currentPage.fields ? [...currentPage.fields] : [];
@@ -205,15 +213,33 @@ function InteractivePageBuilderInterface({ link, mode }) {
     setLabelValue((prevValues) => [...prevValues, ""]);
     if (input_value === "Page Break") {
       handlePageBreakClick();
-    } else if (input_value === "Button") {
-      setButtonConfiguration(true);
+    } else if (
+      input_value === "Raised Button" ||
+      input_value === "Radio Button" ||
+      input_value === "Toggle Switch"
+    ) {
+      setConfiguration("Button");
       setShow(true);
+    } else if (input_value === "Body") {
+      setConfiguration("Body");
+      setShow(true);
+    } else if (
+      input_value === "Single Stage Sign Up Form" ||
+      input_value === "Single Stage Contact Us Form" ||
+      input_value === "Single Stage Application Form" ||
+      input_value === "Multi Stage Sign Up Form"
+    ) {
+      setShow(false);
     } else {
       setShow(true);
     }
   };
 
-  const buttonComponents = [{ name: "Button", icon: <SmartButtonOutlined /> }];
+  const buttonComponents = [
+    { name: "Raised Button", icon: <SmartButtonOutlined /> },
+    { name: "Radio Button", icon: <RadioButtonChecked /> },
+    { name: "Toggle Switch", icon: <ToggleOnOutlined /> },
+  ];
 
   const textComponents = [
     { name: "Header", icon: <TitleOutlined /> },
@@ -236,11 +262,32 @@ function InteractivePageBuilderInterface({ link, mode }) {
 
   const imageComponent = [
     { name: "File Upload", icon: <AddCircleOutlineOutlined /> },
-    { name: "Image", icon: <AddCircleOutlineOutlined /> }
+    { name: "Image", icon: <AddCircleOutlineOutlined /> },
   ];
   const phoneNumberComponent = [
-    { name: "Phone number", icon: <AddCircleOutlineOutlined /> }
-  ]
+    { name: "Phone number", icon: <AddCircleOutlineOutlined /> },
+  ];
+
+  const singleStageFormsComponent = [
+    {
+      name: "Single Stage Sign Up Form",
+      icon: <DynamicFormOutlined />,
+    },
+    {
+      name: "Single Stage Contact Us Form",
+      icon: <DynamicFormOutlined />,
+    },
+    {
+      name: "Single Stage Application Form",
+      icon: <DynamicFormOutlined />,
+    },
+  ];
+  const multiStageFormsComponent = [
+    {
+      name: "Multi Stage Sign Up Form",
+      icon: <DynamicFormOutlined />,
+    },
+  ];
 
   const componentList = [
     { name: "Header", icon: <AddCircleOutlineOutlined /> },
@@ -299,7 +346,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
         .then((data) => setOptions(data));
     };
     const getImage = () => {
-      fetch(`ttps://sssp-378808.nw.r.appspot.com/api/`);
+      fetch(`https://sssp-378808.nw.r.appspot.com/api/`);
     };
     getCompanies();
     setLoading(false);
@@ -435,12 +482,41 @@ function InteractivePageBuilderInterface({ link, mode }) {
     }
   };
 
+  const PageSelector = ({ pages, currentPageIndex, onPageSelected }) => {
+    const handlePageSelected = (pageIndex) => {
+      onPageSelected(pageIndex);
+    };
+
+    return (
+      <div>
+        {pages.map((page, index) => (
+          <a
+            key={index}
+            href="#"
+            onClick={() => handlePageSelected(index)}
+            style={{
+              textDecoration: index === currentPageIndex ? "underline" : "none",
+            }}
+          >
+            Page {index + 1}
+          </a>
+        ))}
+      </div>
+    );
+  };
+
   const RenderForm = () => {
     const backgroundImage =
       "https://images.robertharding.com/preview/RF/MI/HORIZONTAL/1174-4517.jpg";
-    const fieldsToRender = [];
 
-    const tab = page;
+    const fieldsToRender = [];
+    if (selectedValue === "Next Page") {
+      const pageNumber = pageCounter + 1;
+      setButtonLink(
+        `/digital-services/portal/${formValues.domain}/pages/${pageNumber}`
+      );
+    }
+
     if (selectedValue === "Home Page") {
       fieldsToRender.push(
         <div
@@ -498,12 +574,319 @@ function InteractivePageBuilderInterface({ link, mode }) {
         </div>
       );
     }
-
-    if (tab) {
-      tab[0].fields.forEach((field, index) => {
+    if (page) {
+      page[0].fields.forEach((field, index) => {
         let formField = null;
+        console.log(field);
 
         switch (field.type) {
+          case "Single Stage Sign Up Form":
+            formField = (
+              <div key={index}>
+                <TopNav
+                  style={{
+                    color: field.color,
+                    width: field.config.width + "px",
+                    height: field.config.height + "px",
+                    backgroundColor: formData.color,
+                  }}
+                  company={<TopNav.Anchor>ABC Grants</TopNav.Anchor>}
+                />
+                <br></br>
+                <center>
+                  <Heading>Register your details</Heading>
+                  <br></br>
+
+                  <InputField
+                    input={{ type: "email" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter First Name
+                  </InputField>
+                  <br></br>
+                  <InputField
+                    input={{ type: "email" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter Last Name
+                  </InputField>
+                  <br></br>
+                  <InputField
+                    input={{ type: "" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter Address Line 1
+                  </InputField>
+                  <br></br>
+                  <InputField
+                    input={{ type: "email" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter Email Address
+                  </InputField>
+                  <br></br>
+                  <InputField
+                    input={{ type: "password" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter a Password
+                  </InputField>
+                  <br></br>
+                  <InputField
+                    input={{ type: "password" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Confirm Password
+                  </InputField>
+                  <br></br>
+                  <Button>Submit</Button>
+                </center>
+                <Footer
+                  licence={
+                    <span>
+                      All content is available under the{" "}
+                      <styled
+                        href="https://creativecommons.org/licenses/by/4.0/"
+                        rel="license"
+                      >
+                        Creative Commons Attribution 4.0 International Licence{" "}
+                      </styled>
+                      , except where otherwise stated
+                    </span>
+                  }
+                />
+                <br></br>
+              </div>
+            );
+            break;
+
+          case "Single Stage Contact Us Form":
+            formField = (
+              <div key={index}>
+                <TopNav
+                  style={{
+                    color: field.color,
+                    width: field.config.width + "px",
+                    height: field.config.height + "px",
+                    backgroundColor: formData.color,
+                  }}
+                  company={<TopNav.Anchor>ABC Grants</TopNav.Anchor>}
+                />
+                <br></br>
+                <center>
+                  <Heading>Contact Us</Heading>
+
+                  <img
+                    style={{ maxWidth: "300px" }}
+                    src="https://www.westyorks-ca.gov.uk/media/6198/contact-us-1908763_1920-copy111.png?width=794&height=227&mode=max"
+                  />
+                  <br></br>
+                  <br></br>
+                  <br></br>
+                  <InputField
+                    input={{ type: "email" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter Full Name
+                  </InputField>
+                  <br></br>
+
+                  <InputField
+                    input={{ type: "email" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter Email Address
+                  </InputField>
+                  <br></br>
+
+                  <TextArea
+                    style={{
+                      maxWidth: "930px",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      display: "flex",
+                    }}
+                  >
+                    Message
+                  </TextArea>
+                  <br></br>
+
+                  <Button>Submit</Button>
+                </center>
+                <Footer
+                  licence={
+                    <span>
+                      All content is available under the{" "}
+                      <styled
+                        href="https://creativecommons.org/licenses/by/4.0/"
+                        rel="license"
+                      >
+                        Creative Commons Attribution 4.0 International Licence{" "}
+                      </styled>
+                      , except where otherwise stated
+                    </span>
+                  }
+                />
+                <br></br>
+              </div>
+            );
+            break;
+
+          case "Single Stage Application Form":
+            formField = (
+              <div key={index}>
+                <TopNav
+                  style={{
+                    color: field.color,
+                    width: field.config.width + "px",
+                    height: field.config.height + "px",
+                    backgroundColor: formData.color,
+                  }}
+                  company={<TopNav.Anchor>ABC Grants</TopNav.Anchor>}
+                />
+                <br></br>
+                <center>
+                  <Heading>Application Form</Heading>
+
+                  <img
+                    style={{ maxWidth: "300px" }}
+                    src="https://www.westyorks-ca.gov.uk/media/6198/contact-us-1908763_1920-copy111.png?width=794&height=227&mode=max"
+                  />
+                  <br></br>
+                  <br></br>
+                  <br></br>
+                  <InputField
+                    input={{ type: "email" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter Full Name
+                  </InputField>
+                  <br></br>
+
+                  <InputField
+                    input={{ type: "email" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter Email Address
+                  </InputField>
+                  <br></br>
+
+                  <TextArea
+                    style={{
+                      maxWidth: "930px",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      display: "flex",
+                    }}
+                  >
+                    Message
+                  </TextArea>
+                  <br></br>
+
+                  <Button>Submit</Button>
+                </center>
+                <Footer
+                  licence={
+                    <span>
+                      All content is available under the{" "}
+                      <styled
+                        href="https://creativecommons.org/licenses/by/4.0/"
+                        rel="license"
+                      >
+                        Creative Commons Attribution 4.0 International Licence{" "}
+                      </styled>
+                      , except where otherwise stated
+                    </span>
+                  }
+                />
+                <br></br>
+              </div>
+            );
+            break;
+          case "Multi Stage Sign Up Form":
+            formField = (
+              <div key={index}>
+                <TopNav
+                  style={{
+                    color: field.color,
+                    width: field.config.width + "px",
+                    height: field.config.height + "px",
+                    backgroundColor: formData.color,
+                  }}
+                  company={<TopNav.Anchor>ABC Grants</TopNav.Anchor>}
+                />
+                <br></br>
+                <center>
+                  <Heading>Register your details</Heading>
+                  <br></br>
+
+                  <InputField
+                    input={{ type: "email" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter First Name
+                  </InputField>
+                  <br></br>
+                  <InputField
+                    input={{ type: "email" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter Last Name
+                  </InputField>
+                  <br></br>
+                  <div key={index} onClick={handlePageBreakClick}>
+                    <Divider style={{ color: "black" }}>Page Break</Divider>
+                    <br></br>
+                  </div>
+                  <InputField
+                    input={{ type: "" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter Address Line 1
+                  </InputField>
+                  <br></br>
+
+                  <InputField
+                    input={{ type: "email" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter Email Address
+                  </InputField>
+                  <br></br>
+                  <InputField
+                    input={{ type: "password" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Enter a Password
+                  </InputField>
+                  <br></br>
+                  <InputField
+                    input={{ type: "password" }}
+                    style={{ maxWidth: "700px" }}
+                  >
+                    Confirm Password
+                  </InputField>
+                  <br></br>
+                  <Button>Submit</Button>
+                </center>
+                <Footer
+                  licence={
+                    <span>
+                      All content is available under the{" "}
+                      <styled
+                        href="https://creativecommons.org/licenses/by/4.0/"
+                        rel="license"
+                      >
+                        Creative Commons Attribution 4.0 International Licence{" "}
+                      </styled>
+                      , except where otherwise stated
+                    </span>
+                  }
+                />
+                <br></br>
+              </div>
+            );
+            break;
           case "Text Field":
             formField = (
               <div key={index}>
@@ -572,6 +955,35 @@ function InteractivePageBuilderInterface({ link, mode }) {
               </div>
             );
             break;
+          case "Radio Button":
+            formField = (
+              <div key={index}>
+                <Radio
+                  style={{
+                    width: field.config.width + "px",
+                    height: field.config.height + "px",
+                  }}
+                >
+                  {field.config.label}
+                </Radio>
+                <br />
+
+                <br></br>
+              </div>
+            );
+            break;
+
+          case "Toggle Switch":
+            formField = (
+              <div key={index}>
+                <Switch onChange={handleSwitch} checked={checked} />
+
+                <br />
+
+                <br></br>
+              </div>
+            );
+            break;
 
           case "Password":
             formField = (
@@ -620,34 +1032,46 @@ function InteractivePageBuilderInterface({ link, mode }) {
               </div>
             );
             break;
-          case "Button":
+          case "Raised Button":
             formField = (
-              <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-                {isEditing ?(
+              <div
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+              >
+                {isEditing ? (
                   <div ref={inputRef}>
-                  <input autoFocus="autoFocus" type="text" value={text} onChange={handleTextChange}/>
+                    <input
+                      autoFocus="autoFocus"
+                      type="text"
+                      value={text}
+                      onChange={handleTextChange}
+                    />
                   </div>
                 ) : (
                   <div key={index}>
-                  <br />
-                  <Button
-                    style={{
-                      width: field.config.width + "px",
-                      height: field.config.height + "px",
-                    }}
-                    input={{
-                      type: field.type,
-                      name: field.label,
-                      required: field.required,
-                    }}
-                  >
-                    {text}
-                  </Button>
-                  {showButtons && <IoIosCreate onClick={handleElementClick}/>}
-                  <br></br>
-                </div>
+                    <br />
+                    <Link to={buttonLink}>
+                      <Button
+                        style={{
+                          width: field.config.width + "px",
+                          height: field.config.height + "px",
+                        }}
+                        input={{
+                          type: field.type,
+                          name: field.label,
+                          required: field.required,
+                        }}
+                      >
+                        {text}
+                      </Button>
+                    </Link>
+                    {showButtons && (
+                      <IoIosCreate onClick={handleElementClick} />
+                    )}
+                    <br></br>
+                  </div>
                 )}
-                </div>
+              </div>
             );
             break;
           case "Check box":
@@ -676,7 +1100,15 @@ function InteractivePageBuilderInterface({ link, mode }) {
           case "File Upload":
             formField = (
               <div key={index}>
-                <input type = "file"/>
+                <input type="file" />
+                <br></br>
+              </div>
+            );
+            break;
+          case "Image":
+            formField = (
+              <div key={index}>
+                <input type="file" />
                 <br></br>
               </div>
             );
@@ -699,14 +1131,14 @@ function InteractivePageBuilderInterface({ link, mode }) {
           case "Body":
             formField = (
               <div key={index}>
-                <Label
+                <body
                   input={{
                     type: "text",
                     value: field.config.label,
                   }}
                 >
                   {field.config.label}
-                </Label>
+                </body>
                 <br></br>
               </div>
             );
@@ -858,7 +1290,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
           case "Page Break":
             formField = (
               <div key={index} onClick={handlePageBreakClick}>
-                <Divider style={{ backgroundColor: "black" }}></Divider>
+                <Divider style={{ color: "black" }}>Page Break</Divider>
                 <br></br>
               </div>
             );
@@ -882,14 +1314,8 @@ function InteractivePageBuilderInterface({ link, mode }) {
         }
       });
     }
-
-    return (
-      <div className="container">
-        <form style={{ overflowWrap: "break-word" }}>{fieldsToRender}</form>
-      </div>
-    );
+    return <div style={{ overflowWrap: "break-word" }}>{fieldsToRender}</div>;
   };
-
   const PageBuilderNavbar = () => {
     return (
       <Navbar
@@ -918,18 +1344,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
             <option value="blank">Blank</option>
-            <Nav className="me-auto">
-              <Nav.Link
-                onClick={() => {
-                  setSideBar(true);
-                }}
-              >
-                <span style={{ fontSize: "25px" }}>
-                  <IoIosCreate />
-                </span>
-                Add element
-              </Nav.Link>
-            </Nav>
+            <Nav className="me-auto"></Nav>
             <select
               id="temp"
               value={selectedValue}
@@ -991,6 +1406,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
       </Navbar>
     );
   };
+
   return (
     <div>
       <PageBuilderNavbar />
@@ -1001,18 +1417,41 @@ function InteractivePageBuilderInterface({ link, mode }) {
         <Modal.Body>
           <Form>
             <Form.Group className="mb-3">
-              <Divider>Label Details</Divider>
+              <Divider>General Details</Divider>
               <br></br>
               <center>
-                <Label>Label Name:</Label>
-                <InputField
-                  onChange={(event) =>
-                    updateData(event, "label", numberOfElements)
-                  }
-                  input={{
-                    name: "label",
-                  }}
-                />
+                {configuration === "Body" ? (
+                  <div>
+                    <TextArea
+                      style={{
+                        alignItems: "center",
+                        justifyContent: "center",
+                        display: "flex",
+                      }}
+                      onChange={(event) =>
+                        updateData(event, "label", numberOfElements)
+                      }
+                      input={{
+                        name: "label",
+                      }}
+                    >
+                      Body Content
+                    </TextArea>
+                  </div>
+                ) : (
+                  <div>
+                    {" "}
+                    <Label>Label Name:</Label>
+                    <InputField
+                      onChange={(event) =>
+                        updateData(event, "label", numberOfElements)
+                      }
+                      input={{
+                        name: "label",
+                      }}
+                    />
+                  </div>
+                )}
               </center>
             </Form.Group>
             <Divider>Component Adjustments</Divider>
@@ -1059,7 +1498,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                 <center>Height (px)</center>
               </InputField>
             </Form.Group>
-            {buttonConfiguration === true && (
+            {configuration === "Button" && (
               <Form.Group className="mb-3">
                 <Divider>Button Configuration</Divider>
                 <br></br>
@@ -1074,11 +1513,9 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   onChange={handleChange}
                   label="Select Button Click Event"
                 >
-                  {console.log(selectedValue)}
                   <option>Next Page</option>
                   <option>Previous Page</option>
                   <option>Custom Routing</option>
-
                   <option>Submit Contents</option>
                 </Select>
                 {selectedValue === "Next Page" && (
@@ -1114,8 +1551,9 @@ function InteractivePageBuilderInterface({ link, mode }) {
                 <div></div>
               ) : (
                 <div>
+
                   <Box
-                    style={{ height: "100%" }}
+                    style={{float: "left", padding: "20px"}}
                     sx={{
                       "& .pro-sidebar-inner": {
                         bgcolor: "#212529",
@@ -1242,6 +1680,58 @@ function InteractivePageBuilderInterface({ link, mode }) {
                                 <SearchBox.Button />
                               </SearchBox>
                               <br></br>
+
+                              <SubMenu
+                                style={{ color: "white" }}
+                                title="Templates"
+                              >
+                                <SubMenu
+                                  style={{ color: "white" }}
+                                  title="Single Stage Forms"
+                                >
+                                  {singleStageFormsComponent.map(
+                                    (component) => (
+                                      <ListItem
+                                        button
+                                        key={component.name}
+                                        selected={selected === component.name}
+                                        onClick={() =>
+                                          handleAddField(component.name)
+                                        }
+                                      >
+                                        <ListItemIcon
+                                          style={{ color: "white" }}
+                                        >
+                                          {component.icon}
+                                        </ListItemIcon>
+                                        <ListItemText
+                                          primary={component.name}
+                                        />
+                                      </ListItem>
+                                    )
+                                  )}
+                                </SubMenu>
+                                <SubMenu
+                                  style={{ color: "white" }}
+                                  title="Multi Stage Forms"
+                                >
+                                  {multiStageFormsComponent.map((component) => (
+                                    <ListItem
+                                      button
+                                      key={component.name}
+                                      selected={selected === component.name}
+                                      onClick={() =>
+                                        handleAddField(component.name)
+                                      }
+                                    >
+                                      <ListItemIcon style={{ color: "white" }}>
+                                        {component.icon}
+                                      </ListItemIcon>
+                                      <ListItemText primary={component.name} />
+                                    </ListItem>
+                                  ))}
+                                </SubMenu>
+                              </SubMenu>
                               <SubMenu
                                 style={{ color: "white" }}
                                 title="Button Category"
@@ -1418,20 +1908,194 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   </Box>
                 </div>
               )}
-
-              <Container
-                style={{ padding: "20px", backgroundColor: "#d3d3d3" }}
-              >
-                <div
+              {page[0].fields.length > 1 ? (
+                <Container
                   style={{
-                    height: "800px",
-                    width: "100%",
-                    backgroundColor: "white",
+                    backgroundColor: "#212529",
+                    border: "none",
+                    boxShadow: "0 0 10px rgba(0,0,0,0.3)",
+                    borderRadius: "25px",
+                    overflow: "hidden",
+                    padding: "20px",
+                    marginTop: "30px",
                   }}
                 >
-                  <RenderForm />
-                </div>
-              </Container>
+                  <div
+                    style={{
+                      backgroundColor: "white",
+                    }}
+                  >
+                    <RenderForm />
+                  </div>
+                </Container>
+              ) : (
+                <Container>
+                  <br></br>
+                  <br></br>
+                  <br></br>
+                  <br></br>
+                  <br></br>
+                  <br></br>
+                  <br></br>
+                  <br></br>
+                  <Heading>Start adding elements to get started.</Heading>
+                </Container>
+              )}
+              <Box
+                style={{ height: "100%", float: "right", padding: "20px" }}
+                sx={{
+                  "& .pro-sidebar-inner": {
+                    bgcolor: "#212529",
+                  },
+                  "& .pro-icon-wrapper": {
+                    backgroundColor: "transparent !important",
+                  },
+                  "& .pro-inner-item": {
+                    padding: "5px 35px 5px 20px !important",
+                  },
+                  "& .pro-inner-item:hover": {
+                    color: "#868dfb !important",
+                  },
+                  "& .pro-menu-item.active": {
+                    color: "#6870fa !important",
+                  },
+                }}
+              >
+                <ProSidebar
+                  collapsed={isCollapsed}
+                  style={{
+                    backgroundColor: "#212529",
+                    border: "none",
+                    boxShadow: "0 0 10px rgba(0,0,0,0.3)",
+                    borderRadius: "20px",
+                    overflow: "hidden",
+                    margin: "3px",
+                    marginTop: "0px",
+                  }}
+                >
+                  <Menu iconShape="square">
+                    <MenuItem
+                      onClick={() => setIsCollapsed(!isCollapsed)}
+                      icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
+                      style={{
+                        margin: "10px 0 20px 0",
+                      }}
+                    >
+                      {!isCollapsed && (
+                        <Box
+                          display="flex"
+                          justifyContent="space-between"
+                          alignItems="center"
+                          ml="15px"
+                        >
+                          <Typography variant="h3" color={colors.primary[900]}>
+                            Connect Data
+                          </Typography>
+                          <IconButton
+                            onClick={() => setIsCollapsed(!isCollapsed)}
+                          >
+                            <MenuOutlinedIcon
+                              style={{ color: colors.primary[900] }}
+                            />
+                          </IconButton>
+                        </Box>
+                      )}
+                    </MenuItem>
+
+                    {!isCollapsed && (
+                      <Box mb="25px">
+                        <Box textAlign="center">
+                          <Typography
+                            variant="h2"
+                            sx={{ m: "10px 0 0 0" }}
+                          ></Typography>
+                        </Box>
+                      </Box>
+                    )}
+                    {mode === "Site Home" && (
+                      <Box paddingLeft={isCollapsed ? undefined : "10%"}>
+                        <Item
+                          title="My Home"
+                          to="/site-home"
+                          icon={<DetailsOutlined />}
+                          selected={selected}
+                          setSelected={setSelected}
+                        />
+
+                        <Typography variant="h6" sx={{ m: "15px 0 5px 20px" }}>
+                          Details
+                        </Typography>
+                        <Item
+                          title="Site Details"
+                          to="/team"
+                          icon={<DetailsOutlined />}
+                          selected={selected}
+                          setSelected={setSelected}
+                        />
+
+                        <Typography variant="h6" sx={{ m: "15px 0 5px 20px" }}>
+                          Pages
+                        </Typography>
+                        <Item
+                          title="Create Pages"
+                          to={`/page-builder-interface/?domain=${link}`}
+                          icon={<AutoStoriesIcon />}
+                          selected={selected}
+                          setSelected={setSelected}
+                        />
+                      </Box>
+                    )}
+                    {!isCollapsed && mode !== "Site Home" && (
+                      <Box>
+                        <div style={{ margin: "20px" }}>
+                          <SearchBox
+                            value={searchText}
+                            onChange={(event) =>
+                              setSearchText(event.target.value)
+                            }
+                            fullWidth
+                            sx={{ mb: 2 }}
+                          >
+                            <SearchBox.Input placeholder="Search element" />
+                            <SearchBox.Button />
+                          </SearchBox>
+                          <br></br>
+
+                          <SubMenu style={{ color: "white" }} title="Data">
+                            <SubMenu
+                              style={{ color: "white" }}
+                              title="Data"
+                            >
+                              </SubMenu>
+                           </SubMenu>
+                        </div>
+                      </Box>
+                    )}
+
+                    {isCollapsed && mode !== "Site Home" && (
+                      <Box>
+                        <div style={{ margin: "20px" }}>
+                          <SubMenu style={{ color: "white" }} title="HHH">
+                            {filteredComponents.map((component) => (
+                              <ListItem
+                                button
+                                key={component.name}
+                                selected={selected === component.name}
+                                onClick={() => setSelected(component.name)}
+                              >
+                                <ListItemIcon style={{ color: "white" }}>
+                                  {component.icon}
+                                </ListItemIcon>
+                                <ListItemText primary={component.name} />
+                              </ListItem>
+                            ))}
+                          </SubMenu>
+                        </div>
+                      </Box>
+                    )}
+                  </Menu>
+                </ProSidebar>
+              </Box>
             </div>
           </ThemeProvider>
         </ColorModeContext.Provider>
@@ -1440,4 +2104,5 @@ function InteractivePageBuilderInterface({ link, mode }) {
     </div>
   );
 }
+
 export default InteractivePageBuilderInterface;
