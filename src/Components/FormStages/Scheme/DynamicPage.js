@@ -1,13 +1,12 @@
 import React from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { Divider } from "@mui/material";
+import { Divider, TextField } from "@mui/material";
 import {
   Button,
   Checkbox,
   Heading,
   InputField,
-  Select,
   TextArea,
   FileUpload,
   Label,
@@ -18,13 +17,21 @@ import {
   LoadingBox,
   Footer,
 } from "govuk-react";
+import Select from "@mui/material/Select";
+import dayjs from "dayjs";
 
 import { useNavigate } from "react-router-dom";
 import PhoneInput from "react-phone-number-input";
 import ReCAPTCHA from "react-google-recaptcha";
 import { MainHeading } from "../../../globalStyles";
 import { NavbarComponent } from "../../Navbar/NavbarComponent";
-
+import { Container, Nav, Navbar } from "react-bootstrap";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
 function DynamicPage() {
   const { pageId, endpoint } = useParams();
   const [data, setData] = useState([]);
@@ -37,11 +44,16 @@ function DynamicPage() {
   const [fileData, setFileData] = useState(null);
   const [phoneNumber, setPhoneNumber] = useState();
   const [formData, setFormData] = useState({});
+  const [rooms, setRooms] = useState(0);
+  const [checkinDate, setCheckinDate] = useState();
+  const [checkoutDate, setCheckoutDate] = useState();
+  const [guests, setGuests] = useState();
 
   const { state: locationState } = useLocation();
   const prevData = locationState?.data || {};
 
   console.log(prevData);
+  console.log(rooms);
 
   const updateData = (e) => {
     const { name, value, checked, type } = e.target;
@@ -56,7 +68,18 @@ function DynamicPage() {
   useEffect(() => {
     fetchData();
   }, []);
-
+  const handleCheckinDateChange = (date) => {
+    setCheckinDate(date);
+  };
+  const handleCheckoutDateChange = (date) => {
+    setCheckoutDate(date);
+  };
+  const handleRoomsChange = (room) => {
+    setRooms(room);
+  };
+  const handleGuestsChange = (guest) => {
+    setGuests(guest);
+  };
   async function fetchData() {
     setLoading(true);
     const response = await fetch(
@@ -101,10 +124,11 @@ function DynamicPage() {
   const renderForm = () => {
     const fieldsToRender = [];
     let formField = null;
+    console.log(data);
     data &&
       data.map((field, index) => {
         switch (field.config?.type) {
-          case "Single Stage Sign Up Form":
+          case "Sign Up Form":
             formField = (
               <div key={index}>
                 <TopNav
@@ -183,7 +207,7 @@ function DynamicPage() {
               </div>
             );
             break;
-          case "Single Stage Contact Us Form":
+          case "Contact Us Form":
             formField = (
               <div key={index}>
                 <TopNav
@@ -381,6 +405,7 @@ function DynamicPage() {
               </div>
             );
             break;
+
           case "Text area":
             formField = (
               <div key={index}>
@@ -521,6 +546,282 @@ function DynamicPage() {
               </div>
             );
             break;
+            case "Center Component":
+              formField = (
+                <div key={index}>
+                  <div>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DatePicker
+                        renderInput={(props) => (
+                          <TextField
+                            {...props}
+                            label="Check in"
+                            variant="outlined"
+                            value={dayjs(checkinDate).format("DD-MM-YYYY")}
+                            onChange={(event) =>
+                              handleCheckinDateChange(
+                                new Date(event.target.value)
+                              )
+                            }
+                            sx={{
+                              "& fieldset": { border: "none" },
+                              input: { color: "whitesmoke" },
+                              svg: { color: "whitesmoke" },
+                              label: { color: "whitesmoke" },
+                            }}
+                            style={{
+                              backgroundColor: "#242226",
+                              opacity: "0.9",
+                              margin: "5px",
+                              borderRadius: "5px",
+                            }}
+                          />
+                        )}
+                        value={checkinDate}
+                        onChange={(date) => handleCheckinDateChange(date)}
+                      />
+                    </LocalizationProvider>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DatePicker
+                        renderInput={(props) => (
+                          <TextField
+                            {...props}
+                            label="Check out"
+                            variant="outlined"
+                            value={dayjs(checkoutDate).format("DD-MM-YYYY")}
+                            onChange={(event) =>
+                              handleCheckoutDateChange(
+                                new Date(event.target.value)
+                              )
+                            }
+                            sx={{
+                              "& fieldset": { border: "none" },
+                              input: { color: "whitesmoke" },
+                              svg: { color: "whitesmoke" },
+                              label: { color: "whitesmoke" },
+                            }}
+                            style={{
+                              backgroundColor: "#242226",
+                              opacity: "0.9",
+                              margin: "5px",
+                              borderRadius: "5px",
+                            }}
+                          />
+                        )}
+                        value={checkoutDate}
+                        onChange={(date) => handleCheckoutDateChange(date)}
+                      />
+                    </LocalizationProvider>
+                    <FormControl
+                      sx={{
+                        "& fieldset": { border: "none" },
+                        input: { color: "whitesmoke" },
+                        svg: { color: "whitesmoke" },
+                        label: { color: "whitesmoke" },
+                        minWidth: 120,
+                      }}
+                      style={{
+                        backgroundColor: "#242226",
+                        opacity: "0.9",
+                        margin: "5px",
+                        borderRadius: "5px",
+                      }}
+                    >
+                      <InputLabel id="demo-select-small-label">Rooms</InputLabel>
+  
+                      <Select
+                        labelId="demo-select-small-label"
+                        id="demo-select-small"
+                        variant="outlined"
+                        style={{ color: "whitesmoke" }}
+                        value={rooms || 1}
+                        onChange={(event) =>
+                          handleRoomsChange(event.target.value)
+                        }
+                      >
+                        <MenuItem value={1}>1</MenuItem>
+                        <MenuItem value={2}>2</MenuItem>
+                        <MenuItem value={3}>3</MenuItem>
+                        <MenuItem value={4}>4</MenuItem>
+                        <MenuItem value={5}>5</MenuItem>
+                      </Select>
+                    </FormControl>
+                    <FormControl
+                      sx={{
+                        "& fieldset": { border: "none" },
+                        input: { color: "whitesmoke" },
+                        svg: { color: "whitesmoke" },
+                        label: { color: "whitesmoke" },
+                        minWidth: 120,
+                      }}
+                      style={{
+                        backgroundColor: "#242226",
+                        opacity: "0.9",
+                        margin: "5px",
+                        borderRadius: "5px",
+                      }}
+                    >
+                      <InputLabel id="demo-select-small-label">Guests</InputLabel>
+  
+                      <Select
+                        labelId="demo-select-small-label"
+                        id="demo-select-small"
+                        variant="outlined"
+                        style={{ color: "whitesmoke" }}
+                        value={guests || 1}
+                        onChange={(event) =>
+                          handleGuestsChange(event.target.value)
+                        }
+                      >
+                        <MenuItem value={1}>1</MenuItem>
+                        <MenuItem value={2}>2</MenuItem>
+                        <MenuItem value={3}>3</MenuItem>
+                        <MenuItem value={4}>4</MenuItem>
+                        <MenuItem value={5}>5</MenuItem>
+                      </Select>
+                    </FormControl>
+                    <TextField
+                      label="Promo/Corp code"
+                      variant="outlined"
+                      sx={{
+                        "& fieldset": { border: "none" },
+                        input: { color: "whitesmoke" },
+                        svg: { color: "whitesmoke" },
+                        label: { color: "whitesmoke" },
+                      }}
+                      style={{
+                        backgroundColor: "#242226",
+                        opacity: "0.9",
+                        margin: "5px",
+                        borderRadius: "5px",
+                      }}
+                    />
+                    <Button
+                      style={{
+                        backgroundColor: "whitesmoke",
+                        opacity: "0.9",
+                        margin: "5px",
+                        borderRadius: "5px",
+                        color: "black",
+                        width: "100px",
+                        height: "54px",
+                      }}
+                    >
+                      Book
+                    </Button>
+                  </div>
+                  <br></br>
+                </div>
+              );
+              break;
+            case "Date - Check In":
+              formField = (
+                <div key={index}>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      renderInput={(props) => (
+                        <TextField
+                          {...props}
+                          label="Check out"
+                          variant="outlined"
+                          value={dayjs(checkoutDate).format("DD-MM-YYYY")}
+                          onChange={(event) =>
+                            handleCheckoutDateChange(new Date(event.target.value))
+                          }
+                          sx={{
+                            "& fieldset": { border: "none" },
+                            input: { color: "whitesmoke" },
+                            svg: { color: "whitesmoke" },
+                            label: { color: "whitesmoke" },
+                          }}
+                          style={{
+                            backgroundColor: "#242226",
+                            opacity: "0.9",
+                            margin: "5px",
+                            borderRadius: "5px",
+                          }}
+                        />
+                      )}
+                      value={checkoutDate}
+                      onChange={(date) => handleCheckoutDateChange(date)}
+                    />
+                  </LocalizationProvider>
+                </div>
+              );
+              break;
+              case "Navbar - Bootstrap":
+                formField = (
+                  <div key={index}>
+                    <Navbar collapseOnSelect expand="lg" bg="transparent">
+                      <Container>
+                        <Navbar.Brand href="/">
+                          <center>
+                            <img
+                              src={process.env.PUBLIC_URL + "/img/Hospitality.png"}
+                              alt="Logo"
+                              width="50"
+                              height="50"
+                              className="d-inline-block align-top"
+                            />
+                            <br></br>
+                            <label
+                              style={{ color: "whitesmoke", fontWeight: "bold" }}
+                            >
+                              Argort Resort
+                            </label>
+                          </center>
+                          x
+                        </Navbar.Brand>
+    
+                        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+    
+                        <div
+                          style={{
+                            justifyContent: "center",
+                            alignItems: "center",
+                            display: "flex",
+                          }}
+                        >
+                          <Navbar.Collapse id="responsive-navbar-nav">
+                            <Nav className="me-auto">
+                              <Nav.Link href="/" style={{ color: "whitesmoke" }}>
+                                Home
+                              </Nav.Link>
+                              <Nav.Link href="/" style={{ color: "whitesmoke" }}>
+                                Book
+                              </Nav.Link>
+                            </Nav>
+                          </Navbar.Collapse>
+                        </div>
+                      </Container>
+                    </Navbar>
+                  </div>
+                );
+    
+                break;
+    
+            case "Heading":
+              formField = (
+                <div key={index}>
+                  <center>
+                    {" "}
+                    <Heading style={{ color: "whitesmoke", fontWeight: "bold" }}>
+                      {field.config.label}
+                    </Heading>
+                  </center>
+                </div>
+              );
+              break;
+            case "H3":
+              formField = (
+                <div key={index}>
+                  <center>
+                    <H3 style={{ color: "whitesmoke" }}>{field.label}</H3>
+                  </center>
+                </div>
+              );
+              break;
+  
           case "Header":
             formField = (
               <div key={index}>
@@ -533,6 +834,27 @@ function DynamicPage() {
                   {field.config.label}
                 </Heading>
                 <br></br>
+              </div>
+            );
+            break;
+          case "br":
+            formField = (
+              <div key={index}>
+                <br></br>
+              </div>
+            );
+            break;
+          case "img":
+            formField = (
+              <div key={index}>
+                {console.log(`process.env.PUBLIC_URL/${field.label}`)}
+                <img
+                  src={`process.env.PUBLIC_URL/${field.label}`}
+                  alt="Logo"
+                  width="50"
+                  height="50"
+                  className="d-inline-block align-top"
+                />
               </div>
             );
             break;
