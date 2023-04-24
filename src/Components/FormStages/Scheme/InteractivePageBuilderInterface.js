@@ -2905,7 +2905,9 @@ function InteractivePageBuilderInterface({ link, mode }) {
         <div
           style={{
             overflowWrap: "break-word",
-            backgroundImage: `url(${pageBackgrounds[pageBackgroundIndex]})`,
+            background: `url(${pageBackgrounds[pageBackgroundIndex]})`,
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "cover"
           }}
         >
           {fieldsToRender}
