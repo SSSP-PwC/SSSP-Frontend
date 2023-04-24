@@ -3050,10 +3050,9 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   </center>
                 </div>
               ) : (
-            
-                  <div>
+                <div>
                   <Divider>General Details</Divider>
-  
+
                   <Label>Label Name:</Label>
                   <InputField
                     onChange={(event) =>
@@ -3064,8 +3063,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     }}
                   />
                 </div>
-                
-  
               )}
               {configuration === "Template" && (
                 <div>
@@ -3075,11 +3072,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     <div></div>
                   </center>
                 </div>
-              )} 
-       
-             
-              
-              
+              )}
             </Form.Group>
             <Divider>Component Adjustments</Divider>
             <br></br>
