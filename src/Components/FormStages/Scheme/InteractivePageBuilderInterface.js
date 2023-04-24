@@ -137,20 +137,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const [showButtons, setShowButtons] = useState(false);
   const inputRef = useRef(null);
 
-  const handleMouseEnter = (index) => {
-    setShowButtons((prevValues) => {
-      const newValues = [...prevValues];
-      newValues[index] = true;
-      return newValues;
-    });
-  };
-  const handleMouseLeave = (index) => {
-    setShowButtons((prevValues) => {
-      const newValues = [...prevValues];
-      newValues[index] = false;
-      return newValues;
-    });
-  };
 
   const handleEditPage = () => {
     setShowButtons(true);
@@ -251,6 +237,15 @@ function InteractivePageBuilderInterface({ link, mode }) {
     setText(labelValue[index]);
   };
 
+  const handleElementClickTemplate = (templateText, index) => {
+    setIsEditing((prevValues) => {
+      const newValues = [...prevValues];
+      newValues[index] = true;
+      return newValues;
+    });
+    setText(templateText);
+  };
+
   const handleClickOutside = (index) => {
     setIsEditing((prevValues) => {
       const newValues = [...prevValues];
@@ -264,6 +259,15 @@ function InteractivePageBuilderInterface({ link, mode }) {
     setLabelValue((prevValues) => {
       const newValues = [...prevValues];
       newValues[index] = event.target.value;
+      return newValues;
+    });
+  };
+
+  const handleTextChangeTemplate = (templateText, index) => {
+    setText(templateText);
+    setLabelValue((prevValues) => {
+      const newValues = [...prevValues];
+      newValues[index] = templateText;
       return newValues;
     });
   };
@@ -836,7 +840,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
 
   const handleRemoveField = (index) => {
     const currentPage = page[0];
-    console.log(labelValue);
     if (!currentPage) {
       console.error(`Tab ${0} is not defined`);
       return;
@@ -844,24 +847,39 @@ function InteractivePageBuilderInterface({ link, mode }) {
     const currentPageFields = [...currentPage.fields];
     currentPageFields.splice(index, 1);
     labelValue.splice(index, 1);
+    
     setDeleteIndex(index);
     for (let i = deleteIndex; i < currentPageFields.length; i++) {
       currentPageFields[i] = currentPageFields[i + 1];
     }
-    for (let i = 0; i < labelValue.length; i++) {
-      if (labelValue[i] === "") {
-        labelValue.splice(i, 1);
-        i--;
+
+      for (let i = 0; i < labelValue.length; i++) {
+        if (labelValue[i] === "") {
+          labelValue.splice(i, 1);
+          i--;
+        }
       }
+    setNumDeletes(numDeletes + 1);
+    const newPages = [...page];
+    newPages[0] = {
+      ...currentPage,
+      fields: currentPageFields,
+    };
+    setPage(newPages);
+  };
+  const handleRemoveTemplateField = (index) => {
+    const currentPage = page[0];
+    if (!currentPage) {
+      console.error(`Tab ${0} is not defined`);
+      return;
+    }
+    const currentPageFields = [...currentPage.fields];
+    currentPageFields.splice(index, 1);
+    setDeleteIndex(index);
+    for (let i = deleteIndex; i < currentPageFields.length; i++) {
+      currentPageFields[i] = currentPageFields[i + 1];
     }
     setNumDeletes(numDeletes + 1);
-    setNumDeletes(numDeletes + 1);
-    setShowButtons((prevValues) => {
-      const newValues = [...prevValues];
-      newValues[index] = false;
-      return newValues;
-    });
-
     const newPages = [...page];
     newPages[0] = {
       ...currentPage,
@@ -965,12 +983,13 @@ function InteractivePageBuilderInterface({ link, mode }) {
 
     if (page) {
       page[0].fields.forEach((field, index) => {
+        if(field){
         let formField = null;
         const parentStyle = Object.assign(
           {},
           ...(Array.isArray(field.parent_style) && field.parent_style.length
             ? field.parent_style
-            : [])
+            : [{}])
         );
 
         const inputFieldStyle = Object.assign(
@@ -1610,6 +1629,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         boxShadow: "0 0 10px rgba(0, 0, 0, 0.2",
                         transition: "transform 0.3s ease-in-out",
                         marginTop: "10px",
+                        backgroundColor: "white"
                       }}
                     >
                       <h3 style={{ padding: "10px", paddingBottom: "5px" }}>
@@ -1662,7 +1682,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                           bottom: "5px",
                           left: "10px",
                         }}
-                        onClick={() => handleRemoveField(index)}
+                        onClick={() => handleRemoveTemplateField(index)}
                       >
                         Delete
                       </button>
@@ -1675,12 +1695,12 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       style={{ color: "whitesmoke", fontWeight: "bold" }}
                     >
                        {labelValue[index] || labelValue[index] === "" ? labelValue[index] : field.label}
-                       {text === undefined || text === "" ? setText(labelValue[index]) : null}
 
                     </Heading>
                   </center>
                   {showButtons && (
-                      <IoIosCreate onClick={() => handleElementClick(index)} />
+                       <IoIosCreate onClick={() => handleElementClickTemplate(labelValue[index] || field.label, index)} />
+
                     )}
                 </div>
                   )}
@@ -1747,7 +1767,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
               break;
             case "Button":
               formField = (
-                <div onMouseLeave={() => handleMouseLeave(index)}>
+                <div>
                   {isEditing[index] ? (
                     <div
                       ref={inputRef}
@@ -1820,7 +1840,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     <div key={index}>
                       <br />
                       <Button
-                        onMouseEnter={() => handleMouseEnter(index)}
                         style={{
                           width: field.config.width + "px",
                           height: field.config.height + "px",
@@ -1899,7 +1918,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
               break;
             case "Label":
               formField = (
-                <div onMouseLeave={() => handleMouseLeave(index)}>
+                <div>
                   {isEditing[index] ? (
                     <div
                       ref={inputRef}
@@ -1971,7 +1990,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   ) : (
                     <div key={index}>
                       <Label
-                        onMouseEnter={() => handleMouseEnter(index)}
                         input={{
                           type: "text",
                           value: field.label,
@@ -3058,7 +3076,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
           if (formField) {
             fieldsToRender.push(formField);
           }
-        }
+        }}
       });
     }
     return (
