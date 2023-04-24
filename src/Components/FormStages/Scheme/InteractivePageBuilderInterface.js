@@ -13,10 +13,12 @@ import {
   LoadingBox,
   MultiChoice,
   Radio,
-  Select,
   TextArea,
   TopNav,
 } from "govuk-react";
+import Select from "@mui/material/Select";
+import dayjs from "dayjs";
+import FormControl from "@mui/material/FormControl";
 import { Container, Form } from "react-bootstrap";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { tokens } from "./theme";
@@ -34,6 +36,10 @@ import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import { IoIosCreate } from "react-icons/io";
 import { MdOutlineLogin } from "react-icons/md";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import InputLabel from "@mui/material/InputLabel";
 import {
   List,
   ListItem,
@@ -60,6 +66,7 @@ import { AddCircleOutlineOutlined } from "@mui/icons-material";
 import ReCAPTCHA from "react-google-recaptcha";
 import PhoneInput from "react-phone-input-2";
 import { HexColorPicker } from "react-colorful";
+import { style } from "@mui/system";
 
 function InteractivePageBuilderInterface({ link, mode }) {
   const [theme, colorMode] = useMode();
@@ -85,6 +92,24 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const [numDeletes, setNumDeletes] = useState(0);
   const [deleteIndex, setDeleteIndex] = useState(0);
   const [checked, setChecked] = useState(false);
+  const [rooms, setRooms] = useState(0);
+  const [checkinDate, setCheckinDate] = useState();
+  const [checkoutDate, setCheckoutDate] = useState();
+  const [currentTemplate, setCurrentTemplate] = useState(null);
+  const [pageBackgrounds, setPageBackgrounds] = useState([
+    "https://i0.wp.com/www.busiweek.com/wp-content/uploads/2018/07/5-four-seasons-resort-seychelles-WBRESAF0517.jpg?resize=1000%2C625&ssl=1",
+  ]);
+  const [pageBackgroundIndex, setPageBackgroundIndex] = useState();
+  const [homepageHospitalityComponent, setHomepageHospitalityComponent] =
+    useState([]);
+  const [guests, setGuests] = useState();
+  const [components, setComponents] = useState({
+    "Home Page - Hospitality": [],
+    "Home Page - Transport": [],
+    "Home Page - Consulting": [],
+    "Home Page - Real Estate": [],
+  });
+  const selectedTemplateComponents = components[0];
 
   const [formData, setFormData] = useState("");
 
@@ -118,6 +143,18 @@ function InteractivePageBuilderInterface({ link, mode }) {
       newValues[index] = true;
       return newValues;
     });
+  };
+  const handleCheckinDateChange = (date) => {
+    setCheckinDate(date);
+  };
+  const handleCheckoutDateChange = (date) => {
+    setCheckoutDate(date);
+  };
+  const handleRoomsChange = (room) => {
+    setRooms(room);
+  };
+  const handleGuestsChange = (guest) => {
+    setGuests(guest);
   };
 
   const handleMouseLeave = (index) => {
@@ -154,12 +191,9 @@ function InteractivePageBuilderInterface({ link, mode }) {
     });
   };
 
-
   const handleSwitch = (checked) => {
     setChecked(checked);
   };
-
-
 
   const citizen_id = sessionStorage.getItem("Citizen_ID");
   const updateData = (event, property, fieldIndex) => {
@@ -200,7 +234,10 @@ function InteractivePageBuilderInterface({ link, mode }) {
     setFormData({});
   };
   const handlePageBreakClick = () => {
+    setPageBackgroundIndex(-1);
+
     setPageCounter(pageCounter + 1);
+    //setPageBackgrounds((prevBackgrounds) => [...prevBackgrounds, ""]);
   };
 
   const handleChange = (event) => {
@@ -213,6 +250,9 @@ function InteractivePageBuilderInterface({ link, mode }) {
     setConfiguration("");
     setSelected(input_value);
     const currentPage = page[0];
+    const currentPageIndex = pageCounter - 1;
+    console.log(currentPageIndex);
+    const currentPageBackground = pageBackgrounds[currentPageIndex];
     const currentPageFields = currentPage.fields ? [...currentPage.fields] : [];
     setNumberOfElements((prevState) => prevState + 1);
 
@@ -231,6 +271,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
     currentPageFields.push(newField);
     const newPage = [{ ...currentPage, fields: currentPageFields }];
     setPage(newPage);
+    console.log(currentPageFields);
     setLabelValue((prevValues) => [...prevValues, ""]);
     setIsEditing((prevValues) => [...prevValues, false]);
     if (input_value === "Page Break") {
@@ -245,17 +286,133 @@ function InteractivePageBuilderInterface({ link, mode }) {
     } else if (input_value === "Body") {
       setConfiguration("Body");
       setShow(true);
+    } else if (input_value === "Label") {
+      setConfiguration("Label");
+      setShow(true);
+    } else if (input_value === "Home Page - Hospitality") {
+      const navbarField = {
+        type: "Navbar - Bootstrap",
+        editing: false,
+        config: {
+          label: "",
+          editing: false,
+          color: "#000000",
+          width: "",
+          height: "",
+        },
+      };
+
+      const containerField = {
+        type: "container",
+      };
+
+      const imgField = {
+        type: "img",
+        config: {
+          label: "img/Hospitality.png",
+          alt: "Logo",
+          width: "50",
+          height: "50",
+          className: "d-inline-block align-top",
+          style: `{{justifyContent: "center", alignItems: "center", display: "flex"}}`,
+        },
+      };
+      const brField = {
+        type: "br",
+      };
+      const labelField = {
+        type: "label",
+        config: {
+          label: "Argort Resort",
+          style: `{{justifyContent: "center", alignItems: "center", display: "flex"}}`,
+        },
+      };
+      const navbarTogglefield = {
+        type: "Navbar-Toggle",
+      };
+      const h3Field = {
+        type: "H3",
+        label: "Welcome to",
+      };
+      const headingField = {
+        type: "Heading",
+        label: "Argort Resort",
+      };
+      const centerComponentField = {
+        type: "Center Component",
+      };
+      const dateCheckInField = {
+        type: "Date - Check In",
+      };
+      const dateCheckOutField = {
+        type: "Date - Check Out",
+      };
+      const roomsField = {
+        type: "Rooms",
+      };
+      const guestsField = {
+        type: "Guests",
+      };
+      const promoCodeField = {
+        type: "Promo Code",
+      };
+      const bookButtonField = {
+        type: "Book Button",
+      };
+
+      const newField2 = {
+        type: "Footer",
+        name: input_value,
+        editing: false,
+        config: {
+          label: "",
+          editing: false,
+          color: "#000000",
+          width: "",
+          height: "",
+        },
+      };
+
+      const background = {
+        type: "Background",
+      };
+      currentPageFields.push(background);
+      currentPageFields.push(navbarField);
+      currentPageFields.push(containerField);
+      currentPageFields.push(brField);
+      currentPageFields.push(labelField);
+      currentPageFields.push(navbarTogglefield);
+      currentPageFields.push(h3Field);
+      currentPageFields.push(headingField);
+      currentPageFields.push(brField);
+      currentPageFields.push(centerComponentField);
+      currentPageFields.push(roomsField);
+      currentPageFields.push(guestsField);
+      currentPageFields.push(promoCodeField);
+      currentPageFields.push(bookButtonField);
     } else if (
-      input_value === "Single Stage Sign Up Form" ||
-      input_value === "Single Stage Contact Us Form" ||
-      input_value === "Single Stage Application Form" ||
-      input_value === "Multi Stage Sign Up Form"
+      input_value === "Sign Up Form" ||
+      input_value === "Contact Us Form" ||
+      input_value === "Application Form" ||
+      input_value === "Home Page - Transport" ||
+      input_value === "Home Page - Consulting" ||
+      input_value === "Home Page - Real Estate"
     ) {
-      setShow(false);
+      //setShow(true);
+
+      setConfiguration("Template");
     } else {
       setShow(true);
     }
+    if (currentPageBackground !== undefined) {
+      setPageBackgrounds((prevBackgrounds) => {
+        const updatedBackgrounds = [...prevBackgrounds];
+        updatedBackgrounds[currentPage] = currentPageBackground;
+        return updatedBackgrounds;
+      });
+    }
   };
+
   const buttonComponents = [
     { name: "Raised Button", icon: <SmartButtonOutlined /> },
     { name: "Radio Button", icon: <RadioButtonChecked /> },
@@ -289,23 +446,36 @@ function InteractivePageBuilderInterface({ link, mode }) {
     { name: "Phone number", icon: <AddCircleOutlineOutlined /> },
   ];
 
-  const singleStageFormsComponent = [
+  const formsComponent = [
     {
-      name: "Single Stage Sign Up Form",
+      name: "Sign Up Form",
       icon: <DynamicFormOutlined />,
     },
     {
-      name: "Single Stage Contact Us Form",
+      name: "Contact Us Form",
       icon: <DynamicFormOutlined />,
     },
     {
-      name: "Single Stage Application Form",
+      name: "Application Form",
       icon: <DynamicFormOutlined />,
     },
   ];
-  const multiStageFormsComponent = [
+
+  const homepageComponentDesigns = [
     {
-      name: "Multi Stage Sign Up Form",
+      name: "Home Page - Hospitality",
+      icon: <DynamicFormOutlined />,
+    },
+    {
+      name: "Home Page - Transport",
+      icon: <DynamicFormOutlined />,
+    },
+    {
+      name: "Home Page - Consulting",
+      icon: <DynamicFormOutlined />,
+    },
+    {
+      name: "Home Page - Real Estate",
       icon: <DynamicFormOutlined />,
     },
   ];
@@ -463,9 +633,9 @@ function InteractivePageBuilderInterface({ link, mode }) {
     console.log(currentPageFields[index]);
     currentPageFields.splice(index, 1);
     setDeleteIndex(index);
-    setNumDeletes (numDeletes+1); 
+    setNumDeletes(numDeletes + 1);
     setShowButtons((prevValues) => {
-      const newValues = [...prevValues];  
+      const newValues = [...prevValues];
       newValues[index] = false;
       return newValues;
     });
@@ -573,9 +743,8 @@ function InteractivePageBuilderInterface({ link, mode }) {
     if (page) {
       page[0].fields.forEach((field, index) => {
         let formField = null;
-
         switch (field.type) {
-          case "Single Stage Sign Up Form":
+          case "Sign Up Form":
             formField = (
               <div key={index}>
                 <TopNav
@@ -655,7 +824,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
             );
             break;
 
-          case "Single Stage Contact Us Form":
+          case "Contact Us Form":
             formField = (
               <div key={index}>
                 <TopNav
@@ -727,7 +896,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
             );
             break;
 
-          case "Single Stage Application Form":
+          case "Application Form":
             formField = (
               <div key={index}>
                 <TopNav
@@ -798,229 +967,255 @@ function InteractivePageBuilderInterface({ link, mode }) {
               </div>
             );
             break;
-          case "Multi Stage Sign Up Form":
+          case "Center Component":
             formField = (
               <div key={index}>
-                <TopNav
-                  style={{
-                    color: field.color,
-                    width: field.config.width + "px",
-                    height: field.config.height + "px",
-                    backgroundColor: formData.color,
-                  }}
-                  company={<TopNav.Anchor>ABC Grants</TopNav.Anchor>}
-                />
-                <br></br>
-                <center>
-                  <Heading>Register your details</Heading>
-                  <br></br>
-
-                  <InputField
-                    input={{ type: "email" }}
-                    style={{ maxWidth: "700px" }}
-                  >
-                    Enter First Name
-                  </InputField>
-                  <br></br>
-                  <InputField
-                    input={{ type: "email" }}
-                    style={{ maxWidth: "700px" }}
-                  >
-                    Enter Last Name
-                  </InputField>
-                  <br></br>
-                  <div key={index} onClick={handlePageBreakClick}>
-                    <Divider style={{ color: "black" }}>Page Break</Divider>
-                    <br></br>
-                  </div>
-                  <InputField
-                    input={{ type: "" }}
-                    style={{ maxWidth: "700px" }}
-                  >
-                    Enter Address Line 1
-                  </InputField>
-                  <br></br>
-
-                  <InputField
-                    input={{ type: "email" }}
-                    style={{ maxWidth: "700px" }}
-                  >
-                    Enter Email Address
-                  </InputField>
-                  <br></br>
-                  <InputField
-                    input={{ type: "password" }}
-                    style={{ maxWidth: "700px" }}
-                  >
-                    Enter a Password
-                  </InputField>
-                  <br></br>
-                  <InputField
-                    input={{ type: "password" }}
-                    style={{ maxWidth: "700px" }}
-                  >
-                    Confirm Password
-                  </InputField>
-                  <br></br>
-                  <Button>Submit</Button>
-                </center>
-                <Footer
-                  licence={
-                    <span>
-                      All content is available under the{" "}
-                      <styled
-                        href="https://creativecommons.org/licenses/by/4.0/"
-                        rel="license"
-                      >
-                        Creative Commons Attribution 4.0 International Licence{" "}
-                      </styled>
-                      , except where otherwise stated
-                    </span>
-                  }
-                />
-                <br></br>
-              </div>
-            );
-            break;
-          case "Text Field":
-            formField = (
-              <div key={index}>
-                <label style={{ textAlign: "center" }}>
-                  {" "}
-                  {field.config.label}
-                </label>
-
-                <br />
-                <InputField
-                  style={{
-                    width: field.config.width + "px",
-                    height: field.config.height + "px",
-                  }}
-                  input={{
-                    type: field.type,
-                    name: field.label,
-                    required: field.required,
-                  }}
-                />
-                <br></br>
-              </div>
-            );
-            break;
-          case "Email":
-            formField = (
-              <div key={index}>
-                <label style={{ textAlign: "center" }}>
-                  {field.config.label}
-                </label>
-                <br />
-                <InputField
-                  style={{
-                    width: field.config.width + "px",
-                    height: field.config.height + "px",
-                  }}
-                  input={{
-                    type: field.type,
-                    name: field.label,
-                    required: field.required,
-                  }}
-                />
-                <br></br>
-              </div>
-            );
-            break;
-          case "Text area":
-            formField = (
-              <div onMouseLeave={() => handleMouseLeave(index)}>
-                {isEditing[index] ? (
-                  <div
-                    ref={inputRef}
+                <div>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      renderInput={(props) => (
+                        <TextField
+                          {...props}
+                          label="Check in"
+                          variant="outlined"
+                          value={dayjs(checkinDate).format("DD-MM-YYYY")}
+                          onChange={(event) =>
+                            handleCheckinDateChange(
+                              new Date(event.target.value)
+                            )
+                          }
+                          sx={{
+                            "& fieldset": { border: "none" },
+                            input: { color: "whitesmoke" },
+                            svg: { color: "whitesmoke" },
+                            label: { color: "whitesmoke" },
+                          }}
+                          style={{
+                            backgroundColor: "#242226",
+                            opacity: "0.9",
+                            margin: "5px",
+                            borderRadius: "5px",
+                          }}
+                        />
+                      )}
+                      value={checkinDate}
+                      onChange={(date) => handleCheckinDateChange(date)}
+                    />
+                  </LocalizationProvider>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      renderInput={(props) => (
+                        <TextField
+                          {...props}
+                          label="Check out"
+                          variant="outlined"
+                          value={dayjs(checkoutDate).format("DD-MM-YYYY")}
+                          onChange={(event) =>
+                            handleCheckoutDateChange(
+                              new Date(event.target.value)
+                            )
+                          }
+                          sx={{
+                            "& fieldset": { border: "none" },
+                            input: { color: "whitesmoke" },
+                            svg: { color: "whitesmoke" },
+                            label: { color: "whitesmoke" },
+                          }}
+                          style={{
+                            backgroundColor: "#242226",
+                            opacity: "0.9",
+                            margin: "5px",
+                            borderRadius: "5px",
+                          }}
+                        />
+                      )}
+                      value={checkoutDate}
+                      onChange={(date) => handleCheckoutDateChange(date)}
+                    />
+                  </LocalizationProvider>
+                  <FormControl
+                    sx={{
+                      "& fieldset": { border: "none" },
+                      input: { color: "whitesmoke" },
+                      svg: { color: "whitesmoke" },
+                      label: { color: "whitesmoke" },
+                      minWidth: 120,
+                    }}
                     style={{
-                      position: "relative",
-                      display: "inline-block",
-                      borderRadius: "8px",
-                      overflow: "hidden",
-                      boxShadow: "0 0 10px rgba(0, 0, 0, 0.2",
-                      transition: "transform 0.3s ease-in-out",
-                      marginTop: "10px",
+                      backgroundColor: "#242226",
+                      opacity: "0.9",
+                      margin: "5px",
+                      borderRadius: "5px",
                     }}
                   >
-                    <h3 style={{ padding: "10px", paddingBottom: "5px" }}>
-                      Edit Text Area
-                    </h3>
-                    <label
-                      htmlFor="areatext"
-                      style={{
-                        color: "#888",
-                        fontStyle: "italic",
-                        paddingLeft: "5px",
-                      }}
+                    <InputLabel id="demo-select-small-label">Rooms</InputLabel>
+
+                    <Select
+                      labelId="demo-select-small-label"
+                      id="demo-select-small"
+                      variant="outlined"
+                      style={{ color: "whitesmoke" }}
+                      value={rooms || 1}
+                      onChange={(event) =>
+                        handleRoomsChange(event.target.value)
+                      }
                     >
-                      Text
-                    </label>
+                      <MenuItem value={1}>1</MenuItem>
+                      <MenuItem value={2}>2</MenuItem>
+                      <MenuItem value={3}>3</MenuItem>
+                      <MenuItem value={4}>4</MenuItem>
+                      <MenuItem value={5}>5</MenuItem>
+                    </Select>
+                  </FormControl>
+                  <FormControl
+                    sx={{
+                      "& fieldset": { border: "none" },
+                      input: { color: "whitesmoke" },
+                      svg: { color: "whitesmoke" },
+                      label: { color: "whitesmoke" },
+                      minWidth: 120,
+                    }}
+                    style={{
+                      backgroundColor: "#242226",
+                      opacity: "0.9",
+                      margin: "5px",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    <InputLabel id="demo-select-small-label">Guests</InputLabel>
+
+                    <Select
+                      labelId="demo-select-small-label"
+                      id="demo-select-small"
+                      variant="outlined"
+                      style={{ color: "whitesmoke" }}
+                      value={guests || 1}
+                      onChange={(event) =>
+                        handleGuestsChange(event.target.value)
+                      }
+                    >
+                      <MenuItem value={1}>1</MenuItem>
+                      <MenuItem value={2}>2</MenuItem>
+                      <MenuItem value={3}>3</MenuItem>
+                      <MenuItem value={4}>4</MenuItem>
+                      <MenuItem value={5}>5</MenuItem>
+                    </Select>
+                  </FormControl>
+                  <TextField
+                    label="Promo/Corp code"
+                    variant="outlined"
+                    sx={{
+                      "& fieldset": { border: "none" },
+                      input: { color: "whitesmoke" },
+                      svg: { color: "whitesmoke" },
+                      label: { color: "whitesmoke" },
+                    }}
+                    style={{
+                      backgroundColor: "#242226",
+                      opacity: "0.9",
+                      margin: "5px",
+                      borderRadius: "5px",
+                    }}
+                  />
+                  <Button
+                    style={{
+                      backgroundColor: "whitesmoke",
+                      opacity: "0.9",
+                      margin: "5px",
+                      borderRadius: "5px",
+                      color: "black",
+                      width: "100px",
+                      height: "54px",
+                    }}
+                  >
+                    Book
+                  </Button>
+                </div>
+                <br></br>
+              </div>
+            );
+            break;
+          case "Date - Check In":
+            formField = (
+              <div key={index}>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    renderInput={(props) => (
+                      <TextField
+                        {...props}
+                        label="Check out"
+                        variant="outlined"
+                        value={dayjs(checkoutDate).format("DD-MM-YYYY")}
+                        onChange={(event) =>
+                          handleCheckoutDateChange(new Date(event.target.value))
+                        }
+                        sx={{
+                          "& fieldset": { border: "none" },
+                          input: { color: "whitesmoke" },
+                          svg: { color: "whitesmoke" },
+                          label: { color: "whitesmoke" },
+                        }}
+                        style={{
+                          backgroundColor: "#242226",
+                          opacity: "0.9",
+                          margin: "5px",
+                          borderRadius: "5px",
+                        }}
+                      />
+                    )}
+                    value={checkoutDate}
+                    onChange={(date) => handleCheckoutDateChange(date)}
+                  />
+                </LocalizationProvider>
+              </div>
+            );
+            break;
+          case "Toggle Switch":
+            formField = (
+              <div key={index}>
+                <Switch onChange={handleSwitch} checked={checked} />
+
+                <br />
+
+                <br></br>
+              </div>
+            );
+            break;
+          case "Raised Button":
+            formField = (
+              <div
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+              >
+                {isEditing ? (
+                  <div ref={inputRef}>
                     <input
-                      style={{
-                        display: "block",
-                        marginBottom: "40px",
-                        paddingLeft: "5px",
-                        paddingRight: "5px",
-                      }}
-                      id="areatext"
                       autoFocus="autoFocus"
                       type="text"
                       value={text}
-                      onChange={(event) => handleTextChange(event, index)}
+                      onChange={handleTextChange}
                     />
-                    <button
-                      style={{
-                        backgroundColor: "blueviolet",
-                        color: "white",
-                        borderRadius: "4px",
-                        display: "block",
-                        position: "absolute",
-                        bottom: "5px",
-                        right: "10px",
-                      }}
-                      onClick={() => handleClickOutside(index)}
-                    >
-                      Save Changes
-                    </button>
-                    <button
-                      style={{
-                        backgroundColor: "red",
-                        color: "white",
-                        borderRadius: "4px",
-                        display: "block",
-                        position: "absolute",
-                        bottom: "5px",
-                        left: "10px",
-                      }}
-                      onClick={() => handleRemoveField(index)}
-                    >
-                      Delete
-                    </button>
                   </div>
                 ) : (
                   <div key={index}>
-                    <label
-                      onMouseEnter={() => handleMouseEnter(index)}
-                      style={{ textAlign: "center " }}
-                    >
-                      {labelValue[index]}
-                    </label>
                     <br />
-                    <textarea
-                      style={{
-                        width: field.config.width + "px",
-                        height: field.config.height + "px",
-                      }}
-                      input={{
-                        type: field.type,
-                        name: field.label,
-                        required: field.required,
-                      }}
-                    />
-                    {showButtons[index] && (
-                      <IoIosCreate onClick={() => handleElementClick(index)} />
+                    <Link to={buttonLink}>
+                      <Button
+                        style={{
+                          width: field.config.width + "px",
+                          height: field.config.height + "px",
+                        }}
+                        input={{
+                          type: field.type,
+                          name: field.label,
+                          required: field.required,
+                        }}
+                      >
+                        {text}
+                      </Button>
+                    </Link>
+                    {showButtons && (
+                      <IoIosCreate onClick={handleElementClick} />
                     )}
                     <br></br>
                   </div>
@@ -1028,78 +1223,28 @@ function InteractivePageBuilderInterface({ link, mode }) {
               </div>
             );
             break;
-            
-            case "Radio Button":
-              formField = (
-                <div key={index}>
-                  <Radio
-                    style={{
-                      width: field.config.width + "px",
-                      height: field.config.height + "px",
-                    }}
-                  >
-                    {field.config.label}
-                  </Radio>
-                  <br />
-  
-                  <br></br>
-                </div>
-              );
-              break;
 
-              case "Toggle Switch":
-                formField = (
-                  <div key={index}>
-                    <Switch onChange={handleSwitch} checked={checked} />
-    
-                    <br />
-    
-                    <br></br>
-                  </div>
-                );
-                break;
-                case "Raised Button":
-                  formField = (
-                    <div
-                      onMouseEnter={handleMouseEnter}
-                      onMouseLeave={handleMouseLeave}
-                    >
-                      {isEditing ? (
-                        <div ref={inputRef}>
-                          <input
-                            autoFocus="autoFocus"
-                            type="text"
-                            value={text}
-                            onChange={handleTextChange}
-                          />
-                        </div>
-                      ) : (
-                        <div key={index}>
-                          <br />
-                          <Link to={buttonLink}>
-                            <Button
-                              style={{
-                                width: field.config.width + "px",
-                                height: field.config.height + "px",
-                              }}
-                              input={{
-                                type: field.type,
-                                name: field.label,
-                                required: field.required,
-                              }}
-                            >
-                              {text}
-                            </Button>
-                          </Link>
-                          {showButtons && (
-                            <IoIosCreate onClick={handleElementClick} />
-                          )}
-                          <br></br>
-                        </div>
-                      )}
-                    </div>
-                  );
-                  break;
+          case "Heading":
+            formField = (
+              <div key={index}>
+                <center>
+                  {" "}
+                  <Heading style={{ color: "whitesmoke", fontWeight: "bold" }}>
+                    {field.label}
+                  </Heading>
+                </center>
+              </div>
+            );
+            break;
+          case "H3":
+            formField = (
+              <div key={index}>
+                <center>
+                  <H3 style={{ color: "whitesmoke" }}>{field.label}</H3>
+                </center>
+              </div>
+            );
+            break;
 
           case "Password":
             formField = (
@@ -1265,6 +1410,27 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   multiline
                 />
                 <br></br>
+              </div>
+            );
+            break;
+          case "br":
+            formField = (
+              <div key={index}>
+                <br></br>
+              </div>
+            );
+            break;
+
+          case "img":
+            formField = (
+              <div key={index}>
+                <img
+                  src={process.env.PUBLIC_URL + "/img/Hospitality.png"}
+                  alt="Logo"
+                  width="50"
+                  height="50"
+                  className="d-inline-block align-top"
+                />
               </div>
             );
             break;
@@ -1691,6 +1857,57 @@ function InteractivePageBuilderInterface({ link, mode }) {
               </div>
             );
             break;
+          case "Navbar - Bootstrap":
+            formField = (
+              <div key={index}>
+                <Navbar collapseOnSelect expand="lg" bg="transparent">
+                  <Container>
+                    <Navbar.Brand href="/">
+                      <center>
+                        <img
+                          src={process.env.PUBLIC_URL + "/img/Hospitality.png"}
+                          alt="Logo"
+                          width="50"
+                          height="50"
+                          className="d-inline-block align-top"
+                        />
+                        <br></br>
+                        <label
+                          style={{ color: "whitesmoke", fontWeight: "bold" }}
+                        >
+                          Argort Resort
+                        </label>
+                      </center>
+                      x
+                    </Navbar.Brand>
+
+                    <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+
+                    <div
+                      style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                        display: "flex",
+                      }}
+                    >
+                      <Navbar.Collapse id="responsive-navbar-nav">
+                        <Nav className="me-auto">
+                          <Nav.Link href="/" style={{ color: "whitesmoke" }}>
+                            Home
+                          </Nav.Link>
+                          <Nav.Link href="/" style={{ color: "whitesmoke" }}>
+                            Book
+                          </Nav.Link>
+                        </Nav>
+                      </Navbar.Collapse>
+                    </div>
+                  </Container>
+                </Navbar>
+              </div>
+            );
+
+            break;
+
           case "Footer":
             formField = (
               <div onMouseLeave={() => handleMouseLeave(index)}>
@@ -1820,6 +2037,9 @@ function InteractivePageBuilderInterface({ link, mode }) {
               </div>
             );
             break;
+          case "Background":
+            setPageBackgroundIndex(0);
+            break;
           case "Phone number":
             formField = (
               <div key={index}>
@@ -1835,7 +2055,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
           case "Page Break":
             formField = (
               <div key={index} onClick={handlePageBreakClick}>
-                <Divider style={{ backgroundColor: "black" }}></Divider>
+                <Divider style={{ color: "black" }}>Page Break</Divider>
                 <br></br>
               </div>
             );
@@ -1861,8 +2081,15 @@ function InteractivePageBuilderInterface({ link, mode }) {
     }
 
     return (
-      <div className="container">
-        <form style={{ overflowWrap: "break-word" }}>{fieldsToRender}</form>
+      <div>
+        <div
+          style={{
+            overflowWrap: "break-word",
+            backgroundImage: `url(${pageBackgrounds[pageBackgroundIndex]})`,
+          }}
+        >
+          {fieldsToRender}
+        </div>
       </div>
     );
   };
@@ -1973,47 +2200,61 @@ function InteractivePageBuilderInterface({ link, mode }) {
       <PageBuilderNavbar />
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton onClick={resetConfiguration}>
-          <Modal.Title>Component Configuration</Modal.Title>
+          <Modal.Title>Configuration</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
             <Form.Group className="mb-3">
-              <Divider>General Details</Divider>
-              <br></br>
-              <center>
-                {configuration === "Body" ? (
-                  <div>
-                    <TextArea
-                      style={{
-                        alignItems: "center",
-                        justifyContent: "center",
-                        display: "flex",
-                      }}
-                      onChange={(event) =>
-                        updateData(event, "label", numberOfElements)
-                      }
-                      input={{
-                        name: "label",
-                      }}
-                    >
-                      Body Content
-                    </TextArea>
-                  </div>
-                ) : (
-                  <div>
-                    {" "}
-                    <Label>Label Name:</Label>
-                    <InputField
-                      onChange={(event) =>
-                        updateData(event, "label", numberOfElements)
-                      }
-                      input={{
-                        name: "label",
-                      }}
-                    />
-                  </div>
-                )}
-              </center>
+              {configuration === "Body" && (
+                <div>
+                  <Divider>General Details</Divider>
+                  <br></br>
+                  <center>
+                    <div>
+                      <TextArea
+                        style={{
+                          alignItems: "center",
+                          justifyContent: "center",
+                          display: "flex",
+                        }}
+                        onChange={(event) =>
+                          updateData(event, "label", numberOfElements)
+                        }
+                        input={{
+                          name: "label",
+                        }}
+                      >
+                        Body Content
+                      </TextArea>
+                    </div>
+                  </center>
+                </div>
+              )}
+              {configuration === "Template" && (
+                <div>
+                  <Divider>General Details</Divider>
+                  <br></br>
+                  <center>
+                    <div></div>
+                  </center>
+                </div>
+              )}
+
+              {configuration === "Label" && (
+                <div>
+                  <Divider>General Details</Divider>
+
+                  <Label>Label Name:</Label>
+                  <InputField
+                    onChange={(event) =>
+                      updateData(event, "label", numberOfElements)
+                    }
+                    input={{
+                      name: "label",
+                    }}
+                  />
+                </div>
+              )}
             </Form.Group>
             <Divider>Component Adjustments</Divider>
             <br></br>
@@ -2112,9 +2353,8 @@ function InteractivePageBuilderInterface({ link, mode }) {
                 <div></div>
               ) : (
                 <div>
-
                   <Box
-                    style={{float: "left", padding: "20px"}}
+                    style={{ float: "left", padding: "20px" }}
                     sx={{
                       "& .pro-sidebar-inner": {
                         bgcolor: "#212529",
@@ -2248,35 +2488,30 @@ function InteractivePageBuilderInterface({ link, mode }) {
                               >
                                 <SubMenu
                                   style={{ color: "white" }}
-                                  title="Single Stage Forms"
+                                  title="Homepage"
                                 >
-                                  {singleStageFormsComponent.map(
-                                    (component) => (
-                                      <ListItem
-                                        button
-                                        key={component.name}
-                                        selected={selected === component.name}
-                                        onClick={() =>
-                                          handleAddField(component.name)
-                                        }
-                                      >
-                                        <ListItemIcon
-                                          style={{ color: "white" }}
-                                        >
-                                          {component.icon}
-                                        </ListItemIcon>
-                                        <ListItemText
-                                          primary={component.name}
-                                        />
-                                      </ListItem>
-                                    )
-                                  )}
+                                  {homepageComponentDesigns.map((component) => (
+                                    <ListItem
+                                      button
+                                      key={component.name}
+                                      selected={selected === component.name}
+                                      onClick={() =>
+                                        handleAddField(component.name)
+                                      }
+                                    >
+                                      <ListItemIcon style={{ color: "white" }}>
+                                        {component.icon}
+                                      </ListItemIcon>
+                                      <ListItemText primary={component.name} />
+                                    </ListItem>
+                                  ))}
                                 </SubMenu>
+
                                 <SubMenu
                                   style={{ color: "white" }}
-                                  title="Multi Stage Forms"
+                                  title="Forms"
                                 >
-                                  {multiStageFormsComponent.map((component) => (
+                                  {formsComponent.map((component) => (
                                     <ListItem
                                       button
                                       key={component.name}
@@ -2626,9 +2861,8 @@ function InteractivePageBuilderInterface({ link, mode }) {
                             <SubMenu
                               style={{ color: "white" }}
                               title="Data"
-                            >
-                              </SubMenu>
-                           </SubMenu>
+                            ></SubMenu>
+                          </SubMenu>
                         </div>
                       </Box>
                     )}
