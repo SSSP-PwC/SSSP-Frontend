@@ -414,6 +414,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
       const headingField = {
         type: "Heading",
         label: "Argort Resort",
+        color: "whitesmoke",
       };
       const centerComponentField = {
         type: "Center Component",
@@ -467,6 +468,140 @@ function InteractivePageBuilderInterface({ link, mode }) {
       currentPageFields.push(guestsField);
       currentPageFields.push(promoCodeField);
       currentPageFields.push(bookButtonField);
+    } else if (input_value === "Sign Up Form") {
+      const navbarField = {
+        type: "navbar - template",
+      };
+      const brField = {
+        type: "br",
+      };
+
+      const headingField = {
+        type: "Heading",
+        label: "Register your details",
+      };
+      const inputFirstNameField = {
+        type: "Input Field",
+        input_type: "text",
+        label: "Enter First Name",
+        parent_style: [
+          { justifyContent: "center" },
+          { alignItems: "center" },
+          { display: "flex" },
+        ],
+        input_style: [{ width: "700px" }],
+      };
+
+      const inputLastNameField = {
+        type: "Input Field",
+        input_type: "text",
+        label: "Enter Last Name",
+        parent_style: [
+          { justifyContent: "center" },
+          { alignItems: "center" },
+          { display: "flex" },
+        ],
+        input_style: [{ width: "700px" }],
+      };
+      const inputAddressLine1Field = {
+        type: "Input Field",
+        input_type: "text",
+        label: "Enter Address Line 1",
+        parent_style: [
+          { justifyContent: "center" },
+          { alignItems: "center" },
+          { display: "flex" },
+        ],
+        input_style: [{ width: "700px" }],
+      };
+      const inputAddressLine2Field = {
+        type: "Input Field",
+        input_type: "text",
+        label: "Enter Address Line 2",
+        parent_style: [
+          { justifyContent: "center" },
+          { alignItems: "center" },
+          { display: "flex" },
+        ],
+        input_style: [{ width: "700px" }],
+      };
+      const inputPostcodeField = {
+        type: "Input Field",
+        input_type: "text",
+        label: "Enter Postcode",
+        parent_style: [
+          { justifyContent: "center" },
+          { alignItems: "center" },
+          { display: "flex" },
+        ],
+        input_style: [{ width: "700px" }],
+      };
+      const inputEmailField = {
+        type: "Input Field",
+        input_type: "email",
+        label: "Enter Email Address",
+        parent_style: [
+          { justifyContent: "center" },
+          { alignItems: "center" },
+          { display: "flex" },
+        ],
+        input_style: [{ width: "700px" }],
+      };
+      const inputPasswordField = {
+        type: "Input Field",
+        input_type: "password",
+        label: "Enter a Password",
+        parent_style: [
+          { justifyContent: "center" },
+          { alignItems: "center" },
+          { display: "flex" },
+        ],
+        input_style: [{ width: "700px" }],
+      };
+      const inputConfirmPasswordField = {
+        type: "Input Field",
+        input_type: "password",
+        label: "Confirm Password",
+        parent_style: [
+          { justifyContent: "center" },
+          { alignItems: "center" },
+          { display: "flex" },
+        ],
+        input_style: [{ width: "700px" }],
+      };
+      const submitButton = {
+        type: "Raised Button",
+        label: "Submit",
+        width: "100px",
+        height: "100px",
+        parent_style: [
+          { justifyContent: "center" },
+          { alignItems: "center" },
+          { display: "flex" },
+        ],
+      };
+      currentPageFields.push(navbarField);
+      currentPageFields.push(brField);
+      currentPageFields.push(headingField);
+      currentPageFields.push(brField);
+      currentPageFields.push(inputFirstNameField);
+      currentPageFields.push(brField);
+      currentPageFields.push(inputLastNameField);
+      currentPageFields.push(brField);
+      currentPageFields.push(inputAddressLine1Field);
+      currentPageFields.push(brField);
+      currentPageFields.push(inputAddressLine2Field);
+      currentPageFields.push(brField);
+      currentPageFields.push(inputPostcodeField);
+      currentPageFields.push(brField);
+      currentPageFields.push(inputEmailField);
+      currentPageFields.push(brField);
+      currentPageFields.push(inputPasswordField);
+      currentPageFields.push(brField);
+      currentPageFields.push(inputConfirmPasswordField);
+      currentPageFields.push(brField);
+      currentPageFields.push(submitButton);
+      currentPageFields.push(brField);
     } else if (
       input_value === "Sign Up Form" ||
       input_value === "Contact Us Form" ||
@@ -476,7 +611,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
       input_value === "Home Page - Real Estate"
     ) {
       //setShow(true);
-
       setConfiguration("Template");
     } else {
       setShow(true);
@@ -832,84 +966,56 @@ function InteractivePageBuilderInterface({ link, mode }) {
     if (page) {
       page[0].fields.forEach((field, index) => {
         let formField = null;
+        const parentStyle = Object.assign(
+          {},
+          ...(Array.isArray(field.parent_style) && field.parent_style.length
+            ? field.parent_style
+            : [])
+        );
+
+        const inputFieldStyle = Object.assign(
+          {},
+          ...(Array.isArray(field.input_style) && field.input_style.length
+            ? field.input_style
+            : [])
+        );
+
         if (field) {
           switch (field.type) {
-            case "Sign Up Form":
+            case "navbar - template":
               formField = (
-                <div key={index}>
-                  <TopNav
-                    style={{
-                      color: field.color,
-                      width: field.config.width + "px",
-                      height: field.config.height + "px",
-                      backgroundColor: formData.color,
+                <div>
+                  {isEditing[index] ? (
+                    <NavbarEditor ind={index} />
+                  ) : (
+                    <div key={index}>
+                      <TopNav
+                        company={
+                          <TopNav.Anchor target="new">ABC Grants</TopNav.Anchor>
+                        }
+                      />
+                      {showButtons && (
+                        <IoIosCreate
+                          onClick={() => handleElementClick(index)}
+                        />
+                      )}
+                      <br></br>
+                    </div>
+                  )}
+                </div>
+              );
+              break;
+            case "Input Field":
+              formField = (
+                <div key={index} style={parentStyle}>
+                  <InputField
+                    input={{
+                      type: field.input_type,
+                      style: { ...inputFieldStyle },
                     }}
-                    company={<TopNav.Anchor>ABC Grants</TopNav.Anchor>}
-                  />
-                  <br></br>
-                  <center>
-                    <Heading>Register your details</Heading>
-                    <br></br>
-
-                    <InputField
-                      input={{ type: "email" }}
-                      style={{ maxWidth: "700px" }}
-                    >
-                      Enter First Name
-                    </InputField>
-                    <br></br>
-                    <InputField
-                      input={{ type: "email" }}
-                      style={{ maxWidth: "700px" }}
-                    >
-                      Enter Last Name
-                    </InputField>
-                    <br></br>
-                    <InputField
-                      input={{ type: "" }}
-                      style={{ maxWidth: "700px" }}
-                    >
-                      Enter Address Line 1
-                    </InputField>
-                    <br></br>
-                    <InputField
-                      input={{ type: "email" }}
-                      style={{ maxWidth: "700px" }}
-                    >
-                      Enter Email Address
-                    </InputField>
-                    <br></br>
-                    <InputField
-                      input={{ type: "password" }}
-                      style={{ maxWidth: "700px" }}
-                    >
-                      Enter a Password
-                    </InputField>
-                    <br></br>
-                    <InputField
-                      input={{ type: "password" }}
-                      style={{ maxWidth: "700px" }}
-                    >
-                      Confirm Password
-                    </InputField>
-                    <br></br>
-                    <Button>Submit</Button>
-                  </center>
-                  <Footer
-                    licence={
-                      <span>
-                        All content is available under the{" "}
-                        <styled
-                          href="https://creativecommons.org/licenses/by/4.0/"
-                          rel="license"
-                        >
-                          Creative Commons Attribution 4.0 International Licence{" "}
-                        </styled>
-                        , except where otherwise stated
-                      </span>
-                    }
-                  />
-                  <br></br>
+                  >
+                    {field.label}
+                  </InputField>
                 </div>
               );
               break;
@@ -1472,43 +1578,20 @@ function InteractivePageBuilderInterface({ link, mode }) {
               break;
             case "Raised Button":
               formField = (
-                <div
-                  onMouseEnter={handleMouseEnter}
-                  onMouseLeave={handleMouseLeave}
-                >
-                  {isEditing ? (
-                    <div ref={inputRef}>
-                      <input
-                        autoFocus="autoFocus"
-                        type="text"
-                        value={text}
-                        onChange={handleTextChange}
-                      />
-                    </div>
-                  ) : (
-                    <div key={index}>
-                      <br />
-                      <Link to={buttonLink}>
-                        <Button
-                          style={{
-                            width: field.config.width + "px",
-                            height: field.config.height + "px",
-                          }}
-                          input={{
-                            type: field.type,
-                            name: field.label,
-                            required: field.required,
-                          }}
-                        >
-                          {text}
-                        </Button>
-                      </Link>
-                      {showButtons && (
-                        <IoIosCreate onClick={handleElementClick} />
-                      )}
-                      <br></br>
-                    </div>
-                  )}
+                <div key={index}>
+                  <br />
+                  <Link to={buttonLink}>
+                    <Button
+                      style={{
+                        width: field.width + "px",
+                        height: field.height + "px",
+                      }}
+                    >
+                      {field.label}
+                    </Button>
+                  </Link>
+                  {showButtons && <IoIosCreate onClick={handleElementClick} />}
+                  <br></br>
                 </div>
               );
               break;
@@ -1593,6 +1676,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     >
                        {labelValue[index] || labelValue[index] === "" ? labelValue[index] : field.label}
                        {text === undefined || text === "" ? setText(labelValue[index]) : null}
+
                     </Heading>
                   </center>
                   {showButtons && (
@@ -2984,7 +3068,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
             overflowWrap: "break-word",
             background: `url(${pageBackgrounds[pageBackgroundIndex]})`,
             backgroundRepeat: "no-repeat",
-            backgroundSize: "cover"
+            backgroundSize: "cover",
           }}
         >
           {fieldsToRender}
