@@ -2905,7 +2905,9 @@ function InteractivePageBuilderInterface({ link, mode }) {
         <div
           style={{
             overflowWrap: "break-word",
-            backgroundImage: `url(${pageBackgrounds[pageBackgroundIndex]})`,
+            background: `url(${pageBackgrounds[pageBackgroundIndex]})`,
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "cover"
           }}
         >
           {fieldsToRender}
@@ -3025,7 +3027,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
         <Modal.Body>
           <Form>
             <Form.Group className="mb-3">
-              {configuration === "Body" && (
+              {configuration === "Body" ? (
                 <div>
                   <Divider>General Details</Divider>
                   <br></br>
@@ -3049,18 +3051,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     </div>
                   </center>
                 </div>
-              )}
-              {configuration === "Template" && (
-                <div>
-                  <Divider>General Details</Divider>
-                  <br></br>
-                  <center>
-                    <div></div>
-                  </center>
-                </div>
-              )}
-
-              {configuration === "Label" && (
+              ) : (
                 <div>
                   <Divider>General Details</Divider>
 
@@ -3073,6 +3064,15 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       name: "label",
                     }}
                   />
+                </div>
+              )}
+              {configuration === "Template" && (
+                <div>
+                  <Divider>General Details</Divider>
+                  <br></br>
+                  <center>
+                    <div></div>
+                  </center>
                 </div>
               )}
             </Form.Group>
