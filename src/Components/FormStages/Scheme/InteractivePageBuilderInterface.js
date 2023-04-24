@@ -3025,7 +3025,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
         <Modal.Body>
           <Form>
             <Form.Group className="mb-3">
-              {configuration === "Body" && (
+              {configuration === "Body" ? (
                 <div>
                   <Divider>General Details</Divider>
                   <br></br>
@@ -3049,21 +3049,11 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     </div>
                   </center>
                 </div>
-              )}
-              {configuration === "Template" && (
-                <div>
+              ) : (
+            
+                  <div>
                   <Divider>General Details</Divider>
-                  <br></br>
-                  <center>
-                    <div></div>
-                  </center>
-                </div>
-              )}
-
-              {configuration === "Label" && (
-                <div>
-                  <Divider>General Details</Divider>
-
+  
                   <Label>Label Name:</Label>
                   <InputField
                     onChange={(event) =>
@@ -3074,7 +3064,22 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     }}
                   />
                 </div>
+                
+  
               )}
+              {configuration === "Template" && (
+                <div>
+                  <Divider>General Details</Divider>
+                  <br></br>
+                  <center>
+                    <div></div>
+                  </center>
+                </div>
+              )} 
+       
+             
+              
+              
             </Form.Group>
             <Divider>Component Adjustments</Divider>
             <br></br>
