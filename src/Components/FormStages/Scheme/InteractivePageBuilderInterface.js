@@ -163,7 +163,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         />
                         <button
                           style={{
-                            backgroundColor: "blueviolet",
+                            backgroundColor: "#528AAE",
                             color: "white",
                             borderRadius: "4px",
                             display: "block",
@@ -1073,7 +1073,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       />
                       <button
                         style={{
-                          backgroundColor: "blueviolet",
+                          backgroundColor: "#528AAE",
                           color: "white",
                           borderRadius: "4px",
                           display: "block",
@@ -1131,6 +1131,76 @@ function InteractivePageBuilderInterface({ link, mode }) {
               
               case "Radio Button":
                 formField = (
+                  <div >
+                  {isEditing[index] ? (
+                    <div
+                      ref={inputRef}
+                      style={{
+                        position: "relative",
+                        display: "inline-block",
+                        borderRadius: "8px",
+                        overflow: "hidden",
+                        boxShadow: "0 0 10px rgba(0, 0, 0, 0.2",
+                        transition: "transform 0.3s ease-in-out",
+                        marginTop: "10px",
+                      }}
+                    >
+                      <h3 style={{ padding: "10px", paddingBottom: "5px" }}>
+                        Edit Button
+                      </h3>
+                      <label
+                        htmlFor="buttontext"
+                        style={{
+                          color: "#888",
+                          fontStyle: "italic",
+                          paddingLeft: "5px",
+                        }}
+                      >
+                        Text
+                      </label>
+                      <input
+                        style={{
+                          display: "block",
+                          marginBottom: "40px",
+                          paddingLeft: "5px",
+                          paddingRight: "5px",
+                        }}
+                        id="buttontext"
+                        autoFocus="autoFocus"
+                        type="text"
+                        value={text}
+                        onChange={(event) => handleTextChange(event, index)}
+                      />
+                      <button
+                        style={{
+                          backgroundColor: "#528AAE",
+                          color: "white",
+                          borderRadius: "4px",
+                          display: "block",
+                          position: "absolute",
+                          bottom: "5px",
+                          right: "10px",
+                        }}
+                        onClick={() => handleClickOutside(index)}
+                      >
+                        Save Changes
+                      </button>
+                      <button
+                        style={{
+                          backgroundColor: "red",
+                          color: "white",
+                          borderRadius: "4px",
+                          display: "block",
+                          position: "absolute",
+                          bottom: "5px",
+                          left: "10px",
+                        }}
+                        onClick={() => handleRemoveField(index)}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  ):(
                   <div key={index}>
                     <Radio
                       style={{
@@ -1141,8 +1211,13 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       {field.config.label}
                     </Radio>
                     <br />
-    
+                    {showButtons && (
+                        <IoIosCreate onClick={() => handleElementClick(index)} />
+                      )}
                     <br></br>
+                    
+                  </div>
+                  )}
                   </div>
                 );
                 break;
@@ -1158,47 +1233,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     </div>
                   );
                   break;
-                  case "Raised Button":
-                    formField = (
-                      <div
-                      >
-                        {isEditing ? (
-                          <div ref={inputRef}>
-                            <input
-                              autoFocus="autoFocus"
-                              type="text"
-                              value={text}
-                              onChange={handleTextChange}
-                            />
-                          </div>
-                        ) : (
-                          <div key={index}>
-                            <br />
-                            <Link to={buttonLink}>
-                              <Button
-                                style={{
-                                  width: field.config.width + "px",
-                                  height: field.config.height + "px",
-                                }}
-                                input={{
-                                  type: field.type,
-                                  name: field.label,
-                                  required: field.required,
-                                }}
-                              >
-                                {text}
-                              </Button>
-                            </Link>
-                            {showButtons && (
-                              <IoIosCreate onClick={handleElementClick} />
-                            )}
-                            <br></br>
-                          </div>
-                        )}
-                      </div>
-                    );
-                    break;
-  
             case "Password":
               formField = (
                 <div key={index}>
@@ -1246,7 +1280,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                 </div>
               );
               break;
-            case "Button":
+            case "Raised Button":
               formField = (
                 <div >
                   {isEditing[index] ? (
@@ -1290,7 +1324,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       />
                       <button
                         style={{
-                          backgroundColor: "blueviolet",
+                          backgroundColor: "#528AAE",
                           color: "white",
                           borderRadius: "4px",
                           display: "block",
@@ -1417,7 +1451,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       />
                       <button
                         style={{
-                          backgroundColor: "blueviolet",
+                          backgroundColor: "#528AAE",
                           color: "white",
                           borderRadius: "4px",
                           display: "block",
@@ -1508,7 +1542,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       />
                       <button
                         style={{
-                          backgroundColor: "blueviolet",
+                          backgroundColor: "#528AAE",
                           color: "white",
                           borderRadius: "4px",
                           display: "block",
@@ -1598,7 +1632,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       />
                       <button
                         style={{
-                          backgroundColor: "blueviolet",
+                          backgroundColor: "#528AAE",
                           color: "white",
                           borderRadius: "4px",
                           display: "block",
@@ -1762,7 +1796,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       />
                       <button
                         style={{
-                          backgroundColor: "blueviolet",
+                          backgroundColor: "#528AAE",
                           color: "white",
                           borderRadius: "4px",
                           display: "block",
