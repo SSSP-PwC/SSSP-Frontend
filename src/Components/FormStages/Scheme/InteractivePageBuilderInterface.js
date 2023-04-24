@@ -374,8 +374,9 @@ function InteractivePageBuilderInterface({ link, mode }) {
       const navbarField = {
         type: "Navbar - Bootstrap",
         editing: false,
+        label: "Argort Resort",
         config: {
-          label: "",
+          label: "Argort Resort",
           editing: false,
           color: "#000000",
           width: "",
@@ -1692,16 +1693,15 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   <center>
                     {" "}
                     <Heading
-                      style={{ color: "whitesmoke", fontWeight: "bold" }}
+                      style={{ color: "whitesmoke", fontWeight: "bold", marginBottom: '0px' }}
                     >
                        {labelValue[index] || labelValue[index] === "" ? labelValue[index] : field.label}
 
                     </Heading>
-                  </center>
-                  {showButtons && (
-                       <IoIosCreate onClick={() => handleElementClickTemplate(labelValue[index] || field.label, index)} />
-
+                    {showButtons && (
+                        <IoIosCreate style={{ transform: 'scale(2)', color: 'white' }} onClick={() => handleElementClickTemplate(labelValue[index] || field.label, index)} />
                     )}
+                  </center>
                 </div>
                   )}
                 </div>
@@ -1710,11 +1710,89 @@ function InteractivePageBuilderInterface({ link, mode }) {
               break;
             case "H3":
               formField = (
+                <div>
+                {isEditing[index] ? (
+                 <div
+                   ref={inputRef}
+                   style={{
+                     position: "relative",
+                     display: "inline-block",
+                     borderRadius: "8px",
+                     overflow: "hidden",
+                     boxShadow: "0 0 10px rgba(0, 0, 0, 0.2",
+                     transition: "transform 0.3s ease-in-out",
+                     marginTop: "10px",
+                     backgroundColor: "white"
+                   }}
+                 >
+                   <h3 style={{ padding: "10px", paddingBottom: "5px" }}>
+                     Edit Heading
+                   </h3>
+                   <label
+                     htmlFor="headingtext"
+                     style={{
+                       color: "#888",
+                       fontStyle: "italic",
+                       paddingLeft: "5px",
+                     }}
+                   >
+                     Text
+                   </label>
+                   <input
+                     style={{
+                       display: "block",
+                       marginBottom: "40px",
+                       paddingLeft: "5px",
+                       paddingRight: "5px",
+                     }}
+                     id="headingtext"
+                     autoFocus="autoFocus"
+                     type="text"
+                     value={text}
+                     onChange={(event) => handleTextChange(event, index)}
+                   />
+                   <button
+                     style={{
+                       backgroundColor: "#528AAE",
+                       color: "white",
+                       borderRadius: "4px",
+                       display: "block",
+                       position: "absolute",
+                       bottom: "5px",
+                       right: "10px",
+                     }}
+                     onClick={() => handleClickOutside(index)}
+                   >
+                     Save Changes
+                   </button>
+                   <button
+                     style={{
+                       backgroundColor: "red",
+                       color: "white",
+                       borderRadius: "4px",
+                       display: "block",
+                       position: "absolute",
+                       bottom: "5px",
+                       left: "10px",
+                     }}
+                     onClick={() => handleRemoveTemplateField(index)}
+                   >
+                     Delete
+                   </button>
+                 </div>
+               ) : (
                 <div key={index}>
                   <center>
-                    <H3 style={{ color: "whitesmoke" }}>{field.label}</H3>
+                    <H3 style={{ color: "whitesmoke", marginBottom: '0px' }}> {labelValue[index] || labelValue[index] === "" ? labelValue[index] : field.label}</H3>
                   </center>
+                  {showButtons && (
+                       <IoIosCreate style={{ transform: 'scale(2)', color: 'white' }} onClick={() => handleElementClickTemplate(labelValue[index] || field.label, index)} />
+
+                    )}
                 </div>
+                  )}
+                </div>
+          
               );
               break;
 
@@ -2790,9 +2868,80 @@ function InteractivePageBuilderInterface({ link, mode }) {
               break;
             case "Navbar - Bootstrap":
               formField = (
-                <div key={index}>
+                <div>
+                  {isEditing[index] ? (
+                    <div
+                      ref={inputRef}
+                      style={{
+                        position: "relative",
+                        display: "inline-block",
+                        borderRadius: "8px",
+                        overflow: "hidden",
+                        boxShadow: "0 0 10px rgba(0, 0, 0, 0.2",
+                        transition: "transform 0.3s ease-in-out",
+                        marginTop: "10px",
+                        backgroundColor: "white"
+                      }}
+                    >
+                      <h3 style={{ padding: "10px", paddingBottom: "5px" }}>
+                        Edit Navbar
+                      </h3>
+                      <label
+                        htmlFor="headingtext"
+                        style={{
+                          color: "#888",
+                          fontStyle: "italic",
+                          paddingLeft: "5px",
+                        }}
+                      >
+                        Text
+                      </label>
+                      <input
+                        style={{
+                          display: "block",
+                          marginBottom: "40px",
+                          paddingLeft: "5px",
+                          paddingRight: "5px",
+                        }}
+                        id="headingtext"
+                        autoFocus="autoFocus"
+                        type="text"
+                        value={text}
+                        onChange={(event) => handleTextChange(event, index)}
+                      />
+                      <button
+                        style={{
+                          backgroundColor: "#528AAE",
+                          color: "white",
+                          borderRadius: "4px",
+                          display: "block",
+                          position: "absolute",
+                          bottom: "5px",
+                          right: "10px",
+                        }}
+                        onClick={() => handleClickOutside(index)}
+                      >
+                        Save Changes
+                      </button>
+                      <button
+                        style={{
+                          backgroundColor: "red",
+                          color: "white",
+                          borderRadius: "4px",
+                          display: "block",
+                          position: "absolute",
+                          bottom: "5px",
+                          left: "10px",
+                        }}
+                        onClick={() => handleRemoveTemplateField(index)}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  ) : (
+                <div key={index} style={{marginTop: '0px'}}>
                   <Navbar collapseOnSelect expand="lg" bg="transparent">
-                    <Container>
+                    <Container >
                       <Navbar.Brand href="/">
                         <center>
                           <img
@@ -2808,7 +2957,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                           <label
                             style={{ color: "whitesmoke", fontWeight: "bold" }}
                           >
-                            Argort Resort
+                            {labelValue[index] || labelValue[index] === "" ? labelValue[index] : field.label}
                           </label>
                         </center>
                         x
@@ -2836,6 +2985,12 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       </div>
                     </Container>
                   </Navbar>
+                  {showButtons && (
+                       <IoIosCreate style={{ transform: 'scale(2)', color: 'white', display: 'block !important', marginTop:'0px' }} onClick={() => handleElementClickTemplate(labelValue[index] || field.label, index)} />
+
+                    )}
+                </div>
+                  )}
                 </div>
               );
               break;
