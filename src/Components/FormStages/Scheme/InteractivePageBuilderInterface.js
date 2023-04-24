@@ -794,12 +794,21 @@ function InteractivePageBuilderInterface({ link, mode }) {
       } else {
         const props = {
           name: field.name,
-          label: labelValue[index],
+          label: field.label,
           editing: isEditing[index],
+          parent_style: [
+            { justifyContent: "center" },
+            { alignItems: "center" },
+            { display: "flex" },
+          ],
+          input_style: [{ width: "700px" }],
+
           type: field.type,
           required: field.required,
+          config: field.config,
         };
         currentPage.fields.push({ props });
+        console.log(currentPage.fields);
       }
     });
 
@@ -816,7 +825,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              fields: pageData.fields,
+              fields: currentPage.fields,
             }),
           }
         );
@@ -1599,7 +1608,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
             case "Heading":
               formField = (
                 <div>
-                   {isEditing[index] ? (
+                  {isEditing[index] ? (
                     <div
                       ref={inputRef}
                       style={{
@@ -1668,24 +1677,28 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       </button>
                     </div>
                   ) : (
-                  <div key={index}>
-                  <center>
-                    {" "}
-                    <Heading
-                      style={{ color: "whitesmoke", fontWeight: "bold" }}
-                    >
-                       {labelValue[index] || labelValue[index] === "" ? labelValue[index] : field.label}
-                       {text === undefined || text === "" ? setText(labelValue[index]) : null}
-
-                    </Heading>
-                  </center>
-                  {showButtons && (
-                      <IoIosCreate onClick={() => handleElementClick(index)} />
-                    )}
-                </div>
+                    <div key={index}>
+                      <center>
+                        {" "}
+                        <Heading
+                          style={{ color: "whitesmoke", fontWeight: "bold" }}
+                        >
+                          {labelValue[index] || labelValue[index] === ""
+                            ? labelValue[index]
+                            : field.label}
+                          {text === undefined || text === ""
+                            ? setText(labelValue[index])
+                            : null}
+                        </Heading>
+                      </center>
+                      {showButtons && (
+                        <IoIosCreate
+                          onClick={() => handleElementClick(index)}
+                        />
+                      )}
+                    </div>
                   )}
                 </div>
-          
               );
               break;
             case "H3":
