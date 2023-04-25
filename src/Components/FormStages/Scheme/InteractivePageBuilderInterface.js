@@ -3837,8 +3837,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                                   style={{ color: "white" }}
                                   title="Table"
                                 >
-
-<ListItem button>
+                                  <ListItem button>
                                     <ListItemIcon style={{ color: "white" }}>
                                       <TableViewOutlined />
                                     </ListItemIcon>
@@ -3870,10 +3869,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                                       onClick={handleNewColumnClick}
                                     />
                                   </ListItem>
-
-
-                              
-
                                 </SubMenu>
                               </List>
                               <List style={{ color: "white" }}>
