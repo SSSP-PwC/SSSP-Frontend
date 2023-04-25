@@ -60,6 +60,7 @@ import {
   SmartToyOutlined,
   Style,
   TableRowsOutlined,
+  TableViewOutlined,
   TitleOutlined,
   ToggleOnOutlined,
   ViewColumnOutlined,
@@ -397,10 +398,8 @@ function InteractivePageBuilderInterface({ link, mode }) {
     ) {
       setConfiguration("Button");
       setShow(true);
-    }else if (
-        input_value === "Table")
-       {
-        setShow(false)
+    } else if (input_value === "Table") {
+      setShow(false);
     } else if (input_value === "Body") {
       setConfiguration("Body");
       setShow(true);
@@ -3199,7 +3198,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
             case "Table":
               formField = (
                 <div key={index}>
-               
                   <Style>
                     <Table
                       columns={newcolumns}
@@ -3835,37 +3833,48 @@ function InteractivePageBuilderInterface({ link, mode }) {
                               </List>
 
                               <List style={{ color: "white" }}>
-                                
-                                  <SubMenu
-                                    style={{ color: "white" }}
-                                    title="Table"
-                                    button
-                                    key={"Table"}
-                                    selected={selected === "Table"}
-                                    onClick={() =>
-                                      handleAddField("Table")
-                                    }
-                                  >
-                                  
-                                  <ListItem
-                                    button
-                                  >
+                                <SubMenu
+                                  style={{ color: "white" }}
+                                  title="Table"
+                                >
+
+<ListItem button>
                                     <ListItemIcon style={{ color: "white" }}>
-                                      <TableRowsOutlined/>
+                                      <TableViewOutlined />
                                     </ListItemIcon>
-                                    <ListItemText primary={"Add Row"} onClick={handleNewRowClick} />
+                                    <ListItemText
+                                      primary={"Add Table"}
+                                      button
+                                      key={"Table"}
+                                      selected={selected === "Table"}
+                                      onClick={() => handleAddField("Table")}
+                                    />
+                                  </ListItem>
+                                  <ListItem button>
+                                    <ListItemIcon style={{ color: "white" }}>
+                                      <TableRowsOutlined />
+                                    </ListItemIcon>
+
+                                    <ListItemText
+                                      primary={"Add Row"}
+                                      onClick={handleNewRowClick}
+                                    />
+                                  </ListItem>
+                                  <ListItem button>
+                                    <ListItemIcon style={{ color: "white" }}>
+                                      <ViewColumnOutlined />
+                                    </ListItemIcon>
+
+                                    <ListItemText
+                                      primary={"Add Column"}
+                                      onClick={handleNewColumnClick}
+                                    />
                                   </ListItem>
 
-                                  <ListItem
-                                    button
-                                  >
-                                    <ListItemIcon style={{ color: "white" }}>
-                                      <ViewColumnOutlined/>
-                                    </ListItemIcon>
-                                    <ListItemText primary={"Add Column"} onClick={handleNewColumnClick}/>
-                                  </ListItem>
-                                  </SubMenu>
+
                               
+
+                                </SubMenu>
                               </List>
                               <List style={{ color: "white" }}>
                                 {captchaComponent.map((component) => (
