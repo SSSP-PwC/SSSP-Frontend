@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { Divider, Switch, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 import Modal from "react-bootstrap/Modal";
@@ -40,6 +40,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import InputLabel from "@mui/material/InputLabel";
+import styled from "styled-components";
+
 import {
   List,
   ListItem,
@@ -56,8 +58,11 @@ import {
   RadioButtonChecked,
   SmartButtonOutlined,
   SmartToyOutlined,
+  Style,
+  TableRowsOutlined,
   TitleOutlined,
   ToggleOnOutlined,
+  ViewColumnOutlined,
   WysiwygOutlined,
 } from "@mui/icons-material";
 import "react-pro-sidebar/dist/css/styles.css";
@@ -67,6 +72,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 import PhoneInput from "react-phone-input-2";
 import { HexColorPicker } from "react-colorful";
 import { style } from "@mui/system";
+import Table from "./Table";
 
 function InteractivePageBuilderInterface({ link, mode }) {
   const [theme, colorMode] = useMode();
@@ -96,18 +102,17 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const [checkinDate, setCheckinDate] = useState();
   const [checkoutDate, setCheckoutDate] = useState();
   const [currentTemplate, setCurrentTemplate] = useState(null);
-  const [pageBackgrounds, setPageBackgrounds] = useState([
-    "https://i0.wp.com/www.busiweek.com/wp-content/uploads/2018/07/5-four-seasons-resort-seychelles-WBRESAF0517.jpg?resize=1000%2C625&ssl=1",
-  ]);
+  const [pageBackgrounds, setPageBackgrounds] = useState([]);
   const [pageBackgroundIndex, setPageBackgroundIndex] = useState();
+  const [tableData, setTableData] = useState([]);
+  const memoizedData = useMemo(() => tableData, [tableData]);
+
   const [homepageHospitalityComponent, setHomepageHospitalityComponent] =
     useState([]);
   const [guests, setGuests] = useState();
   const [components, setComponents] = useState({
     "Home Page - Hospitality": [],
     "Home Page - Transport": [],
-    "Home Page - Consulting": [],
-    "Home Page - Real Estate": [],
   });
   const selectedTemplateComponents = components[0];
 
@@ -136,6 +141,15 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const [text, setText] = useState("Hello");
   const [showButtons, setShowButtons] = useState(false);
   const inputRef = useRef(null);
+
+  const columns = [
+    {
+      Header: "Title",
+      accessor: "Title",
+    },
+  ];
+
+  const [newcolumns, setColumns] = useState(columns);
 
   const handleMouseEnter = (index) => {
     setShowButtons((prevValues) => {
@@ -241,6 +255,18 @@ function InteractivePageBuilderInterface({ link, mode }) {
       </div>
     );
   }
+  const handleNewRowClick = () => {
+    setTableData([{}, ...tableData]);
+  };
+
+  const handleNewColumnClick = () => {
+    var oh = [...newcolumns];
+    oh.push({
+      Header: "Value" + newcolumns.length,
+      accessor: "Value" + newcolumns.length,
+    });
+    setColumns(oh);
+  };
 
   const handleElementClick = (index) => {
     setIsEditing((prevValues) => {
@@ -282,6 +308,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
       config: {
         ...field.config,
         [property]: event.target.value,
+        source: field.src,
       },
     };
     currentPageFields[fieldIndex] = updatedField;
@@ -311,10 +338,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
     setFormData({});
   };
   const handlePageBreakClick = () => {
-    setPageBackgroundIndex(-1);
-
     setPageCounter(pageCounter + 1);
-    //setPageBackgrounds((prevBackgrounds) => [...prevBackgrounds, ""]);
   };
 
   const handleChange = (event) => {
@@ -323,13 +347,26 @@ function InteractivePageBuilderInterface({ link, mode }) {
 
   const [citizen, setCitizen] = useState();
 
+  const updatedData = (rowIndex, columnId, value) => {
+    setTableData((prevTableData) =>
+      prevTableData.map((row, index) => {
+        if (index === rowIndex) {
+          return {
+            ...prevTableData[rowIndex],
+            [columnId]: value,
+          };
+        }
+        return row;
+      })
+    );
+  };
+
   const handleAddField = (input_value) => {
     setConfiguration("");
     setSelected(input_value);
     const currentPage = page[0];
     const currentPageIndex = pageCounter - 1;
     console.log(currentPageIndex);
-    const currentPageBackground = pageBackgrounds[currentPageIndex];
     const currentPageFields = currentPage.fields ? [...currentPage.fields] : [];
     setNumberOfElements((prevState) => prevState + 1);
 
@@ -360,6 +397,10 @@ function InteractivePageBuilderInterface({ link, mode }) {
     ) {
       setConfiguration("Button");
       setShow(true);
+    }else if (
+        input_value === "Table")
+       {
+        setShow(false)
     } else if (input_value === "Body") {
       setConfiguration("Body");
       setShow(true);
@@ -367,12 +408,18 @@ function InteractivePageBuilderInterface({ link, mode }) {
       setConfiguration("Label");
       setShow(true);
     } else if (input_value === "Home Page - Hospitality") {
+      setPageBackgrounds((background) => [
+        ...background,
+        "https://i0.wp.com/www.busiweek.com/wp-content/uploads/2018/07/5-four-seasons-resort-seychelles-WBRESAF0517.jpg?resize=1000%2C625&ssl=1",
+      ]);
+      console.log(pageBackgrounds);
       const navbarField = {
         type: "Navbar - Bootstrap",
         editing: false,
         config: {
-          label: "",
+          label: "Argort Resort",
           editing: false,
+          src: process.env.PUBLIC_URL + "/img/Hospitality.png",
           color: "#000000",
           width: "",
           height: "",
@@ -400,7 +447,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
       const labelField = {
         type: "label",
         config: {
-          label: "Argort Resort",
+          label: " Resort",
           style: `{{justifyContent: "center", alignItems: "center", display: "flex"}}`,
         },
       };
@@ -413,7 +460,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
       };
       const headingField = {
         type: "Heading",
-        label: "Argort Resort",
+        label: " Resort",
         color: "whitesmoke",
       };
       const centerComponentField = {
@@ -471,6 +518,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
     } else if (input_value === "Sign Up Form") {
       const navbarField = {
         type: "navbar - template",
+        label: "ABC Grants",
       };
       const brField = {
         type: "br",
@@ -479,6 +527,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
       const headingField = {
         type: "Heading",
         label: "Register your details",
+        input_style: [{ color: "black" }],
       };
       const inputFirstNameField = {
         type: "Input Field",
@@ -580,6 +629,17 @@ function InteractivePageBuilderInterface({ link, mode }) {
           { display: "flex" },
         ],
       };
+      const footer = {
+        type: "Footer",
+        label: "ABC Grants",
+        width: "100px",
+        height: "100px",
+        parent_style: [
+          { justifyContent: "center" },
+          { alignItems: "center" },
+          { display: "flex" },
+        ],
+      };
       currentPageFields.push(navbarField);
       currentPageFields.push(brField);
       currentPageFields.push(headingField);
@@ -602,6 +662,197 @@ function InteractivePageBuilderInterface({ link, mode }) {
       currentPageFields.push(brField);
       currentPageFields.push(submitButton);
       currentPageFields.push(brField);
+      currentPageFields.push(footer);
+      currentPageFields.push(brField);
+    } else if (input_value === "Contact Us Form") {
+      const navbarField = {
+        type: "navbar - template",
+        label: "ABC Grants",
+      };
+      const brField = {
+        type: "br",
+      };
+      const headingField = {
+        type: "Heading",
+        label: "Contact Us",
+        input_style: [{ color: "black" }],
+      };
+      const imgField = {
+        type: "Image",
+        src: "https://www.westyorks-ca.gov.uk/media/6198/contact-us-1908763_1920-copy111.png?width=794&height=227&mode=max",
+        input_style: [{ maxWidth: "300px" }],
+        parent_style: [
+          { justifyContent: "center" },
+          { alignItems: "center" },
+          { display: "flex" },
+        ],
+      };
+      const inputFullNameField = {
+        type: "Input Field",
+        input_type: "text",
+        label: "Enter Full Name",
+        parent_style: [
+          { justifyContent: "center" },
+          { alignItems: "center" },
+          { display: "flex" },
+        ],
+        input_style: [{ width: "700px" }],
+      };
+      const inputEmailField = {
+        type: "Input Field",
+        input_type: "email",
+        label: "Enter Email Address",
+        parent_style: [
+          { justifyContent: "center" },
+          { alignItems: "center" },
+          { display: "flex" },
+        ],
+        input_style: [{ width: "700px" }],
+      };
+      const inputMessageField = {
+        type: "Text area",
+        input_type: "text",
+        label: "Message",
+        input_style: [{ width: "700px" }],
+        parent_style: [
+          { justifyContent: "center" },
+          { alignItems: "center" },
+          { display: "flex" },
+        ],
+      };
+
+      const submitButton = {
+        type: "Raised Button",
+        label: "Submit",
+        width: "100px",
+        height: "100px",
+        parent_style: [
+          { justifyContent: "center" },
+          { alignItems: "center" },
+          { display: "flex" },
+        ],
+      };
+      currentPageFields.push(navbarField);
+      currentPageFields.push(brField);
+      currentPageFields.push(headingField);
+      currentPageFields.push(brField);
+      currentPageFields.push(imgField);
+      currentPageFields.push(brField);
+      currentPageFields.push(inputFullNameField);
+      currentPageFields.push(brField);
+      currentPageFields.push(inputEmailField);
+      currentPageFields.push(brField);
+      currentPageFields.push(inputMessageField);
+      currentPageFields.push(brField);
+      currentPageFields.push(submitButton);
+      currentPageFields.push(brField);
+    } else if (input_value === "Home Page - Transport") {
+      setPageBackgrounds([
+        "https://www.ashtonslegal.co.uk/wp-content/uploads/2019/03/Road-Transport-Solicitors.jpg",
+      ]);
+      const navbarField = {
+        type: "Navbar - Bootstrap",
+        editing: false,
+        input_style: [{ backgroundColor: "#09004a" }],
+
+        config: {
+          label: "Y Link Travels",
+          editing: false,
+          width: "",
+          height: "",
+          src: process.env.PUBLIC_URL + "/img/Hospitality.png",
+        },
+      };
+
+      const containerField = {
+        type: "container",
+      };
+
+      const imgField = {
+        type: "img",
+        config: {
+          label: "img/Hospitality.png",
+          alt: "Logo",
+          width: "50",
+          height: "50",
+          className: "d-inline-block align-top",
+          style: `{{justifyContent: "center", alignItems: "center", display: "flex"}}`,
+        },
+      };
+      const brField = {
+        type: "br",
+      };
+      const labelField = {
+        type: "label",
+        config: {
+          label: "Argort Resort",
+          style: `{{justifyContent: "center", alignItems: "center", display: "flex"}}`,
+        },
+      };
+      const navbarTogglefield = {
+        type: "Navbar-Toggle",
+      };
+      const h3Field = {
+        type: "H3",
+        label: "Welcome to",
+      };
+      const headingField = {
+        type: "Heading",
+        label: "Argort Resort",
+        color: "whitesmoke",
+      };
+      const centerComponentField = {
+        type: "Center Component",
+      };
+      const dateCheckInField = {
+        type: "Date - Check In",
+      };
+      const dateCheckOutField = {
+        type: "Date - Check Out",
+      };
+      const roomsField = {
+        type: "Rooms",
+      };
+      const guestsField = {
+        type: "Guests",
+      };
+      const promoCodeField = {
+        type: "Promo Code",
+      };
+      const bookButtonField = {
+        type: "Book Button",
+      };
+
+      const newField2 = {
+        type: "Footer",
+        name: input_value,
+        editing: false,
+        config: {
+          label: "",
+          editing: false,
+          color: "#000000",
+          width: "",
+          height: "",
+        },
+      };
+
+      const background = {
+        type: "Background",
+      };
+      currentPageFields.push(background);
+      currentPageFields.push(navbarField);
+      currentPageFields.push(containerField);
+      currentPageFields.push(brField);
+      currentPageFields.push(labelField);
+      currentPageFields.push(navbarTogglefield);
+      currentPageFields.push(h3Field);
+      currentPageFields.push(headingField);
+      currentPageFields.push(brField);
+      currentPageFields.push(centerComponentField);
+      currentPageFields.push(roomsField);
+      currentPageFields.push(guestsField);
+      currentPageFields.push(promoCodeField);
+      currentPageFields.push(bookButtonField);
     } else if (
       input_value === "Sign Up Form" ||
       input_value === "Contact Us Form" ||
@@ -614,13 +865,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
       setConfiguration("Template");
     } else {
       setShow(true);
-    }
-    if (currentPageBackground !== undefined) {
-      setPageBackgrounds((prevBackgrounds) => {
-        const updatedBackgrounds = [...prevBackgrounds];
-        updatedBackgrounds[currentPage] = currentPageBackground;
-        return updatedBackgrounds;
-      });
     }
   };
 
@@ -648,6 +892,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
     { name: "Page Break", icon: <AddCircleOutlineOutlined /> },
   ];
   const captchaComponent = [{ name: "Captcha", icon: <SmartToyOutlined /> }];
+  const tableComponent = [{ name: "Table", icon: <SmartToyOutlined /> }];
 
   const imageComponent = [
     { name: "File Upload", icon: <AddCircleOutlineOutlined /> },
@@ -681,16 +926,41 @@ function InteractivePageBuilderInterface({ link, mode }) {
       name: "Home Page - Transport",
       icon: <DynamicFormOutlined />,
     },
-    {
-      name: "Home Page - Consulting",
-      icon: <DynamicFormOutlined />,
-    },
-    {
-      name: "Home Page - Real Estate",
-      icon: <DynamicFormOutlined />,
-    },
   ];
+  const Style = styled.div`
+    padding: 1rem;
 
+    table {
+      border-spacing: 0;
+      border: 1px solid black;
+
+      tr {
+        :last-child {
+          td {
+            border-bottom: 0;
+          }
+        }
+      }
+
+      th,
+      td {
+        margin: 0;
+        padding: 0.5rem;
+        border-bottom: 1px solid black;
+        border-right: 1px solid black;
+
+        :last-child {
+          border-right: 0;
+        }
+        input {
+          font-size: 1rem;
+          padding: 0;
+          margin: 0;
+          border: 0;
+        }
+      }
+    }
+  `;
   const componentList = [
     { name: "Header", icon: <AddCircleOutlineOutlined /> },
     { name: "Button", icon: <AddCircleOutlineOutlined /> },
@@ -788,6 +1058,8 @@ function InteractivePageBuilderInterface({ link, mode }) {
     let currentPage = { fields: [] };
 
     page[0].fields.forEach((field, index) => {
+      console.log(field.config);
+
       if (field.type === "Page Break") {
         pages.push(currentPage);
         currentPage = { fields: [] };
@@ -796,15 +1068,10 @@ function InteractivePageBuilderInterface({ link, mode }) {
           name: field.name,
           label: field.label,
           editing: isEditing[index],
-          parent_style: [
-            { justifyContent: "center" },
-            { alignItems: "center" },
-            { display: "flex" },
-          ],
-          input_style: [{ width: "700px" }],
-
+          parent_style: field.parent_style,
+          input_style: field.input_style,
           type: field.type,
-          required: field.required,
+          image_source: field.src,
           config: field.config,
         };
         currentPage.fields.push({ props });
@@ -1029,79 +1296,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
               );
               break;
 
-            case "Contact Us Form":
-              formField = (
-                <div key={index}>
-                  <TopNav
-                    style={{
-                      color: field.color,
-                      width: field.config.width + "px",
-                      height: field.config.height + "px",
-                      backgroundColor: formData.color,
-                    }}
-                    company={<TopNav.Anchor>ABC Grants</TopNav.Anchor>}
-                  />
-                  <br></br>
-                  <center>
-                    <Heading>Contact Us</Heading>
-
-                    <img
-                      style={{ maxWidth: "300px" }}
-                      src="https://www.westyorks-ca.gov.uk/media/6198/contact-us-1908763_1920-copy111.png?width=794&height=227&mode=max"
-                    />
-                    <br></br>
-                    <br></br>
-                    <br></br>
-                    <InputField
-                      input={{ type: "email" }}
-                      style={{ maxWidth: "700px" }}
-                    >
-                      Enter Full Name
-                    </InputField>
-                    <br></br>
-
-                    <InputField
-                      input={{ type: "email" }}
-                      style={{ maxWidth: "700px" }}
-                    >
-                      Enter Email Address
-                    </InputField>
-                    <br></br>
-
-                    <TextArea
-                      style={{
-                        color: field.color,
-                        width: field.config.width + "px",
-                        height: field.config.height + "px",
-                        backgroundColor: formData.color,
-                      }}
-                      company={<TopNav.Anchor>ABC Grants</TopNav.Anchor>}
-                    >
-                      Message
-                    </TextArea>
-                    <br></br>
-
-                    <Button>Submit</Button>
-                  </center>
-                  <Footer
-                    licence={
-                      <span>
-                        All content is available under the{" "}
-                        <styled
-                          href="https://creativecommons.org/licenses/by/4.0/"
-                          rel="license"
-                        >
-                          Creative Commons Attribution 4.0 International Licence{" "}
-                        </styled>
-                        , except where otherwise stated
-                      </span>
-                    }
-                  />
-                  <br></br>
-                </div>
-              );
-              break;
-
             case "Application Form":
               formField = (
                 <div key={index}>
@@ -1223,8 +1417,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                             href="https://creativecommons.org/licenses/by/4.0/"
                             rel="license"
                           >
-                            Creative Commons Attribution 4.0 International
-                            Licence{" "}
+                            {field.config.label}
                           </styled>
                           , except where otherwise stated
                           {showButtons && (
@@ -1605,6 +1798,14 @@ function InteractivePageBuilderInterface({ link, mode }) {
               );
               break;
 
+            case "Image":
+              formField = (
+                <div key={index} style={parentStyle}>
+                  <img src={field.src} style={inputFieldStyle} />
+                </div>
+              );
+              break;
+
             case "Heading":
               formField = (
                 <div>
@@ -1681,7 +1882,10 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       <center>
                         {" "}
                         <Heading
-                          style={{ color: "whitesmoke", fontWeight: "bold" }}
+                          style={{
+                            color: field.input_style,
+                            fontWeight: "bold",
+                          }}
                         >
                           {labelValue[index] || labelValue[index] === ""
                             ? labelValue[index]
@@ -2051,7 +2255,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
               break;
             case "Text area":
               formField = (
-                <div>
+                <div style={parentStyle}>
                   {isEditing[index] ? (
                     <div
                       ref={inputRef}
@@ -2122,21 +2326,17 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     </div>
                   ) : (
                     <div key={index}>
-                      <label style={{ textAlign: "center " }}>
-                        {labelValue[index]}
-                      </label>
-                      <br />
-                      <textarea
-                        style={{
-                          width: field.config.width + "px",
-                          height: field.config.height + "px",
-                        }}
+                      <TextArea
+                        style={parentStyle}
                         input={{
                           type: field.type,
                           name: field.label,
                           required: field.required,
+                          style: { ...inputFieldStyle },
                         }}
-                      />
+                      >
+                        {field.label}
+                      </TextArea>
                       {showButtons && (
                         <IoIosCreate
                           onClick={() => handleElementClick(index)}
@@ -2786,14 +2986,13 @@ function InteractivePageBuilderInterface({ link, mode }) {
             case "Navbar - Bootstrap":
               formField = (
                 <div key={index}>
-                  <Navbar collapseOnSelect expand="lg" bg="transparent">
+                  <Navbar collapseOnSelect expand="lg" style={inputFieldStyle}>
+                    {console.log(field.config.input_style)}
                     <Container>
                       <Navbar.Brand href="/">
                         <center>
                           <img
-                            src={
-                              process.env.PUBLIC_URL + "/img/Hospitality.png"
-                            }
+                            src={field.config.src}
                             alt="Logo"
                             width="50"
                             height="50"
@@ -2803,7 +3002,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                           <label
                             style={{ color: "whitesmoke", fontWeight: "bold" }}
                           >
-                            Argort Resort
+                            {field.config.label}
                           </label>
                         </center>
                         x
@@ -2997,6 +3196,21 @@ function InteractivePageBuilderInterface({ link, mode }) {
                 </div>
               );
               break;
+            case "Table":
+              formField = (
+                <div key={index}>
+               
+                  <Style>
+                    <Table
+                      columns={newcolumns}
+                      data={memoizedData}
+                      updateMyData={updatedData}
+                    />
+                  </Style>
+                  <br></br>
+                </div>
+              );
+              break;
 
             case "Multi choice":
               formField = (
@@ -3031,9 +3245,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                 </div>
               );
               break;
-            case "Background":
-              setPageBackgroundIndex(0);
-              break;
+
             case "Phone number":
               formField = (
                 <div key={index}>
@@ -3076,10 +3288,11 @@ function InteractivePageBuilderInterface({ link, mode }) {
     }
     return (
       <div>
+        {console.log(pageBackgrounds)}
         <div
           style={{
             overflowWrap: "break-word",
-            background: `url(${pageBackgrounds[pageBackgroundIndex]})`,
+            background: `url(${pageBackgrounds})`,
             backgroundRepeat: "no-repeat",
             backgroundSize: "cover",
           }}
@@ -3619,6 +3832,40 @@ function InteractivePageBuilderInterface({ link, mode }) {
                                     <ListItemText primary={component.name} />
                                   </ListItem>
                                 ))}
+                              </List>
+
+                              <List style={{ color: "white" }}>
+                                
+                                  <SubMenu
+                                    style={{ color: "white" }}
+                                    title="Table"
+                                    button
+                                    key={"Table"}
+                                    selected={selected === "Table"}
+                                    onClick={() =>
+                                      handleAddField("Table")
+                                    }
+                                  >
+                                  
+                                  <ListItem
+                                    button
+                                  >
+                                    <ListItemIcon style={{ color: "white" }}>
+                                      <TableRowsOutlined/>
+                                    </ListItemIcon>
+                                    <ListItemText primary={"Add Row"} onClick={handleNewRowClick} />
+                                  </ListItem>
+
+                                  <ListItem
+                                    button
+                                  >
+                                    <ListItemIcon style={{ color: "white" }}>
+                                      <ViewColumnOutlined/>
+                                    </ListItemIcon>
+                                    <ListItemText primary={"Add Column"} onClick={handleNewColumnClick}/>
+                                  </ListItem>
+                                  </SubMenu>
+                              
                               </List>
                               <List style={{ color: "white" }}>
                                 {captchaComponent.map((component) => (

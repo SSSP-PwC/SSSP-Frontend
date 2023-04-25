@@ -135,6 +135,7 @@ function DynamicPage() {
             ? field.config.input_style
             : [])
         );
+        console.log(field.config.input_style);
         const parentStyle = Object.assign(
           {},
           ...(Array.isArray(field.config.parent_style) &&
@@ -143,158 +144,7 @@ function DynamicPage() {
             : [])
         );
         switch (field.config?.type) {
-          case "Contact Us Form":
-            formField = (
-              <div key={index}>
-                <TopNav
-                  style={{
-                    color: field.color,
-                    width: field.config.width + "px",
-                    height: field.config.height + "px",
-                    backgroundColor: formData.color,
-                  }}
-                  company={<TopNav.Anchor>ABC Grants</TopNav.Anchor>}
-                />
-                <br></br>
-                <center>
-                  <Heading>Contact Us</Heading>
-
-                  <img
-                    style={{ maxWidth: "300px" }}
-                    src="https://www.westyorks-ca.gov.uk/media/6198/contact-us-1908763_1920-copy111.png?width=794&height=227&mode=max"
-                  />
-                  <br></br>
-                  <br></br>
-                  <br></br>
-                  <InputField
-                    input={{ type: "email" }}
-                    style={{ maxWidth: "700px" }}
-                  >
-                    Enter Full Name
-                  </InputField>
-                  <br></br>
-
-                  <InputField
-                    input={{ type: "email" }}
-                    style={{ maxWidth: "700px" }}
-                  >
-                    Enter Email Address
-                  </InputField>
-                  <br></br>
-
-                  <TextArea
-                    style={{
-                      maxWidth: "930px",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      display: "flex",
-                    }}
-                  >
-                    Message
-                  </TextArea>
-                  <br></br>
-
-                  <Button>Submit</Button>
-                </center>
-                <Footer
-                  licence={
-                    <span>
-                      All content is available under the{" "}
-                      <styled
-                        href="https://creativecommons.org/licenses/by/4.0/"
-                        rel="license"
-                      >
-                        Creative Commons Attribution 4.0 International Licence{" "}
-                      </styled>
-                      , except where otherwise stated
-                    </span>
-                  }
-                />
-                <br></br>
-              </div>
-            );
-            break;
-          case "Multi Stage Sign Up Form":
-            formField = (
-              <div key={index}>
-                <TopNav
-                  style={{
-                    color: field.color,
-                    width: field.config.width + "px",
-                    height: field.config.height + "px",
-                    backgroundColor: formData.color,
-                  }}
-                  company={<TopNav.Anchor>ABC Grants</TopNav.Anchor>}
-                />
-                <br></br>
-                <center>
-                  <Heading>Register your details</Heading>
-                  <br></br>
-
-                  <InputField
-                    input={{ type: "email" }}
-                    style={{ maxWidth: "700px" }}
-                  >
-                    Enter First Name
-                  </InputField>
-                  <br></br>
-                  <InputField
-                    input={{ type: "email" }}
-                    style={{ maxWidth: "700px" }}
-                  >
-                    Enter Last Name
-                  </InputField>
-                  <br></br>
-
-                  <InputField
-                    input={{ type: "" }}
-                    style={{ maxWidth: "700px" }}
-                  >
-                    Enter Address Line 1
-                  </InputField>
-                  <br></br>
-
-                  <InputField
-                    input={{ type: "email" }}
-                    style={{ maxWidth: "700px" }}
-                  >
-                    Enter Email Address
-                  </InputField>
-                  <br></br>
-                  <InputField
-                    input={{ type: "password" }}
-                    style={{ maxWidth: "700px" }}
-                  >
-                    Enter a Password
-                  </InputField>
-                  <br></br>
-                  <InputField
-                    input={{ type: "password" }}
-                    style={{ maxWidth: "700px" }}
-                  >
-                    Confirm Password
-                  </InputField>
-                  <br></br>
-                  <Button>Submit</Button>
-                </center>
-                <Footer
-                  licence={
-                    <span>
-                      All content is available under the{" "}
-                      <styled
-                        href="https://creativecommons.org/licenses/by/4.0/"
-                        rel="license"
-                      >
-                        Creative Commons Attribution 4.0 International Licence{" "}
-                      </styled>
-                      , except where otherwise stated
-                    </span>
-                  }
-                />
-                <br></br>
-              </div>
-            );
-            break;
+          
 
           case "Text Field":
             formField = (
@@ -345,22 +195,19 @@ function DynamicPage() {
 
           case "Text area":
             formField = (
-              <div key={index}>
-                <label style={{ textAlign: "center" }}>
-                  {field.config.label}
-                </label>
+              <div key={index} style={parentStyle}>
                 <br />
                 <TextArea
-                  style={{
-                    width: field.config.width + "px",
-                    height: field.config.height + "px",
-                  }}
+                  style={parentStyle}
                   input={{
                     type: field.type,
                     name: field.label,
                     required: field.required,
+                    style: { ...inputFieldStyle },
                   }}
-                />
+                >
+                  {field.config.label}
+                </TextArea>
                 <br></br>
               </div>
             );
@@ -447,9 +294,8 @@ function DynamicPage() {
             break;
           case "Image":
             formField = (
-              <div key={index}>
-                <input type="file" />
-                <br></br>
+              <div key={index} style={parentStyle}>
+                <img src={field.config.image_source} style={inputFieldStyle} />
               </div>
             );
             break;
@@ -903,7 +749,7 @@ function DynamicPage() {
                         href="https://creativecommons.org/licenses/by/4.0/"
                         rel="license"
                       >
-                        Creative Commons Attribution 4.0 International Licence{" "}
+                        {field.config.label}
                       </styled>
                       , except where otherwise stated
                     </span>
