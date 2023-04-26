@@ -124,241 +124,28 @@ function DynamicPage() {
   const renderForm = () => {
     const fieldsToRender = [];
     let formField = null;
+
     console.log(data);
     data &&
       data.map((field, index) => {
+        const inputFieldStyle = Object.assign(
+          {},
+          ...(Array.isArray(field.config.input_style) &&
+          field.config.input_style.length
+            ? field.config.input_style
+            : [])
+        );
+        console.log(field.config.input_style);
+        const parentStyle = Object.assign(
+          {},
+          ...(Array.isArray(field.config.parent_style) &&
+          field.config.parent_style.length
+            ? field.config.parent_style
+            : [])
+        );
         switch (field.config?.type) {
-          case "Sign Up Form":
-            formField = (
-              <div key={index}>
-                <TopNav
-                  style={{
-                    color: field.color,
-                    width: field.config.width + "px",
-                    height: field.config.height + "px",
-                    backgroundColor: formData.color,
-                  }}
-                  company={<TopNav.Anchor>ABC Grants</TopNav.Anchor>}
-                />
-                <br></br>
-                <center>
-                  <Heading>Register your details</Heading>
-                  <br></br>
+          
 
-                  <InputField
-                    input={{ type: "email" }}
-                    style={{ maxWidth: "700px" }}
-                  >
-                    Enter First Name
-                  </InputField>
-                  <br></br>
-                  <InputField
-                    input={{ type: "email" }}
-                    style={{ maxWidth: "700px" }}
-                  >
-                    Enter Last Name
-                  </InputField>
-                  <br></br>
-                  <InputField
-                    input={{ type: "" }}
-                    style={{ maxWidth: "700px" }}
-                  >
-                    Enter Address Line 1
-                  </InputField>
-                  <br></br>
-                  <InputField
-                    input={{ type: "email" }}
-                    style={{ maxWidth: "700px" }}
-                  >
-                    Enter Email Address
-                  </InputField>
-                  <br></br>
-                  <InputField
-                    input={{ type: "password" }}
-                    style={{ maxWidth: "700px" }}
-                  >
-                    Enter a Password
-                  </InputField>
-                  <br></br>
-                  <InputField
-                    input={{ type: "password" }}
-                    style={{ maxWidth: "700px" }}
-                  >
-                    Confirm Password
-                  </InputField>
-                  <br></br>
-                  <Button>Submit</Button>
-                </center>
-                <Footer
-                  licence={
-                    <span>
-                      All content is available under the{" "}
-                      <styled
-                        href="https://creativecommons.org/licenses/by/4.0/"
-                        rel="license"
-                      >
-                        Creative Commons Attribution 4.0 International Licence{" "}
-                      </styled>
-                      , except where otherwise stated
-                    </span>
-                  }
-                />
-                <br></br>
-              </div>
-            );
-            break;
-          case "Contact Us Form":
-            formField = (
-              <div key={index}>
-                <TopNav
-                  style={{
-                    color: field.color,
-                    width: field.config.width + "px",
-                    height: field.config.height + "px",
-                    backgroundColor: formData.color,
-                  }}
-                  company={<TopNav.Anchor>ABC Grants</TopNav.Anchor>}
-                />
-                <br></br>
-                <center>
-                  <Heading>Contact Us</Heading>
-
-                  <img
-                    style={{ maxWidth: "300px" }}
-                    src="https://www.westyorks-ca.gov.uk/media/6198/contact-us-1908763_1920-copy111.png?width=794&height=227&mode=max"
-                  />
-                  <br></br>
-                  <br></br>
-                  <br></br>
-                  <InputField
-                    input={{ type: "email" }}
-                    style={{ maxWidth: "700px" }}
-                  >
-                    Enter Full Name
-                  </InputField>
-                  <br></br>
-
-                  <InputField
-                    input={{ type: "email" }}
-                    style={{ maxWidth: "700px" }}
-                  >
-                    Enter Email Address
-                  </InputField>
-                  <br></br>
-
-                  <TextArea
-                    style={{
-                      maxWidth: "930px",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      display: "flex",
-                    }}
-                  >
-                    Message
-                  </TextArea>
-                  <br></br>
-
-                  <Button>Submit</Button>
-                </center>
-                <Footer
-                  licence={
-                    <span>
-                      All content is available under the{" "}
-                      <styled
-                        href="https://creativecommons.org/licenses/by/4.0/"
-                        rel="license"
-                      >
-                        Creative Commons Attribution 4.0 International Licence{" "}
-                      </styled>
-                      , except where otherwise stated
-                    </span>
-                  }
-                />
-                <br></br>
-              </div>
-            );
-            break;
-          case "Multi Stage Sign Up Form":
-            formField = (
-              <div key={index}>
-                <TopNav
-                  style={{
-                    color: field.color,
-                    width: field.config.width + "px",
-                    height: field.config.height + "px",
-                    backgroundColor: formData.color,
-                  }}
-                  company={<TopNav.Anchor>ABC Grants</TopNav.Anchor>}
-                />
-                <br></br>
-                <center>
-                  <Heading>Register your details</Heading>
-                  <br></br>
-
-                  <InputField
-                    input={{ type: "email" }}
-                    style={{ maxWidth: "700px" }}
-                  >
-                    Enter First Name
-                  </InputField>
-                  <br></br>
-                  <InputField
-                    input={{ type: "email" }}
-                    style={{ maxWidth: "700px" }}
-                  >
-                    Enter Last Name
-                  </InputField>
-                  <br></br>
-
-                  <InputField
-                    input={{ type: "" }}
-                    style={{ maxWidth: "700px" }}
-                  >
-                    Enter Address Line 1
-                  </InputField>
-                  <br></br>
-
-                  <InputField
-                    input={{ type: "email" }}
-                    style={{ maxWidth: "700px" }}
-                  >
-                    Enter Email Address
-                  </InputField>
-                  <br></br>
-                  <InputField
-                    input={{ type: "password" }}
-                    style={{ maxWidth: "700px" }}
-                  >
-                    Enter a Password
-                  </InputField>
-                  <br></br>
-                  <InputField
-                    input={{ type: "password" }}
-                    style={{ maxWidth: "700px" }}
-                  >
-                    Confirm Password
-                  </InputField>
-                  <br></br>
-                  <Button>Submit</Button>
-                </center>
-                <Footer
-                  licence={
-                    <span>
-                      All content is available under the{" "}
-                      <styled
-                        href="https://creativecommons.org/licenses/by/4.0/"
-                        rel="license"
-                      >
-                        Creative Commons Attribution 4.0 International Licence{" "}
-                      </styled>
-                      , except where otherwise stated
-                    </span>
-                  }
-                />
-                <br></br>
-              </div>
-            );
-            break;
           case "Text Field":
             formField = (
               <div key={index}>
@@ -408,22 +195,19 @@ function DynamicPage() {
 
           case "Text area":
             formField = (
-              <div key={index}>
-                <label style={{ textAlign: "center" }}>
-                  {field.config.label}
-                </label>
+              <div key={index} style={parentStyle}>
                 <br />
                 <TextArea
-                  style={{
-                    width: field.config.width + "px",
-                    height: field.config.height + "px",
-                  }}
+                  style={parentStyle}
                   input={{
                     type: field.type,
                     name: field.label,
                     required: field.required,
+                    style: { ...inputFieldStyle },
                   }}
-                />
+                >
+                  {field.config.label}
+                </TextArea>
                 <br></br>
               </div>
             );
@@ -510,9 +294,8 @@ function DynamicPage() {
             break;
           case "Image":
             formField = (
-              <div key={index}>
-                <input type="file" />
-                <br></br>
+              <div key={index} style={parentStyle}>
+                <img src={field.config.image_source} style={inputFieldStyle} />
               </div>
             );
             break;
@@ -531,6 +314,33 @@ function DynamicPage() {
               </div>
             );
             break;
+          case "navbar - template":
+            formField = (
+              <div key={index}>
+                <TopNav
+                  company={
+                    <TopNav.Anchor target="new">ABC Grants</TopNav.Anchor>
+                  }
+                />
+              </div>
+            );
+            break;
+          case "Input Field":
+            formField = (
+              <div key={index} style={parentStyle}>
+                <center>
+                  <InputField
+                    input={{
+                      type: field.input_type,
+                      style: { ...inputFieldStyle },
+                    }}
+                  >
+                    {field.label}
+                  </InputField>
+                </center>
+              </div>
+            );
+            break;
           case "Body":
             formField = (
               <div key={index}>
@@ -546,282 +356,271 @@ function DynamicPage() {
               </div>
             );
             break;
-            case "Center Component":
-              formField = (
-                <div key={index}>
-                  <div>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DatePicker
-                        renderInput={(props) => (
-                          <TextField
-                            {...props}
-                            label="Check in"
-                            variant="outlined"
-                            value={dayjs(checkinDate).format("DD-MM-YYYY")}
-                            onChange={(event) =>
-                              handleCheckinDateChange(
-                                new Date(event.target.value)
-                              )
-                            }
-                            sx={{
-                              "& fieldset": { border: "none" },
-                              input: { color: "whitesmoke" },
-                              svg: { color: "whitesmoke" },
-                              label: { color: "whitesmoke" },
-                            }}
-                            style={{
-                              backgroundColor: "#242226",
-                              opacity: "0.9",
-                              margin: "5px",
-                              borderRadius: "5px",
-                            }}
-                          />
-                        )}
-                        value={checkinDate}
-                        onChange={(date) => handleCheckinDateChange(date)}
-                      />
-                    </LocalizationProvider>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DatePicker
-                        renderInput={(props) => (
-                          <TextField
-                            {...props}
-                            label="Check out"
-                            variant="outlined"
-                            value={dayjs(checkoutDate).format("DD-MM-YYYY")}
-                            onChange={(event) =>
-                              handleCheckoutDateChange(
-                                new Date(event.target.value)
-                              )
-                            }
-                            sx={{
-                              "& fieldset": { border: "none" },
-                              input: { color: "whitesmoke" },
-                              svg: { color: "whitesmoke" },
-                              label: { color: "whitesmoke" },
-                            }}
-                            style={{
-                              backgroundColor: "#242226",
-                              opacity: "0.9",
-                              margin: "5px",
-                              borderRadius: "5px",
-                            }}
-                          />
-                        )}
-                        value={checkoutDate}
-                        onChange={(date) => handleCheckoutDateChange(date)}
-                      />
-                    </LocalizationProvider>
-                    <FormControl
-                      sx={{
-                        "& fieldset": { border: "none" },
-                        input: { color: "whitesmoke" },
-                        svg: { color: "whitesmoke" },
-                        label: { color: "whitesmoke" },
-                        minWidth: 120,
-                      }}
-                      style={{
-                        backgroundColor: "#242226",
-                        opacity: "0.9",
-                        margin: "5px",
-                        borderRadius: "5px",
-                      }}
-                    >
-                      <InputLabel id="demo-select-small-label">Rooms</InputLabel>
-  
-                      <Select
-                        labelId="demo-select-small-label"
-                        id="demo-select-small"
+          case "Center Component":
+            formField = (
+              <div key={index}>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    renderInput={(props) => (
+                      <TextField
+                        {...props}
+                        label="Check in"
                         variant="outlined"
-                        style={{ color: "whitesmoke" }}
-                        value={rooms || 1}
+                        value={dayjs(checkinDate).format("DD-MM-YYYY")}
                         onChange={(event) =>
-                          handleRoomsChange(event.target.value)
+                          handleCheckinDateChange(new Date(event.target.value))
                         }
-                      >
-                        <MenuItem value={1}>1</MenuItem>
-                        <MenuItem value={2}>2</MenuItem>
-                        <MenuItem value={3}>3</MenuItem>
-                        <MenuItem value={4}>4</MenuItem>
-                        <MenuItem value={5}>5</MenuItem>
-                      </Select>
-                    </FormControl>
-                    <FormControl
-                      sx={{
-                        "& fieldset": { border: "none" },
-                        input: { color: "whitesmoke" },
-                        svg: { color: "whitesmoke" },
-                        label: { color: "whitesmoke" },
-                        minWidth: 120,
-                      }}
-                      style={{
-                        backgroundColor: "#242226",
-                        opacity: "0.9",
-                        margin: "5px",
-                        borderRadius: "5px",
-                      }}
-                    >
-                      <InputLabel id="demo-select-small-label">Guests</InputLabel>
-  
-                      <Select
-                        labelId="demo-select-small-label"
-                        id="demo-select-small"
+                        sx={{
+                          "& fieldset": { border: "none" },
+                          input: { color: "whitesmoke" },
+                          svg: { color: "whitesmoke" },
+                          label: { color: "whitesmoke" },
+                        }}
+                        style={{
+                          backgroundColor: "#242226",
+                          opacity: "0.9",
+                          margin: "5px",
+                          borderRadius: "5px",
+                        }}
+                      />
+                    )}
+                    value={checkinDate}
+                    onChange={(date) => handleCheckinDateChange(date)}
+                  />
+                </LocalizationProvider>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    renderInput={(props) => (
+                      <TextField
+                        {...props}
+                        label="Check out"
                         variant="outlined"
-                        style={{ color: "whitesmoke" }}
-                        value={guests || 1}
+                        value={dayjs(checkoutDate).format("DD-MM-YYYY")}
                         onChange={(event) =>
-                          handleGuestsChange(event.target.value)
+                          handleCheckoutDateChange(new Date(event.target.value))
                         }
-                      >
-                        <MenuItem value={1}>1</MenuItem>
-                        <MenuItem value={2}>2</MenuItem>
-                        <MenuItem value={3}>3</MenuItem>
-                        <MenuItem value={4}>4</MenuItem>
-                        <MenuItem value={5}>5</MenuItem>
-                      </Select>
-                    </FormControl>
-                    <TextField
-                      label="Promo/Corp code"
-                      variant="outlined"
-                      sx={{
-                        "& fieldset": { border: "none" },
-                        input: { color: "whitesmoke" },
-                        svg: { color: "whitesmoke" },
-                        label: { color: "whitesmoke" },
-                      }}
-                      style={{
-                        backgroundColor: "#242226",
-                        opacity: "0.9",
-                        margin: "5px",
-                        borderRadius: "5px",
-                      }}
-                    />
-                    <Button
-                      style={{
-                        backgroundColor: "whitesmoke",
-                        opacity: "0.9",
-                        margin: "5px",
-                        borderRadius: "5px",
-                        color: "black",
-                        width: "100px",
-                        height: "54px",
-                      }}
-                    >
-                      Book
-                    </Button>
-                  </div>
-                  <br></br>
-                </div>
-              );
-              break;
-            case "Date - Check In":
-              formField = (
-                <div key={index}>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker
-                      renderInput={(props) => (
-                        <TextField
-                          {...props}
-                          label="Check out"
-                          variant="outlined"
-                          value={dayjs(checkoutDate).format("DD-MM-YYYY")}
-                          onChange={(event) =>
-                            handleCheckoutDateChange(new Date(event.target.value))
-                          }
-                          sx={{
-                            "& fieldset": { border: "none" },
-                            input: { color: "whitesmoke" },
-                            svg: { color: "whitesmoke" },
-                            label: { color: "whitesmoke" },
-                          }}
-                          style={{
-                            backgroundColor: "#242226",
-                            opacity: "0.9",
-                            margin: "5px",
-                            borderRadius: "5px",
-                          }}
+                        sx={{
+                          "& fieldset": { border: "none" },
+                          input: { color: "whitesmoke" },
+                          svg: { color: "whitesmoke" },
+                          label: { color: "whitesmoke" },
+                        }}
+                        style={{
+                          backgroundColor: "#242226",
+                          opacity: "0.9",
+                          margin: "5px",
+                          borderRadius: "5px",
+                        }}
+                      />
+                    )}
+                    value={checkoutDate}
+                    onChange={(date) => handleCheckoutDateChange(date)}
+                  />
+                </LocalizationProvider>
+                <FormControl
+                  sx={{
+                    "& fieldset": { border: "none" },
+                    input: { color: "whitesmoke" },
+                    svg: { color: "whitesmoke" },
+                    label: { color: "whitesmoke" },
+                    minWidth: 120,
+                  }}
+                  style={{
+                    backgroundColor: "#242226",
+                    opacity: "0.9",
+                    margin: "5px",
+                    borderRadius: "5px",
+                  }}
+                >
+                  <InputLabel id="demo-select-small-label">Rooms</InputLabel>
+
+                  <Select
+                    labelId="demo-select-small-label"
+                    id="demo-select-small"
+                    variant="outlined"
+                    style={{ color: "whitesmoke" }}
+                    value={rooms || 1}
+                    onChange={(event) => handleRoomsChange(event.target.value)}
+                  >
+                    <MenuItem value={1}>1</MenuItem>
+                    <MenuItem value={2}>2</MenuItem>
+                    <MenuItem value={3}>3</MenuItem>
+                    <MenuItem value={4}>4</MenuItem>
+                    <MenuItem value={5}>5</MenuItem>
+                  </Select>
+                </FormControl>
+                <FormControl
+                  sx={{
+                    "& fieldset": { border: "none" },
+                    input: { color: "whitesmoke" },
+                    svg: { color: "whitesmoke" },
+                    label: { color: "whitesmoke" },
+                    minWidth: 120,
+                  }}
+                  style={{
+                    backgroundColor: "#242226",
+                    opacity: "0.9",
+                    margin: "5px",
+                    borderRadius: "5px",
+                  }}
+                >
+                  <InputLabel id="demo-select-small-label">Guests</InputLabel>
+
+                  <Select
+                    labelId="demo-select-small-label"
+                    id="demo-select-small"
+                    variant="outlined"
+                    style={{ color: "whitesmoke" }}
+                    value={guests || 1}
+                    onChange={(event) => handleGuestsChange(event.target.value)}
+                  >
+                    <MenuItem value={1}>1</MenuItem>
+                    <MenuItem value={2}>2</MenuItem>
+                    <MenuItem value={3}>3</MenuItem>
+                    <MenuItem value={4}>4</MenuItem>
+                    <MenuItem value={5}>5</MenuItem>
+                  </Select>
+                </FormControl>
+                <TextField
+                  label="Promo/Corp code"
+                  variant="outlined"
+                  sx={{
+                    "& fieldset": { border: "none" },
+                    input: { color: "whitesmoke" },
+                    svg: { color: "whitesmoke" },
+                    label: { color: "whitesmoke" },
+                  }}
+                  style={{
+                    backgroundColor: "#242226",
+                    opacity: "0.9",
+                    margin: "5px",
+                    borderRadius: "5px",
+                  }}
+                />
+                <Button
+                  style={{
+                    backgroundColor: "whitesmoke",
+                    opacity: "0.9",
+                    margin: "5px",
+                    borderRadius: "5px",
+                    color: "black",
+                    width: "100px",
+                    height: "54px",
+                  }}
+                >
+                  Book
+                </Button>
+                <br></br>
+              </div>
+            );
+            break;
+          case "Date - Check In":
+            formField = (
+              <div key={index}>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    renderInput={(props) => (
+                      <TextField
+                        {...props}
+                        label="Check out"
+                        variant="outlined"
+                        value={dayjs(checkoutDate).format("DD-MM-YYYY")}
+                        onChange={(event) =>
+                          handleCheckoutDateChange(new Date(event.target.value))
+                        }
+                        sx={{
+                          "& fieldset": { border: "none" },
+                          input: { color: "whitesmoke" },
+                          svg: { color: "whitesmoke" },
+                          label: { color: "whitesmoke" },
+                        }}
+                        style={{
+                          backgroundColor: "#242226",
+                          opacity: "0.9",
+                          margin: "5px",
+                          borderRadius: "5px",
+                        }}
+                      />
+                    )}
+                    value={checkoutDate}
+                    onChange={(date) => handleCheckoutDateChange(date)}
+                  />
+                </LocalizationProvider>
+              </div>
+            );
+            break;
+          case "Navbar - Bootstrap":
+            formField = (
+              <div key={index}>
+                <Navbar collapseOnSelect expand="lg" bg="transparent">
+                  <Container>
+                    <Navbar.Brand href="/">
+                      <center>
+                        <img
+                          src={process.env.PUBLIC_URL + "/img/Hospitality.png"}
+                          alt="Logo"
+                          width="50"
+                          height="50"
+                          className="d-inline-block align-top"
                         />
-                      )}
-                      value={checkoutDate}
-                      onChange={(date) => handleCheckoutDateChange(date)}
-                    />
-                  </LocalizationProvider>
-                </div>
-              );
-              break;
-              case "Navbar - Bootstrap":
-                formField = (
-                  <div key={index}>
-                    <Navbar collapseOnSelect expand="lg" bg="transparent">
-                      <Container>
-                        <Navbar.Brand href="/">
-                          <center>
-                            <img
-                              src={process.env.PUBLIC_URL + "/img/Hospitality.png"}
-                              alt="Logo"
-                              width="50"
-                              height="50"
-                              className="d-inline-block align-top"
-                            />
-                            <br></br>
-                            <label
-                              style={{ color: "whitesmoke", fontWeight: "bold" }}
-                            >
-                              Argort Resort
-                            </label>
-                          </center>
-                          x
-                        </Navbar.Brand>
-    
-                        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-    
-                        <div
-                          style={{
-                            justifyContent: "center",
-                            alignItems: "center",
-                            display: "flex",
-                          }}
+                        <br></br>
+                        <label
+                          style={{ color: "whitesmoke", fontWeight: "bold" }}
                         >
-                          <Navbar.Collapse id="responsive-navbar-nav">
-                            <Nav className="me-auto">
-                              <Nav.Link href="/" style={{ color: "whitesmoke" }}>
-                                Home
-                              </Nav.Link>
-                              <Nav.Link href="/" style={{ color: "whitesmoke" }}>
-                                Book
-                              </Nav.Link>
-                            </Nav>
-                          </Navbar.Collapse>
-                        </div>
-                      </Container>
-                    </Navbar>
-                  </div>
-                );
-    
-                break;
-    
-            case "Heading":
-              formField = (
-                <div key={index}>
-                  <center>
-                    {" "}
-                    <Heading style={{ color: "whitesmoke", fontWeight: "bold" }}>
-                      {field.config.label}
-                    </Heading>
-                  </center>
-                </div>
-              );
-              break;
-            case "H3":
-              formField = (
-                <div key={index}>
-                  <center>
-                    <H3 style={{ color: "whitesmoke" }}>{field.label}</H3>
-                  </center>
-                </div>
-              );
-              break;
-  
+                          Argort Resort
+                        </label>
+                      </center>
+                      x
+                    </Navbar.Brand>
+
+                    <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+
+                    <div
+                      style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                        display: "flex",
+                      }}
+                    >
+                      <Navbar.Collapse id="responsive-navbar-nav">
+                        <Nav className="me-auto">
+                          <Nav.Link href="/" style={{ color: "whitesmoke" }}>
+                            Home
+                          </Nav.Link>
+                          <Nav.Link href="/" style={{ color: "whitesmoke" }}>
+                            Book
+                          </Nav.Link>
+                        </Nav>
+                      </Navbar.Collapse>
+                    </div>
+                  </Container>
+                </Navbar>
+              </div>
+            );
+
+            break;
+
+          case "Heading":
+            formField = (
+              <div key={index}>
+                <center>
+                  <Heading style={{ color: "black", fontWeight: "bold" }}>
+                    {field.config.label}
+                  </Heading>
+                </center>
+              </div>
+            );
+            break;
+          case "H3":
+            formField = (
+              <div key={index}>
+                <center>
+                  <H3 style={{ color: "whitesmoke" }}>{field.label}</H3>
+                </center>
+              </div>
+            );
+            break;
+
           case "Header":
             formField = (
               <div key={index}>
@@ -834,6 +633,23 @@ function DynamicPage() {
                   {field.config.label}
                 </Heading>
                 <br></br>
+              </div>
+            );
+            break;
+          case "Raised Button":
+            formField = (
+              <div key={index} style={parentStyle}>
+                <br />
+                <Link to={field.button_link}>
+                  <Button
+                    style={{
+                      width: field.width + "px",
+                      height: field.height + "px",
+                    }}
+                  >
+                    {field.label}
+                  </Button>
+                </Link>
               </div>
             );
             break;
@@ -933,7 +749,7 @@ function DynamicPage() {
                         href="https://creativecommons.org/licenses/by/4.0/"
                         rel="license"
                       >
-                        Creative Commons Attribution 4.0 International Licence{" "}
+                        {field.config.label}
                       </styled>
                       , except where otherwise stated
                     </span>
