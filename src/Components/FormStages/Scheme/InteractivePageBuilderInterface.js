@@ -142,10 +142,11 @@ function InteractivePageBuilderInterface({ link, mode }) {
 
   const [isEditing, setIsEditing] = useState([]);
   const [text, setText] = useState("Hello");
+  const [recentlyDeleted, setRecentlyDeleted] = useState(false);
   const [showButtons, setShowButtons] = useState(false);
   const inputRef = useRef(null);
-
-  const columns = [
+  
+    const columns = [
     {
       Header: "Title",
       accessor: "Title",
@@ -154,20 +155,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
 
   const [newcolumns, setColumns] = useState(columns);
 
-  const handleMouseEnter = (index) => {
-    setShowButtons((prevValues) => {
-      const newValues = [...prevValues];
-      newValues[index] = true;
-      return newValues;
-    });
-  };
-  const handleMouseLeave = (index) => {
-    setShowButtons((prevValues) => {
-      const newValues = [...prevValues];
-      newValues[index] = false;
-      return newValues;
-    });
-  };
 
   const handleEditPage = () => {
     setShowButtons(true);
@@ -225,7 +212,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
           autoFocus="autoFocus"
           type="text"
           value={text}
-          onChange={(event) => handleTextChange(event, index)}
+          onChange={(event) => recentlyDeleted ? handleTextChangeDeleted(event, index) : handleTextChange(event, index)}
         />
         <button
           style={{
@@ -280,6 +267,15 @@ function InteractivePageBuilderInterface({ link, mode }) {
     setText(labelValue[index]);
   };
 
+  const handleElementClickTemplate = (templateText, index) => {
+    setIsEditing((prevValues) => {
+      const newValues = [...prevValues];
+      newValues[index] = true;
+      return newValues;
+    });
+    setText(templateText);
+  };
+
   const handleClickOutside = (index) => {
     setIsEditing((prevValues) => {
       const newValues = [...prevValues];
@@ -297,6 +293,24 @@ function InteractivePageBuilderInterface({ link, mode }) {
     });
   };
 
+  const handleTextChangeDeleted = (event, index) => {
+    setText(event.target.value);
+    setLabelValue((prevValues) => {
+      const newValues = [...prevValues];
+      newValues[index+1] = event.target.value;
+      return newValues;
+    });
+  };
+
+  const handleTextChangeTemplate = (templateText, index) => {
+    setText(templateText);
+    setLabelValue((prevValues) => {
+      const newValues = [...prevValues];
+      newValues[index] = templateText;
+      return newValues;
+    });
+  };
+
   const handleSwitch = (checked) => {
     setChecked(checked);
   };
@@ -305,17 +319,45 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const updateData = (event, property, fieldIndex) => {
     const currentPage = page[0];
     const currentPageFields = currentPage.fields ? [...currentPage.fields] : [];
+    for (let i = currentPageFields.length - 1; i >= 0; i--) {
+      if (currentPageFields[i] === undefined) {
+        currentPageFields.splice(i, 1);
+        setNumberOfElements((prevState) => prevState - 1);
+      }
+    }
+    for (let i = currentPageFields.length - 1; i >= 0; i--) {
+      if (currentPageFields[i] && currentPageFields[i].label) {
+        currentPageFields.splice(i, 1);
+      }
+    }
     const field = currentPageFields[fieldIndex];
-    const updatedField = {
-      ...field,
-      config: {
-        ...field.config,
+    let updatedField = { ...field };
+    if (field && field.config) {
+      updatedField = {
+        ...field,
+        config: {
+          ...field.config,
+          [property]: event.target.value,
+        },
+      };
+    } else if (field) {
+      updatedField = {
+        ...field,
         [property]: event.target.value,
+
+      };
+    } else {
+      console.error(`Field at index ${fieldIndex} is undefined`);
+    }
+      // update the array with the updatedField object
         source: field.src,
       },
     };
+
     currentPageFields[fieldIndex] = updatedField;
     const newPage = [{ ...currentPage, fields: currentPageFields }];
+    console.log(currentPageFields)
+    console.log(labelValue)
     setPage(newPage);
 
     if (property === "label") {
@@ -333,8 +375,11 @@ function InteractivePageBuilderInterface({ link, mode }) {
       });
     }
     const newFormData = { ...formData };
-    newFormData[field.name] = updatedField;
-    setFormData(newFormData);
+if (field && field.name) {
+  newFormData[field.name] = updatedField;
+}
+setFormData(newFormData);
+    
   };
 
   const resetConfiguration = () => {
@@ -369,7 +414,9 @@ function InteractivePageBuilderInterface({ link, mode }) {
     setSelected(input_value);
     const currentPage = page[0];
     const currentPageIndex = pageCounter - 1;
-    console.log(currentPageIndex);
+
+    const currentPageBackground = pageBackgrounds[currentPageIndex];
+
     const currentPageFields = currentPage.fields ? [...currentPage.fields] : [];
     setNumberOfElements((prevState) => prevState + 1);
 
@@ -388,7 +435,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
     currentPageFields.push(newField);
     const newPage = [{ ...currentPage, fields: currentPageFields }];
     setPage(newPage);
-    console.log(currentPageFields);
     setLabelValue((prevValues) => [...prevValues, ""]);
     setIsEditing((prevValues) => [...prevValues, false]);
     if (input_value === "Page Break") {
@@ -420,6 +466,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
       const navbarField = {
         type: "Navbar - Bootstrap",
         editing: false,
+        label: "Argort Resort",
         config: {
           label: "Argort Resort",
           editing: false,
@@ -1120,32 +1167,54 @@ function InteractivePageBuilderInterface({ link, mode }) {
 
   const handleRemoveField = (index) => {
     const currentPage = page[0];
-    console.log(labelValue);
     if (!currentPage) {
       console.error(`Tab ${0} is not defined`);
       return;
     }
     const currentPageFields = [...currentPage.fields];
     currentPageFields.splice(index, 1);
+    setNumberOfElements((prevState) => prevState - 1);
     labelValue.splice(index, 1);
-    setDeleteIndex(index);
-    for (let i = deleteIndex; i < currentPageFields.length; i++) {
-      currentPageFields[i] = currentPageFields[i + 1];
-    }
-    for (let i = 0; i < labelValue.length; i++) {
-      if (labelValue[i] === "") {
-        labelValue.splice(i, 1);
-        i--;
-      }
-    }
-    setNumDeletes(numDeletes + 1);
-    setNumDeletes(numDeletes + 1);
-    setShowButtons((prevValues) => {
+    setIsEditing((prevValues) => {
       const newValues = [...prevValues];
       newValues[index] = false;
       return newValues;
     });
+    
+    setDeleteIndex(index);
+    for (let i = deleteIndex; i < currentPageFields.length; i++) {
+      currentPageFields[i] = currentPageFields[i + 1];
+    }
 
+      for (let i = 0; i < labelValue.length; i++) {
+        if (labelValue[i] === "") {
+          labelValue.splice(i, 1);
+        }
+      }
+    setNumDeletes(numDeletes + 1);
+    const newPages = [...page];
+    newPages[0] = {
+      ...currentPage,
+      fields: currentPageFields,
+    };
+    setPage(newPages);
+    setRecentlyDeleted(true);
+    setNumberOfElements(currentPageFields.filter((field) => field !== undefined).length);
+  };
+  const handleRemoveTemplateField = (index) => {
+    const currentPage = page[0];
+    if (!currentPage) {
+      console.error(`Tab ${0} is not defined`);
+      return;
+    }
+    const currentPageFields = [...currentPage.fields];
+    currentPageFields.splice(index, 1);
+    setNumberOfElements((prevState) => prevState - 1);
+    setDeleteIndex(index);
+    for (let i = deleteIndex; i < currentPageFields.length; i++) {
+      currentPageFields[i] = currentPageFields[i + 1];
+    }
+    setNumDeletes(numDeletes + 1);
     const newPages = [...page];
     newPages[0] = {
       ...currentPage,
@@ -1249,12 +1318,13 @@ function InteractivePageBuilderInterface({ link, mode }) {
 
     if (page) {
       page[0].fields.forEach((field, index) => {
+        if(field){
         let formField = null;
         const parentStyle = Object.assign(
           {},
           ...(Array.isArray(field.parent_style) && field.parent_style.length
             ? field.parent_style
-            : [])
+            : [{}])
         );
 
         const inputFieldStyle = Object.assign(
@@ -1814,37 +1884,196 @@ function InteractivePageBuilderInterface({ link, mode }) {
                 </div>
               );
               break;
-            case "Toggle Switch":
-              formField = (
-                <div key={index}>
-                  <Switch onChange={handleSwitch} checked={checked} />
 
-                  <br />
+              case "Toggle Switch":
+                formField = (
+                  <div>
+                     {isEditing[index] ? (
+                      <div
+                        ref={inputRef}
+                        style={{
+                          position: "relative",
+                          display: "inline-block",
+                          borderRadius: "8px",
+                          overflow: "hidden",
+                          boxShadow: "0 0 10px rgba(0, 0, 0, 0.2",
+                          transition: "transform 0.3s ease-in-out",
+                          marginTop: "10px",
+                          backgroundColor: "white"
+                        }}
+                      >
+                        <h3 style={{ padding: "10px", paddingBottom: "5px" }}>
+                          Edit Toggle Switch
+                        </h3>
+                        <label
+                          htmlFor="headingtext"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                          }}
+                        >
+                          Text
+                        </label>
+                        <input
+                          style={{
+                            display: "block",
+                            marginBottom: "40px",
+                            paddingLeft: "5px",
+                            paddingRight: "5px",
+                          }}
+                          id="headingtext"
+                          autoFocus="autoFocus"
+                          type="text"
+                          value={text}
+                          onChange={(event) => handleTextChange(event, index)}
+                        />
+                        <button
+                          style={{
+                            backgroundColor: "#528AAE",
+                            color: "white",
+                            borderRadius: "4px",
+                            display: "block",
+                            position: "absolute",
+                            bottom: "5px",
+                            right: "10px",
+                          }}
+                          onClick={() => handleClickOutside(index)}
+                        >
+                          Save Changes
+                        </button>
+                        <button
+                          style={{
+                            backgroundColor: "red",
+                            color: "white",
+                            borderRadius: "4px",
+                            display: "block",
+                            position: "absolute",
+                            bottom: "5px",
+                            left: "10px",
+                          }}
+                          onClick={() => handleRemoveTemplateField(index)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    ) : (
+                  <div key={index}>
+                    <Switch onChange={handleSwitch} checked={checked} />
+  
+                    <br />
+                    {showButtons && (
+                          <IoIosCreate style={{ transform: 'scale(2)'}} onClick={() => handleElementClickTemplate(labelValue[index] || field.label, index)} />
+                      )}
+                    <br></br>
+                    
+                  </div>
+                   )}
+                   </div>
+                );
+                break;
+              case "Raised Button":
+                formField = (
+                  <div>
+                    {isEditing[index] ? (
+                      <div
+                        ref={inputRef}
+                        style={{
+                          position: "relative",
+                          display: "inline-block",
+                          borderRadius: "8px",
+                          overflow: "hidden",
+                          boxShadow: "0 0 10px rgba(0, 0, 0, 0.2",
+                          transition: "transform 0.3s ease-in-out",
+                          marginTop: "10px",
+                        }}
+                      >
+                        <h3 style={{ padding: "10px", paddingBottom: "5px" }}>
+                          Edit Button
+                        </h3>
+                        <label
+                          htmlFor="buttontext"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                          }}
+                        >
+                          Text
+                        </label>
+                        <input
+                          style={{
+                            display: "block",
+                            marginBottom: "40px",
+                            paddingLeft: "5px",
+                            paddingRight: "5px",
+                          }}
+                          id="buttontext"
+                          autoFocus="autoFocus"
+                          type="text"
+                          value={text}
+                          onChange={(event) => handleTextChange(event, index)}
+                        />
+                        <button
+                          style={{
+                            backgroundColor: "#528AAE",
+                            color: "white",
+                            borderRadius: "4px",
+                            display: "block",
+                            position: "absolute",
+                            bottom: "5px",
+                            right: "10px",
+                          }}
+                          onClick={() => handleClickOutside(index)}
+                        >
+                          Save Changes
+                        </button>
+                        <button
+                          style={{
+                            backgroundColor: "red",
+                            color: "white",
+                            borderRadius: "4px",
+                            display: "block",
+                            position: "absolute",
+                            bottom: "5px",
+                            left: "10px",
+                          }}
+                          onClick={() => handleRemoveField(index)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    ) : (
+                      <div key={index}>
+                        <br />
+                        <Button
+                          style={{
+                            width: field.config.width + "px",
+                            height: field.config.height + "px",
+                          }}
+                          input={{
+                            type: field.type,
+                            name: field.label,
+                            required: field.required,
+                          }}
+                        >
+                          {labelValue[index]}
+                        </Button>
+                        <br></br>
+                        {showButtons && (
+                          <IoIosCreate
+                          style={{ transform: 'scale(2)'}}
+                            onClick={() => handleElementClick(index)}
+                          />
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+                break;
 
-                  <br></br>
-                </div>
-              );
-              break;
-            case "Raised Button":
-              formField = (
-                <div key={index}>
-                  <br />
-                  <Link to={buttonLink}>
-                    <Button
-                      style={{
-                        width: field.width + "px",
-                        height: field.height + "px",
-                      }}
-                    >
-                      {field.label}
-                    </Button>
-                  </Link>
-                  {showButtons && <IoIosCreate onClick={handleElementClick} />}
-                  <br></br>
-                </div>
-              );
-              break;
-            case "Image":
+
+          case "Image":
               formField = (
                 <div key={index} style={parentStyle}>
                   <img src={field.src} style={inputFieldStyle} />
@@ -1865,6 +2094,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         boxShadow: "0 0 10px rgba(0, 0, 0, 0.2",
                         transition: "transform 0.3s ease-in-out",
                         marginTop: "10px",
+                        backgroundColor: "white"
                       }}
                     >
                       <h3 style={{ padding: "10px", paddingBottom: "5px" }}>
@@ -1917,46 +2147,117 @@ function InteractivePageBuilderInterface({ link, mode }) {
                           bottom: "5px",
                           left: "10px",
                         }}
-                        onClick={() => handleRemoveField(index)}
+                        onClick={() => handleRemoveTemplateField(index)}
                       >
                         Delete
                       </button>
                     </div>
                   ) : (
-                    <div key={index}>
-                      <center>
-                        {" "}
-                        <Heading
-                          style={{
-                            color: field.input_style,
-                            fontWeight: "bold",
-                          }}
-                        >
-                          {labelValue[index] || labelValue[index] === ""
-                            ? labelValue[index]
-                            : field.label}
-                          {text === undefined || text === ""
-                            ? setText(labelValue[index])
-                            : null}
-                        </Heading>
-                      </center>
-                      {showButtons && (
-                        <IoIosCreate
-                          onClick={() => handleElementClick(index)}
-                        />
-                      )}
-                    </div>
+
+                  <div key={index}>
+                  <center>
+                    {" "}
+                    <Heading
+                      style={{ color: "whitesmoke", fontWeight: "bold", marginBottom: '0px' }}
+                    >
+                       {labelValue[index] !== "" ? labelValue[index] : labelValue[index-1]}
+
+                    </Heading>
+                    {showButtons && (
+                        <IoIosCreate style={{ transform: 'scale(2)', color: 'white' }} onClick={() => handleElementClickTemplate(labelValue[index] || field.label, index)} />
+                    )}
+                  </center>
+                </div>
+
                   )}
                 </div>
               );
               break;
             case "H3":
               formField = (
+                <div>
+                {isEditing[index] ? (
+                 <div
+                   ref={inputRef}
+                   style={{
+                     position: "relative",
+                     display: "inline-block",
+                     borderRadius: "8px",
+                     overflow: "hidden",
+                     boxShadow: "0 0 10px rgba(0, 0, 0, 0.2",
+                     transition: "transform 0.3s ease-in-out",
+                     marginTop: "10px",
+                     backgroundColor: "white"
+                   }}
+                 >
+                   <h3 style={{ padding: "10px", paddingBottom: "5px" }}>
+                     Edit Heading
+                   </h3>
+                   <label
+                     htmlFor="headingtext"
+                     style={{
+                       color: "#888",
+                       fontStyle: "italic",
+                       paddingLeft: "5px",
+                     }}
+                   >
+                     Text
+                   </label>
+                   <input
+                     style={{
+                       display: "block",
+                       marginBottom: "40px",
+                       paddingLeft: "5px",
+                       paddingRight: "5px",
+                     }}
+                     id="headingtext"
+                     autoFocus="autoFocus"
+                     type="text"
+                     value={text}
+                     onChange={(event) => handleTextChange(event, index)}
+                   />
+                   <button
+                     style={{
+                       backgroundColor: "#528AAE",
+                       color: "white",
+                       borderRadius: "4px",
+                       display: "block",
+                       position: "absolute",
+                       bottom: "5px",
+                       right: "10px",
+                     }}
+                     onClick={() => handleClickOutside(index)}
+                   >
+                     Save Changes
+                   </button>
+                   <button
+                     style={{
+                       backgroundColor: "red",
+                       color: "white",
+                       borderRadius: "4px",
+                       display: "block",
+                       position: "absolute",
+                       bottom: "5px",
+                       left: "10px",
+                     }}
+                     onClick={() => handleRemoveTemplateField(index)}
+                   >
+                     Delete
+                   </button>
+                 </div>
+               ) : (
                 <div key={index}>
                   <center>
-                    <H3 style={{ color: "whitesmoke" }}>{field.label}</H3>
+                    <H3 style={{ color: "whitesmoke", marginBottom: '0px' }}> {labelValue[index] || labelValue[index] === "" ? labelValue[index] : field.label}</H3>
                   </center>
+                  {showButtons && (
+                       <IoIosCreate style={{ transform: 'scale(2)', color: 'white' }} onClick={() => handleElementClickTemplate(labelValue[index] || field.label, index)} />
+
+                    )}
                 </div>
+                  )}
+                </div>
+          
               );
               break;
 
@@ -2007,106 +2308,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                 </div>
               );
               break;
-            case "Button":
-              formField = (
-                <div onMouseLeave={() => handleMouseLeave(index)}>
-                  {isEditing[index] ? (
-                    <div
-                      ref={inputRef}
-                      style={{
-                        position: "relative",
-                        display: "inline-block",
-                        borderRadius: "8px",
-                        overflow: "hidden",
-                        boxShadow: "0 0 10px rgba(0, 0, 0, 0.2",
-                        transition: "transform 0.3s ease-in-out",
-                        marginTop: "10px",
-                      }}
-                    >
-                      <h3 style={{ padding: "10px", paddingBottom: "5px" }}>
-                        Edit Button
-                      </h3>
-                      <label
-                        htmlFor="buttontext"
-                        style={{
-                          color: "#888",
-                          fontStyle: "italic",
-                          paddingLeft: "5px",
-                        }}
-                      >
-                        Text
-                      </label>
-                      <input
-                        style={{
-                          display: "block",
-                          marginBottom: "40px",
-                          paddingLeft: "5px",
-                          paddingRight: "5px",
-                        }}
-                        id="buttontext"
-                        autoFocus="autoFocus"
-                        type="text"
-                        value={text}
-                        onChange={(event) => handleTextChange(event, index)}
-                      />
-                      <button
-                        style={{
-                          backgroundColor: "blueviolet",
-                          color: "white",
-                          borderRadius: "4px",
-                          display: "block",
-                          position: "absolute",
-                          bottom: "5px",
-                          right: "10px",
-                        }}
-                        onClick={() => handleClickOutside(index)}
-                      >
-                        Save Changes
-                      </button>
-                      <button
-                        style={{
-                          backgroundColor: "red",
-                          color: "white",
-                          borderRadius: "4px",
-                          display: "block",
-                          position: "absolute",
-                          bottom: "5px",
-                          left: "10px",
-                        }}
-                        onClick={() => handleRemoveField(index)}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  ) : (
-                    <div key={index}>
-                      <br />
-                      <Button
-                        onMouseEnter={() => handleMouseEnter(index)}
-                        style={{
-                          width: field.config.width + "px",
-                          height: field.config.height + "px",
-                        }}
-                        input={{
-                          type: field.type,
-                          name: field.label,
-                          required: field.required,
-                        }}
-                      >
-                        {labelValue[index]}
-                      </Button>
-                      {showButtons[index] && (
-                        <IoIosCreate
-                          onClick={() => handleElementClick(index)}
-                        />
-                      )}
-                      <br></br>
-                    </div>
-                  )}
-                </div>
-              );
-              break;
-
             case "Check box":
               formField = (
                 <div key={index}>
@@ -2161,7 +2362,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
               break;
             case "Label":
               formField = (
-                <div onMouseLeave={() => handleMouseLeave(index)}>
+                <div>
                   {isEditing[index] ? (
                     <div
                       ref={inputRef}
@@ -2233,7 +2434,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   ) : (
                     <div key={index}>
                       <Label
-                        onMouseEnter={() => handleMouseEnter(index)}
                         input={{
                           type: "text",
                           value: field.label,
@@ -2484,18 +2684,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       <br></br>
                     </div>
                   )}
-                </div>
-              );
-              break;
-
-            case "Toggle Switch":
-              formField = (
-                <div key={index}>
-                  <Switch onChange={handleSwitch} checked={checked} />
-
-                  <br />
-
-                  <br></br>
                 </div>
               );
               break;
@@ -2969,7 +3157,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         }}
                         company={
                           <TopNav.Anchor target="new">
-                            {labelValue[index]}
+                           {labelValue[index]}
                           </TopNav.Anchor>
                         }
                       />
@@ -3028,6 +3216,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                 </div>
               );
               break;
+
             case "Navbar - Bootstrap":
               formField = (
                 <div key={index}>
@@ -3078,7 +3267,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                 </div>
               );
               break;
-
             case "Footer":
               formField = (
                 <div>
@@ -3336,7 +3524,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
           if (formField) {
             fieldsToRender.push(formField);
           }
-        }
+        }}
       });
     }
     return (
