@@ -134,6 +134,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
 
   const [isEditing, setIsEditing] = useState([]);
   const [text, setText] = useState("Hello");
+  const [recentlyDeleted, setRecentlyDeleted] = useState(false);
   const [showButtons, setShowButtons] = useState(false);
   const inputRef = useRef(null);
 
@@ -194,7 +195,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
           autoFocus="autoFocus"
           type="text"
           value={text}
-          onChange={(event) => handleTextChange(event, index)}
+          onChange={(event) => recentlyDeleted ? handleTextChangeDeleted(event, index) : handleTextChange(event, index)}
         />
         <button
           style={{
@@ -263,6 +264,15 @@ function InteractivePageBuilderInterface({ link, mode }) {
     });
   };
 
+  const handleTextChangeDeleted = (event, index) => {
+    setText(event.target.value);
+    setLabelValue((prevValues) => {
+      const newValues = [...prevValues];
+      newValues[index+1] = event.target.value;
+      return newValues;
+    });
+  };
+
   const handleTextChangeTemplate = (templateText, index) => {
     setText(templateText);
     setLabelValue((prevValues) => {
@@ -283,6 +293,12 @@ function InteractivePageBuilderInterface({ link, mode }) {
     for (let i = currentPageFields.length - 1; i >= 0; i--) {
       if (currentPageFields[i] === undefined) {
         currentPageFields.splice(i, 1);
+        setNumberOfElements((prevState) => prevState - 1);
+      }
+    }
+    for (let i = currentPageFields.length - 1; i >= 0; i--) {
+      if (currentPageFields[i] && currentPageFields[i].label) {
+        currentPageFields.splice(i, 1);
       }
     }
     const field = currentPageFields[fieldIndex];
@@ -302,11 +318,12 @@ function InteractivePageBuilderInterface({ link, mode }) {
       };
     } else {
       console.error(`Field at index ${fieldIndex} is undefined`);
-      console.log(currentPageFields);
     }
       // update the array with the updatedField object
     currentPageFields[fieldIndex] = updatedField;
     const newPage = [{ ...currentPage, fields: currentPageFields }];
+    console.log(currentPageFields)
+    console.log(labelValue)
     setPage(newPage);
 
     if (property === "label") {
@@ -865,6 +882,7 @@ setFormData(newFormData);
     }
     const currentPageFields = [...currentPage.fields];
     currentPageFields.splice(index, 1);
+    setNumberOfElements((prevState) => prevState - 1);
     labelValue.splice(index, 1);
     setIsEditing((prevValues) => {
       const newValues = [...prevValues];
@@ -889,6 +907,8 @@ setFormData(newFormData);
       fields: currentPageFields,
     };
     setPage(newPages);
+    setRecentlyDeleted(true);
+    setNumberOfElements(currentPageFields.filter((field) => field !== undefined).length);
   };
   const handleRemoveTemplateField = (index) => {
     const currentPage = page[0];
@@ -898,6 +918,7 @@ setFormData(newFormData);
     }
     const currentPageFields = [...currentPage.fields];
     currentPageFields.splice(index, 1);
+    setNumberOfElements((prevState) => prevState - 1);
     setDeleteIndex(index);
     for (let i = deleteIndex; i < currentPageFields.length; i++) {
       currentPageFields[i] = currentPageFields[i + 1];
@@ -1873,7 +1894,7 @@ setFormData(newFormData);
                     <Heading
                       style={{ color: "whitesmoke", fontWeight: "bold", marginBottom: '0px' }}
                     >
-                       {labelValue[index] || labelValue[index] === "" ? labelValue[index] : field.label}
+                       {labelValue[index] !== "" ? labelValue[index] : labelValue[index-1]}
 
                     </Heading>
                     {showButtons && (
@@ -2874,7 +2895,7 @@ setFormData(newFormData);
                         }}
                         company={
                           <TopNav.Anchor target="new">
-                            {labelValue[index]}
+                           {labelValue[index]}
                           </TopNav.Anchor>
                         }
                       />
