@@ -41,6 +41,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import InputLabel from "@mui/material/InputLabel";
 import styled from "styled-components";
+import Carousel from "react-bootstrap/Carousel";
 
 import {
   List,
@@ -107,6 +108,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const [pageBackgroundIndex, setPageBackgroundIndex] = useState();
   const [tableData, setTableData] = useState([]);
   const memoizedData = useMemo(() => tableData, [tableData]);
+  const [values, setValues] = useState([]);
 
   const [homepageHospitalityComponent, setHomepageHospitalityComponent] =
     useState([]);
@@ -405,6 +407,9 @@ function InteractivePageBuilderInterface({ link, mode }) {
       setShow(true);
     } else if (input_value === "Label") {
       setConfiguration("Label");
+      setShow(true);
+    } else if (input_value === "Multi choice") {
+      setConfiguration("Multi choice");
       setShow(true);
     } else if (input_value === "Home Page - Hospitality") {
       setPageBackgrounds((background) => [
@@ -746,9 +751,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
       currentPageFields.push(submitButton);
       currentPageFields.push(brField);
     } else if (input_value === "Home Page - Transport") {
-      setPageBackgrounds([
-        "https://www.ashtonslegal.co.uk/wp-content/uploads/2019/03/Road-Transport-Solicitors.jpg",
-      ]);
       const navbarField = {
         type: "Navbar - Bootstrap",
         editing: false,
@@ -762,15 +764,10 @@ function InteractivePageBuilderInterface({ link, mode }) {
           src: process.env.PUBLIC_URL + "/img/Hospitality.png",
         },
       };
-
-      const containerField = {
-        type: "container",
-      };
-
       const imgField = {
-        type: "img",
+        type: "Image",
+        src: process.env.PUBLIC_URL + "/build/img/Hospitality.png",
         config: {
-          label: "img/Hospitality.png",
           alt: "Logo",
           width: "50",
           height: "50",
@@ -795,20 +792,11 @@ function InteractivePageBuilderInterface({ link, mode }) {
         type: "H3",
         label: "Welcome to",
       };
-      const headingField = {
-        type: "Heading",
-        label: "Argort Resort",
-        color: "whitesmoke",
-      };
+
       const centerComponentField = {
         type: "Center Component",
       };
-      const dateCheckInField = {
-        type: "Date - Check In",
-      };
-      const dateCheckOutField = {
-        type: "Date - Check Out",
-      };
+
       const roomsField = {
         type: "Rooms",
       };
@@ -820,6 +808,28 @@ function InteractivePageBuilderInterface({ link, mode }) {
       };
       const bookButtonField = {
         type: "Book Button",
+      };
+      const travellingFromField = {
+        type: "Input Field",
+        input_type: "text",
+        label: "From Location",
+        parent_style: [
+          { justifyContent: "center" },
+          { alignItems: "center" },
+          { display: "flex" },
+        ],
+        input_style: [{ width: "700px" }],
+      };
+      const travellingToField = {
+        type: "Input Field",
+        input_type: "text",
+        label: "To Location",
+        parent_style: [
+          { justifyContent: "center" },
+          { alignItems: "center" },
+          { display: "flex" },
+        ],
+        input_style: [{ width: "700px" }],
       };
 
       const newField2 = {
@@ -838,20 +848,19 @@ function InteractivePageBuilderInterface({ link, mode }) {
       const background = {
         type: "Background",
       };
+      const locationCheck = {
+        type: "Location Check"
+      }
       currentPageFields.push(background);
       currentPageFields.push(navbarField);
-      currentPageFields.push(containerField);
       currentPageFields.push(brField);
       currentPageFields.push(labelField);
       currentPageFields.push(navbarTogglefield);
-      currentPageFields.push(h3Field);
-      currentPageFields.push(headingField);
       currentPageFields.push(brField);
-      currentPageFields.push(centerComponentField);
-      currentPageFields.push(roomsField);
-      currentPageFields.push(guestsField);
-      currentPageFields.push(promoCodeField);
-      currentPageFields.push(bookButtonField);
+      currentPageFields.push(locationCheck);
+      currentPageFields.push(brField);
+
+
     } else if (
       input_value === "Sign Up Form" ||
       input_value === "Contact Us Form" ||
@@ -1557,6 +1566,45 @@ function InteractivePageBuilderInterface({ link, mode }) {
                 </div>
               );
               break;
+            case "Location Check":
+              formField = (
+                <div key={index}>
+                  <div>
+                    <InputField
+                      input={{
+                        type: field.input_type,
+                        style: { ...inputFieldStyle },
+                      }}
+                    >
+                      Location From
+                    </InputField>
+                    <InputField
+                      input={{
+                        type: field.input_type,
+                        style: { ...inputFieldStyle },
+                      }}
+                    >
+                      Location To
+                    </InputField>
+                    <Button
+                      style={{
+                        backgroundColor: "whitesmoke",
+                        opacity: "0.9",
+                        margin: "5px",
+                        borderRadius: "5px",
+                        color: "black",
+                        width: "100px",
+                        height: "54px",
+                      }}
+                    >
+                      Book
+                    </Button>
+                  </div>
+                  <br></br>
+                </div>
+              );
+              break;
+
             case "Center Component":
               formField = (
                 <div key={index}>
@@ -1796,7 +1844,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                 </div>
               );
               break;
-
             case "Image":
               formField = (
                 <div key={index} style={parentStyle}>
@@ -1804,7 +1851,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                 </div>
               );
               break;
-
             case "Heading":
               formField = (
                 <div>
@@ -3129,15 +3175,32 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   )}
                 </div>
               );
-
               break;
+
             case "Multi choice":
               formField = (
                 <div key={index}>
-                  <MultiChoice label={field.config.label}></MultiChoice>
+                  <Select
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                      display: "flex",
+                      maxWidth: "1200px",
+                    }}
+                    value={selectedValue}
+                    onClick={handleChange}
+                    label="Select Button Click Event"
+                  >
+                    {values.map((option, i) => (
+                      <option key={i} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </Select>
                 </div>
               );
               break;
+
             case "Drop-down":
               formField = (
                 <div key={index}>
@@ -3206,14 +3269,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     />
                   </Style>
                   <br></br>
-                </div>
-              );
-              break;
-
-            case "Multi choice":
-              formField = (
-                <div key={index}>
-                  <MultiChoice label={field.config.label}></MultiChoice>
                 </div>
               );
               break;
@@ -3539,6 +3594,38 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     <Label>This will navigate to page: {pageCounter + 1}</Label>
                   </div>
                 )}
+              </Form.Group>
+            )}
+            {configuration === "Multi choice" && (
+              <Form.Group className="mb-3">
+                <Divider>Multi choice Configuration</Divider>
+                <br />
+                {values.map((option, index) => (
+                  <Form.Group className="mb-3" key={index}>
+                    <Label>Option {index + 1}:</Label>
+                    <InputField
+                      value={option}
+                      onChange={(event) => {
+                        const newValues = [...values];
+                        newValues[index] = event.target.value;
+                        setValues(newValues);
+                      }}
+                      input={{
+                        name: `option-${index}`,
+                      }}
+                    />
+                  </Form.Group>
+                ))}
+                <Form.Group className="mb-3">
+                  <Label>Add option:</Label>
+                  <Button
+                    onClick={() => {
+                      setValues((prevValues) => [...prevValues, ""]);
+                    }}
+                  >
+                    Add Option
+                  </Button>
+                </Form.Group>
               </Form.Group>
             )}
           </Form>
