@@ -280,37 +280,55 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const updateData = (event, property, fieldIndex) => {
     const currentPage = page[0];
     const currentPageFields = currentPage.fields ? [...currentPage.fields] : [];
+    for (let i = currentPageFields.length - 1; i >= 0; i--) {
+      if (currentPageFields[i] === undefined) {
+        currentPageFields.splice(i, 1);
+      }
+    }
     const field = currentPageFields[fieldIndex];
-    if(field){
-      const updatedField = {
+    let updatedField = { ...field };
+    if (field && field.config) {
+      updatedField = {
         ...field,
         config: {
           ...field.config,
           [property]: event.target.value,
         },
       };
-      currentPageFields[fieldIndex] = updatedField;
-      const newPage = [{ ...currentPage, fields: currentPageFields }];
-      setPage(newPage);
-  
-      if (property === "label") {
-        setLabelValue((prevValues) => {
-          const newValues = [...prevValues];
-          newValues[fieldIndex] = event.target.value;
-          return newValues;
-        });
-      }
-      if (property === "editing") {
-        setIsEditing((prevValues) => {
-          const newValues = [...prevValues];
-          newValues[fieldIndex] = false;
-          return newValues;
-        });
-      }
-      const newFormData = { ...formData };
-      newFormData[field.name] = updatedField;
-      setFormData(newFormData);
+    } else if (field) {
+      updatedField = {
+        ...field,
+        [property]: event.target.value,
+      };
+    } else {
+      console.error(`Field at index ${fieldIndex} is undefined`);
+      console.log(currentPageFields);
     }
+      // update the array with the updatedField object
+    currentPageFields[fieldIndex] = updatedField;
+    const newPage = [{ ...currentPage, fields: currentPageFields }];
+    setPage(newPage);
+
+    if (property === "label") {
+      setLabelValue((prevValues) => {
+        const newValues = [...prevValues];
+        newValues[fieldIndex] = event.target.value;
+        return newValues;
+      });
+    }
+    if (property === "editing") {
+      setIsEditing((prevValues) => {
+        const newValues = [...prevValues];
+        newValues[fieldIndex] = false;
+        return newValues;
+      });
+    }
+    const newFormData = { ...formData };
+if (field && field.name) {
+  newFormData[field.name] = updatedField;
+}
+setFormData(newFormData);
+    
   };
 
   const resetConfiguration = () => {
@@ -353,7 +371,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
     currentPageFields.push(newField);
     const newPage = [{ ...currentPage, fields: currentPageFields }];
     setPage(newPage);
-    setLabelValue((prevValues) => [...prevValues, currentPageFields[currentPageFields.length - 1].label]);
+    setLabelValue((prevValues) => [...prevValues, ""]);
     setIsEditing((prevValues) => [...prevValues, false]);
     if (input_value === "Page Break") {
       handlePageBreakClick();
@@ -848,6 +866,11 @@ function InteractivePageBuilderInterface({ link, mode }) {
     const currentPageFields = [...currentPage.fields];
     currentPageFields.splice(index, 1);
     labelValue.splice(index, 1);
+    setIsEditing((prevValues) => {
+      const newValues = [...prevValues];
+      newValues[index] = false;
+      return newValues;
+    });
     
     setDeleteIndex(index);
     for (let i = deleteIndex; i < currentPageFields.length; i++) {
@@ -857,7 +880,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
       for (let i = 0; i < labelValue.length; i++) {
         if (labelValue[i] === "") {
           labelValue.splice(i, 1);
-          i--;
         }
       }
     setNumDeletes(numDeletes + 1);
@@ -1015,7 +1037,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         }
                       />
                       {showButtons && (
-                        <IoIosCreate style={{ transform: 'scale(2)', color: 'white' }}
+                        <IoIosCreate
                           onClick={() => handleElementClick(index)}
                         />
                       )}
@@ -1134,7 +1156,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       src="https://www.westyorks-ca.gov.uk/media/6198/contact-us-1908763_1920-copy111.png?width=794&height=227&mode=max"
                     />
                     {showButtons && (
-                      <IoIosCreate style={{ transform: 'scale(2)', color: 'white' }} onClick={() => handleElementClick(index)} />
+                      <IoIosCreate onClick={() => handleElementClick(index)} />
                     )}
                     <br></br>
 
@@ -1142,8 +1164,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       <Heading>Register your details</Heading>
                       {showButtons && (
                         <IoIosCreate
-                        style={{ transform: 'scale(2)', color: 'white' }}
-                        onClick={() => handleElementClick(index)}
+                          onClick={() => handleElementClick(index)}
                         />
                       )}
                       <br></br>
@@ -1156,7 +1177,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       </InputField>
                       {showButtons && (
                         <IoIosCreate
-                        style={{ transform: 'scale(2)', color: 'white' }}
                           onClick={() => handleElementClick(index)}
                         />
                       )}
@@ -1169,7 +1189,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       </InputField>
                       {showButtons && (
                         <IoIosCreate
-                        style={{ transform: 'scale(2)', color: 'white' }}
                           onClick={() => handleElementClick(index)}
                         />
                       )}
@@ -1182,8 +1201,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       </InputField>
                       {showButtons && (
                         <IoIosCreate
-                        style={{ transform: 'scale(2)', color: 'white' }}
-                        onClick={() => handleElementClick(index)}
+                          onClick={() => handleElementClick(index)}
                         />
                       )}
                       <br></br>
@@ -1195,7 +1213,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       </InputField>
                       {showButtons && (
                         <IoIosCreate
-                        style={{ transform: 'scale(2)', color: 'white' }}
                           onClick={() => handleElementClick(index)}
                         />
                       )}
@@ -1208,7 +1225,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       </InputField>
                       {showButtons && (
                         <IoIosCreate
-                        style={{ transform: 'scale(2)', color: 'white' }}
                           onClick={() => handleElementClick(index)}
                         />
                       )}
@@ -1221,7 +1237,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       </InputField>
                       {showButtons && (
                         <IoIosCreate
-                        style={{ transform: 'scale(2)', color: 'white' }}
                           onClick={() => handleElementClick(index)}
                         />
                       )}
@@ -1229,7 +1244,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       <Button>Submit</Button>
                       {showButtons && (
                         <IoIosCreate
-                        style={{ transform: 'scale(2)', color: 'white' }}
                           onClick={() => handleElementClick(index)}
                         />
                       )}
@@ -1248,7 +1262,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                           , except where otherwise stated
                           {showButtons && (
                             <IoIosCreate
-                            style={{ transform: 'scale(2)', color: 'white' }}
                               onClick={() => handleElementClick(index)}
                             />
                           )}
@@ -1594,93 +1607,193 @@ function InteractivePageBuilderInterface({ link, mode }) {
                 </div>
               );
               break;
-            case "Toggle Switch":
-              formField = (
-                <div>
-                   {isEditing[index] ? (
-                    <div
-                      ref={inputRef}
-                      style={{
-                        position: "relative",
-                        display: "inline-block",
-                        borderRadius: "8px",
-                        overflow: "hidden",
-                        boxShadow: "0 0 10px rgba(0, 0, 0, 0.2",
-                        transition: "transform 0.3s ease-in-out",
-                        marginTop: "10px",
-                        backgroundColor: "white"
-                      }}
-                    >
-                      <h3 style={{ padding: "10px", paddingBottom: "5px" }}>
-                        Edit Toggle Switch
-                      </h3>
-                      <label
-                        htmlFor="headingtext"
+              case "Toggle Switch":
+                formField = (
+                  <div>
+                     {isEditing[index] ? (
+                      <div
+                        ref={inputRef}
                         style={{
-                          color: "#888",
-                          fontStyle: "italic",
-                          paddingLeft: "5px",
+                          position: "relative",
+                          display: "inline-block",
+                          borderRadius: "8px",
+                          overflow: "hidden",
+                          boxShadow: "0 0 10px rgba(0, 0, 0, 0.2",
+                          transition: "transform 0.3s ease-in-out",
+                          marginTop: "10px",
+                          backgroundColor: "white"
                         }}
                       >
-                        Text
-                      </label>
-                      <input
+                        <h3 style={{ padding: "10px", paddingBottom: "5px" }}>
+                          Edit Toggle Switch
+                        </h3>
+                        <label
+                          htmlFor="headingtext"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                          }}
+                        >
+                          Text
+                        </label>
+                        <input
+                          style={{
+                            display: "block",
+                            marginBottom: "40px",
+                            paddingLeft: "5px",
+                            paddingRight: "5px",
+                          }}
+                          id="headingtext"
+                          autoFocus="autoFocus"
+                          type="text"
+                          value={text}
+                          onChange={(event) => handleTextChange(event, index)}
+                        />
+                        <button
+                          style={{
+                            backgroundColor: "#528AAE",
+                            color: "white",
+                            borderRadius: "4px",
+                            display: "block",
+                            position: "absolute",
+                            bottom: "5px",
+                            right: "10px",
+                          }}
+                          onClick={() => handleClickOutside(index)}
+                        >
+                          Save Changes
+                        </button>
+                        <button
+                          style={{
+                            backgroundColor: "red",
+                            color: "white",
+                            borderRadius: "4px",
+                            display: "block",
+                            position: "absolute",
+                            bottom: "5px",
+                            left: "10px",
+                          }}
+                          onClick={() => handleRemoveTemplateField(index)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    ) : (
+                  <div key={index}>
+                    <Switch onChange={handleSwitch} checked={checked} />
+  
+                    <br />
+                    {showButtons && (
+                          <IoIosCreate style={{ transform: 'scale(2)'}} onClick={() => handleElementClickTemplate(labelValue[index] || field.label, index)} />
+                      )}
+                    <br></br>
+                    
+                  </div>
+                   )}
+                   </div>
+                );
+                break;
+              case "Raised Button":
+                formField = (
+                  <div>
+                    {isEditing[index] ? (
+                      <div
+                        ref={inputRef}
                         style={{
-                          display: "block",
-                          marginBottom: "40px",
-                          paddingLeft: "5px",
-                          paddingRight: "5px",
+                          position: "relative",
+                          display: "inline-block",
+                          borderRadius: "8px",
+                          overflow: "hidden",
+                          boxShadow: "0 0 10px rgba(0, 0, 0, 0.2",
+                          transition: "transform 0.3s ease-in-out",
+                          marginTop: "10px",
                         }}
-                        id="headingtext"
-                        autoFocus="autoFocus"
-                        type="text"
-                        value={text}
-                        onChange={(event) => handleTextChange(event, index)}
-                      />
-                      <button
-                        style={{
-                          backgroundColor: "#528AAE",
-                          color: "white",
-                          borderRadius: "4px",
-                          display: "block",
-                          position: "absolute",
-                          bottom: "5px",
-                          right: "10px",
-                        }}
-                        onClick={() => handleClickOutside(index)}
                       >
-                        Save Changes
-                      </button>
-                      <button
-                        style={{
-                          backgroundColor: "red",
-                          color: "white",
-                          borderRadius: "4px",
-                          display: "block",
-                          position: "absolute",
-                          bottom: "5px",
-                          left: "10px",
-                        }}
-                        onClick={() => handleRemoveTemplateField(index)}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  ) : (
-                <div key={index}>
-                  <Switch onChange={handleSwitch} checked={checked} />
-
-                  <br />
-                  {showButtons && (
-                        <IoIosCreate style={{ transform: 'scale(2)'}} onClick={() => handleElementClickTemplate(labelValue[index] || field.label, index)} />
+                        <h3 style={{ padding: "10px", paddingBottom: "5px" }}>
+                          Edit Button
+                        </h3>
+                        <label
+                          htmlFor="buttontext"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                          }}
+                        >
+                          Text
+                        </label>
+                        <input
+                          style={{
+                            display: "block",
+                            marginBottom: "40px",
+                            paddingLeft: "5px",
+                            paddingRight: "5px",
+                          }}
+                          id="buttontext"
+                          autoFocus="autoFocus"
+                          type="text"
+                          value={text}
+                          onChange={(event) => handleTextChange(event, index)}
+                        />
+                        <button
+                          style={{
+                            backgroundColor: "#528AAE",
+                            color: "white",
+                            borderRadius: "4px",
+                            display: "block",
+                            position: "absolute",
+                            bottom: "5px",
+                            right: "10px",
+                          }}
+                          onClick={() => handleClickOutside(index)}
+                        >
+                          Save Changes
+                        </button>
+                        <button
+                          style={{
+                            backgroundColor: "red",
+                            color: "white",
+                            borderRadius: "4px",
+                            display: "block",
+                            position: "absolute",
+                            bottom: "5px",
+                            left: "10px",
+                          }}
+                          onClick={() => handleRemoveField(index)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    ) : (
+                      <div key={index}>
+                        <br />
+                        <Button
+                          style={{
+                            width: field.config.width + "px",
+                            height: field.config.height + "px",
+                          }}
+                          input={{
+                            type: field.type,
+                            name: field.label,
+                            required: field.required,
+                          }}
+                        >
+                          {labelValue[index]}
+                        </Button>
+                        <br></br>
+                        {showButtons && (
+                          <IoIosCreate
+                          style={{ transform: 'scale(2)'}}
+                            onClick={() => handleElementClick(index)}
+                          />
+                        )}
+                      </div>
                     )}
-                  <br></br>
-                  
-                </div>
-                 )}
-                 </div>
-              );
-              break;
+                  </div>
+                );
+                break;
+
             case "Heading":
               formField = (
                 <div>
@@ -2043,7 +2156,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       </Label>
                       {showButtons[index] && (
                         <IoIosCreate
-                        style={{ transform: 'scale(2)'}}
                           onClick={() => handleElementClick(index)}
                         />
                       )}
@@ -2189,7 +2301,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       />
                       {showButtons && (
                         <IoIosCreate
-                        style={{ transform: 'scale(2)'}}
                           onClick={() => handleElementClick(index)}
                         />
                       )}
@@ -2284,7 +2395,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       <br />
                       {showButtons && (
                         <IoIosCreate
-                        style={{ transform: 'scale(2)'}}
                           onClick={() => handleElementClick(index)}
                         />
                       )}
@@ -2428,13 +2538,12 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       >
                         {labelValue[index]}
                       </Button>
-                      <br></br>
                       {showButtons && (
                         <IoIosCreate
-                        style={{ transform: 'scale(2)'}}
                           onClick={() => handleElementClick(index)}
                         />
                       )}
+                      <br></br>
                     </div>
                   )}
                 </div>
@@ -2554,7 +2663,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       </Label>
                       {showButtons && (
                         <IoIosCreate
-                        style={{ transform: 'scale(2)'}}
                           onClick={() => handleElementClick(index)}
                         />
                       )}
@@ -2646,13 +2754,12 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       >
                         {labelValue[index]}
                       </label>
-                      <br></br>
                       {showButtons && (
                         <IoIosCreate
-                        style={{ transform: 'scale(2)'}}
                           onClick={() => handleElementClick(index)}
                         />
                       )}
+                      <br></br>
                     </div>
                   )}
                 </div>
@@ -2742,7 +2849,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       </Heading>
                       {showButtons && (
                         <IoIosCreate
-                        style={{ transform: 'scale(2)'}}
                           onClick={() => handleElementClick(index)}
                         />
                       )}
@@ -2774,7 +2880,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       />
                       {showButtons && (
                         <IoIosCreate
-                        style={{ transform: 'scale(2)' }}
                           onClick={() => handleElementClick(index)}
                         />
                       )}
@@ -2828,136 +2933,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                 </div>
               );
               break;
-            case "Navbar - Bootstrap":
-              formField = (
-                <div>
-                  {isEditing[index] ? (
-                    <div
-                      ref={inputRef}
-                      style={{
-                        position: "relative",
-                        display: "inline-block",
-                        borderRadius: "8px",
-                        overflow: "hidden",
-                        boxShadow: "0 0 10px rgba(0, 0, 0, 0.2",
-                        transition: "transform 0.3s ease-in-out",
-                        marginTop: "10px",
-                        backgroundColor: "white"
-                      }}
-                    >
-                      <h3 style={{ padding: "10px", paddingBottom: "5px" }}>
-                        Edit Navbar
-                      </h3>
-                      <label
-                        htmlFor="headingtext"
-                        style={{
-                          color: "#888",
-                          fontStyle: "italic",
-                          paddingLeft: "5px",
-                        }}
-                      >
-                        Text
-                      </label>
-                      <input
-                        style={{
-                          display: "block",
-                          marginBottom: "40px",
-                          paddingLeft: "5px",
-                          paddingRight: "5px",
-                        }}
-                        id="headingtext"
-                        autoFocus="autoFocus"
-                        type="text"
-                        value={text}
-                        onChange={(event) => handleTextChange(event, index)}
-                      />
-                      <button
-                        style={{
-                          backgroundColor: "#528AAE",
-                          color: "white",
-                          borderRadius: "4px",
-                          display: "block",
-                          position: "absolute",
-                          bottom: "5px",
-                          right: "10px",
-                        }}
-                        onClick={() => handleClickOutside(index)}
-                      >
-                        Save Changes
-                      </button>
-                      <button
-                        style={{
-                          backgroundColor: "red",
-                          color: "white",
-                          borderRadius: "4px",
-                          display: "block",
-                          position: "absolute",
-                          bottom: "5px",
-                          left: "10px",
-                        }}
-                        onClick={() => handleRemoveTemplateField(index)}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  ) : (
-                <div key={index} style={{marginTop: '0px'}}>
-                  <Navbar collapseOnSelect expand="lg" bg="transparent">
-                    <Container >
-                      <Navbar.Brand href="/">
-                        <center>
-                          <img
-                            src={
-                              process.env.PUBLIC_URL + "/img/Hospitality.png"
-                            }
-                            alt="Logo"
-                            width="50"
-                            height="50"
-                            className="d-inline-block align-top"
-                          />
-                          <br></br>
-                          <label
-                            style={{ color: "whitesmoke", fontWeight: "bold", marginBottom: '0px' }}
-                          >
-                            {labelValue[index] || labelValue[index] === "" ? labelValue[index] : field.label}
-                          </label>
-                        </center>
-                        x
-                      </Navbar.Brand>
-                      <center >
-                      {showButtons && (
-                        <IoIosCreate style={{ transform: 'scale(2)', color: 'white' }} onClick={() => handleElementClickTemplate(labelValue[index] || field.label, index)} />
-                    )}
-                      </center>
-                      <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-
-                      <div
-                        style={{
-                          justifyContent: "center",
-                          alignItems: "center",
-                          display: "flex",
-                          marginBottom: '0px'
-                        }}
-                      >
-                        <Navbar.Collapse style={{marginBottom: '0px'}} id="responsive-navbar-nav">
-                          <Nav className="me-auto" style={{marginBottom: '0px'}}>
-                            <Nav.Link href="/" style={{ color: "whitesmoke", marginBottom: '0px' }}>
-                              Home
-                            </Nav.Link>
-                            <Nav.Link href="/" style={{ color: "whitesmoke", marginBottom: '0px'  }}>
-                              Book
-                            </Nav.Link>
-                          </Nav>
-                        </Navbar.Collapse>
-                      </div>
-                    </Container>
-                  </Navbar>
-                </div>
-                  )}
-                </div>
-              );
-              break;
-
             case "Footer":
               formField = (
                 <div>
@@ -3047,7 +3022,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       />
                       {showButtons && (
                         <IoIosCreate
-                        style={{ transform: 'scale(2)'}}
                           onClick={() => handleElementClick(index)}
                         />
                       )}
