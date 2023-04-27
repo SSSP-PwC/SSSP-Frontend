@@ -285,11 +285,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
     setText(templateText);
   };
   const handleSelectChange = (event) => {
-    setSelectedOption((prevValues) => {
-      const newValues = [...prevValues];
-      newValues[index] = event.target.value;
-      return newValues;
-    });
+
   };
 
   const handleClickOutside = (index) => {
@@ -3090,7 +3086,7 @@ setFormData(newFormData);
                             >
                               Size
                             </label>
-                            <select id="headingsize" value={selectedOption} onChange={handleSelectChange}>
+                            <select id="headingsize" value={""} onChange={handleSelectChange}>
                             {sizeOptions.map(option => (
                             <option key={option.value} value={option.value}>{option.label}</option>
                              ))}
@@ -3127,7 +3123,7 @@ setFormData(newFormData);
                   ) : (
                     <div key={index}>
                       <Heading
-                        size= {selectedOptionHeading[index]}
+                        size="LARGE"
                         style={{ display: "block", color: componentColors[index] }}
                         input={{
                           type: "text",
