@@ -2,17 +2,16 @@ import React, { useEffect, useState } from "react";
 import { useTable, useSortBy } from "react-table";
 
 const EditableCell = ({
-  cell: { value: initialValue }, 
-  row: { index }, 
-  column: { id }, 
-  updateMyData 
+  cell: { value: initialValue },
+  row: { index },
+  column: { id },
+  updatedData,
 }) => {
   const [value, setValue] = useState(initialValue);
 
-  const handleChange = e => setValue(e.target.value);
+  const handleChange = (e) => setValue(e.target.value);
 
-  const handleBlur = () => updateMyData(index, id, value); 
-
+  const handleBlur = () => updatedData(index, id, value);
 
   useEffect(() => {
     setValue(initialValue);
@@ -22,33 +21,27 @@ const EditableCell = ({
 };
 
 const defaultColumn = {
-  Cell: EditableCell
+  Cell: EditableCell,
 };
-const Table = ({ columns, data, updateMyData }) => {
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow
-  } = useTable(
-    {
-      columns,
-      data,
-      defaultColumn, 
-      updateMyData
-    },
-    useSortBy
-  );
+const Table = ({ id, columns, data, updatedData }) => {
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
+    useTable(
+      {
+        columns,
+        data,
+        defaultColumn,
+        updatedData,
+      },
+      useSortBy
+    );
 
   return (
     <>
-      <table {...getTableProps()}>
+      <table {...getTableProps()} key={`table-${id}`}>
         <thead>
-          {headerGroups.map(headerGroup => (
+          {headerGroups.map((headerGroup) => (
             <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map(column => (
-         
+              {headerGroup.headers.map((column) => (
                 <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                   {column.render("Header")}
                   <span>
@@ -68,7 +61,7 @@ const Table = ({ columns, data, updateMyData }) => {
             (row, i) =>
               prepareRow(row) || (
                 <tr {...row.getRowProps()}>
-                  {row.cells.map(cell => {
+                  {row.cells.map((cell) => {
                     return (
                       <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
                     );
