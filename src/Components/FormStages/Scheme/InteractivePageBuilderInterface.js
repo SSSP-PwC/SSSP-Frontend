@@ -1144,7 +1144,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
         .then((data) => setOptions(data));
     };
     const getImage = () => {
-      fetch(`ttps://sssp-378808.nw.r.appspot.com/api/`);
+      fetch(`https://sssp-378808.nw.r.appspot.com/api/`);
     };
     getCompanies();
     setLoading(false);
@@ -2240,7 +2240,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                                   : "relative",
                               left:
                                 componentPositions[index] === "left"
-                                  ? "500px"
+                                  ? "400px"
                                   : componentPositions[index] === "right"
                                   ? "auto"
                                   : componentLefts[index] !== ""
@@ -2248,7 +2248,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                                   : "auto",
                               right:
                                 componentPositions[index] === "right"
-                                  ? "500px"
+                                  ? "400px"
                                   : componentPositions[index] === "left"
                                   ? "auto"
                                   : componentRights[index] !== ""
