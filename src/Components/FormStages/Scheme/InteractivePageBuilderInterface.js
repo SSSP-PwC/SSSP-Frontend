@@ -499,6 +499,9 @@ function InteractivePageBuilderInterface({ link, mode }) {
     } else if (input_value === "Image") {
       setConfiguration("Image");
       setShow(true);
+    } else if (input_value === "Navbar") {
+      setConfiguration("Navbar");
+      setShow(true);
     } else if (input_value === "Home Page - Hospitality") {
       setPageBackgrounds((background) => [
         ...background,
@@ -3896,6 +3899,21 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   </center>
                 </div>
               )}
+              {configuration === "Navbar" && (
+              <div>
+              <Divider>General Details</Divider>
+
+              <Label>Label Name:</Label>
+              <InputField
+                onChange={(event) =>
+                  updateData(event, "label", numberOfElements)
+                }
+                input={{
+                  name: "label",
+                }}
+              />
+            </div>
+              )}
               {configuration === "Table" && (
                 <div>
                   <Divider>Table Details</Divider>
@@ -4057,7 +4075,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                 <Form.Group className="mb-3">
                   <Label>Add option:</Label>
                   <Button
-                  type="button"
+                    type="button"
                     onClick={() => {
                       setValues((prevValues) => [...prevValues, ""]);
                     }}
