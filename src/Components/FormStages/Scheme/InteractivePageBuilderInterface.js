@@ -2149,7 +2149,8 @@ function InteractivePageBuilderInterface({ link, mode }) {
         style={{
           display: "block",
           marginLeft: "auto",
-    marginRight: "auto"
+    marginRight: "auto",
+    marginBottom: '40px'
         }}
         id="buttonposition"
         value={componentPositions[index]}
@@ -2159,37 +2160,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
         <option value="right">Left</option>
         <option value="left">Right</option>
       </select>
-      <label
-        htmlFor="buttonpositionab"
-        style={{
-          color: "#888",
-          fontStyle: "italic",
-          paddingLeft: "5px",
-        }}
-      >
-        Absolute Position
-      </label>
-      <div style={{display: 'block'}}>
-      <label htmlFor="buttonheight" style={{paddingLeft: "5px" }}>
-    Margin Top (px)
-  </label>
-  <input style={{ display: "inline-block", paddingLeft: "5px", paddingRight: "5px", width: '10%' }} id="buttonheight" type="text" value={componentTops[index]} onChange={(event) => handleTopChange(event, index)} />
-  <label htmlFor="buttonheight" style={{paddingLeft: "5px" }}>
-  Margin Left (px)
-  </label>
-  <input style={{ display: "inline-block", paddingLeft: "5px", paddingRight: "5px", width: '10%' }} id="buttonheight" type="text" value={componentLefts[index]} onChange={(event) => handleLeftChange(event, index)} />
-      </div>
-      <div style={{display: 'block', marginBottom: '40px'}}>
-      <label htmlFor="buttonheight" style={{paddingLeft: "5px" }}>
-      Margin Right (px)
-  </label>
-  <input style={{ display: "inline-block", paddingLeft: "5px", paddingRight: "5px", width: '10%' }} id="buttonheight" type="text" value={componentRights[index]} onChange={(event) => handleRightChange(event, index)} />
-  <label htmlFor="buttonheight" style={{paddingLeft: "5px" }}>
-  Margin Bottom (px)
-  </label>
-  <input style={{ display: "inline-block", paddingLeft: "5px", paddingRight: "5px", width: '10%' }} id="buttonheight" type="text" value={componentBottoms[index]} onChange={(event) => handleBottomChange(event, index)} />
-      </div>
-
                           </div>
                           <button
                             style={{
@@ -2224,38 +2194,11 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         <div key={index} >
                           <br />
                           <Button
-                            style={{
-                              width: componentWidths[index] + "px",
-                              height: componentHeights[index] + "px",
-                              backgroundColor: componentColors[index],
-                              position:
-                                componentPositions[index] === "left" ||
-                                componentPositions[index] === "right" ||
-                                componentTops[index] !== "" ||
-                                componentLefts[index] !== "" ||
-                                componentRights[index] !== "" ||
-                                componentBottoms[index] !== ""
-                                  ? "absolute"
-                                  : "relative",
-                              left:
-                                componentPositions[index] === "left"
-                                  ? "500px"
-                                  : componentPositions[index] === "right"
-                                  ? "auto"
-                                  : componentLefts[index] !== ""
-                                  ? componentLefts[index] + "px"
-                                  : "auto",
-                              right:
-                                componentPositions[index] === "right"
-                                  ? "500px"
-                                  : componentPositions[index] === "left"
-                                  ? "auto"
-                                  : componentRights[index] !== ""
-                                  ? componentRights[index] + "px"
-                                  : "auto",
-                              top: componentTops[index] !== "" ? componentTops[index] + "px" : "auto",
-                              bottom: componentBottoms[index] !== "" ? componentBottoms[index] + "px" : "auto",
-                            }}
+                              style={{
+                                width: componentWidths[index] + "px",
+                                height: componentHeights[index] + "px",
+                                backgroundColor: componentColors[index],
+                              }}
                             input={{
                               type: field.type,
                               name: field.label,
@@ -3625,6 +3568,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         />
                         {showButtons && (
                           <IoIosCreate
+                          style={{ transform: 'scale(2)'}}
                             onClick={() => handleElementClick(index)}
                           />
                         )}
