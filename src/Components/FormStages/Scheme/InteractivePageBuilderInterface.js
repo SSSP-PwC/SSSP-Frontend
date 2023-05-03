@@ -2228,7 +2228,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                               width: componentWidths[index] + "px",
                               height: componentHeights[index] + "px",
                               backgroundColor: componentColors[index],
-                              margin: "0 auto",
                               position:
                                 componentPositions[index] === "left" ||
                                 componentPositions[index] === "right" ||
@@ -2240,7 +2239,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                                   : "relative",
                               left:
                                 componentPositions[index] === "left"
-                                  ? "400px"
+                                  ? "500px"
                                   : componentPositions[index] === "right"
                                   ? "auto"
                                   : componentLefts[index] !== ""
@@ -2248,17 +2247,14 @@ function InteractivePageBuilderInterface({ link, mode }) {
                                   : "auto",
                               right:
                                 componentPositions[index] === "right"
-                                  ? "400px"
+                                  ? "500px"
                                   : componentPositions[index] === "left"
                                   ? "auto"
                                   : componentRights[index] !== ""
                                   ? componentRights[index] + "px"
                                   : "auto",
                               top: componentTops[index] !== "" ? componentTops[index] + "px" : "auto",
-                              bottom:
-                                componentBottoms[index] !== ""
-                                  ? componentBottoms[index] + "px"
-                                  : "auto",
+                              bottom: componentBottoms[index] !== "" ? componentBottoms[index] + "px" : "auto",
                             }}
                             input={{
                               type: field.type,
