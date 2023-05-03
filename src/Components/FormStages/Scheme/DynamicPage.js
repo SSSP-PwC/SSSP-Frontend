@@ -32,6 +32,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
+import { ArrowForwardIosOutlined } from "@mui/icons-material";
 function DynamicPage() {
   const { pageId, endpoint } = useParams();
   const [data, setData] = useState([]);
@@ -144,8 +145,6 @@ function DynamicPage() {
             : [])
         );
         switch (field.config?.type) {
-          
-
           case "Text Field":
             formField = (
               <div key={index}>
@@ -170,6 +169,92 @@ function DynamicPage() {
               </div>
             );
             break;
+          case "Input Field":
+            formField = (
+              <div key={index} >
+                  <InputField
+                    input={{
+                      type: field.input_type,
+                      style: {maxWidth: "700px"} ,
+                    }}
+                  >
+                    {field.label}
+                  </InputField>
+              </div>
+            );
+            break;
+          case "Location Check":
+            formField = (
+              <div key={index}>
+                <div
+                  style={{
+                    backgroundImage: `url("https://eu-assets.simpleview-europe.com/birmingham-meet/imageresizer/?image=%2Fdbimgs%2Ftram-victoria-square.jpg&action=MediaGalleryNew")`,
+                  }}
+                >
+                  <br></br>
+                  <div
+                    style={{
+                      backgroundColor: "#09004a",
+                      borderRadius: "12px",
+                    }}
+                  >
+                    <br></br>
+                    <TextField
+                      label="Location From"
+                      variant="outlined"
+                      sx={{
+                        "& fieldset": {
+                          borderColor: "white",
+                          color: "white",
+                        },
+                        input: { color: "white" },
+                        svg: { color: "white" },
+                        label: { color: "white" },
+                        margin: "12px",
+                      }}
+                      style={{
+                        style: { backgroundColor: "white" },
+                      }}
+                    />
+                    <ArrowForwardIosOutlined
+                      style={{ margin: "25px", color: "whitesmoke" }}
+                    />
+
+                    <TextField
+                      label="Location To"
+                      variant="outlined"
+                      sx={{
+                        "& fieldset": { border: "none" },
+                        input: { color: "black" },
+                        svg: { color: "black" },
+                        label: { color: "black" },
+                        backgroundColor: "white",
+                        margin: "12px",
+                      }}
+                      style={{
+                        style: { backgroundColor: "white" },
+                      }}
+                    />
+                    <Button
+                      style={{
+                        backgroundColor: "whitesmoke",
+                        opacity: "0.9",
+                        margin: "5px",
+                        borderRadius: "5px",
+                        color: "black",
+                        width: "100px",
+                        height: "54px",
+                      }}
+                    >
+                      Plan & Buy
+                    </Button>
+                  </div>
+                  <br></br>
+                </div>
+              </div>
+            );
+            break;
+
           case "Email":
             formField = (
               <div key={index}>
@@ -295,7 +380,10 @@ function DynamicPage() {
           case "Image":
             formField = (
               <div key={index} style={parentStyle}>
-                <img src={field.config.image_source} style={inputFieldStyle} />
+                <img
+                  src={field.config.image_source}
+                  style={{ width: "1000px" }}
+                />
               </div>
             );
             break;
@@ -325,32 +413,17 @@ function DynamicPage() {
               </div>
             );
             break;
-          case "Input Field":
-            formField = (
-              <div key={index} style={parentStyle}>
-                <center>
-                  <InputField
-                    input={{
-                      type: field.input_type,
-                      style: { ...inputFieldStyle },
-                    }}
-                  >
-                    {field.label}
-                  </InputField>
-                </center>
-              </div>
-            );
-            break;
+
           case "Body":
             formField = (
               <div key={index}>
                 <body
                   input={{
                     type: "text",
-                    value: field.config.label,
+                    value: field.config.config.label,
                   }}
                 >
-                  {field.config.label}
+                  {field.config.config.label}
                 </body>
                 <br></br>
               </div>
@@ -606,6 +679,7 @@ function DynamicPage() {
                 <center>
                   <Heading style={{ color: "black", fontWeight: "bold" }}>
                     {field.config.label}
+                    {console.log(field.config)}
                   </Heading>
                 </center>
               </div>
@@ -630,7 +704,7 @@ function DynamicPage() {
                     type: "text",
                   }}
                 >
-                  {field.config.label}
+                  {field.config.config.label}
                 </Heading>
                 <br></br>
               </div>
@@ -647,7 +721,7 @@ function DynamicPage() {
                       height: field.height + "px",
                     }}
                   >
-                    {field.label}
+                    {field.config.label || field.config.config.label}
                   </Button>
                 </Link>
               </div>
@@ -685,8 +759,8 @@ function DynamicPage() {
                     backgroundColor: formData.color,
                   }}
                   company={
-                    <TopNav.Anchor target="new">
-                      {field.config.label}
+                    <TopNav.Anchor target="new" style={{ fontSize: "22px" }}>
+                      {field.config.config.label}
                     </TopNav.Anchor>
                   }
                 />
@@ -833,7 +907,7 @@ function DynamicPage() {
 
   return (
     <div style={{ overflowWrap: "break-word", height: "100vh" }}>
-      {renderForm()}
+      <center> {renderForm()}</center>
     </div>
   );
 }

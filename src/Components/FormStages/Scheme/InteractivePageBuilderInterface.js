@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useMemo } from "react";
-import { Divider, Switch, ThemeProvider } from "@mui/material";
+import { Divider, Switch, TextField, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 import Modal from "react-bootstrap/Modal";
 import {
@@ -18,6 +18,8 @@ import {
 } from "govuk-react";
 import Select from "@mui/material/Select";
 import dayjs from "dayjs";
+import { useDispatch } from "react-redux";
+
 import FormControl from "@mui/material/FormControl";
 import { Container, Form } from "react-bootstrap";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
@@ -42,20 +44,16 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import InputLabel from "@mui/material/InputLabel";
 import styled from "styled-components";
 import Carousel from "react-bootstrap/Carousel";
+import { NotificationsProvider } from "reapop";
 
-import {
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  TextField,
-} from "@mui/material";
+import { List, ListItem, ListItemIcon, ListItemText } from "@mui/material";
 import {
   ArrowDropDownCircleOutlined,
   ArrowForwardIosOutlined,
   CropLandscapeOutlined,
   DetailsOutlined,
   DynamicFormOutlined,
+  InputOutlined,
   LabelImportantOutlined,
   RadioButtonChecked,
   SmartButtonOutlined,
@@ -78,10 +76,17 @@ import { style } from "@mui/system";
 import Table from "./Table";
 import { v4 as uuidv4 } from "uuid";
 
+//import { withValidator,required, min, max, number, minLength, maxLength, email,} from "react-constraint-validation";
+//import { ErrorMessage, Field, Formik } from "formik";
+//const TextField = withValidator({ required, minLength, maxLength })(Field);
+//const NumberField = withValidator({ required, min, max }, { number })(Field);
+//const EmailField = withValidator({ required }, { email })(Field);
+import { notify } from "reapop";
+
 function InteractivePageBuilderInterface({ link, mode }) {
   const [theme, colorMode] = useMode();
   const [buttonLink, setButtonLink] = useState();
-
+  const [required, setRequired] = useState();
   const [selectedValue, setSelectedValue] = useState("Blank");
   const id = sessionStorage.getItem("Citizen_ID");
   const [show, setShow] = useState(false);
@@ -95,6 +100,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const [preview, setPreview] = useState();
   const [imagePopup, setImagePopup] = useState(false);
   const [sidebar, setSideBar] = useState(false);
+  const [imageSource, setImageSource] = useState()
   const handleCloseImagePopup = () => setImagePopup(false);
   const [inputColumns, setNumberOfColumns] = useState(0);
   const [showForm, setShowForm] = useState(false);
@@ -106,6 +112,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const [deleteIndex, setDeleteIndex] = useState(0);
   const [checked, setChecked] = useState(false);
   const [rooms, setRooms] = useState(0);
+  const [published, setPublished] = useState(false);
   const [checkinDate, setCheckinDate] = useState();
   const [checkoutDate, setCheckoutDate] = useState();
   const [currentTemplate, setCurrentTemplate] = useState(null);
@@ -116,6 +123,10 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const [values, setValues] = useState([]);
   const [image, setImage] = useState([]);
   const [imageURL, setImageURL] = useState([]);
+  const [constraintValues, setConstraintValues] = useState(
+    Array(values.length).fill("")
+  );
+
   console.log(imageURL);
   const [homepageHospitalityComponent, setHomepageHospitalityComponent] =
     useState([]);
@@ -128,6 +139,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const [formData, setFormData] = useState("");
 
   const [options, setOptions] = useState();
+  const constraintsList = ["Required", "Min Max", "Length", "Pattern"];
 
   const isSmallScreen = false;
   const colors = tokens(theme.palette.mode);
@@ -135,6 +147,9 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const [labelValue, setLabelValue] = useState([]);
   const [buttonConfiguration, setButtonConfiguration] = useState(false);
   const [configuration, setConfiguration] = useState("");
+  const [selectedValues, setSelectedValues] = useState(
+    Array(values.length).fill("")
+  );
 
   const [searchText, setSearchText] = useState("");
   const [selected, setSelected] = useState(undefined);
@@ -147,11 +162,10 @@ function InteractivePageBuilderInterface({ link, mode }) {
   ]);
 
   const sizeOptions = [
-    { value: 'SMALL', label: 'Small' },
-    { value: 'MEDIUM', label: 'Medium' },
-    { value: 'LARGE', label: 'Large' }
+    { value: "SMALL", label: "Small" },
+    { value: "MEDIUM", label: "Medium" },
+    { value: "LARGE", label: "Large" },
   ];
-
   const [isEditing, setIsEditing] = useState([]);
   const [text, setText] = useState("Hello");
   const [selectedOptionHeading, setSelectedOptionHeading] = useState([]);
@@ -166,6 +180,12 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const [componentLefts, setComponentLefts] = useState([]);
   const [recentlyDeleted, setRecentlyDeleted] = useState(false);
   const [showButtons, setShowButtons] = useState(false);
+  const [minMaxFields, setMinMaxField] = useState(false);
+  const [min, setMin] = useState(0);
+  const [length, setLength] = useState(0);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const [max, setMax] = useState(0);
   const inputRef = useRef(null);
   const imageUploadOptions = [
     "Upload Image through File System",
@@ -324,7 +344,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
     });
     setText(templateText);
   };
-  const handleSelectChange = (size, index) => {
+    const handleSelectChange = (size, index) => {
     setSelectedOptionHeading((prevValues) => {
       const newValues = [...prevValues];
       newValues[index] = size;
@@ -339,8 +359,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
       return newValues;
     })
   };
-
-
 
   const handleClickOutside = (index) => {
     setIsEditing((prevValues) => {
@@ -463,6 +481,10 @@ function InteractivePageBuilderInterface({ link, mode }) {
     setPageCounter(pageCounter + 1);
   };
 
+  const handleConstraint = (event) => {
+    setConstraintValues(event.target.value);
+  };
+
   const handleChange = (event) => {
     setSelectedValue(event.target.value);
   };
@@ -534,6 +556,21 @@ function InteractivePageBuilderInterface({ link, mode }) {
       setShow(true);
     } else if (input_value === "Image") {
       setConfiguration("Image");
+      setShow(true);
+    } else if (input_value === "Navbar") {
+      setConfiguration("Navbar");
+      setShow(true);
+    } else if (input_value === "Header") {
+      setConfiguration("Header");
+      setShow(true);
+    } else if (input_value === "Label") {
+      setConfiguration("Label");
+      setShow(true);
+    } else if (input_value === "Input Field") {
+      setConfiguration("Input Field");
+      setShow(true);
+    } else if (input_value === "Captcha") {
+      setConfiguration("Captcha");
       setShow(true);
     } else if (input_value === "Home Page - Hospitality") {
       setPageBackgrounds((background) => [
@@ -1006,6 +1043,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
     { name: "Body", icon: <WysiwygOutlined /> },
     { name: "Text area", icon: <CropLandscapeOutlined /> },
     { name: "Label", icon: <LabelImportantOutlined /> },
+    { name: "Input Field", icon: <InputOutlined /> },
   ];
 
   const navbarComponent = [{ name: "Navbar", icon: <TbLayoutNavbar /> }];
@@ -1151,7 +1189,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
   }, [id]);
   const updateColumns = (e) => {
     var oh = [...newcolumns];
-    console.log(newcolumns);
     if (newcolumns.length >= e.target.value) {
       setColumns([]);
       setNumberOfColumns(0);
@@ -1170,10 +1207,9 @@ function InteractivePageBuilderInterface({ link, mode }) {
   };
 
   const updateRows = (e) => {
-    console.log(e.target.value)
+    setTableData([{}, e.target.value]);
     for (let i = 0; i < e.target.value; i++) {
-      console.log(tableData)
-      setTableData([{}, ...tableData]);
+      console.log(...tableData);
     }
   };
 
@@ -1220,16 +1256,16 @@ function InteractivePageBuilderInterface({ link, mode }) {
       } else {
         const props = {
           name: field.name,
-          label: field.label,
+          label: labelValue[index],
           editing: isEditing[index],
           parent_style: field.parent_style,
           input_style: field.input_style,
           type: field.type,
-          image_source: field.src,
+          image_source: imageURL,
           config: field.config,
         };
         currentPage.fields.push({ props });
-        console.log(currentPage.fields);
+        console.log(field.config);
       }
     });
 
@@ -1246,7 +1282,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              fields: currentPage.fields,
+              fields: pageData.fields,
             }),
           }
         );
@@ -1255,6 +1291,8 @@ function InteractivePageBuilderInterface({ link, mode }) {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
+        notify("Welcome to the documentation", "info");
+
         return data;
       } catch (error) {
         console.log(error);
@@ -1348,15 +1386,15 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const handleWidthChange = (event, index) => {
     const newWidth = event.target.value;
     const newComponentWidths = [...componentWidths];
-      newComponentWidths[index] = newWidth;
-      setComponentWidths(newComponentWidths);
+    newComponentWidths[index] = newWidth;
+    setComponentWidths(newComponentWidths);
   };
 
   const handleHeightChange = (event, index) => {
     const newHeight = event.target.value;
     const newComponentHeights = [...componentHeights];
-      newComponentHeights[index] = newHeight;
-      setComponentHeights(newComponentHeights);
+    newComponentHeights[index] = newHeight;
+    setComponentHeights(newComponentHeights);
   };
 
   const handlePositionChange = (newPosition, index) => {
@@ -1499,6 +1537,92 @@ function InteractivePageBuilderInterface({ link, mode }) {
               case "Input Field":
                 formField = (
                   <div key={index} style={parentStyle}>
+                    {isEditing[index] ? (
+                      <div
+                        ref={inputRef}
+                        style={{
+                          position: "relative",
+                          display: "inline-block",
+                          borderRadius: "8px",
+                          overflow: "hidden",
+                          boxShadow: "0 0 10px rgba(0, 0, 0, 0.2",
+                          transition: "transform 0.3s ease-in-out",
+                          marginTop: "10px",
+                        }}
+                      >
+                        <h3 style={{ padding: "10px", paddingBottom: "5px" }}>
+                          Edit Label
+                        </h3>
+                        <label
+                          htmlFor="labeltext"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                          }}
+                        >
+                          Text
+                        </label>
+                        <input
+                          style={{
+                            display: "block",
+                            marginBottom: "40px",
+                            paddingLeft: "5px",
+                            paddingRight: "5px",
+                          }}
+                          id="labeltext"
+                          autoFocus="autoFocus"
+                          type="text"
+                          value={text}
+                          onChange={(event) => handleTextChange(event, index)}
+                        />
+                        <button
+                          style={{
+                            backgroundColor: "blueviolet",
+                            color: "white",
+                            borderRadius: "4px",
+                            display: "block",
+                            position: "absolute",
+                            bottom: "5px",
+                            right: "10px",
+                          }}
+                          onClick={() => handleClickOutside(index)}
+                        >
+                          Save Changes
+                        </button>
+                        <button
+                          style={{
+                            backgroundColor: "red",
+                            color: "white",
+                            borderRadius: "4px",
+                            display: "block",
+                            position: "absolute",
+                            bottom: "5px",
+                            left: "10px",
+                          }}
+                          onClick={() => handleRemoveField(index)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    ) : (
+                      <div key={index}>
+                        <Label
+                          input={{
+                            type: "text",
+                            value: field.label,
+                          }}
+                        >
+                          {labelValue[index]}
+                        </Label>
+                        {showButtons && (
+                          <IoIosCreate
+                            style={{ transform: "scale(2)" }}
+                            onClick={() => handleElementClick(index)}
+                          />
+                        )}
+                      </div>
+                    )}
                     <InputField
                       input={{
                         type: field.input_type,
@@ -1533,7 +1657,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       />
                       {showButtons && (
                         <IoIosCreate
-                        style={{ transform: 'scale(2)'}}
+                          style={{ transform: "scale(2)" }}
                           onClick={() => handleElementClick(index)}
                         />
                       )}
@@ -1651,7 +1775,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   </div>
                 );
                 break;
-                
+
               case "Location Check":
                 formField = (
                   <div key={index}>
@@ -2028,35 +2152,39 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   </div>
                 );
                 break;
-         case "Raised Button":
-                  formField = (
-                    <div style={{position:'relative'}}>
-                      {isEditing[index] ? (
-                        <div
-                          ref={inputRef}
+
+              case "Raised Button":
+                formField = (
+                  <div>
+                    {isEditing[index] ? (
+                      <div
+                        ref={inputRef}
+                        style={{
+                          position: "relative",
+                          display: "inline-block",
+                          borderRadius: "8px",
+                          overflow: "hidden",
+                          boxShadow: "0 0 10px rgba(0, 0, 0, 0.2",
+                          transition: "transform 0.3s ease-in-out",
+                          marginTop: "10px",
+                        }}
+                      >
+                        <h3 style={{ padding: "10px", paddingBottom: "5px" }}>
+                          Edit Button
+                        </h3>
+                        <label
+                          htmlFor="buttontext"
+
                           style={{
-                            position: "relative",
-                            display: "inline-block",
-                            borderRadius: "8px",
-                            overflow: "hidden",
-                            boxShadow: "0 0 10px rgba(0, 0, 0, 0.2",
-                            transition: "transform 0.3s ease-in-out",
-                            marginTop: "10px",
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
                           }}
                         >
-                          <h3 style={{ padding: "10px", paddingBottom: "5px" }}>
-                            Edit Button
-                          </h3>
-                          <label
-                            htmlFor="buttontext"
-                            style={{
-                              color: "#888",
-                              fontStyle: "italic",
-                              paddingLeft: "5px",
-                            }}
-                          >
-                            Text
-                          </label>
+                          Text
+                        </label>
+                     
+
                           <input
                             style={{
                               display: "block",
@@ -2089,7 +2217,8 @@ function InteractivePageBuilderInterface({ link, mode }) {
   color={formData.color}
   onChange={(newColor) => handleColorChange(index, newColor)}
 />
-                            <label
+                   
+                          <label
                             htmlFor="buttonwidth"
                             style={{
                               color: "#888",
@@ -2110,9 +2239,11 @@ function InteractivePageBuilderInterface({ link, mode }) {
                             id="buttonwidth"
                             type="text"
                             value={componentWidths[index]}
-                            onChange={(event) => handleWidthChange(event, index)}
+                            onChange={(event) =>
+                              handleWidthChange(event, index)
+                            }
                           />
-                           <label
+                          <label
                             htmlFor="buttonheight"
                             style={{
                               color: "#888",
@@ -2127,14 +2258,21 @@ function InteractivePageBuilderInterface({ link, mode }) {
                               display: "block",
                               paddingLeft: "5px",
                               paddingRight: "5px",
+
                               marginLeft: "auto",
                             marginRight: "auto" 
+
+                              marginBottom: "40px",
+
                             }}
                             id="buttonheight"
                             type="text"
                             value={componentHeights[index]}
-                            onChange={(event) => handleHeightChange(event, index)}
+                            onChange={(event) =>
+                              handleHeightChange(event, index)
+                            }
                           />
+
                           <label
         htmlFor="buttonposition"
         style={{
@@ -2270,38 +2408,39 @@ function InteractivePageBuilderInterface({ link, mode }) {
                             type="text"
                             value={text}
                             onChange={(event) => handleTextChange(event, index)}
-                          />
-                          <button
-                            style={{
-                              backgroundColor: "#528AAE",
-                              color: "white",
-                              borderRadius: "4px",
-                              display: "block",
-                              position: "absolute",
-                              bottom: "5px",
-                              right: "10px",
-                            }}
-                            onClick={() => handleClickOutside(index)}
-                          >
-                            Save Changes
-                          </button>
-                          <button
-                            style={{
-                              backgroundColor: "red",
-                              color: "white",
-                              borderRadius: "4px",
-                              display: "block",
-                              position: "absolute",
-                              bottom: "5px",
-                              left: "10px",
-                            }}
-                            onClick={() => handleRemoveTemplateField(index)}
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      ) : (
-    
+
+                        />
+                        <button
+                          style={{
+                            backgroundColor: "#528AAE",
+                            color: "white",
+                            borderRadius: "4px",
+                            display: "block",
+                            position: "absolute",
+                            bottom: "5px",
+                            right: "10px",
+                          }}
+                          onClick={() => handleClickOutside(index)}
+                        >
+                          Save Changes
+                        </button>
+                        <button
+                          style={{
+                            backgroundColor: "red",
+                            color: "white",
+                            borderRadius: "4px",
+                            display: "block",
+                            position: "absolute",
+                            bottom: "5px",
+                            left: "10px",
+                          }}
+                          onClick={() => handleRemoveField(index)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    ) : (
+           
                       <div key={index}>
                       <center>
                         {" "}
@@ -2314,13 +2453,107 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         {showButtons && (
                             <IoIosCreate style={{ transform: 'scale(2)', color: 'white' }} onClick={() => handleElementClickTemplate(labelValue[index] || field.label, index)} />
                         )}
+
                       </center>
                     </div>
     
                       )}
                     </div>
                   );
-                  break;
+          
+                break;
+              case "Image":
+                formField = (
+                  <div key={index} style={parentStyle}>
+                    {imageURL.map((url, i) => (
+                      <img key={i} src={url} width="700px" onChange={() => {setImageSource(url)}}/>
+                    ))}
+                  </div>
+                );
+                break;
+              case "Heading":
+                formField = (
+                  <div>
+                    {isEditing[index] ? (
+                      <div
+                        ref={inputRef}
+                        style={{
+                          position: "relative",
+                          display: "inline-block",
+                          borderRadius: "8px",
+                          overflow: "hidden",
+                          boxShadow: "0 0 10px rgba(0, 0, 0, 0.2",
+                          transition: "transform 0.3s ease-in-out",
+                          marginTop: "10px",
+                          backgroundColor: "white",
+                        }}
+                      >
+                        <h3 style={{ padding: "10px", paddingBottom: "5px" }}>
+                          Edit Heading
+                        </h3>
+                        <label
+                          htmlFor="headingtext"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                          }}
+                        >
+                          Text
+                        </label>
+                        <input
+                          style={{
+                            display: "block",
+                            marginBottom: "40px",
+                            paddingLeft: "5px",
+                            paddingRight: "5px",
+                          }}
+                          id="headingtext"
+                          autoFocus="autoFocus"
+                          type="text"
+                          value={text}
+                          onChange={(event) => handleTextChange(event, index)}
+                        />
+                        <button
+                          style={{
+                            backgroundColor: "#528AAE",
+                            color: "white",
+                            borderRadius: "4px",
+                            display: "block",
+                            position: "absolute",
+                            bottom: "5px",
+                            right: "10px",
+                          }}
+                          onClick={() => handleClickOutside(index)}
+                        >
+                          Save Changes
+                        </button>
+                        <button
+                          style={{
+                            backgroundColor: "red",
+                            color: "white",
+                            borderRadius: "4px",
+                            display: "block",
+                            position: "absolute",
+                            bottom: "5px",
+                            left: "10px",
+                          }}
+                          onClick={() => handleRemoveTemplateField(index)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    ) : (
+                      <div key={index}>
+                        <center>
+                          <Heading>{field.label}</Heading>
+                        </center>
+                      </div>
+                    )}
+                  </div>
+                );
+                break;
+
               case "H3":
                 formField = (
                   <div>
@@ -2446,176 +2679,267 @@ function InteractivePageBuilderInterface({ link, mode }) {
                 );
                 break;
 
-           
-
-            case "Number":
-              formField = (
-                <div key={index}>
-                  <label style={{ textAlign: "center" }}>
-                    {" "}
-                    {field.config.label}
-                  </label>
-                  <br />
-                  <InputField
-                    style={{
-                      width: field.config.width + "px",
-                      height: field.config.height + "px",
-                    }}
-                    input={{
-                      type: field.type,
-                      name: field.label,
-                      required: field.required,
-                    }}
-                  />
-                  <br></br>
-                </div>
-              );
-              break;
-            case "Check box":
-              formField = (
-                <div key={index}>
-                  <Checkbox name={field.label} required={field.required} />
-                  <label style={{ textAlign: "center" }}>{field.name}</label>
-                  <br></br>
-                </div>
-              );
-              break;
-            case "Text":
-              formField = (
-                <div key={index}>
-                  <label style={{ textAlign: "center" }}>{field.name}</label>
-                  <br />
-                  <TextArea
-                    name={field.label}
-                    required={field.required}
-                    multiline
-                  />
-                  <br></br>
-                </div>
-              );
-              break;
-            case "br":
-              formField = (
-                <div key={index}>
-                  <br></br>
-                </div>
-              );
-              break;
-
-            case "img":
-              formField = (
-                <div key={index}>
-                  <img
-                    src={process.env.PUBLIC_URL + "/img/Hospitality.png"}
-                    alt="Logo"
-                    width="50"
-                    height="50"
-                    className="d-inline-block align-top"
-                  />
-                </div>
-              );
-              break;
-            case "File Upload":
-              formField = (
-                <div>
-                  {isEditing[index] ? (
-                    <div
-                      ref={inputRef}
+              case "Number":
+                formField = (
+                  <div key={index}>
+                    <label style={{ textAlign: "center" }}>
+                      {" "}
+                      {field.config.label}
+                    </label>
+                    <br />
+                    <InputField
                       style={{
-                        position: "relative",
-                        display: "inline-block",
-                        borderRadius: "8px",
-                        overflow: "hidden",
-                        boxShadow: "0 0 10px rgba(0, 0, 0, 0.2",
-                        transition: "transform 0.3s ease-in-out",
-                        marginTop: "10px",
+                        width: field.config.width + "px",
+                        height: field.config.height + "px",
                       }}
-                    >
-                      <h3 style={{ padding: "10px", paddingBottom: "5px" }}>
-                        Edit File Upload
-                      </h3>
-                      <label
-                        htmlFor="labeltext"
+                      input={{
+                        type: field.type,
+                        name: field.label,
+                        required: field.required,
+                      }}
+                    />
+                    <br></br>
+                  </div>
+                );
+                break;
+              case "Check box":
+                formField = (
+                  <div key={index}>
+                    <Checkbox name={field.label} required={field.required} />
+                    <label style={{ textAlign: "center" }}>{field.name}</label>
+                    <br></br>
+                  </div>
+                );
+                break;
+              case "Text":
+                formField = (
+                  <div key={index}>
+                    <label style={{ textAlign: "center" }}>{field.name}</label>
+                    <br />
+                    <TextArea
+                      name={field.label}
+                      required={field.required}
+                      multiline
+                    />
+                    <br></br>
+                  </div>
+                );
+                break;
+              case "br":
+                formField = (
+                  <div key={index}>
+                    <br></br>
+                  </div>
+                );
+                break;
+
+              case "img":
+                formField = (
+                  <div key={index}>
+                    <img
+                      src={process.env.PUBLIC_URL + "/img/Hospitality.png"}
+                      alt="Logo"
+                      width="50"
+                      height="50"
+                      className="d-inline-block align-top"
+                    />
+                  </div>
+                );
+                break;
+              case "File Upload":
+                formField = (
+                  <div>
+                    {isEditing[index] ? (
+                      <div
+                        ref={inputRef}
                         style={{
-                          color: "#888",
-                          fontStyle: "italic",
-                          paddingLeft: "5px",
+                          position: "relative",
+                          display: "inline-block",
+                          borderRadius: "8px",
+                          overflow: "hidden",
+                          boxShadow: "0 0 10px rgba(0, 0, 0, 0.2",
+                          transition: "transform 0.3s ease-in-out",
+                          marginTop: "10px",
                         }}
                       >
-                        Text
-                      </label>
-                      <input
-                        style={{
-                          display: "block",
-                          marginBottom: "40px",
-                          paddingLeft: "5px",
-                          paddingRight: "5px",
-                        }}
-                        id="labeltext"
-                        autoFocus="autoFocus"
-                        type="text"
-                        value={text}
-                        onChange={(event) => handleTextChange(event, index)}
-                      />
-                      <button
-                        style={{
-                          backgroundColor: "blueviolet",
-                          color: "white",
-                          borderRadius: "4px",
-                          display: "block",
-                          position: "absolute",
-                          bottom: "5px",
-                          right: "10px",
-                        }}
-                        onClick={() => handleClickOutside(index)}
-                      >
-                        Save Changes
-                      </button>
-                      <button
-                        style={{
-                          backgroundColor: "red",
-                          color: "white",
-                          borderRadius: "4px",
-                          display: "block",
-                          position: "absolute",
-                          bottom: "5px",
-                          left: "10px",
-                        }}
-                        onClick={() => handleRemoveField(index)}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  ) : (
-                <div key={index}>
-                  <input type="file" />
-                  <br></br>
-                  {showButtons && (
-                        <IoIosCreate
-                        style={{ transform: 'scale(2)'}}
-                          onClick={() => handleElementClick(index)}
+                        <h3 style={{ padding: "10px", paddingBottom: "5px" }}>
+                          Edit File Upload
+                        </h3>
+                        <label
+                          htmlFor="labeltext"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                          }}
+                        >
+                          Text
+                        </label>
+                        <input
+                          style={{
+                            display: "block",
+                            marginBottom: "40px",
+                            paddingLeft: "5px",
+                            paddingRight: "5px",
+                          }}
+                          id="labeltext"
+                          autoFocus="autoFocus"
+                          type="text"
+                          value={text}
+                          onChange={(event) => handleTextChange(event, index)}
                         />
-                      )}
-                </div>
-                                  )}
-                                  </div>
-                                );
-              break;
-      case "Label":
-              formField = (
-                <div>
-                  {isEditing[index] ? (
-                    <div
-                      ref={inputRef}
+                        <button
+                          style={{
+                            backgroundColor: "blueviolet",
+                            color: "white",
+                            borderRadius: "4px",
+                            display: "block",
+                            position: "absolute",
+                            bottom: "5px",
+                            right: "10px",
+                          }}
+                          onClick={() => handleClickOutside(index)}
+                        >
+                          Save Changes
+                        </button>
+                        <button
+                          style={{
+                            backgroundColor: "red",
+                            color: "white",
+                            borderRadius: "4px",
+                            display: "block",
+                            position: "absolute",
+                            bottom: "5px",
+                            left: "10px",
+                          }}
+                          onClick={() => handleRemoveField(index)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    ) : (
+                      <div key={index}>
+                        <input type="file" />
+                        <br></br>
+                        {showButtons && (
+                          <IoIosCreate
+                            style={{ transform: "scale(2)" }}
+                            onClick={() => handleElementClick(index)}
+                          />
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+                break;
+              case "Label":
+                formField = (
+                  <div>
+                    {isEditing[index] ? (
+                      <div
+                        ref={inputRef}
+                        style={{
+                          position: "relative",
+                          display: "inline-block",
+                          borderRadius: "8px",
+                          overflow: "hidden",
+                          boxShadow: "0 0 10px rgba(0, 0, 0, 0.2",
+                          transition: "transform 0.3s ease-in-out",
+                          marginTop: "10px",
+                        }}
+                      >
+                        <h3 style={{ padding: "10px", paddingBottom: "5px" }}>
+                          Edit Label
+                        </h3>
+                        <label
+                          htmlFor="labeltext"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                          }}
+                        >
+                          Text
+                        </label>
+                        <input
+                          style={{
+                            display: "block",
+                            marginBottom: "40px",
+                            paddingLeft: "5px",
+                            paddingRight: "5px",
+                          }}
+                          id="labeltext"
+                          autoFocus="autoFocus"
+                          type="text"
+                          value={text}
+                          onChange={(event) => handleTextChange(event, index)}
+                        />
+                        <button
+                          style={{
+                            backgroundColor: "blueviolet",
+                            color: "white",
+                            borderRadius: "4px",
+                            display: "block",
+                            position: "absolute",
+                            bottom: "5px",
+                            right: "10px",
+                          }}
+                          onClick={() => handleClickOutside(index)}
+                        >
+                          Save Changes
+                        </button>
+                        <button
+                          style={{
+                            backgroundColor: "red",
+                            color: "white",
+                            borderRadius: "4px",
+                            display: "block",
+                            position: "absolute",
+                            bottom: "5px",
+                            left: "10px",
+                          }}
+                          onClick={() => handleRemoveField(index)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    ) : (
+                      <div key={index}>
+                        <Label
+                          input={{
+                            type: "text",
+                            value: field.label,
+                          }}
+                        >
+                          {labelValue[index]}
+                        </Label>
+                        {showButtons && (
+                          <IoIosCreate
+                            style={{ transform: "scale(2)" }}
+                            onClick={() => handleElementClick(index)}
+                          />
+                        )}
+                        <br></br>
+                      </div>
+                    )}
+                  </div>
+                );
+                break;
+              case "Text Field":
+                formField = (
+                  <div key={index}>
+                    <label style={{ textAlign: "center" }}>
+                      {" "}
+                      {field.config.label}
+                    </label>
+
+                    <br />
+                    <InputField
                       style={{
-                        position: "relative",
-                        display: "inline-block",
-                        borderRadius: "8px",
-                        overflow: "hidden",
-                        boxShadow: "0 0 10px rgba(0, 0, 0, 0.2",
-                        transition: "transform 0.3s ease-in-out",
-                        marginTop: "10px",
+                        width: field.config.width + "px",
+                        height: field.config.height + "px",
                       }}
+
                     >
                       <h3 style={{ padding: "10px", paddingBottom: "5px" }}>
                         Edit Label
@@ -2740,6 +3064,28 @@ function InteractivePageBuilderInterface({ link, mode }) {
                 </div>
               );
               break;
+              case "Email":
+                formField = (
+                  <div key={index}>
+                    <label style={{ textAlign: "center" }}>
+                      {field.config.label}
+                    </label>
+                    <br />
+                    <InputField
+                      style={{
+                        width: field.config.width + "px",
+                        height: field.config.height + "px",
+                      }}
+                      input={{
+                        type: field.type,
+                        name: field.label,
+                        required: field.required,
+                      }}
+                    />
+                    <br></br>
+                  </div>
+                );
+                break;
               case "Text area":
                 formField = (
                   <div style={parentStyle}>
@@ -2760,48 +3106,28 @@ function InteractivePageBuilderInterface({ link, mode }) {
                           Edit Text Area
                         </h3>
                         <label
-                            htmlFor="buttonwidth"
-                            style={{
-                              color: "#888",
-                              fontStyle: "italic",
-                              paddingLeft: "5px",
-                            }}
-                          >
-                            Width (px)
-                          </label>
-                          <input
-                            style={{
-                              display: "block",
-                              paddingLeft: "5px",
-                              paddingRight: "5px",
-                            }}
-                            id="buttonwidth"
-                            type="text"
-                            value={componentWidths[index]}
-                            onChange={(event) => handleWidthChange(event, index)}
-                          />
-                           <label
-                            htmlFor="buttonheight"
-                            style={{
-                              color: "#888",
-                              fontStyle: "italic",
-                              paddingLeft: "5px",
-                            }}
-                          >
-                            Height (px)
-                          </label>
-                          <input
-                            style={{
-                              display: "block",
-                              paddingLeft: "5px",
-                              paddingRight: "5px",
-                              marginBottom: "40px"
-                            }}
-                            id="buttonheight"
-                            type="text"
-                            value={componentHeights[index]}
-                            onChange={(event) => handleHeightChange(event, index)}
-                          />
+                          htmlFor="areatext"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                          }}
+                        >
+                          Text
+                        </label>
+                        <input
+                          style={{
+                            display: "block",
+                            marginBottom: "40px",
+                            paddingLeft: "5px",
+                            paddingRight: "5px",
+                          }}
+                          id="areatext"
+                          autoFocus="autoFocus"
+                          type="text"
+                          value={text}
+                          onChange={(event) => handleTextChange(event, index)}
+                        />
                         <button
                           style={{
                             backgroundColor: "#528AAE",
@@ -2834,7 +3160,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     ) : (
                       <div key={index}>
                         <TextArea
-                          style={{width: componentWidths[index]  + "px", height: componentHeights[index] + "px"}}
+                          style={parentStyle}
                           input={{
                             type: field.type,
                             name: field.label,
@@ -2846,7 +3172,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         </TextArea>
                         {showButtons && (
                           <IoIosCreate
-                          style={{ transform: 'scale(2)'}}
+                            style={{ transform: "scale(2)" }}
                             onClick={() => handleElementClick(index)}
                           />
                         )}
@@ -2908,196 +3234,101 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   </div>
                 );
                 break;
-          
-              case "Text Field":
-                formField = (
-                  <div key={index}>
-                    <label style={{ textAlign: "center" }}>
-                      {" "}
-                      {field.config.label}
-                    </label>
+              case "Body":
 
-                    <br />
-                    <InputField
-                      style={{
-                        width: field.config.width + "px",
-                        height: field.config.height + "px",
-                      }}
-                      input={{
-                        type: field.type,
-                        name: field.label,
-                        required: field.required,
-                      }}
-                    />
-                    <br></br>
-                  </div>
-                );
-                break;
-              case "Email":
                 formField = (
-                  <div key={index}>cas
-                    <label style={{ textAlign: "center" }}>
-                      {field.config.label}
-                    </label>
-                    <br />
-                    <InputField
-                      style={{
-                        width: field.config.width + "px",
-                        height: field.config.height + "px",
-                      }}
-                      input={{
-                        type: field.type,
-                        name: field.label,
-                        required: field.required,
-                      }}
-                    />
-                    <br></br>
+                  <div>
+                    {isEditing[index] ? (
+                      <div
+                        ref={inputRef}
+                        style={{
+                          position: "relative",
+                          display: "inline-block",
+                          borderRadius: "8px",
+                          overflow: "hidden",
+                          boxShadow: "0 0 10px rgba(0, 0, 0, 0.2",
+                          transition: "transform 0.3s ease-in-out",
+                          marginTop: "10px",
+                        }}
+                      >
+                        <h3 style={{ padding: "10px", paddingBottom: "5px" }}>
+                          Edit Body
+                        </h3>
+                        <label
+                          htmlFor="headingtext"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                          }}
+                        >
+                          Text
+                        </label>
+                        <input
+                          style={{
+                            display: "block",
+                            minHeight: "80px",
+                            marginBottom: "40px",
+                            paddingLeft: "5px",
+                            paddingRight: "5px",
+                          }}
+                          id="buttontext"
+                          autoFocus="autoFocus"
+                          type="text"
+                          value={text}
+                          onChange={(event) => handleTextChange(event, index)}
+                        />
+                        <button
+                          style={{
+                            backgroundColor: "#528AAE",
+                            color: "white",
+                            borderRadius: "4px",
+                            display: "block",
+                            position: "absolute",
+                            bottom: "5px",
+                            right: "10px",
+                          }}
+                          onClick={() => handleClickOutside(index)}
+                        >
+                          Save Changes
+                        </button>
+                        <button
+                          style={{
+                            backgroundColor: "red",
+                            color: "white",
+                            borderRadius: "4px",
+                            display: "block",
+                            position: "absolute",
+                            bottom: "5px",
+                            left: "10px",
+                          }}
+                          onClick={() => handleRemoveField(index)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    ) : (
+                      <div key={index}>
+                        <label
+                          input={{
+                            type: "text",
+                            value: field.config.label,
+                          }}
+                        >
+                          {labelValue[index]}
+                        </label>
+                        <br></br>
+                        {showButtons && (
+                          <IoIosCreate
+                            style={{ transform: "scale(2)" }}
+                            onClick={() => handleElementClick(index)}
+                          />
+                        )}
+                      </div>
+                    )}
                   </div>
                 );
                 break;
-            case "Check box":
-              formField = (
-                <div key={index}>
-                  <Checkbox name={field.label} required={field.required} />
-                  <label style={{ textAlign: "center" }}>{field.name}</label>
-                  <br></br>
-                </div>
-              );
-              break;
-      
-            case "Body":
-              formField = (
-                <div>
-                  {isEditing[index] ? (
-                    <div
-                      ref={inputRef}
-                      style={{
-                        position: "relative",
-                        display: "inline-block",
-                        borderRadius: "8px",
-                        overflow: "hidden",
-                        boxShadow: "0 0 10px rgba(0, 0, 0, 0.2",
-                        transition: "transform 0.3s ease-in-out",
-                        marginTop: "10px",
-                      }}
-                    >
-                      <h3 style={{ padding: "10px", paddingBottom: "5px" }}>
-                        Edit Body
-                      </h3>
-                      <label
-                        htmlFor="headingtext"
-                        style={{
-                          color: "#888",
-                          fontStyle: "italic",
-                          paddingLeft: "5px",
-                        }}
-                      >
-                        Text
-                      </label>
-                      <input
-                        style={{
-                          display: "block",
-                          minHeight: "80px",
-                          marginBottom: "40px",
-                          paddingLeft: "5px",
-                          paddingRight: "5px",
-                        }}
-                        id="buttontext"
-                        autoFocus="autoFocus"
-                        type="text"
-                        value={text}
-                        onChange={(event) => handleTextChange(event, index)}
-                      />
-                      <label
-                                htmlFor="bodycolor"
-                                style={{
-                                  color: "#888",
-                                  fontStyle: "italic",
-                                  paddingLeft: "5px",
-                                  marginRight: "5px",
-                                }}
-                              >
-                                Color
-                              </label>
-                              <HexColorPicker
-  style={{padding: '20px',paddingTop: '0px'}}
-  id="bodycolor"
-  color={formData.color}
-  onChange={(newColor) => handleColorChange(index, newColor)}
-/>
-                      <label
-                                htmlFor="fontsize"
-                                style={{
-                                  color: "#888",
-                                  fontStyle: "italic",
-                                  paddingLeft: "5px",
-                                  marginRight: "5px",
-                                  marginBottom: "40px",
-                                }}
-                              >
-                                Font Size
-                              </label>
-                              <select
-                               id="fontsize"
-                               value={selectedFontSize[index]}
-                               onChange={(event) => handleSelectFontChange(event.target.value, index)}
-                              >
-                               <option value="20px">20 px</option>
-                               <option value="30px">30 px</option>
-                               <option value="40px">40 px</option>
-                              </select>
-                      <button
-                        style={{
-                          backgroundColor: "#528AAE",
-                          color: "white",
-                          borderRadius: "4px",
-                          display: "block",
-                          position: "absolute",
-                          bottom: "5px",
-                          right: "10px",
-                        }}
-                        onClick={() => handleClickOutside(index)}
-                      >
-                        Save Changes
-                      </button>
-                      <button
-                        style={{
-                          backgroundColor: "red",
-                          color: "white",
-                          borderRadius: "4px",
-                          display: "block",
-                          position: "absolute",
-                          bottom: "5px",
-                          left: "10px",
-                        }}
-                        onClick={() => handleRemoveField(index)}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  ) : (
-                    <div key={index}>
-                      <label
-                        style={{color: componentColors[index], fontSize: selectedFontSize[index]}}
-                        input={{
-                          type: "text",
-                          value: field.config.label,
-                        }}
-                      >
-                        {labelValue[index]}
-                      </label>
-                      <br></br>
-                      {showButtons && (
-                        <IoIosCreate
-                        style={{ transform: 'scale(2)'}}
-                          onClick={() => handleElementClick(index)}
-                        />
-                      )}
-                    </div>
-                  )}
-                </div>
-              );
-              break;
               case "Header":
                 formField = (
                   <div>
@@ -3130,6 +3361,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         <input
                           style={{
                             display: "block",
+                            marginBottom: "40px",
                             paddingLeft: "5px",
                             paddingRight: "5px",
                           }}
@@ -3140,43 +3372,44 @@ function InteractivePageBuilderInterface({ link, mode }) {
                           onChange={(event) => handleTextChange(event, index)}
                         />
                         <label
-                                htmlFor="headingcolor"
-                                style={{
-                                  color: "#888",
-                                  fontStyle: "italic",
-                                  paddingLeft: "5px",
-                                  marginRight: "5px",
-                                }}
-                              >
-                                Color
-                              </label>
-                              <HexColorPicker
-  style={{padding: '20px',paddingTop: '0px'}}
-  id="headingcolor"
-  color={formData.color}
-  onChange={(newColor) => handleColorChange(index, newColor)}
-/>
-                              <label
-                                htmlFor="headingsize"
-                                style={{
-                                  color: "#888",
-                                  fontStyle: "italic",
-                                  paddingLeft: "5px",
-                                  marginRight: "5px",
-                                  marginBottom: "40px",
-                                }}
-                              >
-                                Size
-                              </label>
-                              <select
-                               id="headingsize"
-                               value={selectedOptionHeading[index]}
-                               onChange={(event) => handleSelectChange(event.target.value, index)}
-                              >
-                               <option value="SMALL">Small</option>
-                               <option value="MEDIUM">Medium</option>
-                               <option value="LARGE">Large</option>
-                              </select>
+                          htmlFor="headingcolor"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                            marginRight: "5px",
+                          }}
+                        >
+                          Color
+                        </label>
+                        <HexColorPicker
+                          style={{ padding: "20px", paddingTop: "0px" }}
+                          id="headingcolor"
+                          color={color}
+                          onChange={() => handleColorChange(index, color)}
+                        />
+                        <label
+                          htmlFor="headingsize"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                            marginRight: "5px",
+                          }}
+                        >
+                          Size
+                        </label>
+                        <select
+                          id="headingsize"
+                          value={""}
+                          onChange={handleSelectChange}
+                        >
+                          {sizeOptions.map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
                         <button
                           style={{
                             backgroundColor: "#528AAE",
@@ -3209,8 +3442,11 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     ) : (
                       <div key={index}>
                         <Heading
-                          size={selectedOptionHeading[index]}
-                          style={{ display: "block", color: componentColors[index] }}
+                          size="LARGE"
+                          style={{
+                            display: "block",
+                            color: componentColors[index],
+                          }}
                           input={{
                             type: "text",
                           }}
@@ -3219,7 +3455,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         </Heading>
                         {showButtons && (
                           <IoIosCreate
-                          style={{ transform: 'scale(2)'}}
+                            style={{ transform: "scale(2)" }}
                             onClick={() => handleElementClick(index)}
                           />
                         )}
@@ -3322,10 +3558,10 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   </div>
                 );
                 break;
-     
+
               case "Text":
                 formField = (
-                  <div key={index}>
+ <div key={index}>
                     <label style={{ textAlign: "center" }}>{field.name}</label>
                     <br />
                     <TextArea
@@ -3334,43 +3570,45 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       multiline
                     />
                     <br></br>
+
                   </div>
                 );
                 break;
-            
-                case "Navbar":
-                  formField = (
-                    <div>
-                      {isEditing[index] ? (
-                        <NavbarEditor ind={index} />
-                      ) : (
-                        <div key={index}>
-                          <TopNav
-                            style={{
-                              color: field.color,
-                              width: field.config.width + "px",
-                              height: field.config.height + "px",
-                              backgroundColor: formData.color,
-                            }}
-                            company={
-                              <TopNav.Anchor target="new">
-                               {labelValue[index]}
-                              </TopNav.Anchor>
-                            }
+
+              case "Navbar":
+                formField = (
+                  <div>
+                    {isEditing[index] ? (
+                      <NavbarEditor ind={index} />
+                    ) : (
+                      <div key={index}>
+                        <TopNav
+                          style={{
+                            color: field.color,
+                            width: field.config.width + "px",
+                            height: field.config.height + "px",
+                            backgroundColor: formData.color,
+                          }}
+                          company={
+                            <TopNav.Anchor style={{ fontSize: "22px" }}>
+                              {labelValue[index]}
+                            </TopNav.Anchor>
+                          }
+                        />
+                        {showButtons && (
+                          <IoIosCreate
+                            style={{ transform: "scale(2)" }}
+                            onClick={() => handleElementClick(index)}
                           />
-                          {showButtons && (
-                            <IoIosCreate
-                            style={{ transform: 'scale(2)'}}
-                              onClick={() => handleElementClick(index)}
-                            />
-                          )}
-                          <br></br>
-                        </div>
-                      )}
-                    </div>
-                  );
-                  break;
-            
+                        )}
+                        <br></br>
+                      </div>
+                    )}
+                  </div>
+                );
+                break;
+
+
               case "coming-soon":
                 formField = (
                   <div
@@ -3652,9 +3890,99 @@ function InteractivePageBuilderInterface({ link, mode }) {
               case "Captcha":
                 formField = (
                   <div key={index}>
-                    <ReCAPTCHA
-                      sitekey={"6LeiNAclAAAAAImMXqIfk2YOFJF99SD6UVUAqyvd"}
-                    />
+                    {isEditing[index] ? (
+                      <div
+                        ref={inputRef}
+                        style={{
+                          position: "relative",
+                          display: "inline-block",
+                          borderRadius: "8px",
+                          overflow: "hidden",
+                          boxShadow: "0 0 10px rgba(0, 0, 0, 0.2",
+                          transition: "transform 0.3s ease-in-out",
+                          marginTop: "10px",
+                        }}
+                      >
+                        <h3 style={{ padding: "10px", paddingBottom: "5px" }}>
+                          Edit Label
+                        </h3>
+                        <label
+                          htmlFor="labeltext"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                          }}
+                        >
+                          Text
+                        </label>
+                        <input
+                          style={{
+                            display: "block",
+                            marginBottom: "40px",
+                            paddingLeft: "5px",
+                            paddingRight: "5px",
+                          }}
+                          id="labeltext"
+                          autoFocus="autoFocus"
+                          type="text"
+                          value={text}
+                          onChange={(event) => handleTextChange(event, index)}
+                        />
+                        <button
+                          style={{
+                            backgroundColor: "blueviolet",
+                            color: "white",
+                            borderRadius: "4px",
+                            display: "block",
+                            position: "absolute",
+                            bottom: "5px",
+                            right: "10px",
+                          }}
+                          onClick={() => handleClickOutside(index)}
+                        >
+                          Save Changes
+                        </button>
+                        <button
+                          style={{
+                            backgroundColor: "red",
+                            color: "white",
+                            borderRadius: "4px",
+                            display: "block",
+                            position: "absolute",
+                            bottom: "5px",
+                            left: "10px",
+                          }}
+                          onClick={() => handleRemoveField(index)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    ) : (
+                      <div key={index}>
+                        <Label
+                          input={{
+                            type: "text",
+                            value: field.label,
+                          }}
+                        >
+                          {labelValue[index]}
+                        </Label>
+                        {showButtons && (
+                          <IoIosCreate
+                            style={{ transform: "scale(2)" }}
+                            onClick={() => handleElementClick(index)}
+                          />
+                        )}
+                      </div>
+                    )}
+                    <center>
+                      {" "}
+                      <ReCAPTCHA
+                        sitekey={"6LeiNAclAAAAAImMXqIfk2YOFJF99SD6UVUAqyvd"}
+                      />
+                    </center>
+
                     <br></br>
                   </div>
                 );
@@ -3738,6 +4066,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   </div>
                 );
                 break;
+
           
                 case "Captcha":
                   formField = (
@@ -3757,6 +4086,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
               }
             }}
           });
+
         }
     return (
       <div>
@@ -3977,6 +4307,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                           alignItems: "center",
                           justifyContent: "center",
                           display: "flex",
+                          wordBreak: "break-word",
                         }}
                         onChange={(event) =>
                           updateData(event, "label", numberOfElements)
@@ -3991,6 +4322,318 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   </center>
                 </div>
               )}
+              {configuration === "Navbar" && (
+                <div>
+                  <Divider>General Details</Divider>
+
+                  <Label>Label Name:</Label>
+                  <InputField
+                    onChange={(event) =>
+                      updateData(event, "label", numberOfElements)
+                    }
+                    input={{
+                      name: "label",
+                    }}
+                  />
+                </div>
+              )}
+              {configuration === "Header" && (
+                <div>
+                  <Divider>General Details</Divider>
+
+                  <Label>Label Name:</Label>
+                  <InputField
+                    onChange={(event) =>
+                      updateData(event, "label", numberOfElements)
+                    }
+                    input={{
+                      name: "label",
+                    }}
+                  />
+                </div>
+              )}
+              {configuration === "Input Field" && (
+                <div>
+                  <Divider>General Details</Divider>
+                  <Label style={{ fontWeight: "bold" }}>Label Name:</Label>
+                  <InputField
+                    onChange={(event) =>
+                      updateData(event, "label", numberOfElements)
+                    }
+                    input={{
+                      name: "label",
+                    }}
+                  />
+                  <br />
+
+                  <Form.Group className="mb-3">
+                    <Divider>Field Details</Divider>
+                    <Label style={{ fontWeight: "bold" }}>
+                      What is the expected input type?
+                    </Label>
+
+                    <Select
+                      style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                        display: "flex",
+                      }}
+                      value={selectedValue}
+                      onClick={handleChange}
+                    >
+                      <option value="Email">Email</option>
+                      <option value="Phone Number">Phone Number</option>
+                      <option value="Text">Text</option>
+                      <option value="Number">Number</option>
+                      <option value="URL">URL</option>
+                    </Select>
+                    <br />
+                    <Divider>Contraints</Divider>
+
+                    {values.map((option, index) => (
+                      <div key={index}>
+                        <Label style={{ fontWeight: "bold" }}>
+                          Constraint {index + 1}:
+                        </Label>
+                        <Select
+                          style={{
+                            justifyContent: "center",
+                            alignItems: "center",
+                            display: "flex",
+                          }}
+                          value={selectedValues[index]}
+                          onClick={(event) => {
+                            const updatedValues = [...selectedValues];
+                            updatedValues[index] = event.target.value;
+                            setSelectedValues(updatedValues);
+                          }}
+                        >
+                          {constraintsList.map((option, index) => (
+                            <option
+                              key={index}
+                              value={option}
+                              style={{
+                                padding: "5px",
+                                border: "1px solid #ccc",
+                              }}
+                            >
+                              {option}
+                            </option>
+                          ))}
+                        </Select>
+
+                        {selectedValues[index] === "Min Max" && (
+                          <div>
+                            <br />
+                            <Divider>Min Max Constraint</Divider>
+                            <br />
+                            <Label
+                              style={{
+                                justifyContent: "center",
+                                alignItems: "center",
+                                display: "flex",
+                              }}
+                            >
+                              Please specify the mimimum and maximum amount of
+                              characters for the field selected.
+                            </Label>
+                            <br />
+                            <div style={{ maxWidth: "100px", float: "left" }}>
+                              <Label style={{ fontWeight: "bold" }}>
+                                <center>Minimum</center>
+                              </Label>
+
+                              <InputField
+                                onChange={(e) => setMin(e.target.value)}
+                              ></InputField>
+                            </div>
+                            <div style={{ maxWidth: "100px", float: "right" }}>
+                              <Label style={{ fontWeight: "bold" }}>
+                                <center>Maximum</center>
+                              </Label>
+
+                              <InputField
+                                onChange={(e) => setMax(e.target.value)}
+                              ></InputField>
+                            </div>
+
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <Label
+                              style={{
+                                justifyContent: "center",
+                                alignItems: "center",
+                                display: "flex",
+                              }}
+                            >
+                              Please specify the error message you would like
+                              displayed.
+                            </Label>
+
+                            <Label style={{ fontWeight: "bold" }}>
+                              <center>Error Message</center>
+                            </Label>
+                            <TextArea
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                              onChange={(e) => setMin(e.target.value)}
+                            ></TextArea>
+                            <br />
+                            <Divider>Constraints</Divider>
+                          </div>
+                        )}
+                        {selectedValues[index] === "Required" && (
+                          <div>
+                            <br />
+                            <Divider>Required Constraint</Divider>
+                            <Label>
+                              Please specify the error message you would like
+                              displayed.
+                            </Label>
+                            <center>
+                              <Label style={{ fontWeight: "bold" }}>
+                                Error Message
+                              </Label>
+                              <TextArea
+                                style={{
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                  display: "flex",
+                                }}
+                                onChange={(e) =>
+                                  setErrorMessage(e.target.value)
+                                }
+                              ></TextArea>
+                              <br />
+
+                              <Label>
+                                Your error message will appear like this:
+                              </Label>
+                              <div style={{ color: "red" }}>{errorMessage}</div>
+                              {labelValue}
+                              <InputField
+                                style={{ maxWidth: "100px" }}
+                              ></InputField>
+                            </center>
+                            <br></br>
+                            <Divider>Constraints</Divider>
+                          </div>
+                        )}
+                        {selectedValues[index] === "Length" && (
+                          <div>
+                            <br />
+                            <Divider>Length Constraint</Divider>
+                            <center>
+                              <Label>
+                                Please specify the maximum length for this
+                                field.
+                              </Label>
+                              <Label style={{ fontWeight: "bold" }}>
+                                Length
+                              </Label>
+                              <InputField
+                                style={{ maxWidth: "200px" }}
+                                onChange={(e) => setLength(e.target.value)}
+                              ></InputField>
+                              <br></br>
+                              <Label>
+                                Please specify the error message you would like
+                                displayed.
+                              </Label>
+                              <Label style={{ fontWeight: "bold" }}>
+                                Error Message
+                              </Label>
+                              <TextArea
+                                style={{
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                  display: "flex",
+                                }}
+                                onChange={(e) =>
+                                  setErrorMessage(e.target.value)
+                                }
+                              ></TextArea>
+                              <br />
+
+                              <Label>
+                                Your error message will appear like this:
+                              </Label>
+                              <div style={{ color: "red" }}>{errorMessage}</div>
+                              {labelValue}
+                              <InputField
+                                style={{ maxWidth: "100px" }}
+                              ></InputField>
+                            </center>
+                            <br></br>
+                            <Divider>Constraints</Divider>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                    <br></br>
+                    <Form.Group
+                      style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                        display: "flex",
+                      }}
+                    >
+                      <br />
+                      <br />
+                      <br />
+                      <br /> <br />
+                      <Button
+                        type="button"
+                        onClick={() => {
+                          setValues((prevValues) => [...prevValues, ""]);
+                          setSelectedValues((prevValues) => [
+                            ...prevValues,
+                            "",
+                          ]);
+                        }}
+                      >
+                        Add Constraint
+                      </Button>
+                    </Form.Group>
+                  </Form.Group>
+                </div>
+              )}
+              {configuration === "Label" && (
+                <div>
+                  <Divider>General Details</Divider>
+
+                  <Label>Label Name:</Label>
+                  <InputField
+                    onChange={(event) =>
+                      updateData(event, "label", numberOfElements)
+                    }
+                    input={{
+                      name: "label",
+                    }}
+                  />
+                </div>
+              )}
+              {configuration === "Captcha" && (
+                <div>
+                  <Divider>General Details</Divider>
+
+                  <Label>Label Name:</Label>
+                  <InputField
+                    onChange={(event) =>
+                      updateData(event, "label", numberOfElements)
+                    }
+                    input={{
+                      name: "label",
+                    }}
+                  />
+                </div>
+              )}
               {configuration === "Table" && (
                 <div>
                   <Divider>Table Details</Divider>
@@ -4001,7 +4644,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       <InputField
                         style={{ maxWidth: "100px", float: "left" }}
                         onChange={(e) => updateRows(e)}
-
                         input={{
                           name: "rows",
                           required: true,
@@ -4081,6 +4723,18 @@ function InteractivePageBuilderInterface({ link, mode }) {
             )}
             {configuration === "Button" && (
               <Form.Group className="mb-3">
+                <Divider>General Details</Divider>
+
+                <Label>Label Name:</Label>
+                <InputField
+                  onChange={(event) =>
+                    updateData(event, "label", numberOfElements)
+                  }
+                  input={{
+                    name: "label",
+                  }}
+                />
+                <br></br>
                 <Divider>Button Configuration</Divider>
                 <br></br>
                 <Select
@@ -4091,13 +4745,13 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     maxWidth: "1200px",
                   }}
                   value={selectedValue}
-                  onChange={handleChange}
+                  onClick={handleChange}
                   label="Select Button Click Event"
                 >
-                  <option>Next Page</option>
-                  <option>Previous Page</option>
-                  <option>Custom Routing</option>
-                  <option>Submit Contents</option>
+                  <option value="Next Page">Next Page</option>
+                  <option value="Previous Page">Previous Page</option>
+                  <option value="Custom Routing">Custom Routing</option>
+                  <option value="Submit Contents">Submit Contents</option>
                 </Select>
                 {selectedValue === "Next Page" && (
                   <div
@@ -4111,6 +4765,20 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     <br></br>
                     <br></br>
                     <Label>This will navigate to page: {pageCounter + 1}</Label>
+                  </div>
+                )}
+                {selectedValue === "Previous Page" && (
+                  <div
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                      display: "flex",
+                    }}
+                  >
+                    <br></br>
+                    <br></br>
+                    <br></br>
+                    <Label>This will navigate to page: {pageCounter - 1}</Label>
                   </div>
                 )}
               </Form.Group>
@@ -4139,6 +4807,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                 <Form.Group className="mb-3">
                   <Label>Add option:</Label>
                   <Button
+                    type="button"
                     onClick={() => {
                       setValues((prevValues) => [...prevValues, ""]);
                     }}
