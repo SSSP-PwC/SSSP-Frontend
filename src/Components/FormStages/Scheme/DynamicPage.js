@@ -171,15 +171,15 @@ function DynamicPage() {
             break;
           case "Input Field":
             formField = (
-              <div key={index} >
-                  <InputField
-                    input={{
-                      type: field.input_type,
-                      style: {maxWidth: "700px"} ,
-                    }}
-                  >
-                    {field.label}
-                  </InputField>
+              <div key={index}>
+                <InputField
+                  input={{
+                    type: field.input_type,
+                    style: { maxWidth: "700px" },
+                  }}
+                >
+                  {field.label}
+                </InputField>
               </div>
             );
             break;
@@ -714,6 +714,7 @@ function DynamicPage() {
             formField = (
               <div key={index} style={parentStyle}>
                 <br />
+                {console.log(field)}
                 <Link to={field.button_link}>
                   <Button
                     style={{
