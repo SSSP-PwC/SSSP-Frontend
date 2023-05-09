@@ -44,7 +44,6 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import InputLabel from "@mui/material/InputLabel";
 import styled from "styled-components";
 import Carousel from "react-bootstrap/Carousel";
-import { NotificationsProvider } from "reapop";
 
 import { List, ListItem, ListItemIcon, ListItemText } from "@mui/material";
 import {
@@ -75,6 +74,7 @@ import { HexColorPicker } from "react-colorful";
 import { style } from "@mui/system";
 import Table from "./Table";
 import { v4 as uuidv4 } from "uuid";
+
 import {
   withValidator,
   required,
@@ -87,6 +87,14 @@ import {
 } from "react-constraint-validation";
 import { ErrorMessage, Field, Formik } from "formik";
 import { notify } from "reapop";
+
+
+//import { withValidator,required, min, max, number, minLength, maxLength, email,} from "react-constraint-validation";
+//import { ErrorMessage, Field, Formik } from "formik";
+//const TextField = withValidator({ required, minLength, maxLength })(Field);
+//const NumberField = withValidator({ required, min, max }, { number })(Field);
+//const EmailField = withValidator({ required }, { email })(Field);
+
 
 const TextFieldValidation = withValidator({ required, minLength, maxLength })(
   Field
@@ -284,7 +292,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
         <input
           style={{
             display: "block",
-            marginBottom: "40px",
             paddingLeft: "5px",
             paddingRight: "5px",
           }}
@@ -298,6 +305,31 @@ function InteractivePageBuilderInterface({ link, mode }) {
               : handleTextChange(event, index)
           }
         />
+        <label
+                            htmlFor="buttoncolor"
+                            style={{
+                              color: "#888",
+                              fontStyle: "italic",
+                              paddingLeft: "5px",
+                              marginRight: "5px",
+                            }}
+                          >
+                            Color
+                          </label>
+                          <HexColorPicker
+                            style={{
+                              padding: "20px",
+                              paddingTop: "0px",
+                              marginLeft: "auto",
+                              marginRight: "auto",
+                              marginBottom: "40px",
+                            }}
+                            id="buttoncolor"
+                            color={formData.color}
+                            onChange={(newColor) =>
+                              handleColorChange(index, newColor)
+                            }
+                          />
         <button
           style={{
             backgroundColor: "#528AAE",
@@ -1329,7 +1361,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
-        notify("Welcome to the documentation", "info");
 
         return data;
       } catch (error) {
@@ -3266,7 +3297,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                           style={{
                             display: "block",
                             minHeight: "80px",
-                            marginBottom: "40px",
                             paddingLeft: "5px",
                             paddingRight: "5px",
                           }}
@@ -3276,6 +3306,32 @@ function InteractivePageBuilderInterface({ link, mode }) {
                           value={text}
                           onChange={(event) => handleTextChange(event, index)}
                         />
+                        <label
+        htmlFor="buttonposition"
+        style={{
+          color: "#888",
+          fontStyle: "italic",
+          paddingLeft: "5px",
+          display: 'block'
+        }}
+      >
+        Relative Position
+      </label>
+      <select
+        style={{
+          display: "block",
+          marginLeft: "auto",
+    marginRight: "auto",
+    marginBottom: "40px",
+        }}
+        id="buttonposition"
+        value={componentPositions[index]}
+        onChange={(event) => handlePositionChange(event.target.value, index)}
+      >
+        <option value="centre">Centre</option>
+        <option value="left">Left</option>
+        <option value="right">Right</option>
+      </select>
                         <button
                           style={{
                             backgroundColor: "#528AAE",
@@ -3308,6 +3364,26 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     ) : (
                       <div key={index}>
                         <label
+                          style={{ position:
+                            componentPositions[index] === "left" ||
+                            componentPositions[index] === "right" ? "absolute"
+                            : "relative",
+                            left:
+                                componentPositions[index] === "left"
+                                  ? "350px"
+                                  : componentPositions[index] === "right"
+                                  ? "auto"
+                                  : componentLefts[index] !== ""
+                                  ? componentLefts[index] + "px"
+                                  : "auto",
+                              right:
+                                componentPositions[index] === "right"
+                                  ? "350px"
+                                  : componentPositions[index] === "left"
+                                  ? "auto"
+                                  : componentRights[index] !== ""
+                                  ? componentRights[index] + "px"
+                                  : "auto",  }}
                           input={{
                             type: "text",
                             value: field.config.label,
@@ -3394,7 +3470,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                             fontStyle: "italic",
                             paddingLeft: "5px",
                             marginRight: "5px",
-                            marginBottom: "40px",
                           }}
                         >
                           Size
@@ -3410,6 +3485,32 @@ function InteractivePageBuilderInterface({ link, mode }) {
                           <option value="MEDIUM">Medium</option>
                           <option value="LARGE">Large</option>
                         </select>
+                        <label
+        htmlFor="buttonposition"
+        style={{
+          color: "#888",
+          fontStyle: "italic",
+          paddingLeft: "5px",
+          display: 'block'
+        }}
+      >
+        Relative Position
+      </label>
+      <select
+        style={{
+          display: "block",
+          marginLeft: "auto",
+    marginRight: "auto",
+    marginBottom: "40px",
+        }}
+        id="buttonposition"
+        value={componentPositions[index]}
+        onChange={(event) => handlePositionChange(event.target.value, index)}
+      >
+        <option value="centre">Centre</option>
+        <option value="left">Left</option>
+        <option value="right">Right</option>
+      </select>
                         <button
                           style={{
                             backgroundColor: "#528AAE",
@@ -3440,12 +3541,33 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         </button>
                       </div>
                     ) : (
-                      <div key={index}>
+                      <div key={index} style={{display: 'block'}}>
                         <Heading
                           size={selectedOptionHeading[index]}
                           style={{
+                            marginBottom: '40px',
                             display: "block",
                             color: componentColors[index],
+                            position:
+                            componentPositions[index] === "left" ||
+                            componentPositions[index] === "right" ? "absolute"
+                            : "relative",
+                            left:
+                                componentPositions[index] === "left"
+                                  ? "350px"
+                                  : componentPositions[index] === "right"
+                                  ? "auto"
+                                  : componentLefts[index] !== ""
+                                  ? componentLefts[index] + "px"
+                                  : "auto",
+                              right:
+                                componentPositions[index] === "right"
+                                  ? "350px"
+                                  : componentPositions[index] === "left"
+                                  ? "auto"
+                                  : componentRights[index] !== ""
+                                  ? componentRights[index] + "px"
+                                  : "auto",  
                           }}
                           input={{
                             type: "text",
@@ -3573,7 +3695,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   </div>
                 );
                 break;
-
               case "Navbar":
                 formField = (
                   <div>
@@ -3583,13 +3704,11 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       <div key={index}>
                         <TopNav
                           style={{
-                            color: field.color,
                             width: field.config.width + "px",
                             height: field.config.height + "px",
-                            backgroundColor: formData.color,
                           }}
                           company={
-                            <TopNav.Anchor style={{ fontSize: "22px" }}>
+                            <TopNav.Anchor style={{ fontSize: "22px", color: componentColors[index]}}>
                               {labelValue[index]}
                             </TopNav.Anchor>
                           }
@@ -4671,9 +4790,12 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   <Label>Label Colour:</Label>
 
                   <HexColorPicker
-                    color={formData.color}
-                    onChange={handleColorChange}
-                  />
+                          style={{ padding: "20px", paddingTop: "0px" }}
+                          color={formData.color}
+                          onChange={(newColor) =>
+                            handleColorChange(numberOfElements, newColor)
+                          }
+                        />
                 </center>
                 <br></br>
                 <br></br>
