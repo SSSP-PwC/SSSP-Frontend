@@ -88,13 +88,11 @@ import {
 import { ErrorMessage, Field, Formik } from "formik";
 import { notify } from "reapop";
 
-
 //import { withValidator,required, min, max, number, minLength, maxLength, email,} from "react-constraint-validation";
 //import { ErrorMessage, Field, Formik } from "formik";
 //const TextField = withValidator({ required, minLength, maxLength })(Field);
 //const NumberField = withValidator({ required, min, max }, { number })(Field);
 //const EmailField = withValidator({ required }, { email })(Field);
-
 
 const TextFieldValidation = withValidator({ required, minLength, maxLength })(
   Field
@@ -107,6 +105,7 @@ const EmailFieldValidation = withValidator({ required }, { email })(Field);
 
 function InteractivePageBuilderInterface({ link, mode }) {
   const [theme, colorMode] = useMode();
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [buttonLink, setButtonLink] = useState();
   const [required, setRequired] = useState();
   const [selectedValue, setSelectedValue] = useState("Blank");
@@ -263,6 +262,12 @@ function InteractivePageBuilderInterface({ link, mode }) {
     setImagePopup(true);
   }, [image]);
 
+  useEffect(() => {
+    if (selectedValues[0] === "Required") {
+      setRequired(true);
+    }
+  });
+
   function NavbarEditor(props) {
     const index = props.ind;
     return (
@@ -306,30 +311,28 @@ function InteractivePageBuilderInterface({ link, mode }) {
           }
         />
         <label
-                            htmlFor="buttoncolor"
-                            style={{
-                              color: "#888",
-                              fontStyle: "italic",
-                              paddingLeft: "5px",
-                              marginRight: "5px",
-                            }}
-                          >
-                            Color
-                          </label>
-                          <HexColorPicker
-                            style={{
-                              padding: "20px",
-                              paddingTop: "0px",
-                              marginLeft: "auto",
-                              marginRight: "auto",
-                              marginBottom: "40px",
-                            }}
-                            id="buttoncolor"
-                            color={formData.color}
-                            onChange={(newColor) =>
-                              handleColorChange(index, newColor)
-                            }
-                          />
+          htmlFor="buttoncolor"
+          style={{
+            color: "#888",
+            fontStyle: "italic",
+            paddingLeft: "5px",
+            marginRight: "5px",
+          }}
+        >
+          Color
+        </label>
+        <HexColorPicker
+          style={{
+            padding: "20px",
+            paddingTop: "0px",
+            marginLeft: "auto",
+            marginRight: "auto",
+            marginBottom: "40px",
+          }}
+          id="buttoncolor"
+          color={formData.color}
+          onChange={(newColor) => handleColorChange(index, newColor)}
+        />
         <button
           style={{
             backgroundColor: "#528AAE",
@@ -468,8 +471,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
   };
   const citizen_id = sessionStorage.getItem("Citizen_ID");
   const updateData = (event, property, fieldIndex) => {
-    setSelectedValue(event.target.value);
-
+    setSelectedValue(event.target?.value);
     const currentPage = page[0];
     const currentPageFields = currentPage.fields ? [...currentPage.fields] : [];
     for (let i = currentPageFields.length - 1; i >= 0; i--) {
@@ -490,7 +492,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
         ...field,
         config: {
           ...field.config,
-          [property]: event.target.value,
+          [property]: event.target?.value,
         },
       };
     } else if (field) {
@@ -1690,9 +1692,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         )}
                       </div>
                     )}
-
                     <div
-                      key={index}
                       style={{
                         justifyContent: "center",
                         alignItems: "center",
@@ -1703,21 +1703,33 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         <div>
                           <PhoneInput
                             placeholder={field.name}
-                            //value={phoneNumber}
-                            //onChange={setPhoneNumber}
+                            value={phoneNumber}
+                            required={required}
+                            onChange={setPhoneNumber}
                           />
+                          {!phoneNumber && required && (
+                            <div style={{ color: "red" }}>{errorMessage}</div>
+                          )}
                         </div>
                       ) : (
-                        <InputField
-                          input={{
-                            type: inputType[index],
-                            style: { ...inputFieldStyle, width: "700px" },
-                          }}
-                        >
-                          {field.label}
-                        </InputField>
+                        <div>
+                          {!field.input && required && (
+                            <div style={{ color: "red" }}>{errorMessage}</div>
+                          )}
+                          <InputField
+                           
+                            input={{
+                              type: inputType[index],
+                              required: required,
+                              style: { ...inputFieldStyle, width: "700px" },
+                              value: text,
+                              onChange: (event) => {setText(event.target.value)}
+                            }}
+                          >
+                            {field.label}
+                          </InputField>
+                        </div>
                       )}
-
                       <br />
                       <br />
                       <br />
@@ -3307,31 +3319,33 @@ function InteractivePageBuilderInterface({ link, mode }) {
                           onChange={(event) => handleTextChange(event, index)}
                         />
                         <label
-        htmlFor="buttonposition"
-        style={{
-          color: "#888",
-          fontStyle: "italic",
-          paddingLeft: "5px",
-          display: 'block'
-        }}
-      >
-        Relative Position
-      </label>
-      <select
-        style={{
-          display: "block",
-          marginLeft: "auto",
-    marginRight: "auto",
-    marginBottom: "40px",
-        }}
-        id="buttonposition"
-        value={componentPositions[index]}
-        onChange={(event) => handlePositionChange(event.target.value, index)}
-      >
-        <option value="centre">Centre</option>
-        <option value="left">Left</option>
-        <option value="right">Right</option>
-      </select>
+                          htmlFor="buttonposition"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                            display: "block",
+                          }}
+                        >
+                          Relative Position
+                        </label>
+                        <select
+                          style={{
+                            display: "block",
+                            marginLeft: "auto",
+                            marginRight: "auto",
+                            marginBottom: "40px",
+                          }}
+                          id="buttonposition"
+                          value={componentPositions[index]}
+                          onChange={(event) =>
+                            handlePositionChange(event.target.value, index)
+                          }
+                        >
+                          <option value="centre">Centre</option>
+                          <option value="left">Left</option>
+                          <option value="right">Right</option>
+                        </select>
                         <button
                           style={{
                             backgroundColor: "#528AAE",
@@ -3364,26 +3378,29 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     ) : (
                       <div key={index}>
                         <label
-                          style={{ position:
-                            componentPositions[index] === "left" ||
-                            componentPositions[index] === "right" ? "absolute"
-                            : "relative",
+                          style={{
+                            position:
+                              componentPositions[index] === "left" ||
+                              componentPositions[index] === "right"
+                                ? "absolute"
+                                : "relative",
                             left:
-                                componentPositions[index] === "left"
-                                  ? "350px"
-                                  : componentPositions[index] === "right"
-                                  ? "auto"
-                                  : componentLefts[index] !== ""
-                                  ? componentLefts[index] + "px"
-                                  : "auto",
-                              right:
-                                componentPositions[index] === "right"
-                                  ? "350px"
-                                  : componentPositions[index] === "left"
-                                  ? "auto"
-                                  : componentRights[index] !== ""
-                                  ? componentRights[index] + "px"
-                                  : "auto",  }}
+                              componentPositions[index] === "left"
+                                ? "350px"
+                                : componentPositions[index] === "right"
+                                ? "auto"
+                                : componentLefts[index] !== ""
+                                ? componentLefts[index] + "px"
+                                : "auto",
+                            right:
+                              componentPositions[index] === "right"
+                                ? "350px"
+                                : componentPositions[index] === "left"
+                                ? "auto"
+                                : componentRights[index] !== ""
+                                ? componentRights[index] + "px"
+                                : "auto",
+                          }}
                           input={{
                             type: "text",
                             value: field.config.label,
@@ -3486,31 +3503,33 @@ function InteractivePageBuilderInterface({ link, mode }) {
                           <option value="LARGE">Large</option>
                         </select>
                         <label
-        htmlFor="buttonposition"
-        style={{
-          color: "#888",
-          fontStyle: "italic",
-          paddingLeft: "5px",
-          display: 'block'
-        }}
-      >
-        Relative Position
-      </label>
-      <select
-        style={{
-          display: "block",
-          marginLeft: "auto",
-    marginRight: "auto",
-    marginBottom: "40px",
-        }}
-        id="buttonposition"
-        value={componentPositions[index]}
-        onChange={(event) => handlePositionChange(event.target.value, index)}
-      >
-        <option value="centre">Centre</option>
-        <option value="left">Left</option>
-        <option value="right">Right</option>
-      </select>
+                          htmlFor="buttonposition"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                            display: "block",
+                          }}
+                        >
+                          Relative Position
+                        </label>
+                        <select
+                          style={{
+                            display: "block",
+                            marginLeft: "auto",
+                            marginRight: "auto",
+                            marginBottom: "40px",
+                          }}
+                          id="buttonposition"
+                          value={componentPositions[index]}
+                          onChange={(event) =>
+                            handlePositionChange(event.target.value, index)
+                          }
+                        >
+                          <option value="centre">Centre</option>
+                          <option value="left">Left</option>
+                          <option value="right">Right</option>
+                        </select>
                         <button
                           style={{
                             backgroundColor: "#528AAE",
@@ -3541,33 +3560,34 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         </button>
                       </div>
                     ) : (
-                      <div key={index} style={{display: 'block'}}>
+                      <div key={index} style={{ display: "block" }}>
                         <Heading
                           size={selectedOptionHeading[index]}
                           style={{
-                            marginBottom: '40px',
+                            marginBottom: "40px",
                             display: "block",
                             color: componentColors[index],
                             position:
-                            componentPositions[index] === "left" ||
-                            componentPositions[index] === "right" ? "absolute"
-                            : "relative",
+                              componentPositions[index] === "left" ||
+                              componentPositions[index] === "right"
+                                ? "absolute"
+                                : "relative",
                             left:
-                                componentPositions[index] === "left"
-                                  ? "350px"
-                                  : componentPositions[index] === "right"
-                                  ? "auto"
-                                  : componentLefts[index] !== ""
-                                  ? componentLefts[index] + "px"
-                                  : "auto",
-                              right:
-                                componentPositions[index] === "right"
-                                  ? "350px"
-                                  : componentPositions[index] === "left"
-                                  ? "auto"
-                                  : componentRights[index] !== ""
-                                  ? componentRights[index] + "px"
-                                  : "auto",  
+                              componentPositions[index] === "left"
+                                ? "350px"
+                                : componentPositions[index] === "right"
+                                ? "auto"
+                                : componentLefts[index] !== ""
+                                ? componentLefts[index] + "px"
+                                : "auto",
+                            right:
+                              componentPositions[index] === "right"
+                                ? "350px"
+                                : componentPositions[index] === "left"
+                                ? "auto"
+                                : componentRights[index] !== ""
+                                ? componentRights[index] + "px"
+                                : "auto",
                           }}
                           input={{
                             type: "text",
@@ -3708,7 +3728,12 @@ function InteractivePageBuilderInterface({ link, mode }) {
                             height: field.config.height + "px",
                           }}
                           company={
-                            <TopNav.Anchor style={{ fontSize: "22px", color: componentColors[index]}}>
+                            <TopNav.Anchor
+                              style={{
+                                fontSize: "22px",
+                                color: componentColors[index],
+                              }}
+                            >
                               {labelValue[index]}
                             </TopNav.Anchor>
                           }
@@ -3989,7 +4014,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     <PhoneInput
                       placeholder={field.name}
                       //value={phoneNumber}
-                      //onChange={setPhoneNumber}
+                      //onChange={(e) => {setPhoneNumber(e)}}
                     />
                     <br></br>
                   </div>
@@ -4619,6 +4644,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                             <Divider>Constraints</Divider>
                           </div>
                         )}
+
                         {selectedValues[index] === "Required" && (
                           <div>
                             <br />
@@ -4645,6 +4671,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                             </center>
                           </div>
                         )}
+
                         {selectedValues[index] === "Length" && (
                           <div>
                             <br />
@@ -4790,12 +4817,12 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   <Label>Label Colour:</Label>
 
                   <HexColorPicker
-                          style={{ padding: "20px", paddingTop: "0px" }}
-                          color={formData.color}
-                          onChange={(newColor) =>
-                            handleColorChange(numberOfElements, newColor)
-                          }
-                        />
+                    style={{ padding: "20px", paddingTop: "0px" }}
+                    color={formData.color}
+                    onChange={(newColor) =>
+                      handleColorChange(numberOfElements, newColor)
+                    }
+                  />
                 </center>
                 <br></br>
                 <br></br>
@@ -5118,21 +5145,27 @@ function InteractivePageBuilderInterface({ link, mode }) {
                                   style={{ color: "white" }}
                                   title="Homepage"
                                 >
-                                  {homepageComponentDesigns.map((component) => (
-                                    <ListItem
-                                      button
-                                      key={component.name}
-                                      selected={selected === component.name}
-                                      onClick={() =>
-                                        handleAddField(component.name)
-                                      }
-                                    >
-                                      <ListItemIcon style={{ color: "white" }}>
-                                        {component.icon}
-                                      </ListItemIcon>
-                                      <ListItemText primary={component.name} />
-                                    </ListItem>
-                                  ))}
+                                  {homepageComponentDesigns.map(
+                                    (component, index) => (
+                                      <ListItem
+                                        button
+                                        key={index}
+                                        selected={selected === component.name}
+                                        onClick={() =>
+                                          handleAddField(component.name)
+                                        }
+                                      >
+                                        <ListItemIcon
+                                          style={{ color: "white" }}
+                                        >
+                                          {component.icon}
+                                        </ListItemIcon>
+                                        <ListItemText
+                                          primary={component.name}
+                                        />
+                                      </ListItem>
+                                    )
+                                  )}
                                 </SubMenu>
 
                                 <SubMenu
@@ -5160,10 +5193,10 @@ function InteractivePageBuilderInterface({ link, mode }) {
                                 style={{ color: "white" }}
                                 title="Button Category"
                               >
-                                {buttonComponents.map((component) => (
+                                {buttonComponents.map((component, index) => (
                                   <ListItem
                                     button
-                                    key={component.name}
+                                    key={index}
                                     selected={selected === component.name}
                                     onClick={() =>
                                       handleAddField(component.name)
@@ -5180,10 +5213,10 @@ function InteractivePageBuilderInterface({ link, mode }) {
                                 style={{ color: "white" }}
                                 title="Text Category"
                               >
-                                {textComponents.map((component) => (
+                                {textComponents.map((component, index) => (
                                   <ListItem
                                     button
-                                    key={component.name}
+                                    key={index}
                                     selected={selected === component.name}
                                     onClick={() =>
                                       handleAddField(component.name)
@@ -5200,10 +5233,10 @@ function InteractivePageBuilderInterface({ link, mode }) {
                                 style={{ color: "white" }}
                                 title="Image Category"
                               >
-                                {imageComponent.map((component) => (
+                                {imageComponent.map((component, index) => (
                                   <ListItem
                                     button
-                                    key={component.name}
+                                    key={index}
                                     selected={selected === component.name}
                                     onClick={() =>
                                       handleAddField(component.name)
@@ -5217,10 +5250,10 @@ function InteractivePageBuilderInterface({ link, mode }) {
                                 ))}
                               </SubMenu>
                               <List style={{ color: "white" }}>
-                                {navbarComponent.map((component) => (
+                                {navbarComponent.map((component, index) => (
                                   <ListItem
                                     button
-                                    key={component.name}
+                                    key={index}
                                     selected={selected === component.name}
                                     onClick={() =>
                                       handleAddField(component.name)
@@ -5234,10 +5267,10 @@ function InteractivePageBuilderInterface({ link, mode }) {
                                 ))}
                               </List>
                               <List style={{ color: "white" }}>
-                                {footerComponent.map((component) => (
+                                {footerComponent.map((component, index) => (
                                   <ListItem
                                     button
-                                    key={component.name}
+                                    key={index}
                                     selected={selected === component.name}
                                     onClick={() =>
                                       handleAddField(component.name)
@@ -5291,10 +5324,10 @@ function InteractivePageBuilderInterface({ link, mode }) {
                                 </SubMenu>
                               </List>
                               <List style={{ color: "white" }}>
-                                {captchaComponent.map((component) => (
+                                {captchaComponent.map((component, index) => (
                                   <ListItem
+                                    key={index}
                                     button
-                                    key={component.name}
                                     selected={selected === component.name}
                                     onClick={() =>
                                       handleAddField(component.name)
@@ -5309,27 +5342,29 @@ function InteractivePageBuilderInterface({ link, mode }) {
                               </List>
 
                               <List style={{ color: "white" }}>
-                                {multichoiceComponent.map((component) => (
-                                  <ListItem
-                                    button
-                                    key={component.name}
-                                    selected={selected === component.name}
-                                    onClick={() =>
-                                      handleAddField(component.name)
-                                    }
-                                  >
-                                    <ListItemIcon style={{ color: "white" }}>
-                                      {component.icon}
-                                    </ListItemIcon>
-                                    <ListItemText primary={component.name} />
-                                  </ListItem>
-                                ))}
+                                {multichoiceComponent.map(
+                                  (component, index) => (
+                                    <ListItem
+                                      key={index}
+                                      button
+                                      selected={selected === component.name}
+                                      onClick={() =>
+                                        handleAddField(component.name)
+                                      }
+                                    >
+                                      <ListItemIcon style={{ color: "white" }}>
+                                        {component.icon}
+                                      </ListItemIcon>
+                                      <ListItemText primary={component.name} />
+                                    </ListItem>
+                                  )
+                                )}
                               </List>
                               <List style={{ color: "white" }}>
-                                {pageBreakComponent.map((component) => (
+                                {pageBreakComponent.map((component, index) => (
                                   <ListItem
+                                    key={index}
                                     button
-                                    key={component.name}
                                     selected={selected === component.name}
                                     onClick={() =>
                                       handleAddField(component.name)
@@ -5349,11 +5384,11 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         {isCollapsed && mode !== "Site Home" && (
                           <Box>
                             <div style={{ margin: "20px" }}>
-                              <SubMenu style={{ color: "white" }} title="HHH">
-                                {filteredComponents.map((component) => (
+                              <SubMenu style={{ color: "white" }} title="">
+                                {filteredComponents.map((component, index) => (
                                   <ListItem
+                                    key={index}
                                     button
-                                    key={component.name}
                                     selected={selected === component.name}
                                     onClick={() => setSelected(component.name)}
                                   >
@@ -5539,10 +5574,10 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       <Box>
                         <div style={{ margin: "20px" }}>
                           <SubMenu style={{ color: "white" }} title="HHH">
-                            {filteredComponents.map((component) => (
+                            {filteredComponents.map((component, index) => (
                               <ListItem
+                                key={index}
                                 button
-                                key={component.name}
                                 selected={selected === component.name}
                                 onClick={() => setSelected(component.name)}
                               >
