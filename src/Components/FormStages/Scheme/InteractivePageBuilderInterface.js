@@ -75,13 +75,27 @@ import { HexColorPicker } from "react-colorful";
 import { style } from "@mui/system";
 import Table from "./Table";
 import { v4 as uuidv4 } from "uuid";
-
-//import { withValidator,required, min, max, number, minLength, maxLength, email,} from "react-constraint-validation";
-//import { ErrorMessage, Field, Formik } from "formik";
-//const TextField = withValidator({ required, minLength, maxLength })(Field);
-//const NumberField = withValidator({ required, min, max }, { number })(Field);
-//const EmailField = withValidator({ required }, { email })(Field);
+import {
+  withValidator,
+  required,
+  min,
+  max,
+  number,
+  minLength,
+  maxLength,
+  email,
+} from "react-constraint-validation";
+import { ErrorMessage, Field, Formik } from "formik";
 import { notify } from "reapop";
+
+const TextFieldValidation = withValidator({ required, minLength, maxLength })(
+  Field
+);
+const NumberFieldValidation = withValidator(
+  { required, min, max },
+  { number }
+)(Field);
+const EmailFieldValidation = withValidator({ required }, { email })(Field);
 
 function InteractivePageBuilderInterface({ link, mode }) {
   const [theme, colorMode] = useMode();
@@ -161,6 +175,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
       fields: [{}],
     },
   ]);
+  const [inputType, setInputType] = useState(numberOfElements);
 
   const sizeOptions = [
     { value: "SMALL", label: "Small" },
@@ -421,6 +436,8 @@ function InteractivePageBuilderInterface({ link, mode }) {
   };
   const citizen_id = sessionStorage.getItem("Citizen_ID");
   const updateData = (event, property, fieldIndex) => {
+    setSelectedValue(event.target.value);
+
     const currentPage = page[0];
     const currentPageFields = currentPage.fields ? [...currentPage.fields] : [];
     for (let i = currentPageFields.length - 1; i >= 0; i--) {
@@ -473,6 +490,15 @@ function InteractivePageBuilderInterface({ link, mode }) {
         return newValues;
       });
     }
+    if (property === "type") {
+      setInputType((prevValues) => {
+        console.log(prevValues);
+        const newValues = Array.isArray(prevValues) ? [...prevValues] : [];
+        newValues[fieldIndex] = event.target.value;
+        return newValues;
+      });
+    }
+
     const newFormData = { ...formData };
     if (field && field.name) {
       newFormData[field.name] = updatedField;
@@ -493,6 +519,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
 
   const handleChange = (event) => {
     setSelectedValue(event.target.value);
+    updateData(event.target.value?.toLowerCase());
   };
 
   const [citizen, setCitizen] = useState();
@@ -1639,17 +1666,27 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         justifyContent: "center",
                         alignItems: "center",
                         display: "flex",
-                        width: "1200px",
                       }}
                     >
-                      <InputField
-                        input={{
-                          type: field.input_type,
-                          style: { ...inputFieldStyle, width: "700px" },
-                        }}
-                      >
-                        {field.label}
-                      </InputField>
+                      {inputType[index] === "Phone Number" ? (
+                        <div>
+                          <PhoneInput
+                            placeholder={field.name}
+                            //value={phoneNumber}
+                            //onChange={setPhoneNumber}
+                          />
+                        </div>
+                      ) : (
+                        <InputField
+                          input={{
+                            type: inputType[index],
+                            style: { ...inputFieldStyle, width: "700px" },
+                          }}
+                        >
+                          {field.label}
+                        </InputField>
+                      )}
+
                       <br />
                       <br />
                       <br />
@@ -3117,7 +3154,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                           justifyContent: "center",
                           alignItems: "center",
                           display: "flex",
-                          width: "1200px",
                         }}
                       >
                         <TextArea
@@ -4353,7 +4389,9 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         display: "flex",
                       }}
                       value={selectedValue}
-                      onClick={handleChange}
+                      onClick={(event) =>
+                        updateData(event, "type", numberOfElements)
+                      }
                     >
                       <option value="Email">Email</option>
                       <option value="Phone Number">Phone Number</option>
@@ -4362,7 +4400,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       <option value="URL">URL</option>
                     </Select>
                     <br />
-                    <Divider>Contraints</Divider>
+                    <Divider>{selectedValue} Contraints</Divider>
 
                     {values.map((option, index) => (
                       <div key={index}>
@@ -4485,18 +4523,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                                 }
                               ></TextArea>
                               <br />
-
-                              <Label>
-                                Your error message will appear like this:
-                              </Label>
-                              <div style={{ color: "red" }}>{errorMessage}</div>
-                              {labelValue}
-                              <InputField
-                                style={{ maxWidth: "100px" }}
-                              ></InputField>
                             </center>
-                            <br></br>
-                            <Divider>Constraints</Divider>
                           </div>
                         )}
                         {selectedValues[index] === "Length" && (
@@ -4534,18 +4561,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                                 }
                               ></TextArea>
                               <br />
-
-                              <Label>
-                                Your error message will appear like this:
-                              </Label>
-                              <div style={{ color: "red" }}>{errorMessage}</div>
-                              {labelValue}
-                              <InputField
-                                style={{ maxWidth: "100px" }}
-                              ></InputField>
                             </center>
-                            <br></br>
-                            <Divider>Constraints</Divider>
                           </div>
                         )}
                       </div>

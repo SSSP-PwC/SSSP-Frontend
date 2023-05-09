@@ -295,7 +295,11 @@ function DynamicPage() {
 
           case "Text area":
             formField = (
-              <div key={index} style={parentStyle}>
+              <div key={index}   style={{
+                justifyContent: "center",
+                alignItems: "center",
+                display: "flex",
+              }}>
                 <br />
                 <TextArea
                   style={parentStyle}
@@ -303,7 +307,7 @@ function DynamicPage() {
                     type: field.type,
                     name: field.label,
                     required: field.required,
-                    style: { ...inputFieldStyle },
+                    style: { ...inputFieldStyle, width: "700px" },
                   }}
                 >
                   {field.label}
@@ -387,6 +391,7 @@ function DynamicPage() {
           case "File Upload":
             formField = (
               <div key={index}>
+                <br/>
                 <input type="file" />
                 <br></br>
               </div>
@@ -779,6 +784,26 @@ function DynamicPage() {
                    {field.label}
                  </Heading>
                 )}
+                 {field.label === "Contact Support" && (
+                   <Heading
+                   size="LARGE"
+                   input={{
+                     type: "text",
+                   }}
+                 >
+                   {field.label}
+                 </Heading>
+                )}
+                     {field.label === "Contact Us" && (
+                   <Heading
+                   size="LARGE"
+                   input={{
+                     type: "text",
+                   }}
+                 >
+                   {field.label}
+                 </Heading>
+                )}
                 <br></br>
               </div>
             );
@@ -851,7 +876,7 @@ function DynamicPage() {
                   height: "100vh",
                   backgroundImage: `url("https://pbs.twimg.com/ext_tw_video_thumb/1274020389501485057/pu/img/VkWNp99xjlTc_Q5d.jpg:large")`,
                   backgroundRepeat: "no-repeat",
-                  backgroundSize: "cover",
+                  backgroundSize: "cover", 
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
@@ -958,6 +983,9 @@ function DynamicPage() {
             formField = (
               <div key={index}>
                 <br />
+                <br/>
+                <br/>
+
                 <center>
                   <Label
                     input={{
