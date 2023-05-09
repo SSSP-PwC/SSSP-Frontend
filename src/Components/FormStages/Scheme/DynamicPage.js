@@ -16,6 +16,7 @@ import {
   H3,
   LoadingBox,
   Footer,
+  Panel,
 } from "govuk-react";
 import Select from "@mui/material/Select";
 import dayjs from "dayjs";
@@ -33,6 +34,8 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import { ArrowForwardIosOutlined } from "@mui/icons-material";
+import Banner from "../../../Banner.png";
+
 function DynamicPage() {
   const { pageId, endpoint } = useParams();
   const [data, setData] = useState([]);
@@ -94,9 +97,8 @@ function DynamicPage() {
 
   const nextPage = (event) => {
     event.preventDefault();
-
     const nextPageId = parseInt(pageId, 10) + 1;
-    navigate(`/${endpoint}/pages/${nextPageId}`, {
+    navigate(`/digital-services/portal/${endpoint}/pages/${nextPageId}`, {
       state: {
         data: { ...prevData, ...formData },
       },
@@ -171,15 +173,28 @@ function DynamicPage() {
             break;
           case "Input Field":
             formField = (
-              <div key={index}>
+              <div
+                key={index}
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                  display: "flex",
+                  width: "1200px",
+                }}
+              >
                 <InputField
                   input={{
                     type: field.input_type,
-                    style: { maxWidth: "700px" },
+                    style: { width: "700px" },
                   }}
                 >
                   {field.label}
                 </InputField>
+                <br />
+                <br />
+
+                <br />
+                <br />
               </div>
             );
             break;
@@ -280,7 +295,11 @@ function DynamicPage() {
 
           case "Text area":
             formField = (
-              <div key={index} style={parentStyle}>
+              <div key={index}   style={{
+                justifyContent: "center",
+                alignItems: "center",
+                display: "flex",
+              }}>
                 <br />
                 <TextArea
                   style={parentStyle}
@@ -288,10 +307,10 @@ function DynamicPage() {
                     type: field.type,
                     name: field.label,
                     required: field.required,
-                    style: { ...inputFieldStyle },
+                    style: { ...inputFieldStyle, width: "700px" },
                   }}
                 >
-                  {field.config.label}
+                  {field.label}
                 </TextArea>
                 <br></br>
               </div>
@@ -372,6 +391,7 @@ function DynamicPage() {
           case "File Upload":
             formField = (
               <div key={index}>
+                <br/>
                 <input type="file" />
                 <br></br>
               </div>
@@ -380,10 +400,7 @@ function DynamicPage() {
           case "Image":
             formField = (
               <div key={index} style={parentStyle}>
-                <img
-                  src={field.config.image_source}
-                  style={{ width: "1000px" }}
-                />
+                <img src={Banner} style={{ width: "1000px" }} />
               </div>
             );
             break;
@@ -417,15 +434,17 @@ function DynamicPage() {
           case "Body":
             formField = (
               <div key={index}>
-                <body
-                  input={{
-                    type: "text",
-                    value: field.config.config.label,
-                  }}
-                >
-                  {field.config.config.label}
-                </body>
-                <br></br>
+                <Container>
+                  <body
+                    input={{
+                      type: "text",
+                      value: field.config.config.label,
+                    }}
+                  >
+                    {field.config.config.label}
+                  </body>
+                  <br></br>
+                </Container>
               </div>
             );
             break;
@@ -698,14 +717,93 @@ function DynamicPage() {
           case "Header":
             formField = (
               <div key={index}>
-                <Heading
-                  size="LARGE"
-                  input={{
-                    type: "text",
-                  }}
-                >
-                  {field.config.config.label}
-                </Heading>
+                {field.label === "Overview" && (
+                  <Heading
+                    size="MEDIUM"
+                    input={{
+                      type: "text",
+                    }}
+                  >
+                    {field.label}
+                  </Heading>
+                )}
+                {field.label === "Business email address" && (
+                  <Heading
+                    size="MEDIUM"
+                    input={{
+                      type: "text",
+                    }}
+                  >
+                    {field.label}
+                  </Heading>
+                )}
+                {field.label === "Applicant name" && (
+                  <Heading
+                    size="MEDIUM"
+                    input={{
+                      type: "text",
+                    }}
+                  >
+                    {field.label}
+                  </Heading>
+                )}
+                {field.label === "Registration Form" && (
+                  <Heading
+                    size="LARGE"
+                    input={{
+                      type: "text",
+                    }}
+                  >
+                    {field.label}
+                  </Heading>
+                )}
+                {field.label ===
+                  "You have successfully registered for the scheme!" && (
+                  <>
+                    <br></br>
+                    <Container>
+                      <Panel
+                        title="You have successfully registered for the scheme!"
+                        style={{ backgroundColor: "#00823B" }}
+                      >
+                        <br />
+                        <strong>
+                          Activate your new account to submit an application
+                        </strong>
+                      </Panel>
+                    </Container>
+                  </>
+                )}
+                {field.label === "Register to the ABC Grant" && (
+                   <Heading
+                   size="LARGE"
+                   input={{
+                     type: "text",
+                   }}
+                 >
+                   {field.label}
+                 </Heading>
+                )}
+                 {field.label === "Contact Support" && (
+                   <Heading
+                   size="LARGE"
+                   input={{
+                     type: "text",
+                   }}
+                 >
+                   {field.label}
+                 </Heading>
+                )}
+                     {field.label === "Contact Us" && (
+                   <Heading
+                   size="LARGE"
+                   input={{
+                     type: "text",
+                   }}
+                 >
+                   {field.label}
+                 </Heading>
+                )}
                 <br></br>
               </div>
             );
@@ -714,17 +812,19 @@ function DynamicPage() {
             formField = (
               <div key={index} style={parentStyle}>
                 <br />
-                {console.log(field)}
+                {}
                 <Link to={field.button_link}>
                   <Button
+                    onClick={nextPage}
                     style={{
                       width: field.width + "px",
                       height: field.height + "px",
                     }}
                   >
-                    {field.config.label || field.config.config.label}
+                    {field.config.label || field.config.label}
                   </Button>
                 </Link>
+                {console.log(field)}
               </div>
             );
             break;
@@ -776,7 +876,7 @@ function DynamicPage() {
                   height: "100vh",
                   backgroundImage: `url("https://pbs.twimg.com/ext_tw_video_thumb/1274020389501485057/pu/img/VkWNp99xjlTc_Q5d.jpg:large")`,
                   backgroundRepeat: "no-repeat",
-                  backgroundSize: "cover",
+                  backgroundSize: "cover", 
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
@@ -882,9 +982,23 @@ function DynamicPage() {
           case "Captcha":
             formField = (
               <div key={index}>
-                <ReCAPTCHA
-                  sitekey={"6LeiNAclAAAAAImMXqIfk2YOFJF99SD6UVUAqyvd"}
-                />
+                <br />
+                <br/>
+                <br/>
+
+                <center>
+                  <Label
+                    input={{
+                      type: "text",
+                      value: field.label,
+                    }}
+                  >
+                    {field.label}
+                  </Label>
+                  <ReCAPTCHA
+                    sitekey={"6LeiNAclAAAAAImMXqIfk2YOFJF99SD6UVUAqyvd"}
+                  />
+                </center>
                 <br></br>
               </div>
             );

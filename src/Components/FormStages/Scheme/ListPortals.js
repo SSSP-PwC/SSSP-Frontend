@@ -40,6 +40,7 @@ export const ListPortals = () => {
     const handleClick = () => {
       handleRowClick(portal);
     };
+    const portalName = portal.name ? portal.name.toLowerCase(): "";
     return(
       <div 
         style={{
@@ -62,6 +63,7 @@ export const ListPortals = () => {
             height="30"
             className="d-inline-block align-top"
           />
+        <p style={{marginTop:"10px", textAlign: "center", maxWidth: "100px", fontSize: "14px,"}}>{portalName || "Undefined"}</p>
       </div>
     );
   }

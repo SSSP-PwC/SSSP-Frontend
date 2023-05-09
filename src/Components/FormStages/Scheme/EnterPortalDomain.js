@@ -55,7 +55,10 @@ const EnterPortalDomain = () => {
         domain_name: domain,
       }),
     };
-    fetch(`https://sssp-378808.nw.r.appspot.com/api/register-domain`, requestOptions)
+    fetch(
+      `https://sssp-378808.nw.r.appspot.com/api/register-domain`,
+      requestOptions
+    )
       .then((res) => res.json())
       .then((data) => {
         console.log(data);

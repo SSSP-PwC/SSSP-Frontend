@@ -75,11 +75,35 @@ import { style } from "@mui/system";
 import Table from "./Table";
 import { v4 as uuidv4 } from "uuid";
 
+import {
+  withValidator,
+  required,
+  min,
+  max,
+  number,
+  minLength,
+  maxLength,
+  email,
+} from "react-constraint-validation";
+import { ErrorMessage, Field, Formik } from "formik";
+import { notify } from "reapop";
+
+
 //import { withValidator,required, min, max, number, minLength, maxLength, email,} from "react-constraint-validation";
 //import { ErrorMessage, Field, Formik } from "formik";
 //const TextField = withValidator({ required, minLength, maxLength })(Field);
 //const NumberField = withValidator({ required, min, max }, { number })(Field);
 //const EmailField = withValidator({ required }, { email })(Field);
+
+
+const TextFieldValidation = withValidator({ required, minLength, maxLength })(
+  Field
+);
+const NumberFieldValidation = withValidator(
+  { required, min, max },
+  { number }
+)(Field);
+const EmailFieldValidation = withValidator({ required }, { email })(Field);
 
 function InteractivePageBuilderInterface({ link, mode }) {
   const [theme, colorMode] = useMode();
@@ -101,6 +125,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const [imageSource, setImageSource] = useState();
   const handleCloseImagePopup = () => setImagePopup(false);
   const [inputColumns, setNumberOfColumns] = useState(0);
+  const [pageLink, setPageLink] = useState();
   const [showForm, setShowForm] = useState(false);
   const [numberOfElements, setNumberOfElements] = useState(0);
   const queryString = window.location.search;
@@ -158,6 +183,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
       fields: [{}],
     },
   ]);
+  const [inputType, setInputType] = useState(numberOfElements);
 
   const sizeOptions = [
     { value: "SMALL", label: "Small" },
@@ -220,8 +246,10 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const onImageChange = (e) => {
     setImage((prevImage) => [...prevImage, ...e.target.files]);
   };
-  const handleNextPageCounter = () => {
-    pageCounter++;
+  const handlePageIncrement = () => {
+    const pageNumber = pageCounter++;
+    setPageLink(pageNumber);
+    console.log(pageLink);
   };
 
   const onImageURLChange = (e) => {
@@ -440,6 +468,8 @@ function InteractivePageBuilderInterface({ link, mode }) {
   };
   const citizen_id = sessionStorage.getItem("Citizen_ID");
   const updateData = (event, property, fieldIndex) => {
+    setSelectedValue(event.target.value);
+
     const currentPage = page[0];
     const currentPageFields = currentPage.fields ? [...currentPage.fields] : [];
     for (let i = currentPageFields.length - 1; i >= 0; i--) {
@@ -492,6 +522,15 @@ function InteractivePageBuilderInterface({ link, mode }) {
         return newValues;
       });
     }
+    if (property === "type") {
+      setInputType((prevValues) => {
+        console.log(prevValues);
+        const newValues = Array.isArray(prevValues) ? [...prevValues] : [];
+        newValues[fieldIndex] = event.target.value;
+        return newValues;
+      });
+    }
+
     const newFormData = { ...formData };
     if (field && field.name) {
       newFormData[field.name] = updatedField;
@@ -512,6 +551,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
 
   const handleChange = (event) => {
     setSelectedValue(event.target.value);
+    updateData(event.target.value?.toLowerCase());
   };
 
   const [citizen, setCitizen] = useState();
@@ -593,6 +633,9 @@ function InteractivePageBuilderInterface({ link, mode }) {
       setShow(true);
     } else if (input_value === "Input Field") {
       setConfiguration("Input Field");
+      setShow(true);
+    } else if (input_value === "Text area") {
+      setConfiguration("Text area");
       setShow(true);
     } else if (input_value === "Captcha") {
       setConfiguration("Captcha");
@@ -1273,7 +1316,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
     let currentPage = { fields: [] };
 
     page[0].fields.forEach((field, index) => {
-      console.log(field.config);
+      console.log(currentPage);
 
       if (field.type === "Page Break") {
         pages.push(currentPage);
@@ -1287,11 +1330,12 @@ function InteractivePageBuilderInterface({ link, mode }) {
           input_style: field.input_style,
           type: field.type,
           image_source: imageURL,
-          button_link: pageCounter,
+          button_link: buttonLink,
           config: field.config,
         };
+        console.log(props.button_link);
         currentPage.fields.push({ props });
-        console.log(field.config);
+        console.log(field?.label);
       }
     });
 
@@ -1646,14 +1690,38 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         )}
                       </div>
                     )}
-                    <InputField
-                      input={{
-                        type: field.input_type,
-                        style: { ...inputFieldStyle },
+
+                    <div
+                      key={index}
+                      style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                        display: "flex",
                       }}
                     >
-                      {field.label}
-                    </InputField>
+                      {inputType[index] === "Phone Number" ? (
+                        <div>
+                          <PhoneInput
+                            placeholder={field.name}
+                            //value={phoneNumber}
+                            //onChange={setPhoneNumber}
+                          />
+                        </div>
+                      ) : (
+                        <InputField
+                          input={{
+                            type: inputType[index],
+                            style: { ...inputFieldStyle, width: "700px" },
+                          }}
+                        >
+                          {field.label}
+                        </InputField>
+                      )}
+
+                      <br />
+                      <br />
+                      <br />
+                    </div>
                   </div>
                 );
                 break;
@@ -2360,6 +2428,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     ) : (
                       <div key={index}>
                         <br />
+
                         <Button
                           style={{
                             width: componentWidths[index] + "px",
@@ -2469,31 +2538,29 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       </div>
                     ) : (
                       <div key={index}>
-                        <center>
-                          {" "}
-                          <Heading
-                            style={{
-                              color: "whitesmoke",
-                              fontWeight: "bold",
-                              marginBottom: "0px",
-                            }}
-                          >
-                            {labelValue[index] !== ""
-                              ? labelValue[index]
-                              : labelValue[index - 1]}
-                          </Heading>
-                          {showButtons && (
-                            <IoIosCreate
-                              style={{ transform: "scale(2)", color: "white" }}
-                              onClick={() =>
-                                handleElementClickTemplate(
-                                  labelValue[index] || field.label,
-                                  index
-                                )
-                              }
-                            />
-                          )}
-                        </center>
+                        {" "}
+                        <Heading
+                          style={{
+                            color: "whitesmoke",
+                            fontWeight: "bold",
+                            marginBottom: "0px",
+                          }}
+                        >
+                          {labelValue[index] !== ""
+                            ? labelValue[index]
+                            : labelValue[index - 1]}
+                        </Heading>
+                        {showButtons && (
+                          <IoIosCreate
+                            style={{ transform: "scale(2)", color: "white" }}
+                            onClick={() =>
+                              handleElementClickTemplate(
+                                labelValue[index] || field.label,
+                                index
+                              )
+                            }
+                          />
+                        )}
                       </div>
                     )}
                   </div>
@@ -2864,6 +2931,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       </div>
                     ) : (
                       <div key={index}>
+                        <br />
                         <input type="file" />
                         <br></br>
                         {showButtons && (
@@ -3111,17 +3179,24 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         </button>
                       </div>
                     ) : (
-                      <div key={index}>
+                      <div
+                        key={index}
+                        style={{
+                          justifyContent: "center",
+                          alignItems: "center",
+                          display: "flex",
+                        }}
+                      >
                         <TextArea
                           style={parentStyle}
                           input={{
                             type: field.type,
                             name: field.label,
                             required: field.required,
-                            style: { ...inputFieldStyle },
+                            style: { ...inputFieldStyle, width: "700px" },
                           }}
                         >
-                          {field.label}
+                          {field.config.label}
                         </TextArea>
                         {showButtons && (
                           <IoIosCreate
@@ -3129,7 +3204,9 @@ function InteractivePageBuilderInterface({ link, mode }) {
                             onClick={() => handleElementClick(index)}
                           />
                         )}
-                        <br></br>
+                        <br />
+                        <br />
+                        <br />
                       </div>
                     )}
                   </div>
@@ -4016,13 +4093,12 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         )}
                       </div>
                     )}
+                    <br></br>
                     <center>
-                      {" "}
                       <ReCAPTCHA
                         sitekey={"6LeiNAclAAAAAImMXqIfk2YOFJF99SD6UVUAqyvd"}
                       />
                     </center>
-
                     <br></br>
                   </div>
                 );
@@ -4390,6 +4466,21 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   />
                 </div>
               )}
+              {configuration === "Text area" && (
+                <div>
+                  <Divider>General Details</Divider>
+
+                  <Label>Label Name:</Label>
+                  <InputField
+                    onChange={(event) =>
+                      updateData(event, "label", numberOfElements)
+                    }
+                    input={{
+                      name: "label",
+                    }}
+                  />
+                </div>
+              )}
               {configuration === "Input Field" && (
                 <div>
                   <Divider>General Details</Divider>
@@ -4417,7 +4508,9 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         display: "flex",
                       }}
                       value={selectedValue}
-                      onClick={handleChange}
+                      onClick={(event) =>
+                        updateData(event, "type", numberOfElements)
+                      }
                     >
                       <option value="Email">Email</option>
                       <option value="Phone Number">Phone Number</option>
@@ -4426,7 +4519,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       <option value="URL">URL</option>
                     </Select>
                     <br />
-                    <Divider>Contraints</Divider>
+                    <Divider>{selectedValue} Contraints</Divider>
 
                     {values.map((option, index) => (
                       <div key={index}>
@@ -4549,18 +4642,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                                 }
                               ></TextArea>
                               <br />
-
-                              <Label>
-                                Your error message will appear like this:
-                              </Label>
-                              <div style={{ color: "red" }}>{errorMessage}</div>
-                              {labelValue}
-                              <InputField
-                                style={{ maxWidth: "100px" }}
-                              ></InputField>
                             </center>
-                            <br></br>
-                            <Divider>Constraints</Divider>
                           </div>
                         )}
                         {selectedValues[index] === "Length" && (
@@ -4598,18 +4680,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                                 }
                               ></TextArea>
                               <br />
-
-                              <Label>
-                                Your error message will appear like this:
-                              </Label>
-                              <div style={{ color: "red" }}>{errorMessage}</div>
-                              {labelValue}
-                              <InputField
-                                style={{ maxWidth: "100px" }}
-                              ></InputField>
                             </center>
-                            <br></br>
-                            <Divider>Constraints</Divider>
                           </div>
                         )}
                       </div>
@@ -4789,10 +4860,38 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   onClick={handleChange}
                   label="Select Button Click Event"
                 >
-                  <option value="Next Page" onClick={handleNextPageCounter}>Next Page</option>
-                  <option value="Previous Page">Previous Page</option>
-                  <option value="Custom Routing">Custom Routing</option>
-                  <option value="Submit Contents">Submit Contents</option>
+                  <option
+                    value="Next Page"
+                    onClick={() => {
+                      setButtonLink("Next Page");
+                    }}
+                  >
+                    Next Page
+                  </option>
+                  <option
+                    value="Previous Page"
+                    onClick={() => {
+                      setButtonLink("Previous Page");
+                    }}
+                  >
+                    Previous Page
+                  </option>
+                  <option
+                    value="Custom Routing"
+                    onClick={() => {
+                      setButtonLink("Custom Routing");
+                    }}
+                  >
+                    Custom Routing
+                  </option>
+                  <option
+                    value="Submit Contents"
+                    onClick={() => {
+                      setButtonLink("Submit Contents");
+                    }}
+                  >
+                    Submit Contents
+                  </option>
                 </Select>
                 {selectedValue === "Next Page" && (
                   <div
@@ -4806,6 +4905,9 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     <br></br>
                     <br></br>
                     <Label>This will navigate to page: {pageCounter + 1}</Label>
+                    <br></br>
+                    <br></br>
+                    <br></br>
                   </div>
                 )}
                 {selectedValue === "Previous Page" && (
