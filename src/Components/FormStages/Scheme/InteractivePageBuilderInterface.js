@@ -149,7 +149,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
     Array(values.length).fill("")
   );
 
-  console.log(imageURL);
   const [homepageHospitalityComponent, setHomepageHospitalityComponent] =
     useState([]);
   const [guests, setGuests] = useState();
@@ -198,6 +197,9 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const [componentHeights, setComponentHeights] = useState([]);
   const [componentPositions, setComponentPositions] = useState([]);
   const [componentTops, setComponentTops] = useState([]);
+  const [componentPercentages, setComponentPercentages] = useState([]);
+  const [componentPercentagesVertical, setComponentPercentagesVertical] = useState([]);
+  const [componentPixelsVertical, setComponentPixelsVertical] = useState([]);
   const [componentBottoms, setComponentBottoms] = useState([]);
   const [componentRights, setComponentRights] = useState([]);
   const [componentLefts, setComponentLefts] = useState([]);
@@ -207,6 +209,18 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const [min, setMin] = useState(0);
   const [length, setLength] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
+  const [grandparentHeight, setGrandparentHeight] = useState(0);
+
+  const updateGrandparentHeight = () => {
+    console.log(numberOfElements)
+    setGrandparentHeight((numberOfElements*35));
+  };
+
+  const handlePercentageChangePix = (index, value) => {
+    const pixels = (grandparentHeight * value) / 100;
+    const topPosition = value === 0 ? grandparentHeight - pixels - (numberOfElements * 35) : pixels;
+    componentPixelsVertical[index] = topPosition;
+  };
 
   const [max, setMax] = useState(0);
   const inputRef = useRef(null);
@@ -248,7 +262,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const handlePageIncrement = () => {
     const pageNumber = pageCounter++;
     setPageLink(pageNumber);
-    console.log(pageLink);
   };
 
   const onImageURLChange = (e) => {
@@ -374,7 +387,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
   };
   const handleNewColumnClick = () => {
     var oh = [...newcolumns];
-    console.log(oh);
     const id = uuidv4();
     oh.push({
       Header: "Value" + inputColumns,
@@ -506,8 +518,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
 
     currentPageFields[fieldIndex] = updatedField;
     const newPage = [{ ...currentPage, fields: currentPageFields }];
-    console.log(currentPageFields);
-    console.log(labelValue);
     setPage(newPage);
 
     if (property === "label") {
@@ -526,7 +536,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
     }
     if (property === "type") {
       setInputType((prevValues) => {
-        console.log(prevValues);
         const newValues = Array.isArray(prevValues) ? [...prevValues] : [];
         newValues[fieldIndex] = event.target.value;
         return newValues;
@@ -647,7 +656,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
         ...background,
         "https://i0.wp.com/www.busiweek.com/wp-content/uploads/2018/07/5-four-seasons-resort-seychelles-WBRESAF0517.jpg?resize=1000%2C625&ssl=1",
       ]);
-      console.log(pageBackgrounds);
       const navbarField = {
         type: "Navbar - Bootstrap",
         editing: false,
@@ -1279,7 +1287,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const updateRows = (e) => {
     setTableData([{}, e.target.value]);
     for (let i = 0; i < e.target.value; i++) {
-      console.log(...tableData);
     }
   };
 
@@ -1318,7 +1325,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
     let currentPage = { fields: [] };
 
     page[0].fields.forEach((field, index) => {
-      console.log(currentPage);
 
       if (field.type === "Page Break") {
         pages.push(currentPage);
@@ -1335,9 +1341,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
           button_link: buttonLink,
           config: field.config,
         };
-        console.log(props.button_link);
         currentPage.fields.push({ props });
-        console.log(field?.label);
       }
     });
 
@@ -1411,6 +1415,9 @@ function InteractivePageBuilderInterface({ link, mode }) {
       currentPageFields.filter((field) => field !== undefined).length
     );
   };
+  const calculateElementPosition = (percentage) => {
+    return `${percentage}`;
+  };
   const handleRemoveTemplateField = (index) => {
     const currentPage = page[0];
     if (!currentPage) {
@@ -1470,6 +1477,20 @@ function InteractivePageBuilderInterface({ link, mode }) {
     const newComponentPositions = [...componentPositions];
     newComponentPositions[index] = newPosition;
     setComponentPositions(newComponentPositions);
+  };
+
+  const handlePercentageChange = (newPercentage, index) => {
+    const newComponentPercentages = [...componentPercentages];
+    newComponentPercentages[index] = newPercentage;
+    setComponentPercentages(newComponentPercentages);
+  };
+
+  const handlePercentageChangeVertical = (newPercentage, index) => {
+    const newComponentPercentagesVertical = [...componentPercentagesVertical];
+    newComponentPercentagesVertical[index] = newPercentage;
+    setComponentPercentagesVertical(newComponentPercentagesVertical);
+    updateGrandparentHeight();
+    handlePercentageChangePix(index, newPercentage);
   };
 
   const handleTopChange = (event, index) => {
@@ -1647,7 +1668,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         />
                         <button
                           style={{
-                            backgroundColor: "blueviolet",
+                            backgroundColor: "#528AAE",
                             color: "white",
                             borderRadius: "4px",
                             display: "block",
@@ -2915,7 +2936,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         />
                         <button
                           style={{
-                            backgroundColor: "blueviolet",
+                            backgroundColor: "#528AAE",
                             color: "white",
                             borderRadius: "4px",
                             display: "block",
@@ -3002,7 +3023,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         />
                         <button
                           style={{
-                            backgroundColor: "blueviolet",
+                            backgroundColor: "#528AAE",
                             color: "white",
                             borderRadius: "4px",
                             display: "block",
@@ -3423,7 +3444,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                 break;
               case "Header":
                 formField = (
-                  <div>
+                  <div style={{position:'relative', width: '90%'}}>
                     {isEditing[index] ? (
                       <div
                         ref={inputRef}
@@ -3504,33 +3525,48 @@ function InteractivePageBuilderInterface({ link, mode }) {
                           <option value="LARGE">Large</option>
                         </select>
                         <label
-                          htmlFor="buttonposition"
+                          htmlFor="horizontal-position"
                           style={{
                             color: "#888",
                             fontStyle: "italic",
                             paddingLeft: "5px",
-                            display: "block",
+                            marginRight: "5px",
+                            display: 'block'
                           }}
                         >
-                          Relative Position
+                          X Position From Left (%)
                         </label>
-                        <select
+                        <input
+                         type="text"
+                         id="horizontal-position"
+                         value={componentPercentages[index]}
+                         onChange={(event) =>
+                          handlePercentageChange(event.target.value, index)
+                        }
+                       placeholder="Enter a percentage"
+                         />
+                         <label
+                          htmlFor="vertical-position"
                           style={{
-                            display: "block",
-                            marginLeft: "auto",
-                            marginRight: "auto",
-                            marginBottom: "40px",
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                            marginRight: "5px",
+                            display: 'block'
                           }}
-                          id="buttonposition"
-                          value={componentPositions[index]}
-                          onChange={(event) =>
-                            handlePositionChange(event.target.value, index)
-                          }
                         >
-                          <option value="centre">Centre</option>
-                          <option value="left">Left</option>
-                          <option value="right">Right</option>
-                        </select>
+                          Y Position From Top (%)
+                        </label>
+                        <input
+                         type="text"
+                         id="vertical-position"
+                         style={{marginBottom: '40px'}}
+                         value={componentPercentagesVertical[index]}
+                         onChange={(event) =>
+                          handlePercentageChangeVertical(event.target.value, index)
+                        }
+                       placeholder="Enter a percentage"
+                         />
                         <button
                           style={{
                             backgroundColor: "#528AAE",
@@ -3561,34 +3597,17 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         </button>
                       </div>
                     ) : (
-                      <div key={index} style={{ display: "block" }}>
+                      <div key={index} style={{display: 'block', backgroundColor: 'white', paddingBottom: componentPercentages[index] !== undefined || componentPercentagesVertical[index] !== undefined ? '50px' : '0',}}>
                         <Heading
                           size={selectedOptionHeading[index]}
                           style={{
-                            marginBottom: "40px",
-                            display: "block",
+                            marginBottom: '40px',
+                            display: 'block',
                             color: componentColors[index],
-                            position:
-                              componentPositions[index] === "left" ||
-                              componentPositions[index] === "right"
-                                ? "absolute"
-                                : "relative",
-                            left:
-                              componentPositions[index] === "left"
-                                ? "350px"
-                                : componentPositions[index] === "right"
-                                ? "auto"
-                                : componentLefts[index] !== ""
-                                ? componentLefts[index] + "px"
-                                : "auto",
-                            right:
-                              componentPositions[index] === "right"
-                                ? "350px"
-                                : componentPositions[index] === "left"
-                                ? "auto"
-                                : componentRights[index] !== ""
-                                ? componentRights[index] + "px"
-                                : "auto",
+                            position: componentPercentages[index] !== undefined || componentPercentagesVertical[index] !== undefined  ? 'absolute' : 'static',
+                            left: componentPercentages[index] !== undefined ? `${componentPercentages[index]}%` : 'auto',
+                            top: componentPixelsVertical[index] ? `${componentPixelsVertical[index]}px` : 'auto',
+
                           }}
                           input={{
                             type: "text",
@@ -3805,7 +3824,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       expand="lg"
                       style={inputFieldStyle}
                     >
-                      {console.log(field.config.input_style)}
                       <Container>
                         <Navbar.Brand href="/">
                           <center>
@@ -4074,7 +4092,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         />
                         <button
                           style={{
-                            backgroundColor: "blueviolet",
+                            backgroundColor: "#528AAE",
                             color: "white",
                             borderRadius: "4px",
                             display: "block",
@@ -4231,7 +4249,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
     }
     return (
       <div>
-        {console.log(pageBackgrounds)}
         <div
           style={{
             overflowWrap: "break-word",
@@ -4430,7 +4447,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                             required: true,
                           }}
                         ></InputField>
-                        {console.log(imageURL)}
                       </div>
                     )}
                   </center>
@@ -5409,22 +5425,23 @@ function InteractivePageBuilderInterface({ link, mode }) {
                 </div>
               )}
               {page[0].fields.length > 1 ? (
-                <Container
-                  style={{
-                    backgroundColor: "#212529",
-                    border: "none",
-                    boxShadow: "0 0 10px rgba(0,0,0,0.3)",
-                    borderRadius: "25px",
-                    overflow: "hidden",
-                    padding: "20px",
-                    marginTop: "30px",
-                  }}
-                >
-                  <div
-                    style={{
-                      backgroundColor: "white",
-                    }}
-                  >
+                 <Container
+    style={{
+      backgroundColor: "#212529",
+      border: "none",
+      boxShadow: "0 0 10px rgba(0,0,0,0.3)",
+      borderRadius: "25px",
+      overflow: "hidden",
+      padding: "20px",
+      marginTop: "30px",
+      position: "relative", // Add position relative to the container
+    }}
+  >
+    <div
+      style={{
+        backgroundColor: "white",
+      }}
+    >
                     <RenderForm />
                   </div>
                 </Container>
