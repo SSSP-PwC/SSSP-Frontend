@@ -1723,7 +1723,8 @@ function InteractivePageBuilderInterface({ link, mode }) {
                               required: required,
                               style: { ...inputFieldStyle, width: "700px" },
                               value: text,
-                              onChange: (event) => {setText(event.target.value)}
+                              onChange: (event) => {setText(event.target.value)},
+                             
                             }}
                           >
                             {field.label}
