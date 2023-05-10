@@ -219,7 +219,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
 
   const handlePercentageChangePix = (index, value) => {
     const pixels = (grandparentHeight * value) / 100;
-    const topPosition = value === 0 ? grandparentHeight - pixels - (numberOfElements * 35) : pixels;
+    const topPosition = value === 0 ? grandparentHeight - pixels: pixels;
     componentPixelsVertical[index] = topPosition;
   };
 
@@ -1664,6 +1664,49 @@ function InteractivePageBuilderInterface({ link, mode }) {
                           value={text}
                           onChange={(event) => handleTextChange(event, index)}
                         />
+                        <label
+                          htmlFor="horizontal-position"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                            marginRight: "5px",
+                            display: 'block'
+                          }}
+                        >
+                          X Position From Left (%)
+                        </label>
+                        <input
+                         type="text"
+                         id="horizontal-position"
+                         value={componentPercentages[index]}
+                         onChange={(event) =>
+                          handlePercentageChange(event.target.value, index)
+                        }
+                       placeholder="Enter a percentage"
+                         />
+                         <label
+                          htmlFor="vertical-position"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                            marginRight: "5px",
+                            display: 'block'
+                          }}
+                        >
+                          Y Position From Top (%)
+                        </label>
+                        <input
+                         type="text"
+                         id="vertical-position"
+                         style={{marginBottom: '40px'}}
+                         value={componentPercentagesVertical[index]}
+                         onChange={(event) =>
+                          handlePercentageChangeVertical(event.target.value, index)
+                        }
+                       placeholder="Enter a percentage"
+                         />
                         <button
                           style={{
                             backgroundColor: "#528AAE",
@@ -2213,6 +2256,49 @@ function InteractivePageBuilderInterface({ link, mode }) {
                           value={text}
                           onChange={(event) => handleTextChange(event, index)}
                         />
+                        <label
+                          htmlFor="horizontal-position"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                            marginRight: "5px",
+                            display: 'block'
+                          }}
+                        >
+                          X Position From Left (%)
+                        </label>
+                        <input
+                         type="text"
+                         id="horizontal-position"
+                         value={componentPercentages[index]}
+                         onChange={(event) =>
+                          handlePercentageChange(event.target.value, index)
+                        }
+                       placeholder="Enter a percentage"
+                         />
+                         <label
+                          htmlFor="vertical-position"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                            marginRight: "5px",
+                            display: 'block'
+                          }}
+                        >
+                          Y Position From Top (%)
+                        </label>
+                        <input
+                         type="text"
+                         id="vertical-position"
+                         style={{marginBottom: '40px'}}
+                         value={componentPercentagesVertical[index]}
+                         onChange={(event) =>
+                          handlePercentageChangeVertical(event.target.value, index)
+                        }
+                       placeholder="Enter a percentage"
+                         />
                         <button
                           style={{
                             backgroundColor: "#528AAE",
@@ -2244,7 +2330,9 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       </div>
                     ) : (
                       <div key={index}>
-                        <Switch onChange={handleSwitch} checked={checked} />
+                        <Switch style={{position: componentPercentages[index] !== undefined || componentPercentagesVertical[index] !== undefined  ? 'absolute' : 'static',
+                            left: componentPercentages[index] !== undefined ? `${componentPercentages[index]}%` : 'auto',
+                            top: componentPixelsVertical[index] ? `${(componentPixelsVertical[index] * numberOfElements)}px` : 'auto',}} onChange={handleSwitch} checked={checked} />
 
                         <br />
                         {showButtons && (
@@ -2389,33 +2477,49 @@ function InteractivePageBuilderInterface({ link, mode }) {
                             }
                           />
 
-                          <label
-                            htmlFor="buttonposition"
-                            style={{
-                              color: "#888",
-                              fontStyle: "italic",
-                              paddingLeft: "5px",
-                            }}
-                          >
-                            Relative Position
-                          </label>
-                          <select
-                            style={{
-                              display: "block",
-                              marginLeft: "auto",
-                              marginRight: "auto",
-                              marginBottom: "40px",
-                            }}
-                            id="buttonposition"
-                            value={componentPositions[index]}
-                            onChange={(event) =>
-                              handlePositionChange(event.target.value, index)
-                            }
-                          >
-                            <option value="centre">Centre</option>
-                            <option value="right">Left</option>
-                            <option value="left">Right</option>
-                          </select>
+<label
+                          htmlFor="horizontal-position"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                            marginRight: "5px",
+                            display: 'block'
+                          }}
+                        >
+                          X Position From Left (%)
+                        </label>
+                        <input
+                         type="text"
+                         id="horizontal-position"
+                         value={componentPercentages[index]}
+                         onChange={(event) =>
+                          handlePercentageChange(event.target.value, index)
+                        }
+                       placeholder="Enter a percentage"
+                         />
+                         <label
+                          htmlFor="vertical-position"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                            marginRight: "5px",
+                            display: 'block'
+                          }}
+                        >
+                          Y Position From Top (%)
+                        </label>
+                        <input
+                         type="text"
+                         id="vertical-position"
+                         style={{marginBottom: '40px'}}
+                         value={componentPercentagesVertical[index]}
+                         onChange={(event) =>
+                          handlePercentageChangeVertical(event.target.value, index)
+                        }
+                       placeholder="Enter a percentage"
+                         />
                         </div>
                         <button
                           style={{
@@ -2455,6 +2559,9 @@ function InteractivePageBuilderInterface({ link, mode }) {
                             width: componentWidths[index] + "px",
                             height: componentHeights[index] + "px",
                             backgroundColor: componentColors[index],
+                            position: componentPercentages[index] !== undefined || componentPercentagesVertical[index] !== undefined  ? 'absolute' : 'static',
+                            left: componentPercentages[index] !== undefined ? `${componentPercentages[index]}%` : 'auto',
+                            top: componentPixelsVertical[index] ? `${(componentPixelsVertical[index] * numberOfElements)}px` : 'auto',
                           }}
                           input={{
                             type: field.type,
@@ -3008,6 +3115,49 @@ function InteractivePageBuilderInterface({ link, mode }) {
                           value={text}
                           onChange={(event) => handleTextChange(event, index)}
                         />
+                        <label
+                          htmlFor="horizontal-position"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                            marginRight: "5px",
+                            display: 'block'
+                          }}
+                        >
+                          X Position From Left (%)
+                        </label>
+                        <input
+                         type="text"
+                         id="horizontal-position"
+                         value={componentPercentages[index]}
+                         onChange={(event) =>
+                          handlePercentageChange(event.target.value, index)
+                        }
+                       placeholder="Enter a percentage"
+                         />
+                         <label
+                          htmlFor="vertical-position"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                            marginRight: "5px",
+                            display: 'block'
+                          }}
+                        >
+                          Y Position From Top (%)
+                        </label>
+                        <input
+                         type="text"
+                         id="vertical-position"
+                         style={{marginBottom: '40px'}}
+                         value={componentPercentagesVertical[index]}
+                         onChange={(event) =>
+                          handlePercentageChangeVertical(event.target.value, index)
+                        }
+                       placeholder="Enter a percentage"
+                         />
                         <button
                           style={{
                             backgroundColor: "#528AAE",
@@ -3170,6 +3320,49 @@ function InteractivePageBuilderInterface({ link, mode }) {
                           value={text}
                           onChange={(event) => handleTextChange(event, index)}
                         />
+                        <label
+                          htmlFor="horizontal-position"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                            marginRight: "5px",
+                            display: 'block'
+                          }}
+                        >
+                          X Position From Left (%)
+                        </label>
+                        <input
+                         type="text"
+                         id="horizontal-position"
+                         value={componentPercentages[index]}
+                         onChange={(event) =>
+                          handlePercentageChange(event.target.value, index)
+                        }
+                       placeholder="Enter a percentage"
+                         />
+                         <label
+                          htmlFor="vertical-position"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                            marginRight: "5px",
+                            display: 'block'
+                          }}
+                        >
+                          Y Position From Top (%)
+                        </label>
+                        <input
+                         type="text"
+                         id="vertical-position"
+                         style={{marginBottom: '40px'}}
+                         value={componentPercentagesVertical[index]}
+                         onChange={(event) =>
+                          handlePercentageChangeVertical(event.target.value, index)
+                        }
+                       placeholder="Enter a percentage"
+                         />
                         <button
                           style={{
                             backgroundColor: "#528AAE",
@@ -3328,31 +3521,48 @@ function InteractivePageBuilderInterface({ link, mode }) {
                           onChange={(event) => handleTextChange(event, index)}
                         />
                         <label
-        htmlFor="buttonposition"
-        style={{
-          color: "#888",
-          fontStyle: "italic",
-          paddingLeft: "5px",
-          display: 'block'
-        }}
-      >
-        Relative Position
-      </label>
-      <select
-        style={{
-          display: "block",
-          marginLeft: "auto",
-    marginRight: "auto",
-    marginBottom: "40px",
-        }}
-        id="buttonposition"
-        value={componentPositions[index]}
-        onChange={(event) => handlePositionChange(event.target.value, index)}
-      >
-        <option value="centre">Centre</option>
-        <option value="left">Left</option>
-        <option value="right">Right</option>
-      </select>
+                          htmlFor="horizontal-position"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                            marginRight: "5px",
+                            display: 'block'
+                          }}
+                        >
+                          X Position From Left (%)
+                        </label>
+                        <input
+                         type="text"
+                         id="horizontal-position"
+                         value={componentPercentages[index]}
+                         onChange={(event) =>
+                          handlePercentageChange(event.target.value, index)
+                        }
+                       placeholder="Enter a percentage"
+                         />
+                         <label
+                          htmlFor="vertical-position"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                            marginRight: "5px",
+                            display: 'block'
+                          }}
+                        >
+                          Y Position From Top (%)
+                        </label>
+                        <input
+                         type="text"
+                         id="vertical-position"
+                         style={{marginBottom: '40px'}}
+                         value={componentPercentagesVertical[index]}
+                         onChange={(event) =>
+                          handlePercentageChangeVertical(event.target.value, index)
+                        }
+                       placeholder="Enter a percentage"
+                         />
                         <button
                           style={{
                             backgroundColor: "#528AAE",
@@ -3385,26 +3595,9 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     ) : (
                       <div key={index}>
                         <label
-                          style={{ position:
-                            componentPositions[index] === "left" ||
-                            componentPositions[index] === "right" ? "absolute"
-                            : "relative",
-                            left:
-                                componentPositions[index] === "left"
-                                  ? "350px"
-                                  : componentPositions[index] === "right"
-                                  ? "auto"
-                                  : componentLefts[index] !== ""
-                                  ? componentLefts[index] + "px"
-                                  : "auto",
-                              right:
-                                componentPositions[index] === "right"
-                                  ? "350px"
-                                  : componentPositions[index] === "left"
-                                  ? "auto"
-                                  : componentRights[index] !== ""
-                                  ? componentRights[index] + "px"
-                                  : "auto",  }}
+                          style={{ position: componentPercentages[index] !== undefined || componentPercentagesVertical[index] !== undefined  ? 'absolute' : 'static',
+                          left: componentPercentages[index] !== undefined ? `${componentPercentages[index]}%` : 'auto',
+                          top: componentPixelsVertical[index] ? `${(componentPixelsVertical[index] * numberOfElements)}px` : 'auto', }}
                           input={{
                             type: "text",
                             value: field.config.label,
@@ -3579,7 +3772,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         </button>
                       </div>
                     ) : (
-                      <div key={index} style={{display: 'block', backgroundColor: 'white', paddingBottom: componentPercentages[index] !== undefined || componentPercentagesVertical[index] !== undefined ? '50px' : '0',}}>
+                      <div key={index} style={{display: "inline-block", backgroundColor: 'white', paddingBottom: componentPercentages[index] !== undefined || componentPercentagesVertical[index] !== undefined ? '50px' : '0',}}>
                         <Heading
                           size={selectedOptionHeading[index]}
                           style={{
@@ -3588,7 +3781,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                             color: componentColors[index],
                             position: componentPercentages[index] !== undefined || componentPercentagesVertical[index] !== undefined  ? 'absolute' : 'static',
                             left: componentPercentages[index] !== undefined ? `${componentPercentages[index]}%` : 'auto',
-                            top: componentPixelsVertical[index] ? `${componentPixelsVertical[index]}px` : 'auto',
+                            top: componentPixelsVertical[index] ? `${(componentPixelsVertical[index] * numberOfElements)}px` : 'auto',
                           }}
                           input={{
                             type: "text",
@@ -3650,6 +3843,49 @@ function InteractivePageBuilderInterface({ link, mode }) {
                           value={text}
                           onChange={(event) => handleTextChange(event, index)}
                         />
+                        <label
+                          htmlFor="horizontal-position"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                            marginRight: "5px",
+                            display: 'block'
+                          }}
+                        >
+                          X Position From Left (%)
+                        </label>
+                        <input
+                         type="text"
+                         id="horizontal-position"
+                         value={componentPercentages[index]}
+                         onChange={(event) =>
+                          handlePercentageChange(event.target.value, index)
+                        }
+                       placeholder="Enter a percentage"
+                         />
+                         <label
+                          htmlFor="vertical-position"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                            marginRight: "5px",
+                            display: 'block'
+                          }}
+                        >
+                          Y Position From Top (%)
+                        </label>
+                        <input
+                         type="text"
+                         id="vertical-position"
+                         style={{marginBottom: '40px'}}
+                         value={componentPercentagesVertical[index]}
+                         onChange={(event) =>
+                          handlePercentageChangeVertical(event.target.value, index)
+                        }
+                       placeholder="Enter a percentage"
+                         />
                         <button
                           style={{
                             backgroundColor: "#528AAE",
@@ -3685,6 +3921,9 @@ function InteractivePageBuilderInterface({ link, mode }) {
                           style={{
                             width: field.config.width + "px",
                             height: field.config.height + "px",
+                            position: componentPercentages[index] !== undefined || componentPercentagesVertical[index] !== undefined  ? 'absolute' : 'static',
+                            left: componentPercentages[index] !== undefined ? `${componentPercentages[index]}%` : 'auto',
+                            top: componentPixelsVertical[index] ? `${(componentPixelsVertical[index] * numberOfElements)}px` : 'auto',
                           }}
                         >
                           {field.config.label}
@@ -3952,10 +4191,122 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   </div>
                 );
                 break;
-
-              case "Multi choice":
-                formField = (
-                  <div key={index}>
+                case "Multi choice":
+                  formField = (
+                    <div>
+                      {isEditing[index] ? (
+                        <div
+                          ref={inputRef}
+                          style={{
+                            position: "relative",
+                            display: "inline-block",
+                            borderRadius: "8px",
+                            overflow: "hidden",
+                            boxShadow: "0 0 10px rgba(0, 0, 0, 0.2",
+                            transition: "transform 0.3s ease-in-out",
+                            marginTop: "10px",
+                          }}
+                        >
+                          <h3 style={{ padding: "10px", paddingBottom: "5px" }}>
+                            Edit Multi-Choice
+                          </h3>
+                          <label
+                            htmlFor="buttontext"
+                            style={{
+                              color: "#888",
+                              fontStyle: "italic",
+                              paddingLeft: "5px",
+                            }}
+                          >
+                            Text
+                          </label>
+                          <input
+                            style={{
+                              display: "block",
+                              marginBottom: "40px",
+                              paddingLeft: "5px",
+                              paddingRight: "5px",
+                            }}
+                            id="buttontext"
+                            autoFocus="autoFocus"
+                            type="text"
+                            value={text}
+                            onChange={(event) => handleTextChange(event, index)}
+                          />
+                          <label
+                            htmlFor="horizontal-position"
+                            style={{
+                              color: "#888",
+                              fontStyle: "italic",
+                              paddingLeft: "5px",
+                              marginRight: "5px",
+                              display: 'block'
+                            }}
+                          >
+                            X Position From Left (%)
+                          </label>
+                          <input
+                           type="text"
+                           id="horizontal-position"
+                           value={componentPercentages[index]}
+                           onChange={(event) =>
+                            handlePercentageChange(event.target.value, index)
+                          }
+                         placeholder="Enter a percentage"
+                           />
+                           <label
+                            htmlFor="vertical-position"
+                            style={{
+                              color: "#888",
+                              fontStyle: "italic",
+                              paddingLeft: "5px",
+                              marginRight: "5px",
+                              display: 'block'
+                            }}
+                          >
+                            Y Position From Top (%)
+                          </label>
+                          <input
+                           type="text"
+                           id="vertical-position"
+                           style={{marginBottom: '40px'}}
+                           value={componentPercentagesVertical[index]}
+                           onChange={(event) =>
+                            handlePercentageChangeVertical(event.target.value, index)
+                          }
+                         placeholder="Enter a percentage"
+                           />
+                          <button
+                            style={{
+                              backgroundColor: "#528AAE",
+                              color: "white",
+                              borderRadius: "4px",
+                              display: "block",
+                              position: "absolute",
+                              bottom: "5px",
+                              right: "10px",
+                            }}
+                            onClick={() => handleClickOutside(index)}
+                          >
+                            Save Changes
+                          </button>
+                          <button
+                            style={{
+                              backgroundColor: "red",
+                              color: "white",
+                              borderRadius: "4px",
+                              display: "block",
+                              position: "absolute",
+                              bottom: "5px",
+                              left: "10px",
+                            }}
+                            onClick={() => handleRemoveField(index)}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      ) : (
+                        <div key={index}>
                     <Select
                       style={{
                         justifyContent: "center",
@@ -3973,10 +4324,18 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         </option>
                       ))}
                     </Select>
-                  </div>
-                );
-                break;
-
+                          <br />
+                          {showButtons && (
+                            <IoIosCreate
+                              onClick={() => handleElementClick(index)}
+                            />
+                          )}
+                          <br></br>
+                        </div>
+                      )}
+                    </div>
+                  );
+                  break;
               case "Drop-down":
                 formField = (
                   <div key={index}>
@@ -4066,6 +4425,49 @@ function InteractivePageBuilderInterface({ link, mode }) {
                           value={text}
                           onChange={(event) => handleTextChange(event, index)}
                         />
+                        <label
+                          htmlFor="horizontal-position"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                            marginRight: "5px",
+                            display: 'block'
+                          }}
+                        >
+                          X Position From Left (%)
+                        </label>
+                        <input
+                         type="text"
+                         id="horizontal-position"
+                         value={componentPercentages[index]}
+                         onChange={(event) =>
+                          handlePercentageChange(event.target.value, index)
+                        }
+                       placeholder="Enter a percentage"
+                         />
+                         <label
+                          htmlFor="vertical-position"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                            marginRight: "5px",
+                            display: 'block'
+                          }}
+                        >
+                          Y Position From Top (%)
+                        </label>
+                        <input
+                         type="text"
+                         id="vertical-position"
+                         style={{marginBottom: '40px'}}
+                         value={componentPercentagesVertical[index]}
+                         onChange={(event) =>
+                          handlePercentageChangeVertical(event.target.value, index)
+                        }
+                       placeholder="Enter a percentage"
+                         />
                         <button
                           style={{
                             backgroundColor: "#528AAE",
