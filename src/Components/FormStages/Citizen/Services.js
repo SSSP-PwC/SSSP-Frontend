@@ -18,11 +18,13 @@ export default function Services() {
   const [searchText, setSearchText] = useState("");
 
   const [isStarClicked, setIsStarClicked] = useState(false);
-  const [imageSrc, setImageSrc] = useState('https://upload.wikimedia.org/wikipedia/commons/4/49/Star_empty.svg')
+  const [imageSrc, setImageSrc] = useState(
+    "https://upload.wikimedia.org/wikipedia/commons/4/49/Star_empty.svg"
+  );
   const handleStarClick = (id) => {
     const newData = data.map((service) => {
-      if(service.id === id){
-        return { ...service, isStarClicked: !service.isStarClicked};
+      if (service.id === id) {
+        return { ...service, isStarClicked: !service.isStarClicked };
       }
       return service;
     });
@@ -40,53 +42,104 @@ export default function Services() {
     console.log(newValue);
     setValue(newValue);
   };
-  function ServiceIcon({ service, option, isStarClicked }){
+  function ServiceIcon({ service, option, isStarClicked }) {
     const handleClick = () => {
       handleStarClick(service.id);
     };
-    return(
-      <div style={{textAlign: 'center',position: 'relative',display: 'inline-block', margin: "10px",}}>
-      <div style={{backgroundColor: 'white', width: '120px', height: '120px', borderRadius: '10px', alignItems: 'center'}}>
-       <img src={process.env.PUBLIC_URL + '/img/city.png'} alt="" style={{width: '80px', height: '80px', marginTop: '20px'}} />
-       <div style={{position: 'absolute', top: '0', right: '0', width: '30px', height: '30px', background:''}}>
-       <img src={service.isStarClicked ? 'https://upload.wikimedia.org/wikipedia/commons/2/29/Gold_Star.svg': 'https://upload.wikimedia.org/wikipedia/commons/4/49/Star_empty.svg'} alt="" style={{width: '30px', height: '30px'}} onClick={handleClick} />
-       </div>
-      </div>
-      <p style={{color: 'black', marginTop: '10px', width: '120px', wordWrap: 'break-word'}}>{service.name}</p>
+    return (
+      <div
+        style={{
+          textAlign: "center",
+          position: "relative",
+          display: "inline-block",
+          margin: "10px",
+        }}
+      >
+        <div
+          style={{
+            backgroundColor: "white",
+            width: "120px",
+            height: "120px",
+            borderRadius: "10px",
+            alignItems: "center",
+          }}
+        >
+          <img
+            src={process.env.PUBLIC_URL + "/img/city.png"}
+            alt=""
+            style={{ width: "80px", height: "80px", marginTop: "20px" }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              top: "0",
+              right: "0",
+              width: "30px",
+              height: "30px",
+              background: "",
+            }}
+          >
+            <img
+              src={
+                service.isStarClicked
+                  ? "https://upload.wikimedia.org/wikipedia/commons/2/29/Gold_Star.svg"
+                  : "https://upload.wikimedia.org/wikipedia/commons/4/49/Star_empty.svg"
+              }
+              alt=""
+              style={{ width: "30px", height: "30px" }}
+              onClick={handleClick}
+            />
+          </div>
+        </div>
+        <p
+          style={{
+            color: "black",
+            marginTop: "10px",
+            width: "120px",
+            wordWrap: "break-word",
+          }}
+        >
+          {service.name}
+        </p>
       </div>
     );
   }
   async function handleButtonClick(id) {
     setSelectedOption(id);
-  
+
     const userResponse = await fetch(
       `https://sssp-378808.nw.r.appspot.com/api/citizen/${loggedInUserId}`
     );
     const userData = await userResponse.json();
     const email = userData.email;
-  
+
     const authUrl = `https://sssp-378808.nw.r.appspot.com/api/wallet/auth/${email}/${id}`;
-    console.log(authUrl);
-  
+
     const authResponse = await fetch(authUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
     });
-  
+
     if (authResponse.status === 404) {
-      const checkUserResponse = await fetch(`https://sssp-378808.nw.r.appspot.com/api/wallet/user_exists/${email}`);
+      const checkUserResponse = await fetch(
+        `https://sssp-378808.nw.r.appspot.com/api/wallet/user_exists/${email}`
+      );
       const checkUserData = await checkUserResponse.json();
-  
+
       if (!checkUserData.exists) {
-        const createUrl = "https://sssp-378808.nw.r.appspot.com/api/wallet/create_user";
+        const createUrl =
+          "https://sssp-378808.nw.r.appspot.com/api/wallet/create_user";
         const createOptions = {
           method: "POST",
           headers: {
             "Content-Type": "application/json;charset=UTF-8",
           },
-          body: JSON.stringify({ email: email, applicationUserId: loggedInUserId }),
+          body: JSON.stringify({
+            email: email,
+            applicationUserId: loggedInUserId,
+          }),
         };
         const createResponse = await fetch(createUrl, createOptions);
         const createData = await createResponse.json();
@@ -109,7 +162,7 @@ export default function Services() {
       return authData;
     }
   }
-  
+
   useEffect(() => {
     fetch("https://sssp-378808.nw.r.appspot.com/api/portals")
       .then((response) => response.json())
@@ -161,8 +214,10 @@ export default function Services() {
                 <SearchBox.Button />
               </SearchBox>
               <a href="/register-service">
-             <Button style={{marginTop: '20px'}}>Register New Service</Button>
-             </a>
+                <Button style={{ marginTop: "20px" }}>
+                  Register New Service
+                </Button>
+              </a>
               <br></br>
               <Box
                 sx={{
@@ -178,7 +233,7 @@ export default function Services() {
                   aria-label="scrollable auto tabs example"
                   textColor="black"
                 >
-                  <Tab label="For You"/>
+                  <Tab label="For You" />
                   <Tab label="Subscribed Services" />
                   <Tab label="Available Services" />
                   <Tab label="See All" />
@@ -187,33 +242,94 @@ export default function Services() {
               <br></br>
               {value === 0 && (
                 <div
-                style={{
-                  backgroundColor: '#528AAE', 
-                  padding: '10px',
-                }}
-              >
-                <div style={{backgroundColor: 'black', height: '50px', width: '100%', borderRadius: '10px'}}>
-                <h3 style={{color: 'white', position: 'relative', top: '10px', left: '10px'}}>Favorites</h3>
-                </div>
-                <div style={{display: 'inline-block', marginTop: '20px'}}>
-                {data.map(service =>(
-                 service.isStarClicked && <ServiceIcon key={service.id} service = {service} iconUrl = {process.env.PUBLIC_URL + '/img/city.png'} />
-                ))}
-                {options.map((option) => (
-                  option.isStarClicked && <ServiceIcon key={option.id} service = {option} iconUrl = {process.env.PUBLIC_URL + '/img/city.png'} />
-                ))}
-                </div>
-                <div style={{backgroundColor: 'black', height: '50px', width: '100%', borderRadius: '10px'}}>
-                <h3 style={{color: 'white', position: 'relative', top: '10px', left: '10px'}}>Recently Visited</h3>
-                </div>
-                <div style={{display: 'flex', flexWrap: "wrap", margin: "-10px", marginTop: '20px'}}>
-                {data.slice(6,14).map(service =>(
-                 <ServiceIcon key={service.id} service = {service} iconUrl = {process.env.PUBLIC_URL + '/img/city.png'} />
-                ))}
-                {options.slice(3,9).map((option) => (
-                  <ServiceIcon key={option.id} service = {option} iconUrl = {process.env.PUBLIC_URL + '/img/city.png'} />
-                ))}
-                </div>
+                  style={{
+                    backgroundColor: "#528AAE",
+                    padding: "10px",
+                  }}
+                >
+                  <div
+                    style={{
+                      backgroundColor: "black",
+                      height: "50px",
+                      width: "100%",
+                      borderRadius: "10px",
+                    }}
+                  >
+                    <h3
+                      style={{
+                        color: "white",
+                        position: "relative",
+                        top: "10px",
+                        left: "10px",
+                      }}
+                    >
+                      Favorites
+                    </h3>
+                  </div>
+                  <div style={{ display: "inline-block", marginTop: "20px" }}>
+                    {data.map(
+                      (service) =>
+                        service.isStarClicked && (
+                          <ServiceIcon
+                            key={service.id}
+                            service={service}
+                            iconUrl={process.env.PUBLIC_URL + "/img/city.png"}
+                          />
+                        )
+                    )}
+                    {options.map(
+                      (option) =>
+                        option.isStarClicked && (
+                          <ServiceIcon
+                            key={option.id}
+                            service={option}
+                            iconUrl={process.env.PUBLIC_URL + "/img/city.png"}
+                          />
+                        )
+                    )}
+                  </div>
+                  <div
+                    style={{
+                      backgroundColor: "black",
+                      height: "50px",
+                      width: "100%",
+                      borderRadius: "10px",
+                    }}
+                  >
+                    <h3
+                      style={{
+                        color: "white",
+                        position: "relative",
+                        top: "10px",
+                        left: "10px",
+                      }}
+                    >
+                      Recently Visited
+                    </h3>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      margin: "-10px",
+                      marginTop: "20px",
+                    }}
+                  >
+                    {data.slice(6, 14).map((service) => (
+                      <ServiceIcon
+                        key={service.id}
+                        service={service}
+                        iconUrl={process.env.PUBLIC_URL + "/img/city.png"}
+                      />
+                    ))}
+                    {options.slice(3, 9).map((option) => (
+                      <ServiceIcon
+                        key={option.id}
+                        service={option}
+                        iconUrl={process.env.PUBLIC_URL + "/img/city.png"}
+                      />
+                    ))}
+                  </div>
                 </div>
               )}
               {value === 1 && (
@@ -244,17 +360,10 @@ export default function Services() {
                                 ?.source || option.media[0].source
                             }
                             title={option.name}
-                            style={{
-                              cursor: "pointer",
-                            }}
-                            onMouseOver={(e) =>
-                              (e.currentTarget.style.border = "2px solid blue")
-                            }
-                            onMouseOut={(e) =>
-                              (e.currentTarget.style.border = "")
-                            }
                           />
-                          <CardContent sx={{ height: "200px", position: "relative" }}>
+                          <CardContent
+                            sx={{ height: "200px", position: "relative" }}
+                          >
                             <Typography
                               gutterBottom
                               variant="h5"
@@ -263,12 +372,13 @@ export default function Services() {
                               {option.name}
                             </Typography>
                             <Button
-                             style={{
-                              position: "absolute",
-                              bottom: "16px",
-                              left: "50%",
-                              padding: "5px",
-                              transform: "translateX(-50%)"}}
+                              style={{
+                                position: "absolute",
+                                bottom: "16px",
+                                left: "50%",
+                                padding: "5px",
+                                transform: "translateX(-50%)",
+                              }}
                               onClick={() => handleButtonClick(option.id)}
                             >
                               Register

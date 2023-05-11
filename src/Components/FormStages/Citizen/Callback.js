@@ -23,15 +23,13 @@ export default function CallBack() {
       console.log(response.data);
       navigate("/wallet/account", {
         state: {
-          "response" : response.data,
-          "consent_token" : consent
-        }
-      })
+          response: response.data,
+          consent_token: consent,
+        },
+      });
     }
     fetchData();
   }, []);
-
-  
 
   return (
     <div
@@ -42,8 +40,7 @@ export default function CallBack() {
         display: "flex",
       }}
     >
-        <Spinner fill="black" height="256px" width="256px" />
-
+      <Spinner fill="black" height="256px" width="256px" />
     </div>
   );
 }
