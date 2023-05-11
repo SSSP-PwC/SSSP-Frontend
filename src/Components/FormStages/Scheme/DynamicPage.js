@@ -295,11 +295,7 @@ function DynamicPage() {
 
           case "Text area":
             formField = (
-              <div key={index}   style={{
-                justifyContent: "center",
-                alignItems: "center",
-                display: "flex",
-              }}>
+              <div key={index}   style={parentStyle}>
                 <br />
                 <TextArea
                   style={parentStyle}
@@ -408,6 +404,7 @@ function DynamicPage() {
             formField = (
               <div key={index}>
                 <Label
+                style={parentStyle}
                   input={{
                     type: "text",
                     value: field.label,
@@ -436,6 +433,7 @@ function DynamicPage() {
               <div key={index}>
                 <Container>
                   <body
+                    style={parentStyle}
                     input={{
                       type: "text",
                       value: field.config.config.label,
@@ -692,11 +690,11 @@ function DynamicPage() {
 
             break;
 
-          case "Heading":
+          case "Header":
             formField = (
               <div key={index}>
                 <center>
-                  <Heading style={{ color: "black", fontWeight: "bold" }}>
+                  <Heading style={parentStyle}>
                     {field.config.label}
                     {console.log(field.config)}
                   </Heading>
@@ -714,7 +712,7 @@ function DynamicPage() {
             );
             break;
 
-          case "Header":
+          case "Heading":
             formField = (
               <div key={index}>
                 {field.label === "Overview" && (
@@ -810,16 +808,13 @@ function DynamicPage() {
             break;
           case "Raised Button":
             formField = (
-              <div key={index} style={parentStyle}>
+              <div key={index}>
                 <br />
                 {}
                 <Link to={field.button_link}>
                   <Button
                     onClick={nextPage}
-                    style={{
-                      width: field.width + "px",
-                      height: field.height + "px",
-                    }}
+                    style={parentStyle}
                   >
                     {field.config.label || field.config.label}
                   </Button>

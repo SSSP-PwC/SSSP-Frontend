@@ -193,6 +193,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const [selectedOptionHeading, setSelectedOptionHeading] = useState([]);
   const [selectedFontSize, setSelectedFontSize] = useState([]);
   const [componentColors, setComponentColors] = useState([]);
+  const [componentBackgroundColors, setComponentBackgroundColors] = useState([]);
   const [componentWidths, setComponentWidths] = useState([]);
   const [componentHeights, setComponentHeights] = useState([]);
   const [componentPositions, setComponentPositions] = useState([]);
@@ -1320,8 +1321,11 @@ function InteractivePageBuilderInterface({ link, mode }) {
           name: field.name,
           label: labelValue[index],
           editing: isEditing[index],
-          parent_style: field.parent_style,
-          input_style: [{ backgroundColor: componentColors[index] }],
+          parent_style: [{ color:componentColors[index], backgroundColor: componentBackgroundColors[index], height: componentHeights[index], width: componentWidths[index],  
+            position: componentPercentages[index] !== undefined || componentPercentagesVertical[index] !== undefined  ? 'absolute' : 'static',
+            left: componentPercentages[index] !== undefined ? `${componentPercentages[index]}%` : 'auto',
+            top: componentPixelsVertical[index] ? `${(componentPixelsVertical[index] * numberOfElements)}px` : 'auto',}],
+          input_style: field.input_style,
           type: field.type,
           image_source: imageURL,
           button_link: buttonLink,
@@ -1374,6 +1378,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
     setNumberOfElements((prevState) => prevState - 1);
     labelValue.splice(index, 1);
     componentColors.splice(index, 1);
+    componentBackgroundColors.splice(index, 1);
     componentWidths.splice(index, 1);
     componentHeights.splice(index, 1);
     componentPercentages.splice(index, 1);
@@ -1400,6 +1405,11 @@ function InteractivePageBuilderInterface({ link, mode }) {
         componentColors.splice(i, 1);
       }
     }
+    for (let i = componentBackgroundColors.length - 1; i >= 0; i--) {
+      if (componentBackgroundColors[i] === undefined) {
+        componentBackgroundColors.splice(i, 1);
+      }
+    }
     for (let i = componentWidths.length - 1; i >= 0; i--) {
       if (componentWidths[i] === undefined) {
         componentWidths.splice(i, 1);
@@ -1411,13 +1421,13 @@ function InteractivePageBuilderInterface({ link, mode }) {
       }
     }
     for (let i = componentPercentages.length - 1; i >= 0; i--) {
-      if (componentColors[i] === undefined) {
-        componentColors.splice(i, 1);
+      if (componentPercentages[i] === undefined) {
+        componentPercentages.splice(i, 1);
       }
     }
     for (let i = componentPercentagesVertical.length - 1; i >= 0; i--) {
-      if (componentColors[i] === undefined) {
-        componentColors.splice(i, 1);
+      if (componentPercentagesVertical[i] === undefined) {
+        componentPercentagesVertical.splice(i, 1);
       }
     }
     for (let i = componentPixelsVertical.length - 1; i >= 0; i--) {
@@ -1477,6 +1487,12 @@ function InteractivePageBuilderInterface({ link, mode }) {
     const newComponentColors = [...componentColors];
     newComponentColors[index] = newColor;
     setComponentColors(newComponentColors);
+  };
+
+  const handleBackgroundColorChange = (index, newColor) => {
+    const newComponentBackgroundColors = [...componentBackgroundColors];
+    newComponentBackgroundColors[index] = newColor;
+    setComponentBackgroundColors(newComponentBackgroundColors);
   };
 
   const handleWidthChange = (event, index) => {
@@ -2369,7 +2385,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                             id="buttoncolor"
                             color={formData.color}
                             onChange={(newColor) =>
-                              handleColorChange(index, newColor)
+                              handleBackgroundColorChange(index, newColor)
                             }
                           />
                           <label
@@ -2505,7 +2521,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         <Button
                           style={{width: componentWidths[index] + "px",
                           height: componentHeights[index] + "px",
-                          backgroundColor: componentColors[index],
+                          backgroundColor: componentBackgroundColors[index],
                           position: componentPercentages[index] !== undefined || componentPercentagesVertical[index] !== undefined  ? 'absolute' : 'static',
                           left: componentPercentages[index] !== undefined ? `${componentPercentages[index]}%` : 'auto',
                           top: componentPixelsVertical[index] ? `${(componentPixelsVertical[index] * numberOfElements)}px` : 'auto',}}
