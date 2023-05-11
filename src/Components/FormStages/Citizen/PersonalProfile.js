@@ -54,6 +54,37 @@ export default function PersonalProfile() {
       .catch((error) => console.log(error));
   };
 
+  const BankAccountDetails = () => {
+    const navigate = useNavigate();
+    return (
+      <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Bank Name</th>
+            <th>Bank Account Number</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((company, index) => (
+            <tr key={company.company_id}>
+              <td>{index + 1}</td>
+              <td>
+                <Link
+                  to={`/company-details/${index + 1}`}
+                  onClick={() => navigate(`/company-details/${index + 1}`)}
+                >
+                  {company.company_name}
+                </Link>
+              </td>
+              <td>{company.company_registration_number}</td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    );
+  };
+
   const Companies = () => {
     const navigate = useNavigate();
     return (
@@ -71,8 +102,8 @@ export default function PersonalProfile() {
               <td>{index + 1}</td>
               <td>
                 <Link
-                  to={`/company-details/${index+1}`}
-                  onClick={() => navigate(`/company-details/${index+1}`)}
+                  to={`/company-details/${index + 1}`}
+                  onClick={() => navigate(`/company-details/${index + 1}`)}
                 >
                   {company.company_name}
                 </Link>
@@ -84,7 +115,6 @@ export default function PersonalProfile() {
       </Table>
     );
   };
-  
 
   const updateData = (event) => {
     const { name, value } = event.target;
@@ -142,7 +172,7 @@ export default function PersonalProfile() {
             <br></br>
             <br></br>
             <H3>Account Details</H3>
-            <br></br>
+            <br />
             <table
               style={{
                 borderSpacing: 0,
@@ -297,8 +327,11 @@ export default function PersonalProfile() {
             <Form.Group>
               <small>
                 Edit your account details{" "}
-                <label onClick={handleEditProfile}>    <Link>here</Link></label>
-            .
+                <label onClick={handleEditProfile}>
+                  {" "}
+                  <Link>here</Link>
+                </label>
+                .
               </small>
             </Form.Group>
             <br></br>
@@ -306,6 +339,10 @@ export default function PersonalProfile() {
             <H3>Companies</H3>
             <br></br>
             <Companies />
+            <br></br>
+
+            <H3>Bank Account Details</H3>
+            <BankAccountDetails />
 
             <br></br>
           </div>
