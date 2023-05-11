@@ -61,7 +61,6 @@ export default function Account() {
 
 
   const Accounts = () => {
-    const navigate = useNavigate();
     return (
       <div>
         <Table striped bordered hover>

@@ -192,7 +192,6 @@ function DynamicPage() {
                 </InputField>
                 <br />
                 <br />
-
                 <br />
                 <br />
               </div>
@@ -387,7 +386,7 @@ function DynamicPage() {
           case "File Upload":
             formField = (
               <div key={index}>
-                <br/>
+                <br />
                 <input type="file" />
                 <br></br>
               </div>
@@ -773,34 +772,34 @@ function DynamicPage() {
                   </>
                 )}
                 {field.label === "Register to the ABC Grant" && (
-                   <Heading
-                   size="LARGE"
-                   input={{
-                     type: "text",
-                   }}
-                 >
-                   {field.label}
-                 </Heading>
+                  <Heading
+                    size="LARGE"
+                    input={{
+                      type: "text",
+                    }}
+                  >
+                    {field.label}
+                  </Heading>
                 )}
-                 {field.label === "Contact Support" && (
-                   <Heading
-                   size="LARGE"
-                   input={{
-                     type: "text",
-                   }}
-                 >
-                   {field.label}
-                 </Heading>
+                {field.label === "Contact Support" && (
+                  <Heading
+                    size="LARGE"
+                    input={{
+                      type: "text",
+                    }}
+                  >
+                    {field.label}
+                  </Heading>
                 )}
-                     {field.label === "Contact Us" && (
-                   <Heading
-                   size="LARGE"
-                   input={{
-                     type: "text",
-                   }}
-                 >
-                   {field.label}
-                 </Heading>
+                {field.label === "Contact Us" && (
+                  <Heading
+                    size="LARGE"
+                    input={{
+                      type: "text",
+                    }}
+                  >
+                    {field.label}
+                  </Heading>
                 )}
                 <br></br>
               </div>
@@ -871,7 +870,7 @@ function DynamicPage() {
                   height: "100vh",
                   backgroundImage: `url("https://pbs.twimg.com/ext_tw_video_thumb/1274020389501485057/pu/img/VkWNp99xjlTc_Q5d.jpg:large")`,
                   backgroundRepeat: "no-repeat",
-                  backgroundSize: "cover", 
+                  backgroundSize: "cover",
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
@@ -978,8 +977,8 @@ function DynamicPage() {
             formField = (
               <div key={index}>
                 <br />
-                <br/>
-                <br/>
+                <br />
+                <br />
 
                 <center>
                   <Label
