@@ -200,6 +200,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const [componentPercentages, setComponentPercentages] = useState([]);
   const [componentPercentagesVertical, setComponentPercentagesVertical] = useState([]);
   const [componentPixelsVertical, setComponentPixelsVertical] = useState([]);
+  const [componentStyle, setComponentStyle] = useState([]);
   const [componentBottoms, setComponentBottoms] = useState([]);
   const [componentRights, setComponentRights] = useState([]);
   const [componentLefts, setComponentLefts] = useState([]);
@@ -420,6 +421,14 @@ function InteractivePageBuilderInterface({ link, mode }) {
     });
   };
 
+  const handleStyleChange = (style, index) => {
+    setComponentStyle((prevValues) => {
+      const newValues = [...prevValues];
+      newValues[index] = style;
+      return newValues;
+    });
+  };
+
   const handleSelectFontChange = (size, index) => {
     setSelectedFontSize((prevValues) => {
       const newValues = [...prevValues];
@@ -445,15 +454,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
     });
   };
 
-  const handleTextChangeFocus = (text, index) => {
-    setText(text);
-    setLabelValue((prevValues) => {
-      const newValues = [...prevValues];
-      newValues[index] = text;
-      return newValues;
-    });
-  };
-
   const handleTextChangeDeleted = (event, index) => {
     setText(event.target.value);
     setLabelValue((prevValues) => {
@@ -463,24 +463,10 @@ function InteractivePageBuilderInterface({ link, mode }) {
     });
   };
 
-  const handleTextChangeTemplate = (templateText, index) => {
-    setText(templateText);
-    setLabelValue((prevValues) => {
-      const newValues = [...prevValues];
-      newValues[index] = templateText;
-      return newValues;
-    });
-  };
-
   const handleSwitch = (checked) => {
     setChecked(checked);
   };
-  const hideImagePopup = () => {
-    setImagePopup(false);
-  };
-  const showImagePopup = () => {
-    setImagePopup(true);
-  };
+
   const citizen_id = sessionStorage.getItem("Citizen_ID");
   const updateData = (event, property, fieldIndex) => {
     setSelectedValue(event.target?.value);
@@ -1335,7 +1321,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
           label: labelValue[index],
           editing: isEditing[index],
           parent_style: field.parent_style,
-          input_style: field.input_style,
+          input_style: [{ backgroundColor: componentColors[index] }],
           type: field.type,
           image_source: imageURL,
           button_link: buttonLink,
@@ -1387,6 +1373,12 @@ function InteractivePageBuilderInterface({ link, mode }) {
     currentPageFields.splice(index, 1);
     setNumberOfElements((prevState) => prevState - 1);
     labelValue.splice(index, 1);
+    componentColors.splice(index, 1);
+    componentWidths.splice(index, 1);
+    componentHeights.splice(index, 1);
+    componentPercentages.splice(index, 1);
+    componentPercentagesVertical.splice(index, 1);
+    componentPixelsVertical.splice(index, 1);
     setIsEditing((prevValues) => {
       const newValues = [...prevValues];
       newValues[index] = false;
@@ -1403,6 +1395,36 @@ function InteractivePageBuilderInterface({ link, mode }) {
         labelValue.splice(i, 1);
       }
     }
+    for (let i = componentColors.length - 1; i >= 0; i--) {
+      if (componentColors[i] === undefined) {
+        componentColors.splice(i, 1);
+      }
+    }
+    for (let i = componentWidths.length - 1; i >= 0; i--) {
+      if (componentWidths[i] === undefined) {
+        componentWidths.splice(i, 1);
+      }
+    }
+    for (let i = componentHeights.length - 1; i >= 0; i--) {
+      if (componentHeights[i] === undefined) {
+        componentHeights.splice(i, 1);
+      }
+    }
+    for (let i = componentPercentages.length - 1; i >= 0; i--) {
+      if (componentColors[i] === undefined) {
+        componentColors.splice(i, 1);
+      }
+    }
+    for (let i = componentPercentagesVertical.length - 1; i >= 0; i--) {
+      if (componentColors[i] === undefined) {
+        componentColors.splice(i, 1);
+      }
+    }
+    for (let i = componentPixelsVertical.length - 1; i >= 0; i--) {
+      if (componentPixelsVertical[i] === undefined) {
+        componentPixelsVertical.splice(i, 1);
+      }
+    }
     setNumDeletes(numDeletes + 1);
     const newPages = [...page];
     newPages[0] = {
@@ -1410,14 +1432,12 @@ function InteractivePageBuilderInterface({ link, mode }) {
       fields: currentPageFields,
     };
     setPage(newPages);
-    setRecentlyDeleted(true);
     setNumberOfElements(
       currentPageFields.filter((field) => field !== undefined).length
     );
+    console.log(currentPageFields);
   };
-  const calculateElementPosition = (percentage) => {
-    return `${percentage}`;
-  };
+
   const handleRemoveTemplateField = (index) => {
     const currentPage = page[0];
     if (!currentPage) {
@@ -2204,7 +2224,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         }}
                       >
                         <h3 style={{ padding: "10px", paddingBottom: "5px" }}>
-                          Edit Toggle Switch
+                          Edit Switch
                         </h3>
                         <label
                           htmlFor="headingtext"
@@ -2229,16 +2249,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                           value={text}
                           onChange={(event) => handleTextChange(event, index)}
                         />
-                        <input
-                         type="text"
-                         id="vertical-position"
-                         style={{marginBottom: '40px'}}
-                         value={componentPercentagesVertical[index]}
-                         onChange={(event) =>
-                          handlePercentageChangeVertical(event.target.value, index)
-                        }
-                       placeholder="Enter a percentage"
-                         />
                         <button
                           style={{
                             backgroundColor: "#528AAE",
@@ -2280,7 +2290,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                             style={{ transform: "scale(2)" }}
                             onClick={() =>
                               handleElementClickTemplate(
-                                labelValue[index] || field.label,
+                                labelValue[index],
                                 index
                               )
                             }
@@ -2493,14 +2503,12 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         <br />
 
                         <Button
-                          style={{
-                            width: componentWidths[index] + "px",
-                            height: componentHeights[index] + "px",
-                            backgroundColor: componentColors[index],
-                            position: componentPercentages[index] !== undefined || componentPercentagesVertical[index] !== undefined  ? 'absolute' : 'static',
-                            left: componentPercentages[index] !== undefined ? `${componentPercentages[index]}%` : 'auto',
-                            top: componentPixelsVertical[index] ? `${(componentPixelsVertical[index] * numberOfElements)}px` : 'auto',
-                          }}
+                          style={{width: componentWidths[index] + "px",
+                          height: componentHeights[index] + "px",
+                          backgroundColor: componentColors[index],
+                          position: componentPercentages[index] !== undefined || componentPercentagesVertical[index] !== undefined  ? 'absolute' : 'static',
+                          left: componentPercentages[index] !== undefined ? `${componentPercentages[index]}%` : 'auto',
+                          top: componentPixelsVertical[index] ? `${(componentPixelsVertical[index] * numberOfElements)}px` : 'auto',}}
                           input={{
                             type: field.type,
                             name: field.label,
