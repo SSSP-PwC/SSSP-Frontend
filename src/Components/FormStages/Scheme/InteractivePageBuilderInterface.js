@@ -142,6 +142,8 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const [pageBackgroundIndex, setPageBackgroundIndex] = useState();
   const [tableData, setTableData] = useState([]);
   const memoizedData = useMemo(() => tableData, [tableData]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [dataUrl, setDataUrl] = useState('');
   const [values, setValues] = useState([]);
   const [image, setImage] = useState([]);
   const [imageURL, setImageURL] = useState([]);
@@ -156,7 +158,13 @@ function InteractivePageBuilderInterface({ link, mode }) {
     "Home Page - Hospitality": [],
     "Home Page - Transport": [],
   });
-
+  const openModal = () => {
+    setIsOpen(true);
+  };
+  const closeModal = (event) => {
+    event.stopPropagation();
+    setIsOpen(false);
+  };
   const [formData, setFormData] = useState("");
 
   const [options, setOptions] = useState();
@@ -550,6 +558,25 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const handleChange = (event) => {
     setSelectedValue(event.target.value);
     updateData(event.target.value?.toLowerCase());
+  };
+
+  const handleChangeData = (event) => {
+    setDataUrl(event.target.value);
+  };
+
+  const handleConnect = (dataurl) => {
+    const url = dataurl;
+
+    // Make the GET request
+    fetch(url)
+      .then((response) => {
+        console.log('Response status:', response.status);
+        // Add your logic to handle the response status here
+      })
+      .catch((error) => {
+        console.log('Error:', error);
+        // Handle the error if the request fails
+      });
   };
 
   const [citizen, setCitizen] = useState();
@@ -2515,7 +2542,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         </button>
                       </div>
                     ) : (
-                      <div key={index} style={{display: "inline-block"}}>
+                      <div key={index} style={{display: "inline-block", paddingBottom: componentPercentages[index] !== undefined || componentPercentagesVertical[index] !== undefined ? '50px' : '0',}}>
                         <br />
 
                         <Button
@@ -5936,25 +5963,41 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     )}
                     {!isCollapsed && mode !== "Site Home" && (
                       <Box>
+                        <div onClick={openModal} style={{marginBottom: '20px', marginLeft: '30px', cursor: 'pointer' }}>
+                        <AddCircleOutlineOutlined/> New Data Connector
+                        {isOpen && 
+                        <div>
+                          <label htmlFor="dataUrl" style={{ color: 'white', marginTop: '10px' }}>
+                         Data URL:
+                         </label>
+                         <input
+            id="dataUrl"
+            style={{ marginTop: '5px' }}
+            autoFocus
+            value={dataUrl}
+            onChange={handleChangeData}
+          />
+                          <button
+                          onClick={(event) => {
+                            closeModal(event);
+                            handleConnect();
+                          }}
+              style={{
+                borderRadius: "4px",
+                backgroundColor: "#528AAE",
+                color: "white",
+                padding: "4px",
+                marginTop: "10px",
+              }}
+            >
+              Connect
+            </button>
+                        </div>
+                        }
+                        </div>
                         <div style={{ margin: "20px" }}>
-                          <SearchBox
-                            value={searchText}
-                            onChange={(event) =>
-                              setSearchText(event.target.value)
-                            }
-                            fullWidth
-                            sx={{ mb: 2 }}
-                          >
-                            <SearchBox.Input placeholder="Search element" />
-                            <SearchBox.Button />
-                          </SearchBox>
-                          <br></br>
-
                           <SubMenu style={{ color: "white" }} title="Data">
-                            <SubMenu
-                              style={{ color: "white" }}
-                              title="Data"
-                            ></SubMenu>
+                            
                           </SubMenu>
                         </div>
                       </Box>
