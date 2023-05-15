@@ -36,7 +36,7 @@ import { BiDockBottom } from "react-icons/bi";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
-import { IoIosCreate } from "react-icons/io";
+import { IoIosCreate } from "react-icons/io"; //edit icon
 import { MdOutlineLogin } from "react-icons/md";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -88,12 +88,6 @@ import {
 import { ErrorMessage, Field, Formik } from "formik";
 import { notify } from "reapop";
 
-//import { withValidator,required, min, max, number, minLength, maxLength, email,} from "react-constraint-validation";
-//import { ErrorMessage, Field, Formik } from "formik";
-//const TextField = withValidator({ required, minLength, maxLength })(Field);
-//const NumberField = withValidator({ required, min, max }, { number })(Field);
-//const EmailField = withValidator({ required }, { email })(Field);
-
 const TextFieldValidation = withValidator({ required, minLength, maxLength })(
   Field
 );
@@ -110,7 +104,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const [required, setRequired] = useState();
   const [selectedValue, setSelectedValue] = useState("Blank");
   const id = sessionStorage.getItem("Citizen_ID");
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(false); //used for config modal when adding components
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [loading, setLoading] = useState();
@@ -126,7 +120,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const [inputColumns, setNumberOfColumns] = useState(0);
   const [pageLink, setPageLink] = useState();
   const [showForm, setShowForm] = useState(false);
-  const [numberOfElements, setNumberOfElements] = useState(0);
+  const [numberOfElements, setNumberOfElements] = useState(0); //use as index when out of scope
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   const [pageCounter, setPageCounter] = useState(1);
