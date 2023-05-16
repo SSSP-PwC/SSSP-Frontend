@@ -66,20 +66,7 @@ export default function PersonalProfile() {
           </tr>
         </thead>
         <tbody>
-          {data.map((company, index) => (
-            <tr key={company.company_id}>
-              <td>{index + 1}</td>
-              <td>
-                <Link
-                  to={`/company-details/${index + 1}`}
-                  onClick={() => navigate(`/company-details/${index + 1}`)}
-                >
-                  {company.company_name}
-                </Link>
-              </td>
-              <td>{company.company_registration_number}</td>
-            </tr>
-          ))}
+         
         </tbody>
       </Table>
     );
