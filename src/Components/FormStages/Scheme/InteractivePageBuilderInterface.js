@@ -200,6 +200,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const [componentPercentages, setComponentPercentages] = useState([]);
   const [componentPercentagesVertical, setComponentPercentagesVertical] = useState([]);
   const [componentPixelsVertical, setComponentPixelsVertical] = useState([]);
+  const [componentStyle, setComponentStyle] = useState([]);
   const [componentBottoms, setComponentBottoms] = useState([]);
   const [componentRights, setComponentRights] = useState([]);
   const [componentLefts, setComponentLefts] = useState([]);
@@ -218,7 +219,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
 
   const handlePercentageChangePix = (index, value) => {
     const pixels = (grandparentHeight * value) / 100;
-    const topPosition = value === 0 ? grandparentHeight - pixels - (numberOfElements * 35) : pixels;
+    const topPosition = value === 0 ? grandparentHeight - pixels: pixels;
     componentPixelsVertical[index] = topPosition;
   };
 
@@ -420,6 +421,14 @@ function InteractivePageBuilderInterface({ link, mode }) {
     });
   };
 
+  const handleStyleChange = (style, index) => {
+    setComponentStyle((prevValues) => {
+      const newValues = [...prevValues];
+      newValues[index] = style;
+      return newValues;
+    });
+  };
+
   const handleSelectFontChange = (size, index) => {
     setSelectedFontSize((prevValues) => {
       const newValues = [...prevValues];
@@ -445,15 +454,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
     });
   };
 
-  const handleTextChangeFocus = (text, index) => {
-    setText(text);
-    setLabelValue((prevValues) => {
-      const newValues = [...prevValues];
-      newValues[index] = text;
-      return newValues;
-    });
-  };
-
   const handleTextChangeDeleted = (event, index) => {
     setText(event.target.value);
     setLabelValue((prevValues) => {
@@ -463,24 +463,10 @@ function InteractivePageBuilderInterface({ link, mode }) {
     });
   };
 
-  const handleTextChangeTemplate = (templateText, index) => {
-    setText(templateText);
-    setLabelValue((prevValues) => {
-      const newValues = [...prevValues];
-      newValues[index] = templateText;
-      return newValues;
-    });
-  };
-
   const handleSwitch = (checked) => {
     setChecked(checked);
   };
-  const hideImagePopup = () => {
-    setImagePopup(false);
-  };
-  const showImagePopup = () => {
-    setImagePopup(true);
-  };
+
   const citizen_id = sessionStorage.getItem("Citizen_ID");
   const updateData = (event, property, fieldIndex) => {
     setSelectedValue(event.target?.value);
@@ -1335,7 +1321,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
           label: labelValue[index],
           editing: isEditing[index],
           parent_style: field.parent_style,
-          input_style: field.input_style,
+          input_style: [{ backgroundColor: componentColors[index] }],
           type: field.type,
           image_source: imageURL,
           button_link: buttonLink,
@@ -1387,6 +1373,12 @@ function InteractivePageBuilderInterface({ link, mode }) {
     currentPageFields.splice(index, 1);
     setNumberOfElements((prevState) => prevState - 1);
     labelValue.splice(index, 1);
+    componentColors.splice(index, 1);
+    componentWidths.splice(index, 1);
+    componentHeights.splice(index, 1);
+    componentPercentages.splice(index, 1);
+    componentPercentagesVertical.splice(index, 1);
+    componentPixelsVertical.splice(index, 1);
     setIsEditing((prevValues) => {
       const newValues = [...prevValues];
       newValues[index] = false;
@@ -1403,6 +1395,36 @@ function InteractivePageBuilderInterface({ link, mode }) {
         labelValue.splice(i, 1);
       }
     }
+    for (let i = componentColors.length - 1; i >= 0; i--) {
+      if (componentColors[i] === undefined) {
+        componentColors.splice(i, 1);
+      }
+    }
+    for (let i = componentWidths.length - 1; i >= 0; i--) {
+      if (componentWidths[i] === undefined) {
+        componentWidths.splice(i, 1);
+      }
+    }
+    for (let i = componentHeights.length - 1; i >= 0; i--) {
+      if (componentHeights[i] === undefined) {
+        componentHeights.splice(i, 1);
+      }
+    }
+    for (let i = componentPercentages.length - 1; i >= 0; i--) {
+      if (componentColors[i] === undefined) {
+        componentColors.splice(i, 1);
+      }
+    }
+    for (let i = componentPercentagesVertical.length - 1; i >= 0; i--) {
+      if (componentColors[i] === undefined) {
+        componentColors.splice(i, 1);
+      }
+    }
+    for (let i = componentPixelsVertical.length - 1; i >= 0; i--) {
+      if (componentPixelsVertical[i] === undefined) {
+        componentPixelsVertical.splice(i, 1);
+      }
+    }
     setNumDeletes(numDeletes + 1);
     const newPages = [...page];
     newPages[0] = {
@@ -1410,14 +1432,12 @@ function InteractivePageBuilderInterface({ link, mode }) {
       fields: currentPageFields,
     };
     setPage(newPages);
-    setRecentlyDeleted(true);
     setNumberOfElements(
       currentPageFields.filter((field) => field !== undefined).length
     );
+    console.log(currentPageFields);
   };
-  const calculateElementPosition = (percentage) => {
-    return `${percentage}`;
-  };
+
   const handleRemoveTemplateField = (index) => {
     const currentPage = page[0];
     if (!currentPage) {
@@ -1626,7 +1646,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                 break;
               case "Input Field":
                 formField = (
-                  <div key={index} style={parentStyle}>
+                  <div key={index} style={{position:'relative', width: '90%'}}>
                     {isEditing[index] ? (
                       <div
                         ref={inputRef}
@@ -1696,8 +1716,11 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         </button>
                       </div>
                     ) : (
-                      <div key={index}>
+                      <div key={index} style={{display: "inline-block"}}>
                         <Label
+                          style={{position: componentPercentages[index] !== undefined || componentPercentagesVertical[index] !== undefined  ? 'absolute' : 'static',
+                          left: componentPercentages[index] !== undefined ? `${componentPercentages[index]}%` : 'auto',
+                          top: componentPixelsVertical[index] ? `${(componentPixelsVertical[index] * numberOfElements)}px` : 'auto',}}
                           input={{
                             type: "text",
                             value: field.label,
@@ -2185,7 +2208,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
 
               case "Toggle Switch":
                 formField = (
-                  <div>
+                  <div style={{position:'relative', width: '90%'}}>
                     {isEditing[index] ? (
                       <div
                         ref={inputRef}
@@ -2201,7 +2224,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         }}
                       >
                         <h3 style={{ padding: "10px", paddingBottom: "5px" }}>
-                          Edit Toggle Switch
+                          Edit Switch
                         </h3>
                         <label
                           htmlFor="headingtext"
@@ -2256,8 +2279,10 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         </button>
                       </div>
                     ) : (
-                      <div key={index}>
-                        <Switch onChange={handleSwitch} checked={checked} />
+                      <div key={index} style={{display: "inline-block"}}>
+                        <Switch style={{position: componentPercentages[index] !== undefined || componentPercentagesVertical[index] !== undefined  ? 'absolute' : 'static',
+                            left: componentPercentages[index] !== undefined ? `${componentPercentages[index]}%` : 'auto',
+                            top: componentPixelsVertical[index] ? `${(componentPixelsVertical[index] * numberOfElements)}px` : 'auto',}} onChange={handleSwitch} checked={checked} />
 
                         <br />
                         {showButtons && (
@@ -2265,7 +2290,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                             style={{ transform: "scale(2)" }}
                             onClick={() =>
                               handleElementClickTemplate(
-                                labelValue[index] || field.label,
+                                labelValue[index],
                                 index
                               )
                             }
@@ -2280,7 +2305,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
 
               case "Raised Button":
                 formField = (
-                  <div>
+                  <div style={{position:'relative', width: '90%'}}>
                     {isEditing[index] ? (
                       <div
                         ref={inputRef}
@@ -2347,7 +2372,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                               handleColorChange(index, newColor)
                             }
                           />
-
                           <label
                             htmlFor="buttonwidth"
                             style={{
@@ -2401,34 +2425,49 @@ function InteractivePageBuilderInterface({ link, mode }) {
                               handleHeightChange(event, index)
                             }
                           />
-
-                          <label
-                            htmlFor="buttonposition"
-                            style={{
-                              color: "#888",
-                              fontStyle: "italic",
-                              paddingLeft: "5px",
-                            }}
-                          >
-                            Relative Position
-                          </label>
-                          <select
-                            style={{
-                              display: "block",
-                              marginLeft: "auto",
-                              marginRight: "auto",
-                              marginBottom: "40px",
-                            }}
-                            id="buttonposition"
-                            value={componentPositions[index]}
-                            onChange={(event) =>
-                              handlePositionChange(event.target.value, index)
-                            }
-                          >
-                            <option value="centre">Centre</option>
-                            <option value="right">Left</option>
-                            <option value="left">Right</option>
-                          </select>
+<label
+                          htmlFor="horizontal-position"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                            marginRight: "5px",
+                            display: 'block'
+                          }}
+                        >
+                          X Position From Left (%)
+                        </label>
+                        <input
+                         type="text"
+                         id="horizontal-position"
+                         value={componentPercentages[index]}
+                         onChange={(event) =>
+                          handlePercentageChange(event.target.value, index)
+                        }
+                       placeholder="Enter a percentage"
+                         />
+                         <label
+                          htmlFor="vertical-position"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                            marginRight: "5px",
+                            display: 'block'
+                          }}
+                        >
+                          Y Position From Top (%)
+                        </label>
+                        <input
+                         type="text"
+                         id="vertical-position"
+                         style={{marginBottom: '40px'}}
+                         value={componentPercentagesVertical[index]}
+                         onChange={(event) =>
+                          handlePercentageChangeVertical(event.target.value, index)
+                        }
+                       placeholder="Enter a percentage"
+                         />
                         </div>
                         <button
                           style={{
@@ -2460,15 +2499,16 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         </button>
                       </div>
                     ) : (
-                      <div key={index}>
+                      <div key={index} style={{display: "inline-block"}}>
                         <br />
 
                         <Button
-                          style={{
-                            width: componentWidths[index] + "px",
-                            height: componentHeights[index] + "px",
-                            backgroundColor: componentColors[index],
-                          }}
+                          style={{width: componentWidths[index] + "px",
+                          height: componentHeights[index] + "px",
+                          backgroundColor: componentColors[index],
+                          position: componentPercentages[index] !== undefined || componentPercentagesVertical[index] !== undefined  ? 'absolute' : 'static',
+                          left: componentPercentages[index] !== undefined ? `${componentPercentages[index]}%` : 'auto',
+                          top: componentPixelsVertical[index] ? `${(componentPixelsVertical[index] * numberOfElements)}px` : 'auto',}}
                           input={{
                             type: field.type,
                             name: field.label,
@@ -2981,7 +3021,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                 break;
               case "Label":
                 formField = (
-                  <div>
+                  <div style={{position:'relative', width: '90%'}}>
                     {isEditing[index] ? (
                       <div
                         ref={inputRef}
@@ -3021,6 +3061,49 @@ function InteractivePageBuilderInterface({ link, mode }) {
                           value={text}
                           onChange={(event) => handleTextChange(event, index)}
                         />
+                        <label
+                          htmlFor="horizontal-position"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                            marginRight: "5px",
+                            display: 'block'
+                          }}
+                        >
+                          X Position From Left (%)
+                        </label>
+                        <input
+                         type="text"
+                         id="horizontal-position"
+                         value={componentPercentages[index]}
+                         onChange={(event) =>
+                          handlePercentageChange(event.target.value, index)
+                        }
+                       placeholder="Enter a percentage"
+                         />
+                         <label
+                          htmlFor="vertical-position"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                            marginRight: "5px",
+                            display: 'block'
+                          }}
+                        >
+                          Y Position From Top (%)
+                        </label>
+                        <input
+                         type="text"
+                         id="vertical-position"
+                         style={{marginBottom: '40px'}}
+                         value={componentPercentagesVertical[index]}
+                         onChange={(event) =>
+                          handlePercentageChangeVertical(event.target.value, index)
+                        }
+                       placeholder="Enter a percentage"
+                         />
                         <button
                           style={{
                             backgroundColor: "#528AAE",
@@ -3051,8 +3134,11 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         </button>
                       </div>
                     ) : (
-                      <div key={index}>
+                      <div key={index} style={{display: "inline-block", paddingBottom: componentPercentages[index] !== undefined || componentPercentagesVertical[index] !== undefined ? '50px' : '0',}}>
                         <Label
+                          style={{position: componentPercentages[index] !== undefined || componentPercentagesVertical[index] !== undefined  ? 'absolute' : 'static',
+                          left: componentPercentages[index] !== undefined ? `${componentPercentages[index]}%` : 'auto',
+                          top: componentPixelsVertical[index] ? `${(componentPixelsVertical[index] * numberOfElements)}px` : 'auto',}}
                           input={{
                             type: "text",
                             value: field.label,
@@ -3143,7 +3229,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                 break;
               case "Text area":
                 formField = (
-                  <div style={parentStyle}>
+                  <div style={{position:'relative', width: '90%'}}>
                     {isEditing[index] ? (
                       <div
                         ref={inputRef}
@@ -3183,6 +3269,102 @@ function InteractivePageBuilderInterface({ link, mode }) {
                           value={text}
                           onChange={(event) => handleTextChange(event, index)}
                         />
+                        <label
+                            htmlFor="buttonwidth"
+                            style={{
+                              color: "#888",
+                              fontStyle: "italic",
+                              paddingLeft: "5px",
+                            }}
+                          >
+                            Width (px)
+                          </label>
+                          <input
+                            style={{
+                              display: "block",
+                              paddingLeft: "5px",
+                              paddingRight: "5px",
+                              marginLeft: "auto",
+                              marginRight: "auto",
+                            }}
+                            id="buttonwidth"
+                            type="text"
+                            value={componentWidths[index]}
+                            onChange={(event) =>
+                              handleWidthChange(event, index)
+                            }
+                          />
+                          <label
+                            htmlFor="buttonheight"
+                            style={{
+                              color: "#888",
+                              fontStyle: "italic",
+                              paddingLeft: "5px",
+                            }}
+                          >
+                            Height (px)
+                          </label>
+                          <input
+                            style={{
+                              display: "block",
+                              paddingLeft: "5px",
+                              paddingRight: "5px",
+
+                              marginLeft: "auto",
+                              marginRight: "auto",
+
+                              marginBottom: "40px",
+                            }}
+                            id="buttonheight"
+                            type="text"
+                            value={componentHeights[index]}
+                            onChange={(event) =>
+                              handleHeightChange(event, index)
+                            }
+                          />
+                        <label
+                          htmlFor="horizontal-position"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                            marginRight: "5px",
+                            display: 'block'
+                          }}
+                        >
+                          X Position From Left (%)
+                        </label>
+                        <input
+                         type="text"
+                         id="horizontal-position"
+                         value={componentPercentages[index]}
+                         onChange={(event) =>
+                          handlePercentageChange(event.target.value, index)
+                        }
+                       placeholder="Enter a percentage"
+                         />
+                         <label
+                          htmlFor="vertical-position"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                            marginRight: "5px",
+                            display: 'block'
+                          }}
+                        >
+                          Y Position From Top (%)
+                        </label>
+                        <input
+                         type="text"
+                         id="vertical-position"
+                         style={{marginBottom: '40px'}}
+                         value={componentPercentagesVertical[index]}
+                         onChange={(event) =>
+                          handlePercentageChangeVertical(event.target.value, index)
+                        }
+                       placeholder="Enter a percentage"
+                         />
                         <button
                           style={{
                             backgroundColor: "#528AAE",
@@ -3218,16 +3400,22 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         style={{
                           justifyContent: "center",
                           alignItems: "center",
-                          display: "flex",
+                          display: "inline-block",
                         }}
                       >
                         <TextArea
-                          style={parentStyle}
+                          style={{
+                            width: componentWidths[index] + "px",
+                            height: componentHeights[index] + "px",
+                            position: componentPercentages[index] !== undefined || componentPercentagesVertical[index] !== undefined ? 'absolute' : 'static',
+                            left: componentPercentages[index] !== undefined ? `${componentPercentages[index]}%` : 'auto',
+                            top: componentPixelsVertical[index] ? `${componentPixelsVertical[index] * numberOfElements}px` : 'auto',
+                          }}
                           input={{
                             type: field.type,
                             name: field.label,
                             required: field.required,
-                            style: { ...inputFieldStyle, width: "700px" },
+                            style: { ...inputFieldStyle},
                           }}
                         >
                           {field.config.label}
@@ -3300,7 +3488,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                 break;
               case "Body":
                 formField = (
-                  <div>
+                  <div style={{position:'relative', width: '90%'}}>
                     {isEditing[index] ? (
                       <div
                         ref={inputRef}
@@ -3341,33 +3529,48 @@ function InteractivePageBuilderInterface({ link, mode }) {
                           onChange={(event) => handleTextChange(event, index)}
                         />
                         <label
-                          htmlFor="buttonposition"
+                          htmlFor="horizontal-position"
                           style={{
                             color: "#888",
                             fontStyle: "italic",
                             paddingLeft: "5px",
-                            display: "block",
+                            marginRight: "5px",
+                            display: 'block'
                           }}
                         >
-                          Relative Position
+                          X Position From Left (%)
                         </label>
-                        <select
+                        <input
+                         type="text"
+                         id="horizontal-position"
+                         value={componentPercentages[index]}
+                         onChange={(event) =>
+                          handlePercentageChange(event.target.value, index)
+                        }
+                       placeholder="Enter a percentage"
+                         />
+                         <label
+                          htmlFor="vertical-position"
                           style={{
-                            display: "block",
-                            marginLeft: "auto",
-                            marginRight: "auto",
-                            marginBottom: "40px",
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                            marginRight: "5px",
+                            display: 'block'
                           }}
-                          id="buttonposition"
-                          value={componentPositions[index]}
-                          onChange={(event) =>
-                            handlePositionChange(event.target.value, index)
-                          }
                         >
-                          <option value="centre">Centre</option>
-                          <option value="left">Left</option>
-                          <option value="right">Right</option>
-                        </select>
+                          Y Position From Top (%)
+                        </label>
+                        <input
+                         type="text"
+                         id="vertical-position"
+                         style={{marginBottom: '40px'}}
+                         value={componentPercentagesVertical[index]}
+                         onChange={(event) =>
+                          handlePercentageChangeVertical(event.target.value, index)
+                        }
+                       placeholder="Enter a percentage"
+                         />
                         <button
                           style={{
                             backgroundColor: "#528AAE",
@@ -3398,31 +3601,11 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         </button>
                       </div>
                     ) : (
-                      <div key={index}>
+                      <div key={index} style={{display: "inline-block"}}>
                         <label
-                          style={{
-                            position:
-                              componentPositions[index] === "left" ||
-                              componentPositions[index] === "right"
-                                ? "absolute"
-                                : "relative",
-                            left:
-                              componentPositions[index] === "left"
-                                ? "350px"
-                                : componentPositions[index] === "right"
-                                ? "auto"
-                                : componentLefts[index] !== ""
-                                ? componentLefts[index] + "px"
-                                : "auto",
-                            right:
-                              componentPositions[index] === "right"
-                                ? "350px"
-                                : componentPositions[index] === "left"
-                                ? "auto"
-                                : componentRights[index] !== ""
-                                ? componentRights[index] + "px"
-                                : "auto",
-                          }}
+                          style={{ position: componentPercentages[index] !== undefined || componentPercentagesVertical[index] !== undefined  ? 'absolute' : 'static',
+                          left: componentPercentages[index] !== undefined ? `${componentPercentages[index]}%` : 'auto',
+                          top: componentPixelsVertical[index] ? `${(componentPixelsVertical[index] * numberOfElements)}px` : 'auto', }}
                           input={{
                             type: "text",
                             value: field.config.label,
@@ -3597,7 +3780,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         </button>
                       </div>
                     ) : (
-                      <div key={index} style={{display: 'block', backgroundColor: 'white', paddingBottom: componentPercentages[index] !== undefined || componentPercentagesVertical[index] !== undefined ? '50px' : '0',}}>
+                      <div key={index} style={{display: "inline-block", backgroundColor: 'white', paddingBottom: componentPercentages[index] !== undefined || componentPercentagesVertical[index] !== undefined ? '50px' : '0',}}>
                         <Heading
                           size={selectedOptionHeading[index]}
                           style={{
@@ -3606,8 +3789,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                             color: componentColors[index],
                             position: componentPercentages[index] !== undefined || componentPercentagesVertical[index] !== undefined  ? 'absolute' : 'static',
                             left: componentPercentages[index] !== undefined ? `${componentPercentages[index]}%` : 'auto',
-                            top: componentPixelsVertical[index] ? `${componentPixelsVertical[index]}px` : 'auto',
-
+                            top: componentPixelsVertical[index] ? `${(componentPixelsVertical[index] * numberOfElements)}px` : 'auto',
                           }}
                           input={{
                             type: "text",
@@ -3629,7 +3811,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                 break;
               case "Radio Button":
                 formField = (
-                  <div>
+                  <div style={{position:'relative', width: '90%'}}>
                     {isEditing[index] ? (
                       <div
                         ref={inputRef}
@@ -3699,18 +3881,22 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         </button>
                       </div>
                     ) : (
-                      <div key={index}>
+                      <div key={index} style={{display: "inline-block"}}>
                         <Radio
                           style={{
                             width: field.config.width + "px",
                             height: field.config.height + "px",
+                            position: componentPercentages[index] !== undefined || componentPercentagesVertical[index] !== undefined  ? 'absolute' : 'static',
+                            left: componentPercentages[index] !== undefined ? `${componentPercentages[index]}%` : 'auto',
+                            top: componentPixelsVertical[index] ? `${(componentPixelsVertical[index] * numberOfElements)}px` : 'auto',
                           }}
                         >
                           {field.config.label}
                         </Radio>
                         <br />
                         {showButtons && (
-                          <IoIosCreate
+                          <IoIosCreate     
+                          style={{ transform: "scale(2)" }}
                             onClick={() => handleElementClick(index)}
                           />
                         )}
@@ -3976,16 +4162,131 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   </div>
                 );
                 break;
-
-              case "Multi choice":
-                formField = (
-                  <div key={index}>
+                case "Multi choice":
+                  formField = (
+                    <div style={{position:'relative', width: '90%'}}>
+                      {isEditing[index] ? (
+                        <div
+                          ref={inputRef}
+                          style={{
+                            position: "relative",
+                            display: "inline-block",
+                            borderRadius: "8px",
+                            overflow: "hidden",
+                            boxShadow: "0 0 10px rgba(0, 0, 0, 0.2",
+                            transition: "transform 0.3s ease-in-out",
+                            marginTop: "10px",
+                          }}
+                        >
+                          <h3 style={{ padding: "10px", paddingBottom: "5px" }}>
+                            Edit Multi-Choice
+                          </h3>
+                          <label
+                            htmlFor="buttontext"
+                            style={{
+                              color: "#888",
+                              fontStyle: "italic",
+                              paddingLeft: "5px",
+                            }}
+                          >
+                            Text
+                          </label>
+                          <input
+                            style={{
+                              display: "block",
+                              marginBottom: "40px",
+                              paddingLeft: "5px",
+                              paddingRight: "5px",
+                            }}
+                            id="buttontext"
+                            autoFocus="autoFocus"
+                            type="text"
+                            value={text}
+                            onChange={(event) => handleTextChange(event, index)}
+                          />
+                          <label
+                            htmlFor="horizontal-position"
+                            style={{
+                              color: "#888",
+                              fontStyle: "italic",
+                              paddingLeft: "5px",
+                              marginRight: "5px",
+                              display: 'block'
+                            }}
+                          >
+                            X Position From Left (%)
+                          </label>
+                          <input
+                           type="text"
+                           id="horizontal-position"
+                           value={componentPercentages[index]}
+                           onChange={(event) =>
+                            handlePercentageChange(event.target.value, index)
+                          }
+                         placeholder="Enter a percentage"
+                           />
+                           <label
+                            htmlFor="vertical-position"
+                            style={{
+                              color: "#888",
+                              fontStyle: "italic",
+                              paddingLeft: "5px",
+                              marginRight: "5px",
+                              display: 'block'
+                            }}
+                          >
+                            Y Position From Top (%)
+                          </label>
+                          <input
+                           type="text"
+                           id="vertical-position"
+                           style={{marginBottom: '40px'}}
+                           value={componentPercentagesVertical[index]}
+                           onChange={(event) =>
+                            handlePercentageChangeVertical(event.target.value, index)
+                          }
+                         placeholder="Enter a percentage"
+                           />
+                          <button
+                            style={{
+                              backgroundColor: "#528AAE",
+                              color: "white",
+                              borderRadius: "4px",
+                              display: "block",
+                              position: "absolute",
+                              bottom: "5px",
+                              right: "10px",
+                            }}
+                            onClick={() => handleClickOutside(index)}
+                          >
+                            Save Changes
+                          </button>
+                          <button
+                            style={{
+                              backgroundColor: "red",
+                              color: "white",
+                              borderRadius: "4px",
+                              display: "block",
+                              position: "absolute",
+                              bottom: "5px",
+                              left: "10px",
+                            }}
+                            onClick={() => handleRemoveField(index)}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      ) : (
+                        <div key={index}>
                     <Select
                       style={{
                         justifyContent: "center",
                         alignItems: "center",
                         display: "flex",
                         maxWidth: "1200px",
+                        position: componentPercentages[index] !== undefined || componentPercentagesVertical[index] !== undefined  ? 'absolute' : 'static',
+                            left: componentPercentages[index] !== undefined ? `${componentPercentages[index]}%` : 'auto',
+                            top: componentPixelsVertical[index] ? `${(componentPixelsVertical[index] * numberOfElements)}px` : 'auto',
                       }}
                       value={selectedValue}
                       onClick={handleChange}
@@ -3997,10 +4298,19 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         </option>
                       ))}
                     </Select>
-                  </div>
-                );
-                break;
-
+                          <br />
+                          {showButtons && (
+                            <IoIosCreate
+                            style={{ transform: "scale(2)" }}
+                              onClick={() => handleElementClick(index)}
+                            />
+                          )}
+                          <br></br>
+                        </div>
+                      )}
+                    </div>
+                  );
+                  break;
               case "Drop-down":
                 formField = (
                   <div key={index}>
@@ -4050,7 +4360,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
 
               case "Captcha":
                 formField = (
-                  <div key={index}>
+                  <div key={index} style={{position:'relative', width: '90%'}}>
                     {isEditing[index] ? (
                       <div
                         ref={inputRef}
@@ -4090,6 +4400,49 @@ function InteractivePageBuilderInterface({ link, mode }) {
                           value={text}
                           onChange={(event) => handleTextChange(event, index)}
                         />
+                        <label
+                          htmlFor="horizontal-position"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                            marginRight: "5px",
+                            display: 'block'
+                          }}
+                        >
+                          X Position From Left (%)
+                        </label>
+                        <input
+                         type="text"
+                         id="horizontal-position"
+                         value={componentPercentages[index]}
+                         onChange={(event) =>
+                          handlePercentageChange(event.target.value, index)
+                        }
+                       placeholder="Enter a percentage"
+                         />
+                         <label
+                          htmlFor="vertical-position"
+                          style={{
+                            color: "#888",
+                            fontStyle: "italic",
+                            paddingLeft: "5px",
+                            marginRight: "5px",
+                            display: 'block'
+                          }}
+                        >
+                          Y Position From Top (%)
+                        </label>
+                        <input
+                         type="text"
+                         id="vertical-position"
+                         style={{marginBottom: '40px'}}
+                         value={componentPercentagesVertical[index]}
+                         onChange={(event) =>
+                          handlePercentageChangeVertical(event.target.value, index)
+                        }
+                       placeholder="Enter a percentage"
+                         />
                         <button
                           style={{
                             backgroundColor: "#528AAE",
@@ -4122,6 +4475,9 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     ) : (
                       <div key={index}>
                         <Label
+                          style={{position: componentPercentages[index] !== undefined || componentPercentagesVertical[index] !== undefined  ? 'absolute' : 'static',
+                          left: componentPercentages[index] !== undefined ? `${componentPercentages[index]}%` : 'auto',
+                          top: componentPixelsVertical[index] ? `${(componentPixelsVertical[index] * numberOfElements)}px` : 'auto',}}
                           input={{
                             type: "text",
                             value: field.label,
