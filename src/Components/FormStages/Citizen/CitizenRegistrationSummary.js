@@ -35,7 +35,7 @@ export const CitizenRegistrationSummary = () => {
 
   const submitForm = async () => {
     setLoading(true);
-    const url = "https://sssp-378808.nw.r.appspot.com/api/signup";
+    const url = `${process.env.REACT_APP_BACKEND_URL}/signup`;
     const d = {
       first_name: first_name,
       last_name: last_name,
@@ -67,7 +67,7 @@ export const CitizenRegistrationSummary = () => {
 
       if (state?.company?.company_creation_journey === true) {
         const url =
-          "https://sssp-378808.nw.r.appspot.com/api/link-citizen-to-company-checks";
+          `${process.env.REACT_APP_BACKEND_URL}/link-citizen-to-company-checks`;
 
         const data = {
           email: email,

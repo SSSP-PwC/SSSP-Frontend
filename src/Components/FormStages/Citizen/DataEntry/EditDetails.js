@@ -44,7 +44,7 @@ export default function EditDetails() {
       },
     };
 
-    fetch(`https://sssp-378808.nw.r.appspot.com/api/edit_citizen/${id}`, {
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -69,7 +69,7 @@ export default function EditDetails() {
       });
   };
   const fetchCompany = () => {
-    fetch(`https://sssp-378808.nw.r.appspot.com/api/citizen/${id}/companies`)
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/${id}/companies`)
       .then((response) => {
         if (!response.ok) {
           throw Error(response.statusText);
@@ -94,7 +94,7 @@ export default function EditDetails() {
   useEffect(() => {
     async function fetchCitizen() {
       const response = await fetch(
-        `https://sssp-378808.nw.r.appspot.com/api/${citizen_id}`
+        `${process.env.REACT_APP_BACKEND_URL}/${citizen_id}`
       );
       const data = await response.json();
       setCitizen(data);

@@ -35,7 +35,7 @@ export const ChangePassword = () => {
     if (data.new_password === data.confirm_new_password) {
       try {
         const token = cookies.get("REACT_TOKEN_AUTH_KEY")
-        const response = await fetch('http://192.168.68.108:2000/api/update-password', {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/update-password`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

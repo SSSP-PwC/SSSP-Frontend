@@ -27,7 +27,7 @@ export const ListSchemes = () => {
   }
   useEffect(() => {
     fetch(
-      "https://20230226t215147-dot-sssp-378808.nw.r.appspot.com/api/get-schemes"
+      `${process.env.REACT_APP_BACKEND_URL}/get-schemes`
     )
       .then((response) => response.json())
       .then((data) => setData(data["schemes"]), setLoaded(true));

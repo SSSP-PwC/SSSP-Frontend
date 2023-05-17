@@ -44,7 +44,7 @@ export const LinkAccount = () => {
   const submit = async () => {
     setLoading(true);
     const url =
-      "https://sssp-378808.nw.r.appspot.com/api/link-citizen-to-company-checks";
+      `${process.env.REACT_APP_BACKEND_URL}/link-citizen-to-company-checks`;
 
     const data = {
       email: emailAddress.email,

@@ -81,7 +81,7 @@ export const EnterCompanyDetails = () => {
   const submitForm = async () => {
     setLoading(true);
     fetch(
-      `https://20230227t090520-dot-sssp-378808.nw.r.appspot.com/api/proxy?endpoint=company/${companyData.company_registration_number}`
+      `https://pg-uk-n-app-765081.nw.r.appspot.com/api/proxy?endpoint=company/${companyData.company_registration_number}`
     )
       .then((response) => response.json())
       .then((data) => {

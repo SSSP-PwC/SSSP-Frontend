@@ -24,7 +24,7 @@ export const SchemeSummary = () => {
 
   const submitForm = async () => {
     const url =
-      "https://20230228t113400-dot-sssp-378808.nw.r.appspot.com/api/post-schemes";
+      `${process.env.REACT_APP_BACKEND_URL}/post-schemes`;
     const data = {
       scheme_title: state.scheme_title,
       scheme_description: state.scheme_description,

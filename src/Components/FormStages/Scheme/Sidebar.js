@@ -119,7 +119,7 @@ const Item = ({ title, to, icon, subMenuItems }) => {
     setIsCollapsed(isSmallScreen);
     async function fetchCitizen() {
       const response = await fetch(
-        `https://sssp-378808.nw.r.appspot.com/api/${citizen_id}`
+        `${process.env.REACT_APP_BACKEND_URL}/${citizen_id}`
       );
       const data = await response.json();
       setCitizen(data);

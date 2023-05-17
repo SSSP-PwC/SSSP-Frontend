@@ -66,7 +66,7 @@ const PageBuilder = () => {
   const createPage = async (tabData) => {
     try {
       const response = await fetch(
-        "https://sssp-378808.nw.r.appspot.com/api/page",
+        `${process.env.REACT_APP_BACKEND_URL}/page`,
         {
           method: "POST",
           headers: {

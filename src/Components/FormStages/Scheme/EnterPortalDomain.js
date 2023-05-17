@@ -56,7 +56,7 @@ const EnterPortalDomain = () => {
       }),
     };
     fetch(
-      `https://sssp-378808.nw.r.appspot.com/api/register-domain`,
+      `${process.env.REACT_APP_BACKEND_URL}/register-domain`,
       requestOptions
     )
       .then((res) => res.json())
