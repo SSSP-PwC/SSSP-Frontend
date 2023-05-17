@@ -45,6 +45,17 @@ export const MFA = () => {
       verifyGoogleKey();
     }
   };
+  const radioButtons = document.querySelectorAll('input[type="radio"]');
+
+radioButtons.forEach((radioButton) => {
+  radioButton.addEventListener('click', () => {
+    radioButtons.forEach((otherButton) => {
+      if (otherButton !== radioButton) {
+        otherButton.checked = false;
+      }
+    });
+  });
+});
 
   const verifyGoogleKey = () => {
     setLoading(true);
