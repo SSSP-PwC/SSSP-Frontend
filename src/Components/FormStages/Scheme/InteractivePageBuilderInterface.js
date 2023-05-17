@@ -3262,7 +3262,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   </div>
                 );
                 break;
-
               case "img":
                 formField = (
                   <div key={index}>
