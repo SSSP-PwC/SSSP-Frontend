@@ -1145,37 +1145,10 @@ function InteractivePageBuilderInterface({ link, mode }) {
     site_name: "",
     company_id: options,
   });
-  const createPage = async (pageData) => {
-    try {
-      const response = await fetch(
-        `https://sssp-378808.nw.r.appspot.com/api/add-page-elements/${formValues.domain}/${pageCounter}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            fields: pageData.fields,
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const submit = async () => {
     let pages = [];
     let currentPage = { fields: [] };
-
     page[0].fields.forEach((field, index) => {
-
       if (field.type === "Page Break") {
         pages.push(currentPage);
         currentPage = { fields: [] };
@@ -1197,9 +1170,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
         currentPage.fields.push({ props });
       }
     });
-
     pages.push(currentPage);
-
     const requests = pages.map(async (pageData, index) => {
       index += 1;
       try {
@@ -1215,18 +1186,15 @@ function InteractivePageBuilderInterface({ link, mode }) {
             }),
           }
         );
-
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
-
         return data;
       } catch (error) {
         console.log(error);
       }
     });
-
     await Promise.all(requests);
   };
 
@@ -1252,12 +1220,10 @@ function InteractivePageBuilderInterface({ link, mode }) {
       newValues[index] = false;
       return newValues;
     });
-
     setDeleteIndex(index);
     for (let i = deleteIndex; i < currentPageFields.length; i++) {
       currentPageFields[i] = currentPageFields[i + 1];
     }
-
     for (let i = 0; i < labelValue.length; i++) {
       if (labelValue[i] === "") {
         labelValue.splice(i, 1);
@@ -1310,7 +1276,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
     );
     console.log(currentPageFields);
   };
-
   const handleRemoveTemplateField = (index) => {
     const currentPage = page[0];
     if (!currentPage) {
@@ -1337,7 +1302,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
       setPreview(undefined);
       return;
     }
-
     const objectUrl = URL.createObjectURL(selectedFile);
     setPreview(objectUrl);
 
@@ -1385,7 +1349,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
     updateGrandparentHeight();
     handlePercentageChangePix(index, newPercentage);
   };
-
 
   const RenderForm = () => {
     const backgroundImage =
@@ -1632,7 +1595,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   </div>
                 );
                 break;
-
               case "Application Form":
                 formField = (
                   <div key={index}>
@@ -1660,7 +1622,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         />
                       )}
                       <br></br>
-
                       <center>
                         <Heading>Register your details</Heading>
                         {showButtons && (
@@ -1669,7 +1630,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                           />
                         )}
                         <br></br>
-
                         <InputField
                           input={{ type: "email" }}
                           style={{ maxWidth: "700px" }}
@@ -1773,7 +1733,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   </div>
                 );
                 break;
-
               case "Location Check":
                 formField = (
                   <div key={index}>
@@ -1810,7 +1769,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         <ArrowForwardIosOutlined
                           style={{ margin: "25px", color: "whitesmoke" }}
                         />
-
                         <TextField
                           label="Location To"
                           variant="outlined"
@@ -1845,7 +1803,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   </div>
                 );
                 break;
-
               case "Center Component":
                 formField = (
                   <div key={index}>
@@ -2055,7 +2012,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   </div>
                 );
                 break;
-
               case "Toggle Switch":
                 formField = (
                   <div style={{position:'relative', width: '90%'}}>
@@ -2152,7 +2108,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   </div>
                 );
                 break;
-
               case "Raised Button":
                 formField = (
                   <div style={{position:'relative', width: '100%'}}>
@@ -2489,7 +2444,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                     )}
                   </div>
                 );
-
                 break;
               case "Image":
                 formField = (
@@ -2589,7 +2543,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   </div>
                 );
                 break;
-
               case "H3":
                 formField = (
                   <div>
@@ -2690,7 +2643,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   </div>
                 );
                 break;
-
               case "Password":
                 formField = (
                   <div key={index}>
@@ -2714,7 +2666,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   </div>
                 );
                 break;
-
               case "Number":
                 formField = (
                   <div key={index}>
@@ -2768,7 +2719,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   </div>
                 );
                 break;
-
               case "img":
                 formField = (
                   <div key={index}>
@@ -3008,7 +2958,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   </div>
                 );
                 break;
-
               case "Text Field":
                 formField = (
                   <div key={index}>
@@ -3016,7 +2965,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                       {" "}
                       {field.config.label}
                     </label>
-
                     <br />
                     <InputField
                       style={{
