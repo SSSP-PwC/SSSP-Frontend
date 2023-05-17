@@ -5659,7 +5659,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                           selected={selected}
                           setSelected={setSelected}
                         />
-
                         <Typography variant="h6" sx={{ m: "15px 0 5px 20px" }}>
                           Pages
                         </Typography>
@@ -5712,8 +5711,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                           </SubMenu>
                         </div>
                       </Box>
-                    )}
-
+                    )} 
                     {isCollapsed && mode !== "Site Home" && (
                       <Box>
                         <div style={{ margin: "20px" }}>
