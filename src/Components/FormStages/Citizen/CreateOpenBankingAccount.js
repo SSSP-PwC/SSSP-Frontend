@@ -17,7 +17,7 @@ export const CreateOpenBankingAccount = () => {
   const citizenId = sessionStorage.getItem("Citizen_ID");
 
   const submitForm = async () => {
-    const url = `https://sssp-378808.nw.r.appspot.com/api/${citizenId}`;
+    const url = `${process.env.REACT_APP_BACKEND_URL}/${citizenId}`;
 
     const headers = {
       "Content-Type": "application/json;charset=UTF-8",
@@ -31,7 +31,7 @@ export const CreateOpenBankingAccount = () => {
     const data = await response.json();
     const userId = data.email;
 
-    const createUrl = `https://sssp-378808.nw.r.appspot.com/api/wallet/create_user/${userId}`;
+    const createUrl = `${process.env.REACT_APP_BACKEND_URL}/wallet/create_user/${userId}`;
     const createPayload = {
       applicationUserId: userId,
     };
@@ -52,7 +52,7 @@ export const CreateOpenBankingAccount = () => {
 
   useEffect(() => {
     const checkUserExists = async () => {
-      const url = `https://sssp-378808.nw.r.appspot.com/api/${citizenId}`;
+      const url = `${process.env.REACT_APP_BACKEND_URL}/${citizenId}`;
 
       const headers = {
         "Content-Type": "application/json;charset=UTF-8",
@@ -66,7 +66,7 @@ export const CreateOpenBankingAccount = () => {
       const data = await response.json();
       if (data.email) {
         const userId = data.email;
-        const createUrl = `https://sssp-378808.nw.r.appspot.com/api/wallet/create_user/${userId}`;
+        const createUrl = `${process.env.REACT_APP_BACKEND_URL}/wallet/create_user/${userId}`;
         const createPayload = {
           applicationUserId: userId,
         };

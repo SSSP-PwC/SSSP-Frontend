@@ -270,7 +270,7 @@ export default function DynamicList() {
   const { email } = useParams();
 
   useEffect(() => {
-    fetch("http://172.20.10.2:2000/api/citizen/get-all")
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/citizen/get-all`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Error retrieving data");

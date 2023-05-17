@@ -1,7 +1,7 @@
+
+
 import React, { useEffect, useState } from "react";
-
 import { Button, H3, H4, Heading, InputField } from "govuk-react";
-
 import { Divider } from "@mui/material";
 import { Form } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
@@ -40,7 +40,7 @@ export default function PersonalProfile() {
     });
   };
   const fetchCompany = () => {
-    fetch(`https://sssp-378808.nw.r.appspot.com/api/citizen/${id}/companies`)
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/citizen/${id}/companies`)
       .then((response) => {
         if (!response.ok) {
           throw Error(response.statusText);
@@ -53,6 +53,21 @@ export default function PersonalProfile() {
       })
       .catch((error) => console.log(error));
   };
+
+  const fetchAccountDetails = () => {
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/citizen/${id}/companies`)
+      .then((response) => {
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setData(data);
+        console.log(data);
+      })
+      .catch((error) => console.log(error));
+  }
 
   const BankAccountDetails = () => {
     const navigate = useNavigate();
@@ -117,7 +132,7 @@ export default function PersonalProfile() {
   useEffect(() => {
     async function fetchCitizen() {
       const response = await fetch(
-        `https://sssp-378808.nw.r.appspot.com/api/${citizen_id}`
+        `${process.env.REACT_APP_BACKEND_URL}/${citizen_id}`
       );
       const data = await response.json();
       setCitizen(data);
@@ -125,7 +140,7 @@ export default function PersonalProfile() {
     }
     async function fetchCompanyData() {
       const response = await fetch(
-        `https://sssp-378808.nw.r.appspot.com/api/company/${citizen_id}/companies`
+        `${process.env.REACT_APP_BACKEND_URL}/company/${citizen_id}/companies`
       );
       const data = await response.json();
       if (data.message?.includes("No companies found for this citizen.")) {
@@ -139,6 +154,7 @@ export default function PersonalProfile() {
 
     fetchCitizen();
     fetchCompany();
+    fetchAccountDetails();
   }, []);
   const toggleEditing = () => {
     setEditing(!editing);

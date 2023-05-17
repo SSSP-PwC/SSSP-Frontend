@@ -82,7 +82,7 @@ import InteractivePageBuilderInterface from "./Components/FormStages/Scheme/Inte
 import { ServiceSent } from "./Components/FormStages/Scheme/ServiceAppSent";
 import DynamicList from "./Components/FormStages/Admin/DynamicList";
 import EditUserDetails from "./Components/FormStages/Citizen/DataEntry/EditUserDetails";
-
+console.log(process.env.REACT_APP_BACKEND_URL)
 export default function App() {
   const [loggedIn] = useAuth();
   return (

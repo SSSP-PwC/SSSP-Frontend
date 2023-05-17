@@ -11,7 +11,7 @@ export default function EditUserDetails() {
 
 
 
-  //
+  
   const [data, setData] = useState({
     first_name: "",
     last_name: "",
@@ -28,7 +28,7 @@ export default function EditUserDetails() {
   useEffect(() => {
     async function fetchCitizen() {
       const response = await fetch(
-        `http://172.20.10.2:2000/api/citizen/${email}`
+        `${process.env.REACT_APP_BACKEND_URL}/citizen/${email}`
       );
       const data = await response.json();
       setData(data);

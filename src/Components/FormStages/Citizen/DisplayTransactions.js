@@ -21,7 +21,7 @@ export default function DisplayTransactions() {
   const fetchData = async () => {
     try {
       const response = await fetch(
-        `https://sssp-378808.nw.r.appspot.com/api/wallet/account_transaction/${accountId}/${consentToken}`
+        `${process.env.REACT_APP_BACKEND_URL}/wallet/account_transaction/${accountId}/${consentToken}`
       );
       const data = await response.json();
       setAccountTransactions(data.data);

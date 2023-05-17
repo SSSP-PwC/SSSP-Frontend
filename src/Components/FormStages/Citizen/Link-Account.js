@@ -7,7 +7,7 @@ export default function LinkWalletAccount() {
     const { state } = useLocation();
   const institution_id = "modelo-sandbox"
   useEffect(() => {
-    fetch(`https://sssp-378808.nw.r.appspot.com/api/wallet/link-consent-to-profile/${institution_id}`, {
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/wallet/link-consent-to-profile/${institution_id}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
