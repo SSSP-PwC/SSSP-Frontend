@@ -34,12 +34,12 @@ function SiteHome() {
   useEffect(() => {
     setLoading(true);
     const getCompanies = () => {
-      fetch(`https://sssp-378808.nw.r.appspot.com/api/citizen/${id}/companies`)
+      fetch(`${process.env.REACT_APP_BACKEND_URL}/citizen/${id}/companies`)
         .then((response) => response.json())
         .then((data) => setOptions(data));
     };
     const getImage = () => {
-      fetch(`ttps://sssp-378808.nw.r.appspot.com/api/`);
+      fetch(`${process.env.REACT_APP_BACKEND_URL}/`);
     };
     getCompanies();
     setLoading(false);
@@ -88,7 +88,7 @@ function SiteHome() {
         }),
       };
       fetch(
-        `https://sssp-378808.nw.r.appspot.com/api/upload-image`,
+        `${process.env.REACT_APP_BACKEND_URL}/upload-image`,
         requestOptions
       )
         .then((res) => res.json())
@@ -112,7 +112,7 @@ function SiteHome() {
       };
 
       fetch(
-        `https://sssp-378808.nw.r.appspot.com/api/upload-image`,
+        `${process.env.REACT_APP_BACKEND_URL}/upload-image`,
         requestOptions
       )
         .then((res) => res.json())

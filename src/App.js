@@ -33,7 +33,7 @@ import { ListPortals } from "./Components/FormStages/Scheme/ListPortals";
 import { GrantApplication } from "./Components/FormStages/Scheme/GrantApplication";
 import { RegisterSchemeLandingPage } from "./Components/FormStages/Scheme/Register-Scheme-Landing-Page";
 import { SchemeTitle } from "./Components/FormStages/Scheme/Scheme-Title";
-import { RegisterNewService } from "./Components/FormStages/Scheme/RegisterService"
+import { RegisterNewService } from "./Components/FormStages/Scheme/RegisterService";
 import { RegisterExternalService } from "./Components/FormStages/Scheme/RegisterExternal";
 import { IframeComponent } from "./Components/FormStages/Scheme/IframeTest";
 import { SchemeDescription } from "./Components/FormStages/Scheme/Scheme-Description";
@@ -80,11 +80,9 @@ import EnterPortalName from "./Components/FormStages/Scheme/EnterPortalName";
 import SiteHome from "./Components/FormStages/Scheme/SiteHome";
 import InteractivePageBuilderInterface from "./Components/FormStages/Scheme/InteractivePageBuilderInterface";
 import { ServiceSent } from "./Components/FormStages/Scheme/ServiceAppSent";
-
-
-const queryParameters = new URLSearchParams(window.location.search);
-console.log(queryParameters.get("consent"));
-
+import DynamicList from "./Components/FormStages/Admin/DynamicList";
+import EditUserDetails from "./Components/FormStages/Citizen/DataEntry/EditUserDetails";
+console.log(process.env.REACT_APP_BACKEND_URL)
 export default function App() {
   const [loggedIn] = useAuth();
   return (
@@ -209,21 +207,21 @@ export default function App() {
             path="/moderate-services"
             element={
               <>
-              <GlobalStyle />
-              <div style={{ display: "flex", justifyContent: "center" }}>
-                <PhaseBanner level="POC">
-                  SSSP is currently a proof of concept{" "}
-                </PhaseBanner>
-              </div>
-              <NavbarComponent />
-              <CookieConsent
-                buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-              >
-                This website uses cookies to enhance the user experience.
-              </CookieConsent>
-              <ModerateServices />
-              <Footer />
-            </>
+                <GlobalStyle />
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                  <PhaseBanner level="POC">
+                    SSSP is currently a proof of concept{" "}
+                  </PhaseBanner>
+                </div>
+                <NavbarComponent />
+                <CookieConsent
+                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
+                >
+                  This website uses cookies to enhance the user experience.
+                </CookieConsent>
+                <ModerateServices />
+                <Footer />
+              </>
             }
           />
           <Route
@@ -327,6 +325,27 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <CallBack />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path={`/edit-user-details`}
+            element={
+              <>
+                <GlobalStyle />
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                  <PhaseBanner level="POC">
+                    SSSP is currently a proof of concept{" "}
+                  </PhaseBanner>
+                </div>
+                <NavbarComponent />
+                <CookieConsent
+                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
+                >
+                  This website uses cookies to enhance the user experience.
+                </CookieConsent>
+                <EditUserDetails />
                 <Footer />
               </>
             }
@@ -497,6 +516,28 @@ export default function App() {
                   This website uses cookies to enhance the user experience.
                 </CookieConsent>
                 <EnterCitizenPhoneNumber />
+                <Footer />
+              </>
+            }
+          />
+
+          <Route
+            path="/administrator-view"
+            element={
+              <>
+                <GlobalStyle />
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                  <PhaseBanner level="POC">
+                    SSSP is currently a proof of concept{" "}
+                  </PhaseBanner>
+                </div>
+                <NavbarComponent />
+                <CookieConsent
+                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
+                >
+                  This website uses cookies to enhance the user experience.
+                </CookieConsent>
+                <DynamicList />
                 <Footer />
               </>
             }

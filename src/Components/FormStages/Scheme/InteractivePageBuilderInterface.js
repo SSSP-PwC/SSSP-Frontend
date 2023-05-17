@@ -1119,7 +1119,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
     setIsCollapsed(isSmallScreen);
     async function fetchCitizen() {
       const response = await fetch(
-        `https://sssp-378808.nw.r.appspot.com/api/${citizen_id}`
+        `${process.env.REACT_APP_BACKEND_URL}/${citizen_id}`
       );
       const data = await response.json();
       setCitizen(data);
@@ -1129,12 +1129,12 @@ function InteractivePageBuilderInterface({ link, mode }) {
   useEffect(() => {
     setLoading(true);
     const getCompanies = () => {
-      fetch(`https://sssp-378808.nw.r.appspot.com/api/citizen/${id}/companies`)
+      fetch(`${process.env.REACT_APP_BACKEND_URL}/citizen/${id}/companies`)
         .then((response) => response.json())
         .then((data) => setOptions(data));
     };
     const getImage = () => {
-      fetch(`https://sssp-378808.nw.r.appspot.com/api/`);
+      fetch(`${process.env.REACT_APP_BACKEND_URL}/`);
     };
     getCompanies();
     setLoading(false);
@@ -1145,6 +1145,31 @@ function InteractivePageBuilderInterface({ link, mode }) {
     site_name: "",
     company_id: options,
   });
+  const createPage = async (pageData) => {
+    try {
+      const response = await fetch(
+        `https://sssp-378808.nw.r.appspot.com/api/add-page-elements/${formValues.domain}/${pageCounter}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            fields: pageData.fields,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const submit = async () => {
     let pages = [];
     let currentPage = { fields: [] };
@@ -1175,7 +1200,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
       index += 1;
       try {
         const response = await fetch(
-          `https://sssp-378808.nw.r.appspot.com/api/add-page-elements/${formValues.domain}/${index}`,
+          `${process.env.REACT_APP_BACKEND_URL}/add-page-elements/${formValues.domain}/${index}`,
           {
             method: "POST",
             headers: {

@@ -28,7 +28,7 @@ const LoginForm = () => {
       body: JSON.stringify(data)
     }
 
-    fetch('/auth/login', requestOptions)
+    fetch(process.env.REACT_APP_BACKEND_URL, requestOptions)
       .then(res => res.json())
       .then(data => {
         console.log(data.access_token)

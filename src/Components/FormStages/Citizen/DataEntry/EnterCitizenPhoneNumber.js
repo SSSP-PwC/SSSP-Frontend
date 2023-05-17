@@ -75,7 +75,7 @@ export const EnterCitizenPhoneNumber = () => {
       setErrorMessageFlag(true);
     } else {
       fetch(
-        `https://sssp-378808.nw.r.appspot.com/api/validate-phone-number/${value}/${countryCode}`,
+        `https://pg-uk-n-app-765081.nw.r.appspot.com/api/validate-phone-number/${value}/${countryCode}`,
         {
           method: "GET",
         }
@@ -88,7 +88,7 @@ export const EnterCitizenPhoneNumber = () => {
         })
         .then((data) => {
           if (data.message === "Phone number is valid") {
-            fetch(`https://sssp-378808.nw.r.appspot.com/api/send-otp/${value}`, {
+            fetch(`https://pg-uk-n-app-765081.nw.r.appspot.com/api/send-otp/${value}`, {
               method: "POST",
             })
               .then((response) => {
@@ -120,7 +120,7 @@ export const EnterCitizenPhoneNumber = () => {
   };
   const submit = () => {
     fetch(
-      `https://sssp-378808.nw.r.appspot.com/api/verify-otp-sign-up/${data.verification_code}/${value}`,
+      `${process.env.REACT_APP_BACKEND_URL}/verify-otp-sign-up/${data.verification_code}/${value}`,
       {
         method: "POST",
       }

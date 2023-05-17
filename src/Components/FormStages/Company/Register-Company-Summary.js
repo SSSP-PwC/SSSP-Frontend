@@ -40,7 +40,7 @@ export const RegisterCompanySummary = () => {
   };
   const submit = async () => {
     setLoading(true);
-    const url = "https://sssp-378808.nw.r.appspot.com/api/create-company";
+    const url = `${process.env.REACT_APP_BACKEND_URL}/create-company`;
     const data = {
       company: {
         company_name: state.company.company_name,

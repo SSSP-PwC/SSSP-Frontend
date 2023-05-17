@@ -108,12 +108,12 @@ export default function Services() {
     setSelectedOption(id);
 
     const userResponse = await fetch(
-      `https://sssp-378808.nw.r.appspot.com/api/citizen/${loggedInUserId}`
+      `https://pg-uk-n-app-765081.nw.r.appspot.com/api/citizen/${loggedInUserId}`
     );
     const userData = await userResponse.json();
     const email = userData.email;
 
-    const authUrl = `https://sssp-378808.nw.r.appspot.com/api/wallet/auth/${email}/${id}`;
+    const authUrl = `https://pg-uk-n-app-765081.nw.r.appspot.com/api/wallet/auth/${email}/${id}`;
 
     const authResponse = await fetch(authUrl, {
       method: "POST",
@@ -124,13 +124,13 @@ export default function Services() {
 
     if (authResponse.status === 404) {
       const checkUserResponse = await fetch(
-        `https://sssp-378808.nw.r.appspot.com/api/wallet/user_exists/${email}`
+        `https://pg-uk-n-app-765081.nw.r.appspot.com/api/wallet/user_exists/${email}`
       );
       const checkUserData = await checkUserResponse.json();
 
       if (!checkUserData.exists) {
         const createUrl =
-          "https://sssp-378808.nw.r.appspot.com/api/wallet/create_user";
+          "https://pg-uk-n-app-765081.nw.r.appspot.com/api/wallet/create_user";
         const createOptions = {
           method: "POST",
           headers: {
@@ -164,7 +164,7 @@ export default function Services() {
   }
 
   useEffect(() => {
-    fetch("https://sssp-378808.nw.r.appspot.com/api/portals")
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/portals`)
       .then((response) => response.json())
       .then((data) => setData(data), setLoaded(true));
   }, []);
@@ -172,7 +172,7 @@ export default function Services() {
   useEffect(() => {
     async function fetchData() {
       const resp = await fetch(
-        `https://sssp-378808.nw.r.appspot.com/api/wallet/get_institutions`,
+        `${process.env.REACT_APP_BACKEND_URL}/wallet/get_institutions`,
         {
           method: "GET",
         }

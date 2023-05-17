@@ -87,7 +87,7 @@ function DynamicPage() {
   async function fetchData() {
     setLoading(true);
     const response = await fetch(
-      `https://sssp-378808.nw.r.appspot.com/api/portals/${endpoint}/pages/${pageId}`
+      `${process.env.REACT_APP_BACKEND_URL}/portals/${endpoint}/pages/${pageId}`
     );
     const info = await response.json();
     console.log(info);

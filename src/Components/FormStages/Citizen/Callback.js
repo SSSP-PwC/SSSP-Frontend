@@ -13,7 +13,7 @@ export default function CallBack() {
   useEffect(() => {
     async function fetchData() {
       const resp = await fetch(
-        `https://sssp-378808.nw.r.appspot.com/api/wallet/accounts/${consent}`,
+        `${process.env.REACT_APP_BACKEND_URL}/wallet/accounts/${consent}`,
         {
           method: "GET",
         }

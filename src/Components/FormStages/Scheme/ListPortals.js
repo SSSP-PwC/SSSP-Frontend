@@ -78,7 +78,7 @@ export const ListPortals = () => {
     );
   }
   useEffect(() => {
-    fetch("https://sssp-378808.nw.r.appspot.com/api/portals")
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/portals`)
       .then((response) => response.json())
       .then((data) => setData(data), setLoaded(true));
   }, []);

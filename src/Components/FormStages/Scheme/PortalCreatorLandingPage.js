@@ -25,7 +25,7 @@ const PortalCreatorLandingPage = () => {
   const [error, setError] = useState(false);
   useEffect(() => {
     setLoading(true);
-    fetch(`https://sssp-378808.nw.r.appspot.com/api/citizen/${id}/companies`)
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/citizen/${id}/companies`)
       .then((response) => response.json())
       .then((data) => {
         if (data?.message?.includes("No companies found for this citizen.")) {

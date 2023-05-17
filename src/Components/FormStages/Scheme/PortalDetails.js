@@ -16,7 +16,7 @@ export const PortalDetails = ({ endpoint }) => {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    fetch(`https://sssp-378808.nw.r.appspot.com/api/portals/${endpoint}`)
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/portals/${endpoint}`)
       .then((response) => response.json())
       .then((data) => setScheme(data), setLoaded(true));
   }, [endpoint]);

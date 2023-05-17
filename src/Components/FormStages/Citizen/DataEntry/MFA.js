@@ -67,7 +67,7 @@ radioButtons.forEach((radioButton) => {
     };
 
     fetch(
-      `https://sssp-378808.nw.r.appspot.com/api/google-auth-verify/${state.email}/${token}/${data?.verification_code}`,
+      `${process.env.REACT_APP_BACKEND_URL}/google-auth-verify/${state.email}/${token}/${data?.verification_code}`,
       requestOptions
     )
       .then((res) => res.json())
@@ -106,7 +106,7 @@ radioButtons.forEach((radioButton) => {
 
     if (data?.verification_code.length === 6) {
       fetch(
-        `https://sssp-378808.nw.r.appspot.com/api/verify-email-otp/${state.email}/${data?.verification_code}`,
+        `${process.env.REACT_APP_BACKEND_URL}/verify-email-otp/${state.email}/${data?.verification_code}`,
         requestOptions
       )
         .then((res) => res.json())
@@ -137,7 +137,7 @@ radioButtons.forEach((radioButton) => {
       },
     };
     fetch(
-      `https://sssp-378808.nw.r.appspot.com/api/get-phone-number/${state.email}`,
+      `${process.env.REACT_APP_BACKEND_URL}/get-phone-number/${state.email}`,
       requestOptionsOne
     )
       .then((res) => res.json())
@@ -150,7 +150,7 @@ radioButtons.forEach((radioButton) => {
         };
 
         fetch(
-          `https://sssp-378808.nw.r.appspot.com/api/verify-phone-otp/${data?.verification_code}/${response.phone_number}`,
+          `${process.env.REACT_APP_BACKEND_URL}/verify-phone-otp/${data?.verification_code}/${response.phone_number}`,
           requestOptionsTwo
         )
           .then((res) => res.json())
@@ -193,7 +193,7 @@ radioButtons.forEach((radioButton) => {
         mfa_preference: "phone",
       }),
     };
-    fetch(`https://sssp-378808.nw.r.appspot.com/api/login`, requestOptions)
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/login`, requestOptions)
       .then((res) => res.json())
       .then((data) => {
         setLoading(false);
@@ -267,7 +267,7 @@ radioButtons.forEach((radioButton) => {
       setErrorMessageCause("Password");
       setErrorMessageFlag(true);
     } else {
-      fetch("https://sssp-378808.nw.r.appspot.com/api/login", requestOptions)
+      fetch(`${process.env.REACT_APP_BACKEND_URL}/login`, requestOptions)
         .then((res) => res.json())
         .then((data) => {
           setLoading(false);
@@ -337,7 +337,7 @@ radioButtons.forEach((radioButton) => {
       setErrorMessageCause("Password");
       setErrorMessageFlag(true);
     } else {
-      fetch("https://sssp-378808.nw.r.appspot.com/api/login", requestOptions)
+      fetch(`${process.env.REACT_APP_BACKEND_URL}/login`, requestOptions)
         .then((res) => res.json())
         .then((data) => {
           if (
@@ -355,7 +355,7 @@ radioButtons.forEach((radioButton) => {
               },
             };
             fetch(
-              `https://sssp-378808.nw.r.appspot.com/api/obtain-secret-key/${state.email}`,
+              `${process.env.REACT_APP_BACKEND_URL}/obtain-secret-key/${state.email}`,
               requestOptionsTwo
             )
               .then((res) => res.json())

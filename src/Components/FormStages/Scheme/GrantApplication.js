@@ -62,7 +62,7 @@ export const GrantApplication = () => {
     setRenderStageThree(true);
   };
   const submit = async () => {
-    const url = "http://127.0.0.1:9000/api/application-form";
+    const url = `${process.env.REACT_APP_BACKEND_URL}/application-form`;
     const data = {
       building_postal_address: postalAddress,
       legal_owner: legalOwner,

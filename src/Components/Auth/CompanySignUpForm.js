@@ -53,7 +53,7 @@ export const CompanySignUpForm = () => {
             }
 
 
-            fetch('http://127.0.0.1:5000/auth/signup', requestOptions)
+            fetch(process.env.REACT_APP_BACKEND_URL, requestOptions)
                 .then(res => res.json())
                 .then(data => {
                     console.log(data)
