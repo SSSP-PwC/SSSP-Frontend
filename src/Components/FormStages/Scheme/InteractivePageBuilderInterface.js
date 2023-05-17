@@ -18,8 +18,6 @@ import {
 } from "govuk-react";
 import Select from "@mui/material/Select";
 import dayjs from "dayjs";
-import { useDispatch } from "react-redux";
-
 import FormControl from "@mui/material/FormControl";
 import { Container, Form } from "react-bootstrap";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
@@ -30,7 +28,6 @@ import AutoStoriesIcon from "@mui/icons-material/AutoStories";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import "react-image-crop/dist/ReactCrop.css";
 import React, { useContext } from "react";
-import { useMediaQuery } from "@mui/material";
 import { TbLayoutNavbar } from "react-icons/tb";
 import { BiDockBottom } from "react-icons/bi";
 import Nav from "react-bootstrap/Nav";
@@ -43,8 +40,6 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import InputLabel from "@mui/material/InputLabel";
 import styled from "styled-components";
-import Carousel from "react-bootstrap/Carousel";
-
 import { List, ListItem, ListItemIcon, ListItemText } from "@mui/material";
 import {
   ArrowDropDownCircleOutlined,
@@ -57,12 +52,9 @@ import {
   RadioButtonChecked,
   SmartButtonOutlined,
   SmartToyOutlined,
-  Style,
-  TableRowsOutlined,
   TableViewOutlined,
   TitleOutlined,
   ToggleOnOutlined,
-  ViewColumnOutlined,
   WysiwygOutlined,
 } from "@mui/icons-material";
 import "react-pro-sidebar/dist/css/styles.css";
@@ -71,10 +63,6 @@ import { AddCircleOutlineOutlined } from "@mui/icons-material";
 import ReCAPTCHA from "react-google-recaptcha";
 import PhoneInput from "react-phone-input-2";
 import { HexColorPicker } from "react-colorful";
-import { style } from "@mui/system";
-import Table from "./Table";
-import { v4 as uuidv4 } from "uuid";
-
 import {
   withValidator,
   required,
@@ -87,15 +75,14 @@ import {
 } from "react-constraint-validation";
 import { ErrorMessage, Field, Formik } from "formik";
 import { notify } from "reapop";
-
 const TextFieldValidation = withValidator({ required, minLength, maxLength })(
-  Field
+  Field//validation for input field component
 );
 const NumberFieldValidation = withValidator(
   { required, min, max },
-  { number }
+  { number }//validation for input field component
 )(Field);
-const EmailFieldValidation = withValidator({ required }, { email })(Field);
+const EmailFieldValidation = withValidator({ required }, { email })(Field);//validation for input field component
 
 function InteractivePageBuilderInterface({ link, mode }) {
   const [theme, colorMode] = useMode();
@@ -106,9 +93,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const id = sessionStorage.getItem("Citizen_ID");
   const [show, setShow] = useState(false); //used for config modal when adding components
   const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
   const [loading, setLoading] = useState();
-  const [color, setColor] = useState("#bf4040");
   const [selectedFile, setSelectedFile] = useState();
   const [title, setTitle] = useState("Upload your site icon here");
   const [label, setLabel] = useState("Click here to upload your icon");
@@ -117,7 +102,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const [sidebar, setSideBar] = useState(false);
   const [imageSource, setImageSource] = useState();
   const handleCloseImagePopup = () => setImagePopup(false);
-  const [inputColumns, setNumberOfColumns] = useState(0);
   const [pageLink, setPageLink] = useState();
   const [showForm, setShowForm] = useState(false);
   const [numberOfElements, setNumberOfElements] = useState(0); //use as index when out of scope
@@ -128,14 +112,10 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const [deleteIndex, setDeleteIndex] = useState(0);
   const [checked, setChecked] = useState(false);
   const [rooms, setRooms] = useState(0);
-  const [published, setPublished] = useState(false);
   const [checkinDate, setCheckinDate] = useState();
   const [checkoutDate, setCheckoutDate] = useState();
-  const [currentTemplate, setCurrentTemplate] = useState(null);
   const [pageBackgrounds, setPageBackgrounds] = useState([]);
-  const [pageBackgroundIndex, setPageBackgroundIndex] = useState();
   const [tableData, setTableData] = useState([]);
-  const memoizedData = useMemo(() => tableData, [tableData]);
   const [isOpen, setIsOpen] = useState(false);
   const [dataUrl, setDataUrl] = useState('');
   const [values, setValues] = useState([]);
@@ -144,7 +124,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const [constraintValues, setConstraintValues] = useState(
     Array(values.length).fill("")
   );
-
   const [homepageHospitalityComponent, setHomepageHospitalityComponent] =
     useState([]);
   const [guests, setGuests] = useState();
@@ -153,93 +132,58 @@ function InteractivePageBuilderInterface({ link, mode }) {
     "Home Page - Transport": [],
   });
   const openModal = () => {
-    setIsOpen(true);
+    setIsOpen(true); //config modal, opens when component is added
   };
   const closeModal = (event) => {
-    event.stopPropagation();
+    event.stopPropagation();//closes config modal
     setIsOpen(false);
   };
-  const [formData, setFormData] = useState("");
-
-  const [options, setOptions] = useState();
+  const [formData, setFormData] = useState("");//used to update data of fields that will be rendered
+  const [options, setOptions] = useState(); //selected company
   const constraintsList = ["Required", "Min Max", "Length", "Pattern"];
-
   const isSmallScreen = false;
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [labelValue, setLabelValue] = useState([]);
-  const [buttonConfiguration, setButtonConfiguration] = useState(false);
-  const [configuration, setConfiguration] = useState("");
-  const [selectedValues, setSelectedValues] = useState(
-    Array(values.length).fill("")
-  );
-
+  const [labelValue, setLabelValue] = useState([]); //IMPORTANT, labelvalue[index] is what will be displayed in pagebuilder mode
+  const [configuration, setConfiguration] = useState("");//different config options are offered based on type of element. Config is opened when the element is added
+  const [selectedValues, setSelectedValues] = useState(Array(values.length).fill(""));
   const [searchText, setSearchText] = useState("");
   const [selected, setSelected] = useState(undefined);
-  const [data, setData] = useState(selected);
-  const [page, setPage] = useState([
-    {
-      id: 1,
-      fields: [{}],
-    },
-  ]);
+  const [page, setPage] = useState([ {id: 1,fields: [{}],},]);
   const [inputType, setInputType] = useState(numberOfElements);
-
-  const sizeOptions = [
-    { value: "SMALL", label: "Small" },
-    { value: "MEDIUM", label: "Medium" },
-    { value: "LARGE", label: "Large" },
-  ];
-  const [isEditing, setIsEditing] = useState([]);
-  const [text, setText] = useState("Hello");
-  const [selectedOptionHeading, setSelectedOptionHeading] = useState([]);
-  const [selectedFontSize, setSelectedFontSize] = useState([]);
-  const [componentColors, setComponentColors] = useState([]);
-  const [componentBackgroundColors, setComponentBackgroundColors] = useState([]);
-  const [componentWidths, setComponentWidths] = useState([]);
-  const [componentHeights, setComponentHeights] = useState([]);
-  const [componentPositions, setComponentPositions] = useState([]);
-  const [componentTops, setComponentTops] = useState([]);
-  const [componentPercentages, setComponentPercentages] = useState([]);
-  const [componentPercentagesVertical, setComponentPercentagesVertical] = useState([]);
-  const [componentPixelsVertical, setComponentPixelsVertical] = useState([]);
-  const [componentStyle, setComponentStyle] = useState([]);
-  const [componentBottoms, setComponentBottoms] = useState([]);
-  const [componentRights, setComponentRights] = useState([]);
-  const [componentLefts, setComponentLefts] = useState([]);
-  const [recentlyDeleted, setRecentlyDeleted] = useState(false);
-  const [showButtons, setShowButtons] = useState(false);
-  const [minMaxFields, setMinMaxField] = useState(false);
-  const [min, setMin] = useState(0);
-  const [length, setLength] = useState(0);
+  const [isEditing, setIsEditing] = useState([]);//this tracks whether an individual element is being added (not whether page is in edit mode)
+  const [text, setText] = useState("Hello"); //temp variable used to track user input in text fields
+  const [selectedOptionHeading, setSelectedOptionHeading] = useState([]); //array that stores selected heading size at each index
+  const [selectedFontSize, setSelectedFontSize] = useState([]); //array that stores selected font size at each index, used for bodies
+  const [componentColors, setComponentColors] = useState([]);//array that stores chosen color for components at each index
+  const [componentBackgroundColors, setComponentBackgroundColors] = useState([]);//array that stores chosen background color for components at each index
+  const [componentWidths, setComponentWidths] = useState([]);//array that stores chosen width in px for components at each index
+  const [componentHeights, setComponentHeights] = useState([]);//array that stores chosen height in px for components at each index
+  const [componentPercentages, setComponentPercentages] = useState([]);//stores horizontal position in %. 0 = flush left 100 = flush right
+  const [componentPercentagesVertical, setComponentPercentagesVertical] = useState([]);//stores vertical position in %. 0 = original position 100 = bottom of page. Use -% to move component up further
+  const [componentPixelsVertical, setComponentPixelsVertical] = useState([]);//stores the amount of pixels to move the component by
+  const [showButtons, setShowButtons] = useState(false);//Shows editing symbols after edit page button is clicked
+  const [minMaxFields, setMinMaxField] = useState(false);//user provided constraint on input fields
+  const [min, setMin] = useState(0);//user provided constraint on input fields
+  const [length, setLength] = useState(0);//user provided constraint on input fields
   const [errorMessage, setErrorMessage] = useState("");
-  const [grandparentHeight, setGrandparentHeight] = useState(0);
+  const [grandparentHeight, setGrandparentHeight] = useState(0); //contains height of the container div of pagebuilder
 
   const updateGrandparentHeight = () => {
-    console.log(numberOfElements)
-    setGrandparentHeight((numberOfElements*35));
+    setGrandparentHeight((numberOfElements*35));//35 pixels is used as it is the average height per component
   };
 
   const handlePercentageChangePix = (index, value) => {
-    const pixels = (grandparentHeight * value) / 100;
+    const pixels = (grandparentHeight * value) / 100; //total estimated height of container used with percentage provided by user to determine vertical height in pixels
     const topPosition = value === 0 ? grandparentHeight - pixels: pixels;
     componentPixelsVertical[index] = topPosition;
   };
-
   const [max, setMax] = useState(0);
   const inputRef = useRef(null);
   const imageUploadOptions = [
     "Upload Image through File System",
     "Upload Image via URL",
-  ];
-
-  const columns = [
-    {
-      Header: "Title",
-      accessor: "Title",
-    },
-  ];
-  const [newcolumns, setColumns] = useState(columns);
+  ];//used when adding an image component
 
   const handleEditPage = () => {
     setShowButtons(true);
@@ -263,10 +207,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
   const onImageChange = (e) => {
     setImage((prevImage) => [...prevImage, ...e.target.files]);
   };
-  const handlePageIncrement = () => {
-    const pageNumber = pageCounter++;
-    setPageLink(pageNumber);
-  };
 
   const onImageURLChange = (e) => {
     setImageURL((prevImageURL) => [...prevImageURL, e.target.value]);
@@ -285,7 +225,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
     }
   });
 
-  function NavbarEditor(props) {
+  function NavbarEditor(props) {//displayed when edit icon of a navbar is clicked on
     const index = props.ind;
     return (
       <div
@@ -322,9 +262,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
           type="text"
           value={text}
           onChange={(event) =>
-            recentlyDeleted
-              ? handleTextChangeDeleted(event, index)
-              : handleTextChange(event, index)
+           handleTextChange(event, index)
           }
         />
         <label
@@ -381,25 +319,8 @@ function InteractivePageBuilderInterface({ link, mode }) {
       </div>
     );
   }
-  const handleNewRowClick = () => {
-    setTableData([{}, ...tableData]);
-  };
-  const handleRemoveRowClick = (id) => {
-    const updatedTableData = [...tableData];
-    updatedTableData.splice(id, 1);
-    setTableData(updatedTableData);
-  };
-  const handleNewColumnClick = () => {
-    var oh = [...newcolumns];
-    const id = uuidv4();
-    oh.push({
-      Header: "Value" + inputColumns,
-      accessor: "Value" + inputColumns,
-    });
-    setColumns(oh);
-  };
 
-  const handleElementClick = (index) => {
+  const handleElementClick = (index) => {//called when an editing icon is clicked
     setIsEditing((prevValues) => {
       const newValues = [...prevValues];
       newValues[index] = true;
@@ -408,7 +329,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
     setText(labelValue[index]);
   };
 
-  const handleElementClickTemplate = (templateText, index) => {
+  const handleElementClickTemplate = (templateText, index) => {//called when an editing icon is clicked on a template
     setIsEditing((prevValues) => {
       const newValues = [...prevValues];
       newValues[index] = true;
@@ -423,24 +344,14 @@ function InteractivePageBuilderInterface({ link, mode }) {
       return newValues;
     });
   };
-
-  const handleStyleChange = (style, index) => {
-    setComponentStyle((prevValues) => {
-      const newValues = [...prevValues];
-      newValues[index] = style;
-      return newValues;
-    });
-  };
-
-  const handleSelectFontChange = (size, index) => {
+  const handleSelectFontChange = (size, index) => {//used in body components when font size is changed
     setSelectedFontSize((prevValues) => {
       const newValues = [...prevValues];
       newValues[index] = size;
       return newValues;
     });
   };
-
-  const handleClickOutside = (index) => {
+  const handleClickOutside = (index) => {//closes editing pop up when 'save changes' button is clicked
     setIsEditing((prevValues) => {
       const newValues = [...prevValues];
       newValues[index] = false;
@@ -453,15 +364,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
     setLabelValue((prevValues) => {
       const newValues = [...prevValues];
       newValues[index] = event.target.value;
-      return newValues;
-    });
-  };
-
-  const handleTextChangeDeleted = (event, index) => {
-    setText(event.target.value);
-    setLabelValue((prevValues) => {
-      const newValues = [...prevValues];
-      newValues[index + 1] = event.target.value;
       return newValues;
     });
   };
@@ -1273,30 +1175,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
     getCompanies();
     setLoading(false);
   }, [id]);
-  const updateColumns = (e) => {
-    var oh = [...newcolumns];
-    if (newcolumns.length >= e.target.value) {
-      setColumns([]);
-      setNumberOfColumns(0);
-    } else {
-      for (let i = 0; i < e.target.value; i++) {
-        const id = uuidv4();
-        oh.push({
-          Header: "Value" + i,
-          accessor: "Value" + i,
-        });
-
-        setColumns(oh);
-      }
-    }
-    setNumberOfColumns(oh.length);
-  };
-
-  const updateRows = (e) => {
-    setTableData([{}, e.target.value]);
-    for (let i = 0; i < e.target.value; i++) {
-    }
-  };
 
   const [formValues, setFormValues] = useState({
     domain: urlParams.get("domain"),
@@ -1345,7 +1223,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
           parent_style: [{ color:componentColors[index], backgroundColor: componentBackgroundColors[index], height: componentHeights[index], width: componentWidths[index],  
             position: componentPercentages[index] !== undefined || componentPercentagesVertical[index] !== undefined  ? 'absolute' : 'static',
             left: componentPercentages[index] !== undefined ? `${componentPercentages[index]}%` : 'auto',
-            top: componentPixelsVertical[index] ? `${(componentPixelsVertical[index] * numberOfElements)}px` : 'auto',}],
+            top: componentPixelsVertical[index] ? `${(componentPixelsVertical[index] * numberOfElements)}px` : 'auto',}],fontSize: selectedFontSize[index],
           input_style: field.input_style,
           type: field.type,
           image_source: imageURL,
@@ -1530,12 +1408,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
     setComponentHeights(newComponentHeights);
   };
 
-  const handlePositionChange = (newPosition, index) => {
-    const newComponentPositions = [...componentPositions];
-    newComponentPositions[index] = newPosition;
-    setComponentPositions(newComponentPositions);
-  };
-
   const handlePercentageChange = (newPercentage, index) => {
     const newComponentPercentages = [...componentPercentages];
     newComponentPercentages[index] = newPercentage;
@@ -1550,29 +1422,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
     handlePercentageChangePix(index, newPercentage);
   };
 
-  const handleTopChange = (event, index) => {
-    const newComponentPositions = [...componentPositions];
-    newComponentPositions[index] = event.target.value;
-    setComponentTops(newComponentPositions);
-  };
-
-  const handleBottomChange = (event, index) => {
-    const newComponentPositions = [...componentPositions];
-    newComponentPositions[index] = event.target.value;
-    setComponentBottoms(newComponentPositions);
-  };
-
-  const handleRightChange = (event, index) => {
-    const newComponentPositions = [...componentPositions];
-    newComponentPositions[index] = event.target.value;
-    setComponentRights(newComponentPositions);
-  };
-
-  const handleLeftChange = (event, index) => {
-    const newComponentPositions = [...componentPositions];
-    newComponentPositions[index] = event.target.value;
-    setComponentLefts(newComponentPositions);
-  };
 
   const RenderForm = () => {
     const backgroundImage =
@@ -2342,7 +2191,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
 
               case "Raised Button":
                 formField = (
-                  <div style={{position:'relative', width: '90%'}}>
+                  <div style={{position:'relative', width: '100%'}}>
                     {isEditing[index] ? (
                       <div
                         ref={inputRef}
@@ -3566,6 +3415,27 @@ function InteractivePageBuilderInterface({ link, mode }) {
                           onChange={(event) => handleTextChange(event, index)}
                         />
                         <label
+                                htmlFor="fontsize"
+                                style={{
+                                  color: "#888",
+                                  fontStyle: "italic",
+                                  paddingLeft: "5px",
+                                  marginRight: "5px",
+                                  marginBottom: "40px",
+                                }}
+                              >
+                                Font Size
+                              </label>
+                              <select
+                               id="fontsize"
+                               value={selectedFontSize[index]}
+                               onChange={(event) => handleSelectFontChange(event.target.value, index)}
+                              >
+                               <option value="20px">20 px</option>
+                               <option value="30px">30 px</option>
+                               <option value="40px">40 px</option>
+                              </select>
+                        <label
                           htmlFor="horizontal-position"
                           style={{
                             color: "#888",
@@ -3642,6 +3512,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                         <label
                           style={{ position: componentPercentages[index] !== undefined || componentPercentagesVertical[index] !== undefined  ? 'absolute' : 'static',
                           left: componentPercentages[index] !== undefined ? `${componentPercentages[index]}%` : 'auto',
+                          fontSize: selectedFontSize[index],
                           top: componentPixelsVertical[index] ? `${(componentPixelsVertical[index] * numberOfElements)}px` : 'auto', }}
                           input={{
                             type: "text",
@@ -3838,7 +3709,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
                           <IoIosCreate
                             style={{ transform: "scale(2)" }}
                             onClick={() => handleElementClick(index)}
-                          />
+                          /> 
                         )}
                         <br></br>
                       </div>
@@ -4540,76 +4411,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   </div>
                 );
                 break;
-              case "Table":
-                formField = (
-                  <div>
-                    {isEditing[index] ? (
-                      <div
-                        ref={inputRef}
-                        style={{
-                          position: "relative",
-                          display: "inline-block",
-                          borderRadius: "8px",
-                          overflow: "hidden",
-                          boxShadow: "0 0 10px rgba(0, 0, 0, 0.2",
-                          transition: "transform 0.3s ease-in-out",
-                          marginTop: "10px",
-                        }}
-                      >
-                        <h3 style={{ padding: "10px", paddingBottom: "5px" }}>
-                          Edit Table
-                        </h3>
-                        <button
-                          style={{
-                            backgroundColor: "#528AAE",
-                            color: "white",
-                            borderRadius: "4px",
-                            display: "block",
-                            position: "absolute",
-                            bottom: "5px",
-                            right: "10px",
-                          }}
-                          onClick={() => handleClickOutside(index)}
-                        >
-                          Save Changes
-                        </button>
-                        <button
-                          style={{
-                            backgroundColor: "red",
-                            color: "white",
-                            borderRadius: "4px",
-                            display: "block",
-                            position: "absolute",
-                            bottom: "5px",
-                            left: "10px",
-                          }}
-                          onClick={() => handleRemoveField(index)}
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    ) : (
-                      <div key={index}>
-                        <Style>
-                          <Table
-                            id={index}
-                            columns={newcolumns}
-                            data={memoizedData}
-                            updatedData={updatedData}
-                          />
-                        </Style>
-                        <br></br>
-                        {showButtons && (
-                          <IoIosCreate
-                            style={{ transform: "scale(2)" }}
-                            onClick={() => handleElementClick(index)}
-                          />
-                        )}
-                      </div>
-                    )}
-                  </div>
-                );
-                break;
               case "Drop-down":
                 formField = (
                   <div key={index}>
@@ -5180,34 +4981,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                   />
                 </div>
               )}
-              {configuration === "Table" && (
-                <div>
-                  <Divider>Table Details</Divider>
-                  <Label>Specs</Label>
-                  <br></br>
-                  <center>
-                    <div>
-                      <InputField
-                        style={{ maxWidth: "100px", float: "left" }}
-                        onChange={(e) => updateRows(e)}
-                        input={{
-                          name: "rows",
-                          required: true,
-                        }}
-                      >
-                        <center>Row(s)</center>
-                      </InputField>
-
-                      <InputField
-                        style={{ maxWidth: "100px", float: "right" }}
-                        onChange={(e) => updateColumns(e)}
-                      >
-                        <center>Column(s)</center>
-                      </InputField>
-                    </div>
-                  </center>
-                </div>
-              )}
               {configuration === "Template" && (
                 <div>
                   <Divider>General Details</Divider>
@@ -5709,26 +5482,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
                                       key={"Table"}
                                       selected={selected === "Table"}
                                       onClick={() => handleAddField("Table")}
-                                    />
-                                  </ListItem>
-                                  <ListItem button>
-                                    <ListItemIcon style={{ color: "white" }}>
-                                      <TableRowsOutlined />
-                                    </ListItemIcon>
-
-                                    <ListItemText
-                                      primary={"Add Row"}
-                                      onClick={handleNewRowClick}
-                                    />
-                                  </ListItem>
-                                  <ListItem button>
-                                    <ListItemIcon style={{ color: "white" }}>
-                                      <ViewColumnOutlined />
-                                    </ListItemIcon>
-
-                                    <ListItemText
-                                      primary={"Add Column"}
-                                      onClick={handleNewColumnClick}
                                     />
                                   </ListItem>
                                 </SubMenu>
