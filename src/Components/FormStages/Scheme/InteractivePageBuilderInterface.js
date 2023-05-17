@@ -187,7 +187,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
 
   const handleEditPage = () => {
     setShowButtons(true);
-  };
+  };//global variable that shows edit symbols on ALL elements
   const handleCheckinDateChange = (date) => {
     setCheckinDate(date);
   };
@@ -203,7 +203,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
 
   const handleDoneEditing = () => {
     setShowButtons(false);
-  };
+  };//stop showing editing symbols
   const onImageChange = (e) => {
     setImage((prevImage) => [...prevImage, ...e.target.files]);
   };
@@ -337,7 +337,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
     });
     setText(templateText);
   };
-  const handleSelectChange = (size, index) => {
+  const handleSelectChange = (size, index) => {//heading size selector. Within header editing popup
     setSelectedOptionHeading((prevValues) => {
       const newValues = [...prevValues];
       newValues[index] = size;
@@ -359,7 +359,7 @@ function InteractivePageBuilderInterface({ link, mode }) {
     });
   };
 
-  const handleTextChange = (event, index) => {
+  const handleTextChange = (event, index) => {//update temoporary text variable
     setText(event.target.value);
     setLabelValue((prevValues) => {
       const newValues = [...prevValues];
@@ -367,11 +367,9 @@ function InteractivePageBuilderInterface({ link, mode }) {
       return newValues;
     });
   };
-
   const handleSwitch = (checked) => {
     setChecked(checked);
   };
-
   const citizen_id = sessionStorage.getItem("Citizen_ID");
   const updateData = (event, property, fieldIndex) => {
     setSelectedValue(event.target?.value);
@@ -379,14 +377,14 @@ function InteractivePageBuilderInterface({ link, mode }) {
     const currentPageFields = currentPage.fields ? [...currentPage.fields] : [];
     for (let i = currentPageFields.length - 1; i >= 0; i--) {
       if (currentPageFields[i] === undefined) {
-        currentPageFields.splice(i, 1);
+        currentPageFields.splice(i, 1); 
         setNumberOfElements((prevState) => prevState - 1);
-      }
+      }//remove undefined fields to prevent index errors
     }
     for (let i = currentPageFields.length - 1; i >= 0; i--) {
       if (currentPageFields[i] && currentPageFields[i].label) {
         currentPageFields.splice(i, 1);
-      }
+      }//prevents bug where labels of elements were being considered elements on their own, causing each element to add two items to the array
     }
     const field = currentPageFields[fieldIndex];
     let updatedField = { ...field };
@@ -1080,40 +1078,6 @@ function InteractivePageBuilderInterface({ link, mode }) {
       icon: <DynamicFormOutlined />,
     },
   ];
-  const Style = styled.div`
-    padding: 1rem;
-
-    table {
-      border-spacing: 0;
-      border: 1px solid black;
-
-      tr {
-        :last-child {
-          td {
-            border-bottom: 0;
-          }
-        }
-      }
-
-      th,
-      td {
-        margin: 0;
-        padding: 0.5rem;
-        border-bottom: 1px solid black;
-        border-right: 1px solid black;
-
-        :last-child {
-          border-right: 0;
-        }
-        input {
-          font-size: 1rem;
-          padding: 0;
-          margin: 0;
-          border: 0;
-        }
-      }
-    }
-  `;
   const componentList = [
     { name: "Header", icon: <AddCircleOutlineOutlined /> },
     { name: "Button", icon: <AddCircleOutlineOutlined /> },
