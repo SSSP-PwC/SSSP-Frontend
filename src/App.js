@@ -69,7 +69,7 @@ export default function App() {
         <div style={{ display: "flex", justifyContent: "center" }}>
           {" "}
           <PhaseBanner level="POC">
-            SSSP is currently a proof of concept –{" "}
+            SSSP is currently a proof of concept –-- TEST PUSH - hello!{" "}
             <Link href="https://example.com">find out what that means</Link>
           </PhaseBanner>{" "}
         </div>
