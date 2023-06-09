@@ -1,7 +1,7 @@
 import { Divider } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import useCollapse from "react-collapsed";
+import useCollapse from "react-collapse";
 import { Form } from "react-bootstrap";
 import { BarLoader } from "react-spinners";
 import { Panel, PhaseBanner } from "govuk-react";

@@ -6,7 +6,7 @@ import { MainHeading } from "../../../globalStyles";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { Divider } from "@mui/material";
-import useCollapse from "react-collapsed";
+import useCollapse from "react-collapse";
 
 export const SchemeSummary = () => {
   const {

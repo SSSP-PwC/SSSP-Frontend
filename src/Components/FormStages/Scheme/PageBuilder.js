@@ -14,7 +14,6 @@ import React, { useState } from "react";
 import { Tab, Tabs } from "react-bootstrap";
 import { MainHeading } from "../../../globalStyles";
 import { useNavigate } from "react-router-dom";
-import Image from "material-ui-image";
 
 const PageBuilder = () => {
   const [pageElements, setPageElements] = useState([]);
