@@ -1,10 +1,6 @@
 import "./App.css";
-import { NavbarComponent } from "./Components/Navbar/NavbarComponent";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { HomePage } from "./Pages/HomePage";
-import GlobalStyle from "./globalStyles";
-import Footer from "./Components/Footer/Footer";
-import CookieConsent from "react-cookie-consent";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { AssociateContact } from "./Components/FormStages/Company/AssociateContact";
 import { LinkAccount } from "./Components/FormStages/Company/LinkAccount";
@@ -44,7 +40,6 @@ import { SchemeEligibilityCriteria } from "./Components/FormStages/Scheme/Scheme
 import { SchemeApplicationDetails } from "./Components/FormStages/Scheme/Scheme-Application-Details";
 import { SchemePublisherDetails } from "./Components/FormStages/Scheme/Scheme-Publisher-Details";
 import { SchemeSummary } from "./Components/FormStages/Scheme/Scheme-Summary";
-import { PhaseBanner } from "govuk-react";
 import { EligibilityCheckerRegisteredCompany } from "./Components/FormStages/Scheme/Eligibility-Checker-Registered-Company";
 import { EligibilityCheckerEmployeeCount } from "./Components/FormStages/Scheme/Eligibility-Checker-Employee-Count";
 import { EligibilityCheckerTradingLength } from "./Components/FormStages/Scheme/Eligibility-Checker-Trading-Length";
@@ -82,7 +77,9 @@ import InteractivePageBuilderInterface from "./Components/FormStages/Scheme/Inte
 import { ServiceSent } from "./Components/FormStages/Scheme/ServiceAppSent";
 import DynamicList from "./Components/FormStages/Admin/DynamicList";
 import EditUserDetails from "./Components/FormStages/Citizen/DataEntry/EditUserDetails";
+import { RouteElement } from "./Components/RouteElemenet/RouteElement";
 console.log(process.env.REACT_APP_BACKEND_URL)
+
 export default function App() {
   const [loggedIn] = useAuth();
   return (
@@ -91,1967 +88,434 @@ export default function App() {
         <Routes>
           <Route
             path="/"
-            element={
-              <>
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <HomePage />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={HomePage} />}
           />
 
           <Route
             path="/register-company"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <EnterCompanyDetails />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={EnterCompanyDetails} />}
           />
+
           <Route
             path="/page-builder-interface/"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <InteractivePageBuilderInterface />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={InteractivePageBuilderInterface} />}
           />
+
           <>
             <Route
               path="/digital-services/portal/:endpoint/pages/:pageId/"
               element={<DynamicPage />}
             />
           </>
+
           <Route
             path="/register-company-associated-contact"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-
-                <AssociateContact />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={AssociateContact} />}
           />
+
           <Route
             path="/register-service"
-            element={
-              <>
-                <RegisterNewService />
-              </>
-            }
+            element={<RegisterNewService />}
           />
+
           <Route
             path="/integrated"
-            element={
-              <>
-                <IframeComponent />
-              </>
-            }
+            element={<IframeComponent />}
           />
+
           <Route
             path="/register-sent"
-            element={
-              <>
-                <ServiceSent />
-              </>
-            }
+            element={<ServiceSent />}
           />
+          
           <Route
             path="/moderate-services"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <ModerateServices />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={ModerateServices} />}
           />
+
           <Route
             path="/register-external"
-            element={
-              <>
-                <RegisterExternalService />
-              </>
-            }
+            element={<RegisterExternalService />}
           />
+
           <Route
             path="/page-preview"
-            element={
-              <>
-                <PagePreview />
-              </>
-            }
+            element={<PagePreview />}
           />
+
           <Route
             path="/register-company-summary"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-
-                <RegisterCompanySummary />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={RegisterCompanySummary} />}
           />
 
           <Route
             path="/sign-in-mfa"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-
-                <MFA />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={MFA} />}
           />
 
           <Route
             path="/services"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-
-                <Services />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={Services} />}
           />
+          
           <Route
             path="/wallet/callback/"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <CallBack />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={CallBack} />}
           />
+
           <Route
             path={`/edit-user-details`}
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <EditUserDetails />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={EditUserDetails} />}
           />
+
           <Route
             path="/wallet/account_transactions/:accountId/:consentToken"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <DisplayTransactions />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={DisplayTransactions} />}
           />
+
           <Route
             path="/portal-domain"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <EnterPortalDomain />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={EnterPortalDomain} />}
           />
+          
           <Route
             path="/portal-name"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <EnterPortalName />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={EnterPortalName} />}
           />
 
           <Route
             path="/email-confirmed"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <EmailConfirmed />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={EmailConfirmed} />}
           />
+
           <Route
             path="/change-password"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <ChangePassword />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={ChangePassword} />}
           />
 
           <Route
             path="/link-wallet"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <CreateOpenBankingAccount />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={CreateOpenBankingAccount} />}
           />
+
           <Route
             path="/wallet/link-institution"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <LinkWalletAccount />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={LinkWalletAccount} />}
           />
+
           <Route
             path="/register-citizen-phone-number"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <EnterCitizenPhoneNumber />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={EnterCitizenPhoneNumber} />}
           />
 
           <Route
             path="/administrator-view"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <DynamicList />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={DynamicList} />}
           />
 
           <Route
             path="/wallet/account"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <Account />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={Account} />}
           />
 
           <Route
             path="/link-account"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <LinkAccount />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={LinkAccount} />}
           />
+
           <Route
             path="/register-company-landing"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <CompanyRegistrationLandingPage />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={CompanyRegistrationLandingPage} />}
           />
+
           <Route
             path="/register-company-details"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <EnterCompanyDetails />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={EnterCompanyDetails} />}
           />
+
           <Route
             path="/change-first-name"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <ChangeFirstName />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={ChangeFirstName} />}
           />
+
           <Route
             path="/change-last-name"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-
-                <ChangeLastName />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={ChangeLastName} />}
           />
+
           <Route
             path="/change-address-line-1"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <ChangeAddressLine1 />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={ChangeAddressLine1} />}
           />
 
           <Route
             path="/change-address-line-2"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <ChangeAddressLine2 />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={ChangeAddressLine2} />}
           />
+
           <Route
             path="/change-town-city"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <ChangeTownCity />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={ChangeTownCity} />}
           />
+
           <Route
             path="/change-postcode"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <ChangePostcode />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={ChangePostcode} />}
           />
+
           <Route
             path="/EOI-Contact-Info"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <EOIContactInfo />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={EOIContactInfo} />}
           />
+
           <Route
             path="/EOI-Product-Info"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <EOIProductInfo />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={EOIProductInfo} />}
           />
+
           <Route
             path="/EOI-Declarations"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <EOIDeclarations />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={EOIDeclarations} />}
           />
+
           <Route
             path="/EOI-Summary"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <EOISummary />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={EOISummary} />}
           />
+
           <Route
             path="/List-Applications"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <ListPortals />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={ListPortals} />}
           />
+
           <Route
             path="/Grant-Application"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-
-                <GrantApplication />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={GrantApplication} />}
           />
+
           <Route
             path="/change-email-address"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <ChangeEmail />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={ChangeEmail} />}
           />
+
           <Route
             path="/publish-scheme-landing"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <RegisterSchemeLandingPage />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={RegisterSchemeLandingPage} />}
           />
+
           <Route
             path="/publish-scheme-title"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <SchemeTitle />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={SchemeTitle} />}
           />
+
           <Route
             path="/publish-scheme-dates"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <SchemeDates />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={SchemeDates} />}
           />
+
           <Route
             path="/publish-scheme-supporting-information"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-
-                <SchemeSupportingInformation />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={SchemeSupportingInformation} />}
           />
 
           <Route
             path="/publish-scheme-objectives"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-
-                <SchemeObjectives />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={SchemeObjectives} />}
           />
 
           <Route
             path="/"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <HomePage />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={HomePage} />}
           />
+
           <Route
             path="/register-citizen-landing"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <CitizenRegistrationLandingPage />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={CitizenRegistrationLandingPage} />}
           />
+
           <Route
             path="/sign-in-citizen"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <CitizenSignIn />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={CitizenSignIn} />}
           />
+
           <Route
             path="/register-citizen-name"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <EnterCitizenName />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={EnterCitizenName} />}
           />
+
           <Route
             path="/register-citizen-address"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <EnterCitizenAddress />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={EnterCitizenAddress} />}
           />
+
           <Route
             path="/register-citizen-email"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-
-                <EnterCitizenEmail />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={EnterCitizenEmail} />}
           />
+
           <Route
             path="/register-company-details"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-
-                <EnterCompanyDetails />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={EnterCompanyDetails} />}
           />
+
           <Route
             path="/register-company-associated-contact"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-
-                <AssociateContact />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={AssociateContact} />}
           />
+
           <Route
             path="/register-company-link-account"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-
-                <LinkAccount />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={LinkAccount} />}
           />
+
           <Route
             path="/register-citizen-password"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-
-                <EnterCitizenPassword />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={EnterCitizenPassword} />}
           />
+
           <Route
             path="/publish-scheme-supporting-information"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-
-                <SchemeSupportingInformation />
-                <Footer />
-              </>
-            }
-          />
-          <Route
-            path="/register-company-summary"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-
-                <RegisterCompanySummary />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={SchemeSupportingInformation} />}
           />
 
           <Route
             path="/register-citizen-summary"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
+            element={<RouteElement PageToLoad={CitizenRegistrationSummary} />}
+          />
 
-                <CitizenRegistrationSummary />
-                <Footer />
-              </>
-            }
-          />
-          <Route
-            path="/EOI-Contact-Info"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <EOIContactInfo />
-                <Footer />
-              </>
-            }
-          />
-          <Route
-            path="/EOI-Product-Info"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <EOIProductInfo />
-                <Footer />
-              </>
-            }
-          />
-          <Route
-            path="/EOI-Declarations"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-
-                <EOIDeclarations />
-                <Footer />
-              </>
-            }
-          />
-          <Route
-            path="/EOI-Summary"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-
-                <EOISummary />
-                <Footer />
-              </>
-            }
-          />
-          <Route
-            path="/List-Applications"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-
-                <ListPortals />
-                <Footer />
-              </>
-            }
-          />
-          <Route
-            path="/Grant-Application"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-
-                <GrantApplication />
-                <Footer />
-              </>
-            }
-          />
           <Route
             path="/Eligibility-Checker-Registered-Company"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-
-                <EligibilityCheckerRegisteredCompany />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={EligibilityCheckerRegisteredCompany} />}
           />
+
           <Route
             path="/Eligibility-Checker-Employee-Count"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <EligibilityCheckerEmployeeCount />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={EligibilityCheckerEmployeeCount} />}
           />
+
           <Route
             path="/Eligibility-Checker-Trading-Length"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <EligibilityCheckerTradingLength />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={EligibilityCheckerTradingLength} />}
           />
+
           <Route
             path="/Eligibility-Checker-Selected-Product-Info"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-
-                <EligibilityCheckerProductInfo />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={EligibilityCheckerProductInfo} />}
           />
+
           <Route
             path="/Eligibility-Checker-Software-Details"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <EligibilityCheckerSoftwareDetails />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={EligibilityCheckerSoftwareDetails} />}
           />
+
           <Route
             path="/Eligibility-Checker-Summary"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <EligibilityCheckerSummary />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={EligibilityCheckerSummary} />}
           />
 
           <Route
             path="/Application-Form-Exhausted-Funds"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-
-                <ApplicationFormExhaustedForm />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={ApplicationFormExhaustedForm} />}
           />
+
           <Route
             path="/Application-Form-Building-Information"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <ApplicationFormBuildingInformation />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={ApplicationFormBuildingInformation} />}
           />
+
           <Route
             path="/Application-Form-Summary-Table"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-
-                <ApplicationFormSummaryTable />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={ApplicationFormSummaryTable} />}
           />
+
           <Route
             path="/Page-Builder"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <PageBuilder />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={PageBuilder} />}
           />
 
           <Route
             path="/site-home/https://sssp-qa.dj4eixkpal8an.amplifyapp.com/digital-services/portal/"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <SiteHome />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={SiteHome} />}
           />
+
           <Route
             path="/portal-creator-landing-page"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <PortalCreatorLandingPage />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={PortalCreatorLandingPage} />}
           />
+
           <Route
             path="/Render-Form"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <RenderForm />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={RenderForm} />}
           />
+
           <Route
             path="/edit-details"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <EditDetails />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={EditDetails} />}
           />
 
           <Route
             path="/publish-scheme-landing"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-
-                <RegisterSchemeLandingPage />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={RegisterSchemeLandingPage} />}
           />
+
           <Route
             path="/register-company-link-citizen"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <LinkAccount />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={LinkAccount} />}
           />
+
           <Route
             path="/personal-profile"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <PersonalProfile />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={PersonalProfile} />}
           />
+
           <Route
             path="/publish-scheme-title"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <SchemeTitle />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={SchemeTitle} />}
           />
+
           <Route
             path="/publish-scheme-details"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-
-                <SchemeDescription />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={SchemeDescription} />}
           />
+
           <Route
             path="/publish-scheme-dates"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-
-                <SchemeDates />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={SchemeDates} />}
           />
+
           <Route
             path="/publish-scheme-objectives"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <SchemeObjectives />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={SchemeObjectives} />}
           />
+
           <Route
             path="/Register-Scheme"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-                <FormBuilder />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={FormBuilder} />}
           />
+
           <Route
             path="/publish-scheme-application-details"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-
-                <SchemeApplicationDetails />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={SchemeApplicationDetails} />}
           />
-          <Route
-            path="/register-company-landing"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
 
-                <CompanyRegistrationLandingPage />
-                <Footer />
-              </>
-            }
-          />
-          <Route
-            path="/register-company-summary"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-
-                <RegisterCompanySummary />
-                <Footer />
-              </>
-            }
-          />
           <Route
             path="/publish-scheme-eligibility-criteria"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-
-                <SchemeEligibilityCriteria />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={SchemeEligibilityCriteria} />}
           />
+
           <Route
             path="/publish-scheme-publisher-details"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-
-                <SchemePublisherDetails />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={SchemePublisherDetails} />}
           />
 
           <Route
             path="/publish-scheme-summary"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-
-                <SchemeSummary />
-
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={SchemeSummary} />}
           />
+
           <Route
             path="/Registration-Form-Landing-Page"
-            element={
-              <>
-                <GlobalStyle />
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <PhaseBanner level="POC">
-                    SSSP is currently a proof of concept{" "}
-                  </PhaseBanner>
-                </div>
-                <NavbarComponent />
-                <CookieConsent
-                  buttonStyle={{ backgroundColor: "#00823B", color: "white" }}
-                >
-                  This website uses cookies to enhance the user experience.
-                </CookieConsent>
-
-                <RegistrationFormLandingPage />
-                <Footer />
-              </>
-            }
+            element={<RouteElement PageToLoad={RegistrationFormLandingPage} />}
           />
         </Routes>
       </Router>
