@@ -32,6 +32,8 @@ export const MFA = () => {
 
   const [data, setData] = useState({});
 
+  const [otpQr, setotpQr] = useState("");
+
   const handleVerifyClick = () => {
     verify(verificationType);
   };
@@ -43,19 +45,53 @@ export const MFA = () => {
       verifyEmailOTP();
     } else if (mfa === "google") {
       verifyGoogleKey();
+    } else if (mfa === "microsoft") {
+      verifyMicrosoftKey();
     }
   };
   const radioButtons = document.querySelectorAll('input[type="radio"]');
 
-radioButtons.forEach((radioButton) => {
-  radioButton.addEventListener('click', () => {
-    radioButtons.forEach((otherButton) => {
-      if (otherButton !== radioButton) {
-        otherButton.checked = false;
-      }
+  radioButtons.forEach((radioButton) => {
+    radioButton.addEventListener('click', () => {
+      radioButtons.forEach((otherButton) => {
+        if (otherButton !== radioButton) {
+          otherButton.checked = false;
+        }
+      });
     });
   });
-});
+
+  const verifyMicrosoftKey = () => {
+    setLoading(true);
+
+    fetch(
+      `http://127.0.0.1:2000/api/testotp/${data?.verification_code}`
+    )
+    .then((res) => res.json())
+    .then((resData) => {
+      console.log(resData.message);
+      if (resData.message === "Authenticated") {
+        alert("Valid");
+        // sessionStorage.setItem("Citizen_ID", data.citizen_id);
+        // login(data.access_token);
+        setLoading(false);
+        // navigate("/");
+      } else if (resData.message === "Invalid OTP") {
+        alert("Invalid");
+        setLoading(false);
+        setErrorMessageTitle("Invalid OTP");
+        setErrorMessageContent(
+          "Please check the OTP provided and try again."
+        );
+        setErrorMessageCause("OTP");
+        setErrorMessageFlag(true);
+      }
+    })
+    .catch((error) => {
+      setLoading(false);
+      console.error(error);
+    });
+  }
 
   const verifyGoogleKey = () => {
     setLoading(true);
@@ -70,28 +106,28 @@ radioButtons.forEach((radioButton) => {
       `${process.env.REACT_APP_BACKEND_URL}/google-auth-verify/${state.email}/${token}/${data?.verification_code}`,
       requestOptions
     )
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        if (data.message === "Authenticated") {
-          sessionStorage.setItem("Citizen_ID", data.citizen_id);
-          login(data.access_token);
-          setLoading(false);
-          navigate("/");
-        } else if (data.message === "Invalid OTP") {
-          setLoading(false);
-          setErrorMessageTitle("Invalid OTP");
-          setErrorMessageContent(
-            "Please check the OTP provided and try again."
-          );
-          setErrorMessageCause("OTP");
-          setErrorMessageFlag(true);
-        }
-      })
-      .catch((error) => {
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data);
+      if (data.message === "Authenticated") {
+        sessionStorage.setItem("Citizen_ID", data.citizen_id);
+        login(data.access_token);
         setLoading(false);
-        console.error(error);
-      });
+        navigate("/");
+      } else if (data.message === "Invalid OTP") {
+        setLoading(false);
+        setErrorMessageTitle("Invalid OTP");
+        setErrorMessageContent(
+          "Please check the OTP provided and try again."
+        );
+        setErrorMessageCause("OTP");
+        setErrorMessageFlag(true);
+      }
+    })
+    .catch((error) => {
+      setLoading(false);
+      console.error(error);
+    });
   };
 
   const verifyEmailOTP = () => {
@@ -312,6 +348,38 @@ radioButtons.forEach((radioButton) => {
         });
     }
   };
+
+  const microsoftAuthenticator = () => {
+    setLoading(false);
+    setVerificationType("microsoft");
+
+    const requestOptions = {
+      method: "GET",
+      headers: {
+        "content-type": "application/json",
+      }
+    };
+
+    if (state.email === "") {
+      setErrorMessageTitle("Email address not provided");
+      setErrorMessageContent("Please enter your email address.");
+      setErrorMessageCause("Email address");
+      setErrorMessageFlag(true);
+    } else if (state.password === "") {
+      setErrorMessageTitle("Password not provided");
+      setErrorMessageContent("Please enter your password.");
+      setErrorMessageCause("Password");
+      setErrorMessageFlag(true);
+    } else {
+      setRenderToken(true);
+      setVerificationCodeField(true);
+      setToken("micorsoft token");
+      fetch(`http://127.0.0.1:2000/api/testget/`)
+        .then((res) => res.json())
+        .then((data) => setotpQr(data.message))
+    }
+  }
+
   const googleAuthenticator = () => {
     setLoading(false);
     setVerificationType("google");
@@ -326,6 +394,7 @@ radioButtons.forEach((radioButton) => {
         mfa_preference: "google",
       }),
     };
+
     if (state.email === "") {
       setErrorMessageTitle("Email address not provided");
       setErrorMessageContent("Please enter your email address.");
@@ -418,6 +487,9 @@ radioButtons.forEach((radioButton) => {
                 <Radio onClick={googleAuthenticator}>
                   Google Authenticator
                 </Radio>
+                <Radio onClick={microsoftAuthenticator}>
+                  Any Authenticator App
+                </Radio>
 
                 {verificationCode === true && renderToken === false && (
                   <>
@@ -439,7 +511,7 @@ radioButtons.forEach((radioButton) => {
                     <Button onClick={handleVerifyClick}>Verify OTP</Button>
                   </>
                 )}
-                {verificationCode === true && renderToken === true && (
+                {verificationCode === true && renderToken === true && token !=="micorsoft token" && (
                   <>
                     <br></br>
                     <p style={{ color: "#505a5f" }}>
@@ -479,6 +551,50 @@ radioButtons.forEach((radioButton) => {
                       <li>Create a new account with the secret key</li>
                       <li>Provide the required details</li>
                       <li>Select time based authentication</li>
+                      <li>
+                        Submit the generated key from the app into the
+                        verification code field
+                      </li>
+                    </ul>
+                    <InputField
+                      onChange={updateData}
+                      input={{
+                        name: "verification_code",
+                      }}
+                    >
+                      Verification code
+                    </InputField>
+                    <br></br>
+                    <Button onClick={handleVerifyClick}>Verify</Button>
+                  </>
+                )}
+                {verificationCode === true && renderToken === true && token==="micorsoft token" && (
+                  <>
+                    <br></br>
+                    <p style={{ color: "#505a5f" }}>
+                      Please scan the below QR code within either the Google Authenticator app or the Microsoft Authenticator app.
+                    </p>
+
+                    <img src={`${otpQr}`} alt="QR Code for authenticator application" />
+                    
+                    <br></br>
+                    <br></br>
+
+                    <p style={{ color: "#0B0C0C" }}>Guidance:</p>
+                    <ul>
+                      <li>
+                        Download{" "}
+                        <a href="https://googleauthenticator.net/">
+                          Google Authenticator
+                        </a>{" "} 
+                        or 
+                        <a href="https://support.microsoft.com/en-us/account-billing/download-and-install-the-microsoft-authenticator-app-351498fc-850a-45da-b7b6-27e523b8702a">
+                          Microsoft Authenticator
+                        </a>{" "}
+                        on your mobile device
+                      </li>
+                      <li>Go to add a new identity</li>
+                      <li>Scan the QR code above</li>
                       <li>
                         Submit the generated key from the app into the
                         verification code field
