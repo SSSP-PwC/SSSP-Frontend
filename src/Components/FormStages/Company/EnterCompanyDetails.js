@@ -48,7 +48,7 @@ export const EnterCompanyDetails = () => {
       address.postal_code = address.postal_code || "N/A";
       address.locality = address.locality || "N/A";
       address.region = address.region || "N/A";
-      address.country = address.country || "N/A";
+      address.country = address.country || "United Kingdom";
     }
     return address;
   }
@@ -78,18 +78,39 @@ export const EnterCompanyDetails = () => {
     });
   };
 
+  //test for company house API - move this somewhere else
+  var myHeaders = new Headers();
+  myHeaders.append("pwcAccessToken", "SQZ2YAOP8M4I8TeduwTtCkl4Wd44RWKRRrcSdxu7BPdd4fPp6A");
+
+  var requestOptions = {
+    method: 'GET',
+    headers: myHeaders,
+    redirect: 'follow'
+  };
+
+  //end
+
   const submitForm = async () => {
     setLoading(true);
+
     fetch(
-      `https://pg-uk-n-app-765081.nw.r.appspot.com/api/proxy?endpoint=company/${companyData.company_registration_number}`
+      `https://datalab-api.pwcinternal.com/Call?pwcTargetEndPoint=CHOUSE-COMPPROFILE&CompanyNumber=${companyData.company_registration_number}`, requestOptions
     )
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
+    .then(response => response.text())
+    .then(result => console.log(result))
+    .catch(error => console.log('error', error)); 
+
+    fetch(
+      `https://datalab-api.pwcinternal.com/Call?pwcTargetEndPoint=CHOUSE-COMPPROFILE&CompanyNumber=${companyData.company_registration_number}`, requestOptions
+    )    
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      if (data.statusCode === 200 && data.payload) {
         const formattedAddress = formatAddress(
-          data["registered_office_address"]
+          data.payload.registered_office_address
         );
-        setCompanyName(data.company_name);
+        setCompanyName(data.payload.company_name);
         setAddressLine1(formattedAddress.address_line_1);
         setAddressLine2(formattedAddress.address_line_2);
         setPostalCode(formattedAddress.postal_code);
@@ -98,11 +119,16 @@ export const EnterCompanyDetails = () => {
         setRegion(formattedAddress.region);
         setDetailsReturned(true);
         setLoading(false);
-      })
-      .catch((error) => {
+      } else {
         setErrorMessageFlag(true);
         setLoading(false);
-      });
+      }
+    })
+    .catch((error) => {
+      setErrorMessageFlag(true);
+      setLoading(false);
+    });
+  
   };
 
   const RegistrationFormBreadcrumb = () => {
