@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Alert } from "react-bootstrap";
 import { MainHeading } from "../../../../globalStyles";
 import { useForm } from "react-hook-form";
@@ -32,7 +32,17 @@ export const MFA = () => {
 
   const [data, setData] = useState({});
 
-  const [otpQr, setotpQr] = useState("");
+  const [otpQr, setotpQr] = useState("https://www.google.com/chart?chs=200x200&chld=M|0&cht=qr&chl=otpauth://totp/SSSP:adam.x.logan%40pwc.com?secret=3KMMYWWOYNNRRG6MIOZUQ2GVJCGZRCN4&issuer=SSSP");
+
+  const fetchQR = async () => {
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/genqrcode/adam.x.logan@pwc.com`)
+        .then((res) => res.json())
+        .then((data) => setotpQr(data.message))
+  }
+
+  useEffect(() => {
+    fetchQR();
+  }, []);
 
   const handleVerifyClick = () => {
     verify(verificationType);
@@ -374,9 +384,10 @@ export const MFA = () => {
       setRenderToken(true);
       setVerificationCodeField(true);
       setToken("micorsoft token");
-      fetch(`http://127.0.0.1:2000/api/testget/`)
-        .then((res) => res.json())
-        .then((data) => setotpQr(data.message))
+
+      // fetch(`${process.env.REACT_APP_BACKEND_URL}/genqrcode/adam.x.logan@pwc.com`)
+      //   .then((res) => res.json())
+      //   .then((data) => setotpQr(data.message))
     }
   }
 
@@ -574,6 +585,8 @@ export const MFA = () => {
                     <p style={{ color: "#505a5f" }}>
                       Please scan the below QR code within either the Google Authenticator app or the Microsoft Authenticator app.
                     </p>
+
+                    {console.log("hello " + otpQr)}
 
                     <img src={`${otpQr}`} alt="QR Code for authenticator application" />
                     
